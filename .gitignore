@@ -1,0 +1,14 @@
+# macOS / Xcode local state
+.DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+
+# Rust build output (future shared runtime)
+target/
+
+# Local credentials
+.env
+.env.*
+!.env.example
