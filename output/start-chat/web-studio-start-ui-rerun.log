@@ -1,0 +1,574 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Web Studio.xcodeproj" -scheme "Web Studio" -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /private/tmp/web-studio-final -disableAutomaticPackageResolution -skipPackageUpdates CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO "-only-testing:Web StudioUITests/Web_StudioUITests/testAgentBlankReadAndProviderSettingsFlow" "-only-testing:Web StudioUITests/Web_StudioUITests/testStartPageAddsSessionPinnedDestination"
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm.git @ 1.14.0
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+
+2026-09-13 00:10:25.173 xcodebuild[42551:26496831] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (6 targets)
+    Target 'Web StudioTests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web StudioUITests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web Studio' in project 'Web Studio'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: 5b8e6629f87a82d4fda5cda44ab36763
+Build description path: /tmp/web-studio-final/Build/Intermediates.noindex/XCBuildData/5b8e6629f87a82d4fda5cda44ab36763.xcbuilddata
+warning: missing creator for mutated node: ('/tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/MacOS') (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+    cd /tmp/web-studio-final/SourcePackages/checkouts/SwiftTerm
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache
+    cd /Users/huaodong/workspace/Web\ Studio/Web\ Studio.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -o /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache
+
+SwiftDriver Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist -producttype com.apple.product-type.application -genpkginfo /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -scanforprivacyfile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/ProductTypeInfoPlistAdditions.plist -o /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist
+
+SwiftCompile normal arm64 Compiling\ Web_StudioUITests.swift /Users/huaodong/workspace/Web\ Studio/Web\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_StudioUITests (in target 'Web StudioUITests' from project 'Web Studio')
+
+EmitSwiftModule normal arm64 (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_StudioUITests (in target 'Web StudioUITests' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftsourceinfo (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftsourceinfo /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+
+SwiftDriver\ Compilation Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests normal (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -O0 -L/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/web-studio-final/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/web-studio-final/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.LinkFileList -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -object_path_lto -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --module-name Web_StudioUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk --xcode-version 17F113 --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-StudioUITests --output /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests --dependency-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_dependency_info.dat --stringsdata-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList --metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.DependencyMetadataFileList --static-metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-13 00:10:30.357 appintentsmetadataprocessor[43032:26497957] Starting appintentsmetadataprocessor export
+2026-09-13 00:10:30.362 appintentsmetadataprocessor[43032:26497957] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app
+/tmp/web-studio-final/Build/Products/Debug/Web StudioUITests-Runner.app: replacing existing signature
+
+2026-09-13 00:10:31.080079+0800 Web StudioUITests-Runner[43054:26498035] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-09-13 00:10:31.262.
+Test Suite 'Web StudioUITests.xctest' started at 2026-09-13 00:10:31.263.
+Test Suite 'Web_StudioUITests' started at 2026-09-13 00:10:31.263.
+Test Case '-[Web_StudioUITests.Web_StudioUITests testAgentBlankReadAndProviderSettingsFlow]' started.
+    t =     0.00s Start Test at 2026-09-13 00:10:31.263
+    t =     0.22s Set Up
+    t =     0.27s Open com.huaodong.Web-Studio
+    t =     0.27s     Launch com.huaodong.Web-Studio
+2026-09-13 00:10:31.736 xcodebuild[42551:26496831] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-13 00:10:31.736 xcodebuild[42551:26496831] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     0.97s         Wait for accessibility to load
+    t =     1.49s         Setting up automation session
+    t =     1.50s         Wait for com.huaodong.Web-Studio to idle
+    t =     1.51s Waiting 3.0s for "agents.inspector" Any to exist
+    t =     2.54s     Checking `Expect predicate `existsNoRetry == 1` for object "agents.inspector" Any`
+    t =     2.54s         Checking existence of `"agents.inspector" Any`
+    t =     2.74s Click "agents.resources" Button
+    t =     2.74s     Wait for com.huaodong.Web-Studio to idle
+    t =     2.74s     Find the "agents.resources" Button
+    t =     2.78s     Check for interrupting elements affecting "agents.resources" Button
+    t =     2.81s     Found 1 interrupting element:
+    t =     2.81s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     2.81s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     2.82s Checking for user permission dialogs...
+    t =     2.82s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =     3.23s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =     3.61s Checking for Bluetooth Setup Assistant...
+    t =     3.61s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =     3.96s Checking for Notification Center Banners...
+    t =     3.97s Checking for basic alerts
+    t =     4.07s             Checking existence of `"ChatGPT" Window`
+    t =     4.43s             Find the "ChatGPT" Window
+    t =     4.81s             Find the "ChatGPT" Window
+    t =     5.17s No monitors handled UI interruption, checking to see if element still exists...
+    t =     5.18s             Checking existence of `"ChatGPT" Window`
+    t =     5.52s Did not handle the interruption, but will attempt to continue…
+    t =     5.52s     Synthesize event
+    t =     5.88s     Wait for com.huaodong.Web-Studio to idle
+    t =     5.89s Waiting 3.0s for Any (First Match) to exist
+    t =     6.92s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =     6.92s         Checking existence of `Any (First Match)`
+    t =     6.98s Click Any (First Match)
+    t =     6.98s     Wait for com.huaodong.Web-Studio to idle
+    t =     6.99s     Find the Any (First Match)
+    t =     7.02s     Check for interrupting elements affecting "agents.resource.9D5E4A4A-D7F6-4855-B17A-9BC700330BD5" Button
+    t =     7.05s     Synthesize event
+    t =     7.40s     Wait for com.huaodong.Web-Studio to idle
+    t =     7.41s Click "agents.preview" Button
+    t =     7.41s     Wait for com.huaodong.Web-Studio to idle
+    t =     7.41s     Find the "agents.preview" Button
+    t =     7.47s     Check for interrupting elements affecting "agents.preview" Button
+    t =     7.49s     Found 1 interrupting element:
+    t =     7.49s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     7.49s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     7.49s Checking for user permission dialogs...
+    t =     7.49s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =     7.87s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =     8.26s Checking for Bluetooth Setup Assistant...
+    t =     8.26s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =     8.62s Checking for Notification Center Banners...
+    t =     8.62s Checking for basic alerts
+    t =     8.63s             Checking existence of `"ChatGPT" Window`
+    t =     8.99s             Find the "ChatGPT" Window
+    t =     9.37s             Find the "ChatGPT" Window
+    t =     9.71s No monitors handled UI interruption, checking to see if element still exists...
+    t =     9.72s             Checking existence of `"ChatGPT" Window`
+    t =    10.09s Did not handle the interruption, but will attempt to continue…
+    t =    10.09s     Synthesize event
+    t =    10.48s     Wait for com.huaodong.Web-Studio to idle
+    t =    10.49s Waiting 3.0s for "agents.preview.read" Button to exist
+    t =    11.51s     Checking `Expect predicate `existsNoRetry == 1` for object "agents.preview.read" Button`
+    t =    11.51s         Checking existence of `"agents.preview.read" Button`
+    t =    11.59s Click "agents.preview.read" Button
+    t =    11.59s     Wait for com.huaodong.Web-Studio to idle
+    t =    11.60s     Find the "agents.preview.read" Button
+    t =    11.65s     Check for interrupting elements affecting "agents.preview.read" Button
+    t =    11.67s     Synthesize event
+    t =    12.01s     Wait for com.huaodong.Web-Studio to idle
+    t =    12.02s Waiting 3.0s for StaticText (First Match) to exist
+    t =    13.05s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    13.05s         Checking existence of `StaticText (First Match)`
+    t =    13.11s         Capturing element debug description
+    t =    14.03s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    14.03s         Checking existence of `StaticText (First Match)`
+    t =    14.07s         Capturing element debug description
+    t =    15.02s     Checking `Expect predicate `existsNoRetry == 1` for object StaticText (First Match)`
+    t =    15.02s         Checking existence of `StaticText (First Match)`
+    t =    15.07s         Capturing element debug description
+    t =    15.07s     Checking existence of `StaticText (First Match)`
+    t =    15.11s Collecting debug information to assist test failure triage
+    t =    15.11s     Requesting snapshot of accessibility hierarchy for app with pid 43112
+/Users/huaodong/workspace/Web Studio/Web StudioUITests/Web_StudioUITests.swift:126: error: -[Web_StudioUITests.Web_StudioUITests testAgentBlankReadAndProviderSettingsFlow] : XCTAssertTrue failed
+    t =    15.28s Find the "agents.send" Button
+    t =    15.32s Type '⎋' key (XCUIKeyboardKeyEscape) with no modifiers
+    t =    15.32s     Wait for com.huaodong.Web-Studio to idle
+    t =    15.32s     Find the Target Application 'com.huaodong.Web-Studio'
+    t =    15.35s     Check for interrupting elements affecting "Web Studio" Application
+    t =    15.35s     Synthesize event
+    t =    15.43s     Wait for com.huaodong.Web-Studio to idle
+    t =    15.43s Click "agents.provider-settings" Button
+    t =    15.43s     Wait for com.huaodong.Web-Studio to idle
+    t =    15.43s     Find the "agents.provider-settings" Button
+    t =    15.52s     Check for interrupting elements affecting "agents.provider-settings" Button
+    t =    15.56s     Found 1 interrupting element:
+    t =    15.56s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    15.56s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    15.56s Checking for user permission dialogs...
+    t =    15.56s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    16.01s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    16.40s Checking for Bluetooth Setup Assistant...
+    t =    16.40s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    16.78s Checking for Notification Center Banners...
+    t =    16.78s Checking for basic alerts
+    t =    16.79s             Checking existence of `"ChatGPT" Window`
+    t =    17.16s             Find the "ChatGPT" Window
+    t =    17.54s             Find the "ChatGPT" Window
+    t =    17.96s No monitors handled UI interruption, checking to see if element still exists...
+    t =    17.97s             Checking existence of `"ChatGPT" Window`
+    t =    18.36s     Open com.huaodong.Web-Studio
+    t =    18.36s         Activate com.huaodong.Web-Studio
+    t =    18.39s             Wait for com.huaodong.Web-Studio to idle
+    t =    18.45s Did not handle the interruption, but will attempt to continue…
+    t =    18.46s     Synthesize event
+    t =    18.56s         Falling back to element center point: {1424.5, 165}
+    t =    18.95s     Wait for com.huaodong.Web-Studio to idle
+    t =    19.06s Waiting 3.0s for "provider.model" TextField to exist
+    t =    20.08s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    20.08s         Checking existence of `"provider.model" TextField`
+    t =    20.23s Find the "provider.model" TextField
+    t =    20.28s Click "provider.model" TextField
+    t =    20.28s     Wait for com.huaodong.Web-Studio to idle
+    t =    20.28s     Find the "provider.model" TextField
+    t =    20.33s     Check for interrupting elements affecting "provider.model" TextField
+    t =    20.35s     Synthesize event
+    t =    20.75s     Wait for com.huaodong.Web-Studio to idle
+    t =    20.76s Type 'draft' into "provider.model" TextField
+    t =    20.76s     Wait for com.huaodong.Web-Studio to idle
+    t =    20.76s     Find the "provider.model" TextField
+    t =    20.82s     Check for interrupting elements affecting "provider.model" TextField
+    t =    20.85s     Synthesize event
+    t =    21.18s     Wait for com.huaodong.Web-Studio to idle
+    t =    21.19s Type '⎋' key (XCUIKeyboardKeyEscape) with no modifiers
+    t =    21.19s     Wait for com.huaodong.Web-Studio to idle
+    t =    21.19s     Find the Target Application 'com.huaodong.Web-Studio'
+    t =    21.43s     Check for interrupting elements affecting "Web Studio" Application
+    t =    21.43s     Open com.huaodong.Web-Studio
+    t =    21.43s         Activate com.huaodong.Web-Studio
+    t =    21.45s             Wait for com.huaodong.Web-Studio to idle
+    t =    21.53s     Synthesize event
+    t =    21.61s     Wait for com.huaodong.Web-Studio to idle
+    t =    21.62s Waiting 3.0s for "provider.model" TextField to exist
+    t =    22.66s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    22.66s         Checking existence of `"provider.model" TextField`
+    t =    22.80s         Capturing element debug description
+    t =    22.81s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    22.94s             Find: Descendants matching type TextField
+    t =    22.94s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    22.95s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    22.95s Using snapshot previously cached by application
+    t =    22.95s             Find: Descendants matching type TextField
+    t =    22.96s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    22.96s Using snapshot previously cached by application
+    t =    23.68s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    23.68s         Checking existence of `"provider.model" TextField`
+    t =    23.78s         Capturing element debug description
+    t =    23.78s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    23.88s             Find: Descendants matching type TextField
+    t =    23.88s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    23.89s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    23.89s Using snapshot previously cached by application
+    t =    23.89s             Find: Descendants matching type TextField
+    t =    23.90s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    23.90s Using snapshot previously cached by application
+    t =    24.62s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    24.62s         Checking existence of `"provider.model" TextField`
+    t =    24.70s         Capturing element debug description
+    t =    24.71s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    24.82s             Find: Descendants matching type TextField
+    t =    24.82s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    24.83s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    24.83s Using snapshot previously cached by application
+    t =    24.83s             Find: Descendants matching type TextField
+    t =    24.84s             Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    24.84s Using snapshot previously cached by application
+    t =    24.84s     Checking existence of `"provider.model" TextField`
+    t =    24.92s Collecting debug information to assist test failure triage
+    t =    24.92s     Requesting snapshot of accessibility hierarchy for app with pid 43112
+    t =    25.04s Click "agents.provider-settings" Button
+    t =    25.04s     Wait for com.huaodong.Web-Studio to idle
+    t =    25.04s     Find the "agents.provider-settings" Button
+    t =    25.13s     Check for interrupting elements affecting "agents.provider-settings" Button
+    t =    25.20s     Found 3 interrupting elements:
+    t =    25.20s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    25.20s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    25.20s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    25.20s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    25.20s Checking for user permission dialogs...
+    t =    25.21s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    25.98s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    26.74s Checking for Bluetooth Setup Assistant...
+    t =    26.74s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    27.44s Checking for Notification Center Banners...
+    t =    27.44s Checking for basic alerts
+    t =    27.45s             Checking existence of `"ChatGPT" Window`
+    t =    28.15s             Find the "ChatGPT" Window
+    t =    28.87s             Find the "ChatGPT" Window
+    t =    29.60s No monitors handled UI interruption, checking to see if element still exists...
+    t =    29.61s             Checking existence of `"ChatGPT" Window`
+    t =    30.32s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    30.32s Checking for user permission dialogs...
+    t =    30.32s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    30.63s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    30.78s Checking for Bluetooth Setup Assistant...
+    t =    30.78s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    30.93s Checking for Notification Center Banners...
+    t =    30.93s Checking for basic alerts
+    t =    30.93s             Checking existence of `"main" Window`
+    t =    31.07s             Find the "main" Window
+    t =    31.25s             Find the "main" Window
+    t =    31.44s No monitors handled UI interruption, checking to see if element still exists...
+    t =    31.44s             Checking existence of `"main" Window`
+    t =    31.60s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    31.60s Checking for user permission dialogs...
+    t =    31.60s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    31.79s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    31.95s Checking for Bluetooth Setup Assistant...
+    t =    31.95s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    32.10s Checking for Notification Center Banners...
+    t =    32.10s Checking for basic alerts
+    t =    32.11s             Checking existence of `"main" Window`
+    t =    32.24s             Find the "main" Window
+    t =    32.40s             Find the "main" Window
+    t =    32.54s No monitors handled UI interruption, checking to see if element still exists...
+    t =    32.54s             Checking existence of `"main" Window`
+    t =    32.69s     Open com.huaodong.Web-Studio
+    t =    32.69s         Activate com.huaodong.Web-Studio
+    t =    32.74s             Wait for com.huaodong.Web-Studio to idle
+    t =    32.86s Did not handle the interruption, but will attempt to continue…
+    t =    32.87s     Synthesize event
+    t =    33.21s         Falling back to element center point: {1424.5, 165}
+    t =    33.84s     Wait for com.huaodong.Web-Studio to idle
+    t =    33.85s Waiting 3.0s for "provider.model" TextField to exist
+    t =    34.86s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    34.86s         Checking existence of `"provider.model" TextField`
+    t =    35.02s Find the "provider.model" TextField
+    t =    35.14s Tear Down
+Test Case '-[Web_StudioUITests.Web_StudioUITests testAgentBlankReadAndProviderSettingsFlow]' failed (35.527 seconds).
+Test Case '-[Web_StudioUITests.Web_StudioUITests testStartPageAddsSessionPinnedDestination]' started.
+    t =     0.00s Start Test at 2026-09-13 00:11:06.792
+    t =     0.30s Set Up
+    t =     0.30s Open com.huaodong.Web-Studio
+    t =     0.30s     Launch com.huaodong.Web-Studio
+    t =     0.30s         Terminate com.huaodong.Web-Studio:43112
+2026-09-13 00:11:08.119 xcodebuild[42551:26496831] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-13 00:11:08.119 xcodebuild[42551:26496831] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.86s         Wait for accessibility to load
+    t =     2.63s         Setting up automation session
+    t =     2.64s         Wait for com.huaodong.Web-Studio to idle
+    t =     2.65s Waiting 3.0s for "start.add-pin" Button to exist
+    t =     3.67s     Checking `Expect predicate `existsNoRetry == 1` for object "start.add-pin" Button`
+    t =     3.68s         Checking existence of `"start.add-pin" Button`
+    t =     4.05s Click "start.add-pin" Button
+    t =     4.05s     Wait for com.huaodong.Web-Studio to idle
+    t =     4.06s     Find the "start.add-pin" Button
+    t =     4.17s     Check for interrupting elements affecting "start.add-pin" Button
+    t =     4.21s     Synthesize event
+    t =     4.66s     Wait for com.huaodong.Web-Studio to idle
+    t =     4.67s Waiting 3.0s for "start-entry.title" TextField to exist
+    t =     5.69s     Checking `Expect predicate `existsNoRetry == 1` for object "start-entry.title" TextField`
+    t =     5.69s         Checking existence of `"start-entry.title" TextField`
+    t =     5.83s Click "start-entry.title" TextField
+    t =     5.83s     Wait for com.huaodong.Web-Studio to idle
+    t =     5.83s     Find the "start-entry.title" TextField
+    t =     5.91s     Check for interrupting elements affecting "start-entry.title" TextField
+    t =     5.95s     Synthesize event
+    t =     6.41s     Wait for com.huaodong.Web-Studio to idle
+    t =     6.41s Type 'Local Preview' into "start-entry.title" TextField
+    t =     6.41s     Wait for com.huaodong.Web-Studio to idle
+    t =     6.42s     Find the "start-entry.title" TextField
+    t =     6.53s     Check for interrupting elements affecting "start-entry.title" TextField
+    t =     6.57s     Synthesize event
+    t =     7.80s     Wait for com.huaodong.Web-Studio to idle
+    t =     7.81s Click "start-entry.destination" TextField
+    t =     7.81s     Wait for com.huaodong.Web-Studio to idle
+    t =     7.81s     Find the "start-entry.destination" TextField
+    t =     8.15s     Check for interrupting elements affecting "start-entry.destination" TextField
+    t =     8.36s     Found 3 interrupting elements:
+    t =     8.36s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     8.37s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =     8.37s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =     8.37s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     8.37s Checking for user permission dialogs...
+    t =     8.37s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =     9.28s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    10.38s Checking for Bluetooth Setup Assistant...
+    t =    10.38s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    11.15s Checking for Notification Center Banners...
+    t =    11.15s Checking for basic alerts
+    t =    11.15s             Checking existence of `"ChatGPT" Window`
+    t =    12.16s             Find the "ChatGPT" Window
+    t =    12.92s             Find the "ChatGPT" Window
+    t =    13.66s No monitors handled UI interruption, checking to see if element still exists...
+    t =    13.67s             Checking existence of `"ChatGPT" Window`
+    t =    14.39s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    14.39s Checking for user permission dialogs...
+    t =    14.39s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    14.66s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    14.90s Checking for Bluetooth Setup Assistant...
+    t =    14.91s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    15.05s Checking for Notification Center Banners...
+    t =    15.05s Checking for basic alerts
+    t =    15.06s             Checking existence of `"main" Window`
+    t =    15.21s             Find the "main" Window
+    t =    15.36s             Find the "main" Window
+    t =    15.51s No monitors handled UI interruption, checking to see if element still exists...
+    t =    15.52s             Checking existence of `"main" Window`
+    t =    15.68s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    15.68s Checking for user permission dialogs...
+    t =    15.68s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    15.85s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    16.00s Checking for Bluetooth Setup Assistant...
+    t =    16.01s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    16.17s Checking for Notification Center Banners...
+    t =    16.17s Checking for basic alerts
+    t =    16.18s             Checking existence of `"main" Window`
+    t =    16.33s             Find the "main" Window
+    t =    16.47s             Find the "main" Window
+    t =    16.59s No monitors handled UI interruption, checking to see if element still exists...
+    t =    16.60s             Checking existence of `"main" Window`
+    t =    16.75s     Open com.huaodong.Web-Studio
+    t =    16.75s         Activate com.huaodong.Web-Studio
+    t =    16.78s             Wait for com.huaodong.Web-Studio to idle
+    t =    16.88s Did not handle the interruption, but will attempt to continue…
+    t =    16.92s     Synthesize event
+    t =    17.34s     Wait for com.huaodong.Web-Studio to idle
+    t =    17.34s Type 'http://127.0.0.1:8...' into "start-entry.destination" TextField
+    t =    17.34s     Wait for com.huaodong.Web-Studio to idle
+    t =    17.35s     Find the "start-entry.destination" TextField
+    t =    17.58s     Check for interrupting elements affecting "start-entry.destination" TextField
+    t =    17.61s     Synthesize event
+    t =    19.06s     Wait for com.huaodong.Web-Studio to idle
+    t =    19.07s Click "添加" Button
+    t =    19.07s     Wait for com.huaodong.Web-Studio to idle
+    t =    19.10s     Find the "添加" Button
+    t =    19.33s     Check for interrupting elements affecting "添加" Button
+    t =    19.38s     Found 3 interrupting elements:
+    t =    19.38s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    19.38s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    19.38s Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    19.39s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    19.39s Checking for user permission dialogs...
+    t =    19.39s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    20.14s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    20.89s Checking for Bluetooth Setup Assistant...
+    t =    20.89s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    21.78s Checking for Notification Center Banners...
+    t =    21.78s Checking for basic alerts
+    t =    21.79s             Checking existence of `"ChatGPT" Window`
+    t =    22.64s             Find the "ChatGPT" Window
+    t =    23.39s             Find the "ChatGPT" Window
+    t =    24.19s No monitors handled UI interruption, checking to see if element still exists...
+    t =    24.20s             Checking existence of `"ChatGPT" Window`
+    t =    25.21s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    25.21s Checking for user permission dialogs...
+    t =    25.21s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    25.53s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    25.71s Checking for Bluetooth Setup Assistant...
+    t =    25.71s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    25.87s Checking for Notification Center Banners...
+    t =    25.87s Checking for basic alerts
+    t =    25.87s             Checking existence of `"main" Window`
+    t =    26.04s             Find the "main" Window
+    t =    26.30s             Find the "main" Window
+    t =    26.46s No monitors handled UI interruption, checking to see if element still exists...
+    t =    26.47s             Checking existence of `"main" Window`
+    t =    26.61s     Invoking UI interruption monitors for Window at {{716.0, 37.0}, {723.0, 853.0}} from Application 'com.apple.systempreferences'
+    t =    26.61s Checking for user permission dialogs...
+    t =    26.61s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    26.77s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    26.91s Checking for Bluetooth Setup Assistant...
+    t =    26.91s             Find the Window at {{716.0, 37.0}, {723.0, 853.0}}
+    t =    27.06s Checking for Notification Center Banners...
+    t =    27.06s Checking for basic alerts
+    t =    27.06s             Checking existence of `"main" Window`
+    t =    27.21s             Find the "main" Window
+    t =    27.35s             Find the "main" Window
+    t =    27.49s No monitors handled UI interruption, checking to see if element still exists...
+    t =    27.49s             Checking existence of `"main" Window`
+    t =    27.65s     Open com.huaodong.Web-Studio
+    t =    27.65s         Activate com.huaodong.Web-Studio
+    t =    27.69s             Wait for com.huaodong.Web-Studio to idle
+    t =    27.77s Did not handle the interruption, but will attempt to continue…
+    t =    27.80s     Synthesize event
+    t =    28.26s     Wait for com.huaodong.Web-Studio to idle
+    t =    28.26s Waiting 3.0s for "Local Preview" Button to exist
+    t =    29.28s     Checking `Expect predicate `existsNoRetry == 1` for object "Local Preview" Button`
+    t =    29.29s         Checking existence of `"Local Preview" Button`
+    t =    29.42s Tear Down
+Test Case '-[Web_StudioUITests.Web_StudioUITests testStartPageAddsSessionPinnedDestination]' passed (29.740 seconds).
+Test Suite 'Web_StudioUITests' failed at 2026-09-13 00:11:36.532.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 65.267 (65.269) seconds
+Test Suite 'Web StudioUITests.xctest' failed at 2026-09-13 00:11:36.533.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 65.267 (65.270) seconds
+Test Suite 'Selected tests' failed at 2026-09-13 00:11:36.533.
+	 Executed 2 tests, with 1 failure (0 unexpected) in 65.267 (65.271) seconds
+2026-09-13 00:11:47.853 xcodebuild[42551:26496831] [MT] IDETestOperationsObserverDebug: 77.447 elapsed -- Testing started completed.
+2026-09-13 00:11:47.853 xcodebuild[42551:26496831] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-13 00:11:47.853 xcodebuild[42551:26496831] [MT] IDETestOperationsObserverDebug: 77.447 sec, +77.447 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/web-studio-final/Logs/Test/Test-Web Studio-2026.09.13_00-10-25-+0800.xcresult
+
+Failing tests:
+	Web_StudioUITests.testAgentBlankReadAndProviderSettingsFlow()
+
+** TEST FAILED **
+
+Testing started

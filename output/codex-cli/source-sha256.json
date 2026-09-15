@@ -1,0 +1,11 @@
+{
+  "Web Studio/AgentService.swift": "c807c0682f74df78be399793d78c516fa97f985a33aca6e966baf09c8f23bbe9",
+  "Web Studio/AgentController.swift": "c31eaf7eedb492354ad4c5cefcc7df090e26adf6d0f6bf9c8f89a1590561fa17",
+  "Web Studio/ProviderSettings.swift": "23b3a70863207aa2f597843e4e59630c7fefc6394f9c2e7ab459a448b9ebadd1",
+  "Web Studio/AgentViews.swift": "326e3a196fec886ecf272d885bcb4aee1d8852aed410454e2e2d077bb366dbaf",
+  "Web Studio/StudioDesign.swift": "df0f4f5da2aba4f238ef871855e28f24f602e45b4c7e0534346ee3958a3f062b",
+  "Web Studio/CodexProcessRunner.swift": "22af52fca5112cc8b1f447fdf3e4fec8706342a400d906eacf3f304bfe3592b1",
+  "Web StudioTests/CodexBackendTests.swift": "b4418ae83260fab3d52d65550f6f07d36a5268270b47951be257cdab9380439e",
+  "Web StudioTests/CodexProcessRunnerTests.swift": "07af9c38a015fc6d3a09f8df768c77e8c83fbc208bf39fb87597b6cd0b714a49",
+  "Web StudioTests/ProviderSettingsTests.swift": "45f3ea8e3fcf10451e23036cfc13f2502f33223d103e70e5bf15ffaf966526a9"
+}

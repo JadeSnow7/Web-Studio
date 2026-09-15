@@ -1,0 +1,416 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun "/private/tmp/web-studio-adaptive/Build/Products/Web Studio_Web Studio_macosx26.5-arm64.xctestrun" -destination platform=macOS,arch=arm64 -parallel-testing-enabled NO "-only-testing:Web StudioTests/Web_StudioTests" "-only-testing:Web StudioTests/AgentServiceTests" "-only-testing:Web StudioTests/ResourceReadTests" "-only-testing:Web StudioTests/AgentControllerTests" "-only-testing:Web StudioTests/ProviderSettingsTests"
+
+2026-09-13 13:03:43.343 xcodebuild[80012:27253439] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+2026-09-13 13:03:43.345 xcodebuild[80012:27253439] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:macOS, arch:arm64, id:00008132-0011602A1AD3801C, name:My Mac }
+{ platform:macOS, arch:arm64, variant:Mac Catalyst, id:00008132-0011602A1AD3801C, name:My Mac }
+{ platform:macOS, arch:arm64, variant:DriverKit, id:00008132-0011602A1AD3801C, name:My Mac }
+{ platform:macOS, arch:arm64, variant:Designed for [iPad,iPhone], id:00008132-0011602A1AD3801C, name:My Mac }
+2026-09-13 13:03:44.800 xcodebuild[80012:27253439] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+2026-09-13 13:03:44.973 xcodebuild[80012:27253439] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+2026-09-13 13:03:45.498338+0800 Web Studio[80146:27253799] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.502060+0800 Web Studio[80146:27253846] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.504093+0800 Web Studio[80146:27253849] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.502712+0800 Web Studio[80146:27253847] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505394+0800 Web Studio[80146:27253851] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505520+0800 Web Studio[80146:27253849] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505566+0800 Web Studio[80146:27253847] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.500491+0800 Web Studio[80146:27253844] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.507438+0800 Web Studio[80146:27253854] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505517+0800 Web Studio[80146:27253846] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505574+0800 Web Studio[80146:27253851] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.499164+0800 Web Studio[80146:27253806] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.505534+0800 Web Studio[80146:27253799] [Application] Error registering app with intents framework: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.507451+0800 Web Studio[80146:27253854] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.506083+0800 Web Studio[80146:27253852] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.507860+0800 Web Studio[80146:27253806] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.501352+0800 Web Studio[80146:27253845] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.507984+0800 Web Studio[80146:27253852] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.503393+0800 Web Studio[80146:27253848] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.506806+0800 Web Studio[80146:27253798] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.507470+0800 Web Studio[80146:27253844] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.504766+0800 Web Studio[80146:27253850] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.508073+0800 Web Studio[80146:27253806] [Connection] Will NOT re-try to establish the connection
+2026-09-13 13:03:45.508218+0800 Web Studio[80146:27253798] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.508099+0800 Web Studio[80146:27253845] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.508219+0800 Web Studio[80146:27253850] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.508100+0800 Web Studio[80146:27253848] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to servi2026-09-13 13:03:45.508234+0800 Web Studio[80146:27253853] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+ce named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.508420+0800 Web Studio[80146:27253853] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-13 13:03:45.659112+0800 Web Studio[80146:27253748] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /Users/huaodong/Library/Containers/com.huaodong.Web-Studio/Data/tmp/com.huaodong.Web-Studio.savedState
+Test Suite 'Selected tests' started at 2026-09-13 13:03:46.749.
+Test Suite 'Web StudioTests.xctest' started at 2026-09-13 13:03:46.749.
+Test Suite 'Web StudioTests.xctest' passed at 2026-09-13 13:03:46.749.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-09-13 13:03:46.749.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+◇ Test run started.
+↳ Testing Library Version: 1902
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite AgentControllerTests started.
+◇ Test newChatClearsTranscriptAndIgnoresLateResponse() started.
+✔ Test newChatClearsTranscriptAndIgnoresLateResponse() passed after 0.069 seconds.
+◇ Test newChatIgnoresLatePreviewRead() started.
+✔ Test newChatIgnoresLatePreviewRead() passed after 0.056 seconds.
+◇ Test sequentialRunsDisplayTranscriptAndKeepIndividualPayloads() started.
+✔ Test sequentialRunsDisplayTranscriptAndKeepIndividualPayloads() passed after 0.088 seconds.
+◇ Test previewIsExplicitAndSendKeepsSnapshotAfterResourceRemoval() started.
+✔ Test previewIsExplicitAndSendKeepsSnapshotAfterResourceRemoval() passed after 0.110 seconds.
+◇ Test unconfiguredSendDoesNotCreateRun() started.
+✔ Test unconfiguredSendDoesNotCreateRun() passed after 0.001 seconds.
+◇ Test delayedRunRetainsOriginalRequestAfterSelectionAndDeletion() started.
+✔ Test delayedRunRetainsOriginalRequestAfterSelectionAndDeletion() passed after 0.102 seconds.
+◇ Test cancelIgnoresLateProviderResult() started.
+✔ Test cancelIgnoresLateProviderResult() passed after 0.072 seconds.
+◇ Test previewBudgetStopsReaderAtFortyEightThousand() started.
+✔ Test previewBudgetStopsReaderAtFortyEightThousand() passed after 0.074 seconds.
+◇ Test retryUsesOriginalRequestAfterDraftChanges() started.
+✔ Test retryUsesOriginalRequestAfterDraftChanges() passed after 0.078 seconds.
+◇ Test failedReaderPreventsSend() started.
+✔ Test failedReaderPreventsSend() passed after 0.037 seconds.
+◇ Test pendingReaderCannotSendAndCancelledLateReadIsIgnored() started.
+✔ Test pendingReaderCannotSendAndCancelledLateReadIsIgnored() passed after 0.058 seconds.
+◇ Test runningRequestSurvivesPreviewCancellation() started.
+✔ Test runningRequestSurvivesPreviewCancellation() passed after 0.124 seconds.
+◇ Test readerReturnsOversizedTextIsCapped() started.
+✔ Test readerReturnsOversizedTextIsCapped() passed after 0.047 seconds.
+✔ Suite AgentControllerTests passed after 0.924 seconds.
+◇ Suite AgentServiceTests started.
+◇ Test configurationRejectsUnsafeEndpoints() started.
+✔ Test configurationRejectsUnsafeEndpoints() passed after 0.001 seconds.
+◇ Test missingCredentialIsExplicit() started.
+✔ Test missingCredentialIsExplicit() passed after 0.001 seconds.
+◇ Test requestUsesInjectedCredentialAndProvider() started.
+✔ Test requestUsesInjectedCredentialAndProvider() passed after 0.001 seconds.
+◇ Test responseProviderParsesRealTransportPayload() started.
+✔ Test responseProviderParsesRealTransportPayload() passed after 0.011 seconds.
+◇ Test responseProviderReportsHTTPMalformedAndRefusal() started.
+✔ Test responseProviderReportsHTTPMalformedAndRefusal() passed after 0.003 seconds.
+◇ Test responseProviderReportsEmptyIncompleteAndFailedResponses() started.
+✔ Test responseProviderReportsEmptyIncompleteAndFailedResponses() passed after 0.002 seconds.
+◇ Test responseProviderRejectsInvalidCredentialBeforeTransport() started.
+✔ Test responseProviderRejectsInvalidCredentialBeforeTransport() passed after 0.001 seconds.
+◇ Test responseProviderDeniesRedirects() started.
+✔ Test responseProviderDeniesRedirects() passed after 0.001 seconds.
+◇ Test responseProviderCancellationStopsDelayedTransport() started.
+✔ Test responseProviderCancellationStopsDelayedTransport() passed after 0.009 seconds.
+◇ Test keychainRejectsBlankAndControlCredentials() started.
+✔ Test keychainRejectsBlankAndControlCredentials() passed after 0.001 seconds.
+✔ Suite AgentServiceTests passed after 0.030 seconds.
+◇ Suite ProviderSettingsTests started.
+◇ Test saveReplaceDeleteAndEndpointIsolation() started.
+✔ Test saveReplaceDeleteAndEndpointIsolation() passed after 0.005 seconds.
+◇ Test cancelResetsUncommittedDraft() started.
+✔ Test cancelResetsUncommittedDraft() passed after 0.002 seconds.
+◇ Test failedSavePreservesCommittedConfiguration() started.
+✔ Test failedSavePreservesCommittedConfiguration() passed after 0.002 seconds.
+◇ Test twoEndpointsKeepSecretsIsolated() started.
+✔ Test twoEndpointsKeepSecretsIsolated() passed after 0.002 seconds.
+◇ Test unsavedDraftDoesNotChangeCommittedStatus() started.
+✔ Test unsavedDraftDoesNotChangeCommittedStatus() passed after 0.023 seconds.
+✔ Suite ProviderSettingsTests passed after 0.036 seconds.
+◇ Suite ResourceReadTests started.
+◇ Test terminalReadUsesLatestBoundedUnicodeText() started.
+✔ Test terminalReadUsesLatestBoundedUnicodeText() passed after 0.004 seconds.
+◇ Test closedResourceReadIsExplicitFailure() started.
+✔ Test closedResourceReadIsExplicitFailure() passed after 0.001 seconds.
+◇ Test emptyWebReadReportsUnavailable() started.
+✔ Test emptyWebReadReportsUnavailable() passed after 0.001 seconds.
+◇ Test actualWKWebViewHTMLReadIsBounded() started.
+2026-09-13 13:03:47.938264+0800 Web Studio[80146:27253748] [general] WebContent[80316] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:47.938292+0800 Web Studio[80146:27253748] [general] WebContent[80316] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:47.938439+0800 Web Studio[80146:27253748] [general] WebContent[80316] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:47.947086+0800 Web Studio[80146:27253748] [access] WebContent[80316] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0xc49118480
+2026-09-13 13:03:47.947106+0800 Web Studio[80146:27253748] [access] WebContent[80316] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-13 13:03:47.948313+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.948329+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.948333+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.948775+0800 Web Studio[80146:27253748] [cas] WebContent[80316] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-13 13:03:47.949983+0800 Web Studio[80146:27253748] [cas] WebContent[80316] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-13 13:03:47.954150+0800 Web Studio[80146:27253748] WebContent[80316] invalid product id '(null)'
+2026-09-13 13:03:47.956953+0800 Web Studio[80146:27253748] [sharedcache] WebContent[80316] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-13 13:03:47.960158+0800 Web Studio[80146:27253748] [connection] WebContent[80316] The sandbox in this process does not allow access to RunningBoard.
+2026-09-13 13:03:47.960174+0800 Web Studio[80146:27253748] [connection] WebContent[80316] Handshake aborted as the connection has been invalidated
+2026-09-13 13:03:47.960369+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.961169+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.961187+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.961192+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.961195+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.961198+0800 Web Studio[80146:27253748] [default] WebContent[80316] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:47.992617+0800 Web Studio[80146:27253748] [Connection] WebContent[80316] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-13 13:03:47.992663+0800 Web Studio[80146:27253748] [Application] WebContent[80316] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-13 13:03:48.064727+0800 Web Studio[80146:27253748] [ResourceLoadStatistics] WebContent[80316] Unable to filter tracking query parameters (missing data)
+2026-09-13 13:03:48.066830+0800 Web Studio[80146:27253748] WebContent[80316] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.066857+0800 Web Studio[80146:27253748] WebContent[80316] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.077199+0800 Web Studio[80146:27253853] [XPC] Handle connection with error: Connection invalid
+2026-09-13 13:03:48.077287+0800 Web Studio[80146:27253853] [XPC] Encountered xpc error for GetSafeBrowsingEnabledState response with error: Connection invalid
+2026-09-13 13:03:48.077306+0800 Web Studio[80146:27253853] [Database] Encountered xpc error for GetDatabases response with error: Connection invalid
+2026-09-13 13:03:48.077309+0800 Web Studio[80146:27253853] [Database] Encountered error when trying to get databases: Connection invalid
+2026-09-13 13:03:48.079464+0800 Web Studio[80146:27253748] [audiocomp] WebContent[80316] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+2026-09-13 13:03:48.087404+0800 Web Studio[80146:27254216] [ResourceLoadStatistics] WebContent[80316] Unable to hide query parameters from script (missing data)
+✔ Test actualWKWebViewHTMLReadIsBounded() passed after 0.490 seconds.
+◇ Test sameDocumentPushStateUpdatesRecordWithoutReplacingWebView() started.
+2026-09-13 13:03:48.266252+0800 Web Studio[80146:27253853] [assertion] Error acquiring assertion: <Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}>
+2026-09-13 13:03:48.266299+0800 Web Studio[80146:27253853] [ProcessSuspension] 0x1281ac2a0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=80316, error: Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}
+2026-09-13 13:03:48.266669+0800 Web Studio[80146:27253748] [general] WebContent[80324] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.267176+0800 Web Studio[80146:27253748] [general] WebContent[80324] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.267193+0800 Web Studio[80146:27253748] [general] WebContent[80324] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.272193+0800 Web Studio[80146:27253748] [access] WebContent[80324] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0xc2d150480
+2026-09-13 13:03:48.272217+0800 Web Studio[80146:27253748] [access] WebContent[80324] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-13 13:03:48.272261+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.272265+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.272271+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.272332+0800 Web Studio[80146:27253748] [cas] WebContent[80324] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-13 13:03:48.272795+0800 Web Studio[80146:27253748] [cas] WebContent[80324] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-13 13:03:48.276882+0800 Web Studio[80146:27253748] WebContent[80324] invalid product id '(null)'
+2026-09-13 13:03:48.276893+0800 Web Studio[80146:27253748] [sharedcache] WebContent[80324] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-13 13:03:48.276907+0800 Web Studio[80146:27253748] [connection] WebContent[80324] The sandbox in this process does not allow access to RunningBoard.
+2026-09-13 13:03:48.276910+0800 Web Studio[80146:27253748] [connection] WebContent[80324] Handshake aborted as the connection has been invalidated
+2026-09-13 13:03:48.276914+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.276922+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.276926+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.277277+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.277281+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.277286+0800 Web Studio[80146:27253748] [default] WebContent[80324] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.278486+0800 Web Studio[80146:27253748] [Connection] WebContent[80324] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-13 13:03:48.278539+0800 Web Studio[80146:27253748] [Application] WebContent[80324] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-13 13:03:48.285064+0800 Web Studio[80146:27253748] WebContent[80324] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.285084+0800 Web Studio[80146:27253748] WebContent[80324] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.285624+0800 Web Studio[80146:27253854] [XPC] Encountered xpc error for GetSafeBrowsingEnabledState response with error: Connection invalid
+2026-09-13 13:03:48.285639+0800 Web Studio[80146:27253854] [Database] Encountered xpc error for GetDatabases response with error: Connection invalid
+2026-09-13 13:03:48.285643+0800 Web Studio[80146:27253854] [Database] Encountered error when trying to get databases: Connection invalid
+2026-09-13 13:03:48.286041+0800 Web Studio[80146:27253748] [audiocomp] WebContent[80324] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test sameDocumentPushStateUpdatesRecordWithoutReplacingWebView() passed after 0.066 seconds.
+◇ Test cancelledReadReturnsFailure() started.
+2026-09-13 13:03:48.330103+0800 Web Studio[80146:27253853] [assertion] Error acquiring assertion: <Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 80324<WebProcess80324> does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 80324<WebProcess80324> does not exist}>
+2026-09-13 13:03:48.330121+0800 Web Studio[80146:27253853] [ProcessSuspension] 0x1281ac1e0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=80324, error: Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 80324<WebProcess80324> does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 80324<WebProcess80324> does not exist}
+2026-09-13 13:03:48.331284+0800 Web Studio[80146:27253748] [general] WebContent[80339] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.331317+0800 Web Studio[80146:27253748] [general] WebContent[80339] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.331393+0800 Web Studio[80146:27253748] [general] WebContent[80339] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.336662+0800 Web Studio[80146:27253748] [access] WebContent[80339] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0x9a30f4480
+2026-09-13 13:03:48.336685+0800 Web Studio[80146:27253748] [access] WebContent[80339] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-13 13:03:48.336740+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.336744+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.336748+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.336800+0800 Web Studio[80146:27253748] [cas] WebContent[80339] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-13 13:03:48.337230+0800 Web Studio[80146:27253748] [cas] WebContent[80339] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-13 13:03:48.338092+0800 Web Studio[80146:27253748] WebContent[80339] invalid product id '(null)'
+2026-09-13 13:03:48.339522+0800 Web Studio[80146:27253748] [sharedcache] WebContent[80339] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-13 13:03:48.341067+0800 Web Studio[80146:27253748] [connection] WebContent[80339] The sandbox in this process does not allow access to RunningBoard.
+2026-09-13 13:03:48.341074+0800 Web Studio[80146:27253748] [connection] WebContent[80339] Handshake aborted as the connection has been invalidated
+2026-09-13 13:03:48.341150+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.341375+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.341388+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.341392+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.341394+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.341397+0800 Web Studio[80146:27253748] [default] WebContent[80339] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.342657+0800 Web Studio[80146:27253748] [Connection] WebContent[80339] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-13 13:03:48.342687+0800 Web Studio[80146:27253748] [Application] WebContent[80339] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-13 13:03:48.349269+0800 Web Studio[80146:27253748] WebContent[80339] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.349298+0800 Web Studio[80146:27253748] WebContent[80339] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.349805+0800 Web Studio[80146:27253845] [XPC] Encountered xpc error for GetSafeBrowsingEnabledState response with error: Connection invalid
+2026-09-13 13:03:48.349820+0800 Web Studio[80146:27253845] [Database] Encountered xpc error for GetDatabases response with error: Connection invalid
+2026-09-13 13:03:48.349823+0800 Web Studio[80146:27253845] [Database] Encountered error when trying to get databases: Connection invalid
+2026-09-13 13:03:48.350223+0800 Web Studio[80146:27253748] [audiocomp] WebContent[80339] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test cancelledReadReturnsFailure() passed after 0.061 seconds.
+◇ Test navigationDuringReadIsReportedAsFailure() started.
+2026-09-13 13:03:48.393447+0800 Web Studio[80146:27253748] [general] WebContent[80340] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.393470+0800 Web Studio[80146:27253748] [general] WebContent[80340] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.393482+0800 Web Studio[80146:27253748] [general] WebContent[80340] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-13 13:03:48.399107+0800 Web Studio[80146:27253748] [access] WebContent[80340] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0x9c711c480
+2026-09-13 13:03:48.399126+0800 Web Studio[80146:27253748] [access] WebContent[80340] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-13 13:03:48.399173+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.399189+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.399193+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.399232+0800 Web Studio[80146:27253748] [cas] WebContent[80340] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-13 13:03:48.399655+0800 Web Studio[80146:27253748] [cas] WebContent[80340] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-13 13:03:48.401946+0800 Web Studio[80146:27253748] WebContent[80340] invalid product id '(null)'
+2026-09-13 13:03:48.401961+0800 Web Studio[80146:27253748] [sharedcache] WebContent[80340] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-13 13:03:48.403597+0800 Web Studio[80146:27253748] [connection] WebContent[80340] The sandbox in this process does not allow access to RunningBoard.
+2026-09-13 13:03:48.403613+0800 Web Studio[80146:27253748] [connection] WebContent[80340] Handshake aborted as the connection has been invalidated
+2026-09-13 13:03:48.403671+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.403935+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.403949+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.403954+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.403956+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.403959+0800 Web Studio[80146:27253748] [default] WebContent[80340] Conn 0x0 is not a valid connection ID.
+2026-09-13 13:03:48.405337+0800 Web Studio[80146:27253748] [Connection] WebContent[80340] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-13 13:03:48.405362+0800 Web Studio[80146:27253748] [Application] WebContent[80340] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-13 13:03:48.411872+0800 Web Studio[80146:27253748] WebContent[80340] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.411893+0800 Web Studio[80146:27253748] WebContent[80340] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-13 13:03:48.412430+0800 Web Studio[80146:27253848] [XPC] Encountered xpc error for GetSafeBrowsingEnabledState response with error: Connection invalid
+2026-09-13 13:03:48.412442+0800 Web Studio[80146:27253848] [Database] Encountered xpc error for GetDatabases response with error: Connection invalid
+2026-09-13 13:03:48.412445+0800 Web Studio[80146:27253848] [Database] Encountered error when trying to get databases: Connection invalid
+2026-09-13 13:03:48.412856+0800 Web Studio[80146:27253748] [audiocomp] WebContent[80340] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test navigationDuringReadIsReportedAsFailure() passed after 0.316 seconds.
+◇ Test terminalAndSSHMetadataRemainDistinct() started.
+2026-09-13 13:03:48.685994+0800 Web Studio[80146:27254216] [ProcessSuspension] WebContent[80340] 0x10c058100 - [sessionID=1] WebProcess::markAllLayersVolatile: Failed to mark layers as volatile for webPageID=46
+✔ Test terminalAndSSHMetadataRemainDistinct() passed after 0.003 seconds.
+✔ Suite ResourceReadTests passed after 0.945 seconds.
+◇ Suite Web_StudioTests started.
+◇ Test bareDomainNormalizesToHTTPS() started.
+✔ Test bareDomainNormalizesToHTTPS() passed after 0.001 seconds.
+◇ Test sshDefaultsPortAndRejectsInvalidValues() started.
+✔ Test sshDefaultsPortAndRejectsInvalidValues() passed after 0.001 seconds.
+◇ Test closingLastTabReturnsToBlankTab() started.
+✔ Test closingLastTabReturnsToBlankTab() passed after 0.001 seconds.
+◇ Test closingInactiveTabPreservesSelection() started.
+✔ Test closingInactiveTabPreservesSelection() passed after 0.001 seconds.
+◇ Test taskGroupsKeepSelectionAndMoveActiveTab() started.
+✔ Test taskGroupsKeepSelectionAndMoveActiveTab() passed after 0.001 seconds.
+◇ Test movingInactiveTabDoesNotChangeCurrentSelection() started.
+✔ Test movingInactiveTabDoesNotChangeCurrentSelection() passed after 0.001 seconds.
+◇ Test selectingEmptyGroupCreatesItsBlankTab() started.
+✔ Test selectingEmptyGroupCreatesItsBlankTab() passed after 0.001 seconds.
+◇ Test workspaceActionsTargetTheirOwningGroup() started.
+✔ Test workspaceActionsTargetTheirOwningGroup() passed after 0.001 seconds.
+◇ Test closingActiveTabPrefersAnotherTabInSameGroup() started.
+✔ Test closingActiveTabPrefersAnotherTabInSameGroup() passed after 0.001 seconds.
+◇ Test layoutResolverCompactsAndProtectsMainWidth() started.
+✔ Test layoutResolverCompactsAndProtectsMainWidth() passed after 0.001 seconds.
+◇ Test modalOpenersRemainMutuallyExclusive() started.
+✔ Test modalOpenersRemainMutuallyExclusive() passed after 0.001 seconds.
+◇ Test nonDefaultSSHPortAppearsInTabTitleAndWebPathIsSeparate() started.
+✔ Test nonDefaultSSHPortAppearsInTabTitleAndWebPathIsSeparate() passed after 0.001 seconds.
+◇ Test addressParserRoutesWebSSHAndLocalTerminalInputs() started.
+✔ Test addressParserRoutesWebSSHAndLocalTerminalInputs() passed after 0.001 seconds.
+◇ Test addressParserRejectsUnsupportedOrMalformedInputs() started.
+✔ Test addressParserRejectsUnsupportedOrMalformedInputs() passed after 0.006 seconds.
+◇ Test addressFieldTracksIdleTabSelectionAndPreservesSourceSession() started.
+✔ Test addressFieldTracksIdleTabSelectionAndPreservesSourceSession() passed after 0.001 seconds.
+◇ Test addressFieldAllowsSecondSubmissionWithoutResettingDraft() started.
+✔ Test addressFieldAllowsSecondSubmissionWithoutResettingDraft() passed after 0.001 seconds.
+◇ Test webRuntimeIsCreatedOncePerTabAndKeepsItsWebView() started.
+✔ Test webRuntimeIsCreatedOncePerTabAndKeepsItsWebView() passed after 0.003 seconds.
+◇ Test closingAWebTabReleasesItsRuntime() started.
+✔ Test closingAWebTabReleasesItsRuntime() passed after 0.010 seconds.
+◇ Test openingSSHFromWebKeepsWebResourceAndCreatesSibling() started.
+✔ Test openingSSHFromWebKeepsWebResourceAndCreatesSibling() passed after 0.006 seconds.
+◇ Test panelCoordinatorCapturesTargetAndReportsClosedResource() started.
+✔ Test panelCoordinatorCapturesTargetAndReportsClosedResource() passed after 0.001 seconds.
+◇ Test committedNavigationFollowsTheLivePageOnWebTabsOnly() started.
+✔ Test committedNavigationFollowsTheLivePageOnWebTabsOnly() passed after 0.002 seconds.
+◇ Test popupNavigationOpensASiblingTabInTheSameTask() started.
+✔ Test popupNavigationOpensASiblingTabInTheSameTask() passed after 0.001 seconds.
+◇ Test activeWebStateResetsWhenSelectionLeavesTheWebTab() started.
+✔ Test activeWebStateResetsWhenSelectionLeavesTheWebTab() passed after 0.006 seconds.
+◇ Test webCommandsAreInertWithoutAWebRuntime() started.
+✔ Test webCommandsAreInertWithoutAWebRuntime() passed after 0.001 seconds.
+◇ Test navigationPolicyRendersWebAndHandsOffOnlyClickedAppSchemes() started.
+✔ Test navigationPolicyRendersWebAndHandsOffOnlyClickedAppSchemes() passed after 0.001 seconds.
+◇ Test cancelledAndInterruptedLoadsAreNotReportedAsFailures() started.
+✔ Test cancelledAndInterruptedLoadsAreNotReportedAsFailures() passed after 0.001 seconds.
+◇ Test commandPaletteListsPageCommandsOnlyWhenTheyCanRun() started.
+✔ Test commandPaletteListsPageCommandsOnlyWhenTheyCanRun() passed after 0.001 seconds.
+◇ Test tabCyclingCommandsAppearOnlyWithMoreThanOneTab() started.
+✔ Test tabCyclingCommandsAppearOnlyWithMoreThanOneTab() passed after 0.001 seconds.
+◇ Test selectingTabByNumberMatchesSafariNumbering() started.
+✔ Test selectingTabByNumberMatchesSafariNumbering() passed after 0.001 seconds.
+◇ Test tabCyclingWrapsWithinTheSelectedTask() started.
+✔ Test tabCyclingWrapsWithinTheSelectedTask() passed after 0.001 seconds.
+◇ Test tabTitleFollowsPageTitleAndFallsBackToDestination() started.
+✔ Test tabTitleFollowsPageTitleAndFallsBackToDestination() passed after 0.001 seconds.
+◇ Test backgroundTabTitleUpdatesWithoutTouchingTheToolbar() started.
+✔ Test backgroundTabTitleUpdatesWithoutTouchingTheToolbar() passed after 0.001 seconds.
+◇ Test resourceStoreKeepsStableIDsAndOwnsWebRuntime() started.
+✔ Test resourceStoreKeepsStableIDsAndOwnsWebRuntime() passed after 0.003 seconds.
+◇ Test closingLastTabCreatesANewResourceID() started.
+✔ Test closingLastTabCreatesANewResourceID() passed after 0.001 seconds.
+◇ Test closingSelectedTabWithTwoTabsSelectsRemainingResource() started.
+✔ Test closingSelectedTabWithTwoTabsSelectsRemainingResource() passed after 0.001 seconds.
+◇ Test pruningWebRuntimesDoesNotDeleteNonWebRecords() started.
+✔ Test pruningWebRuntimesDoesNotDeleteNonWebRecords() passed after 0.001 seconds.
+◇ Test sshRejectsControlCharactersAndOptionInjection() started.
+✔ Test sshRejectsControlCharactersAndOptionInjection() passed after 0.001 seconds.
+◇ Test capturedPaneNewTabReplacesOnlyCapturedPane() started.
+✔ Test capturedPaneNewTabReplacesOnlyCapturedPane() passed after 0.001 seconds.
+◇ Test shutdownAwaitsRemovedResourcesAndIsIdempotent() started.
+✔ Test shutdownAwaitsRemovedResourcesAndIsIdempotent() passed after 0.005 seconds.
+◇ Test storeShutdownIsScopedAndCallbackRunsOnce() started.
+✔ Test storeShutdownIsScopedAndCallbackRunsOnce() passed after 0.001 seconds.
+◇ Test windowCloseShutsDownWebOnlyStore() started.
+✔ Test windowCloseShutsDownWebOnlyStore() passed after 0.015 seconds.
+◇ Test panelCloseRestoresCapturedWindowAndUsesFallback() started.
+✔ Test panelCloseRestoresCapturedWindowAndUsesFallback() passed after 0.004 seconds.
+◇ Test sshExit255MapsToInterruptedAndUnknownResourceIsIgnored() started.
+✔ Test sshExit255MapsToInterruptedAndUnknownResourceIsIgnored() passed after 0.003 seconds.
+◇ Test splitSupportsAllResourceKindsWithoutDuplicateMounts() started.
+✔ Test splitSupportsAllResourceKindsWithoutDuplicateMounts() passed after 0.002 seconds.
+◇ Test layoutRejectsUnknownPaneAndResourceAndPreservesSwapIdentity() started.
+✔ Test layoutRejectsUnknownPaneAndResourceAndPreservesSwapIdentity() passed after 0.001 seconds.
+◇ Test closePanePreservesResourceAndCloseResourcePrunesLayout() started.
+✔ Test closePanePreservesResourceAndCloseResourcePrunesLayout() passed after 0.001 seconds.
+◇ Test splitRatioIsClamped() started.
+✔ Test splitRatioIsClamped() passed after 0.001 seconds.
+◇ Test splitSupportsWebWebAndTerminalTerminal() started.
+✔ Test splitSupportsWebWebAndTerminalTerminal() passed after 0.002 seconds.
+◇ Test panelKeepsCapturedPaneWhenSelectionChanges() started.
+✔ Test panelKeepsCapturedPaneWhenSelectionChanges() passed after 0.001 seconds.
+◇ Test nativeResourceHostReplacesOnlyOwnedView() started.
+✔ Test nativeResourceHostReplacesOnlyOwnedView() passed after 0.001 seconds.
+◇ Test capturedDestinationRejectsClosedResource() started.
+✔ Test capturedDestinationRejectsClosedResource() passed after 0.001 seconds.
+◇ Test closedCapturedPaneRejectsActionWhileResourceSurvives() started.
+✔ Test closedCapturedPaneRejectsActionWhileResourceSurvives() passed after 0.001 seconds.
+◇ Test reparentedNativeViewSurvivesOldHostUnmount() started.
+✔ Test reparentedNativeViewSurvivesOldHostUnmount() passed after 0.001 seconds.
+◇ Test blankTabsDoNotConsumeRecentSlots() started.
+✔ Test blankTabsDoNotConsumeRecentSlots() passed after 0.001 seconds.
+◇ Test explicitWebDestinationAddsRecentResource() started.
+✔ Test explicitWebDestinationAddsRecentResource() passed after 0.001 seconds.
+◇ Test pinnedWebDestinationSurvivesSourceCloseAndReusesBlank() started.
+✔ Test pinnedWebDestinationSurvivesSourceCloseAndReusesBlank() passed after 0.001 seconds.
+◇ Test duplicatePinnedDestinationUpdatesLabel() started.
+✔ Test duplicatePinnedDestinationUpdatesLabel() passed after 0.001 seconds.
+◇ Test pinnedTerminalFromSecondaryPaneUsesSourceGroupAndPane() started.
+✔ Test pinnedTerminalFromSecondaryPaneUsesSourceGroupAndPane() passed after 0.002 seconds.
+✔ Suite Web_StudioTests passed after 0.101 seconds.
+✔ Test run with 94 tests in 5 suites passed after 2.038 seconds.
+2026-09-13 13:03:49.068 xcodebuild[80012:27253439] [MT] IDETestOperationsObserverDebug: 4.245 elapsed -- Testing started completed.
+2026-09-13 13:03:49.069 xcodebuild[80012:27253439] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-13 13:03:49.069 xcodebuild[80012:27253439] [MT] IDETestOperationsObserverDebug: 4.245 sec, +4.245 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/huaodong/Library/Developer/Xcode/DerivedData/Web_Studio-dczcshpjduejyufuqgvhawwdgxwu/Logs/Test/Test-Web Studio-2026.09.13_13-03-43-+0800.xcresult
+
+** TEST EXECUTE SUCCEEDED **
+
+Testing started

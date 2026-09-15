@@ -1,0 +1,398 @@
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -97,8 +97,10 @@
+ resource buttons keep native semantics while adding quiet hover/press feedback;
+ resource selection moves only its accent marker. Floating panels use a stable
+ captured identity and a short opacity/6pt/0.98-scale entrance; the retiring surface
+-is disabled while it fades and focus is handed back immediately. Address focus
+-styling is local. `accessibilityReduceMotion` removes displacement and scale and
++is disabled while it fades and focus is handed back immediately. The command panel
++keeps its native input mounted while its single host uses the same opacity/6pt/0.98
++entrance motion; focus transfers independently. Address focus styling is local.
++`accessibilityReduceMotion` removes displacement and scale and
+ skips animation; `accessibilityReduceTransparency` retains the existing opaque
+ fallback and increased contrast retains strong focus. Runtime identity, geometry,
+ WebKit, SwiftTerm and split dragging are not animated. The start page uses a
+--- a/UX-CONTRACT.md
++++ b/UX-CONTRACT.md
+@@ -90,7 +90,10 @@
+ semantics. Group selection is neutral; resource selection uses the accent marker and
+ only that marker may move between rows. Panel presentation captures a stable panel
+ identity, disables the retiring host during its fade, and restores focus immediately;
+-panel content and runtime identities do not animate. Reduced motion removes offset
++panel content and runtime identities do not animate. The command panel keeps its
++native input mounted while its single host uses opacity/6pt/0.98 entrance motion;
++focus transfer is independent. Other panels retain the captured host presentation.
++Reduced motion removes offset
+ and scale, and Reduce Transparency keeps the existing opaque fallback. The start
+ page title owns a restrained static accent gradient and its native buttons/recency
+ rows expose hover and press feedback. Agent message reveal is local to rows; it does
+--- a/Web Studio/ContentView.swift
++++ b/Web Studio/ContentView.swift
+@@ -163,6 +163,9 @@
+     @Published var addressText = ""
+     @Published var addressError: String?
+     @Published private(set) var addressFocusToken = 0
++    @Published var commandQuery = ""
++    @Published var commandSelectedIndex = 0
++    weak var commandSearchField: NSTextField?
+     private var addressTargetResourceID: UUID?
+     private var addressTargetPaneID: UUID?
+     private var addressOriginalText = ""
+@@ -187,6 +190,10 @@
+     var panelTargetResourceID: UUID? { panels.targetResourceID }
+     func dismissPanel(restoreFocus: Bool = true) {
+         if panels.panel == .providerSettings { resetProviderDraft() }
++        if panels.panel == .commands, let field = commandSearchField, let window = field.window,
++           (window.firstResponder === field || field.currentEditor() === window.firstResponder), let fallback = workspaceFocusView, fallback.window === window {
++            window.makeFirstResponder(fallback)
++        }
+         let fallbackView = workspaceFocusView
+         let fallbackWindow = fallbackView?.window
+         panels.close(window: NSApp.keyWindow, restoreFocus: restoreFocus, fallback: {
+@@ -664,7 +671,23 @@
+ 
+     func openCommands() {
+         let pane = focusedPane
+-        panels.open(.commands, targetResourceID: pane.resourceID ?? selectedTabID, paneID: pane.id, originalResponder: NSApp.keyWindow?.firstResponder, store: webRuntimes)
++        if panels.panel != .commands {
++            commandQuery = ""
++            commandSelectedIndex = 0
++        }
++        let originalResponder: NSResponder? = {
++            let responder = commandSearchField?.window?.firstResponder ?? NSApp.keyWindow?.firstResponder
++            if let editor = responder as? NSTextView, editor.isFieldEditor,
++               let field = editor.delegate as? NSTextField { return field }
++            return responder
++        }()
++        panels.open(.commands, targetResourceID: pane.resourceID ?? selectedTabID, paneID: pane.id, originalResponder: originalResponder, store: webRuntimes)
++        if let field = commandSearchField, let window = field.window {
++            field.isEnabled = true
++            field.stringValue = commandQuery
++            window.makeFirstResponder(field)
++            field.selectText(nil)
++        }
+     }
+ 
+     func openGroupEditor(_ id: UUID? = nil) {
+@@ -808,6 +831,26 @@
+             list.append(StudioCommand(title: "Select \(record.customTitle ?? record.title)", shortcut: "", targetResourceID: record.id, action: .selectResource(resourceID: record.id)))
+         }
+         return list
++    }
++
++    var filteredCommandCount: Int {
++        availableCommands.filter { commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(commandQuery) }.count
++    }
++
++    func executeSelectedCommand() {
++        guard panels.panel == .commands else { return }
++        let commands = availableCommands.filter { commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(commandQuery) }
++        guard commands.indices.contains(commandSelectedIndex) else { return }
++        let command = commands[commandSelectedIndex]
++        let oldPanel = panels.panel
++        if execute(command), panels.panel == oldPanel, oldPanel != nil {
++            switch command.action {
++            case .newTab, .newTerminal, .selectResource:
++                dismissPanel(restoreFocus: false); focusCurrentPaneContent()
++            default:
++                dismissPanel()
++            }
++        }
+     }
+ 
+     func webGoBack() { activeWebRuntime?.goBack() }
+@@ -1098,26 +1141,35 @@
+             .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+             .toolbar(removing: .title)
+             .overlay(alignment: .top) {
+-                ZStack {
+-                    if let panel = renderedPanel {
+-                        panelContent(panel)
+-                            .id("\(panelIdentity(panel))-\(panelPresentationID)")
+-                            .allowsHitTesting(model.panels.panel == panel)
+-                            .disabled(!(model.panels.panel == panel))
+-                            .accessibilityHidden(!(model.panels.panel == panel))
++                ZStack(alignment: .top) {
++                    ZStack {
++                        if let panel = renderedPanel, panel != .commands {
++                            panelContent(panel)
++                                .id(panelViewIdentity(panel))
++                                .allowsHitTesting(model.panels.panel == panel)
++                                .disabled(!(model.panels.panel == panel))
++                                .accessibilityHidden(!(model.panels.panel == panel))
++                        }
+                     }
++                    .opacity(panelHostVisible ? 1 : 0)
++                    .offset(y: panelHostVisible || reduceMotion ? 0 : 6)
++                    .scaleEffect(panelHostVisible || reduceMotion ? 1 : 0.98)
++                    .animation(StudioDesign.Motion.animation(StudioDesign.Motion.panel, reduceMotion: reduceMotion), value: panelHostVisible)
++                    StudioPanelSurface { CommandPalette(model: model) }
++                        .opacity(model.panels.panel == .commands ? 1 : 0)
++                        .offset(y: model.panels.panel == .commands || reduceMotion ? 0 : 6)
++                        .scaleEffect(model.panels.panel == .commands || reduceMotion ? 1 : 0.98)
++                        .allowsHitTesting(model.panels.panel == .commands)
++                        .disabled(model.panels.panel != .commands)
++                        .accessibilityHidden(model.panels.panel != .commands)
++                        .animation(StudioDesign.Motion.animation(StudioDesign.Motion.panel, reduceMotion: reduceMotion), value: model.panels.panel == .commands)
+                 }
+-                .opacity(panelHostVisible ? 1 : 0)
+-                .offset(y: panelHostVisible || reduceMotion ? 0 : 6)
+-                .scaleEffect(panelHostVisible || reduceMotion ? 1 : 0.98)
+-                .animation(StudioDesign.Motion.animation(StudioDesign.Motion.panel, reduceMotion: reduceMotion), value: panelHostVisible)
+             }
+             .onAppear { syncPanelHost(model.panels.panel) }
+             .onChange(of: model.panels.panel) { _, panel in syncPanelHost(panel) }
+     }
+ 
+     @ViewBuilder private func panelContent(_ panel: PanelCoordinator.Panel) -> some View {
+-        if panel == .commands { StudioPanelSurface { CommandPalette(model: model) } }
+         if panel == .groupEditor { StudioPanelSurface { GroupEditor(model: model) } }
+         if case .resourceEditor = panel { StudioPanelSurface { ResourceEditor(model: model) } }
+         if panel == .providerSettings { StudioPanelSurface { ProviderSettingsView(settings: model.providerSettings, model: model) } }
+@@ -1131,7 +1183,7 @@
+         panelHostGeneration &+= 1
+         let generation = panelHostGeneration
+         if let panel {
+-            panelPresentationID &+= 1
++            if panel != .commands { panelPresentationID &+= 1 }
+             renderedPanel = panel
+             panelHostVisible = false
+             DispatchQueue.main.async {
+@@ -1160,6 +1212,10 @@
+         case .agentPreview: return "agent-preview"
+         case let .agentRunDetails(id): return "agent-run-details-\(id.uuidString)"
+         }
++    }
++
++    private func panelViewIdentity(_ panel: PanelCoordinator.Panel) -> String {
++        return "\(panelIdentity(panel))-\(panelPresentationID)"
+     }
+ 
+     private var resizeSidebar: some Gesture {
+@@ -1211,6 +1267,10 @@
+                 }
+                 if mods == [.command], event.charactersIgnoringModifiers?.lowercased() == "k" {
+                     model.openCommands(); return nil
++                }
++                if event.keyCode == 53, model.panels.panel == .commands,
++                   let editor = model.commandSearchField?.currentEditor() as? NSTextView, editor.hasMarkedText() {
++                    return event
+                 }
+                 if event.keyCode == 53, model.panels.panel != nil {
+                     model.dismissPanel()
+@@ -1496,7 +1556,7 @@
+                 } label: {
+                     Image(systemName: "plus").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                 }
+-                .buttonStyle(.borderless).help("New task group")
++                .buttonStyle(StudioPressButtonStyle()).help("New task group")
+                 .accessibilityLabel("New task group")
+             }
+             ScrollView {
+@@ -1525,18 +1585,18 @@
+                                 Button {
+                                     model.newTab(in: group.id)
+                                 } label: {
+-                                    Image(systemName: "plus")
++                                    Image(systemName: "plus").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                                 }
+-                                .buttonStyle(.borderless).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                .buttonStyle(StudioPressButtonStyle())
+                                 .help("New Tab in \(group.name) (⌘T)")
+                                 .accessibilityLabel("New Tab in \(group.name)")
+                                 .accessibilityIdentifier("tabs.new.\(group.id.uuidString)")
+                                 Button {
+                                     model.newTerminal(in: group.id)
+                                 } label: {
+-                    Image(systemName: "terminal").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                    Image(systemName: "terminal").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                                 }
+-                                .buttonStyle(.borderless).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                .buttonStyle(StudioPressButtonStyle())
+                                 .help("New Terminal in \(group.name) (⌘⇧T)")
+                                 .accessibilityLabel("New Terminal in \(group.name)")
+                                 .accessibilityIdentifier("terminals.new.\(group.id.uuidString)")
+@@ -1850,13 +1910,67 @@
+     }
+ }
+ 
++private struct CommandSearchField: NSViewRepresentable {
++    @ObservedObject var model: StudioModel
++
++    func makeCoordinator() -> Coordinator { Coordinator(model: model) }
++    func makeNSView(context: Context) -> NSTextField {
++        let field = NSTextField(string: model.commandQuery)
++        field.placeholderString = "Search commands"
++        field.isBordered = true
++        field.bezelStyle = .roundedBezel
++        field.font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
++        field.delegate = context.coordinator
++        field.setAccessibilityLabel("Search commands")
++        field.setAccessibilityIdentifier("command.search")
++        model.commandSearchField = field
++        return field
++    }
++    func updateNSView(_ field: NSTextField, context: Context) {
++        let active = model.panels.panel == .commands
++        field.isEnabled = active
++        if !active, let window = field.window,
++           (window.firstResponder === field || field.currentEditor() === window.firstResponder),
++           let fallback = model.workspaceFocusView, fallback.window === window {
++            window.makeFirstResponder(fallback)
++        }
++        if field.stringValue != model.commandQuery,
++           (field.currentEditor() as? NSTextView)?.hasMarkedText() != true {
++            field.stringValue = model.commandQuery
++        }
++    }
++    static func dismantleNSView(_ field: NSTextField, coordinator: Coordinator) {
++        if coordinator.model.commandSearchField === field { coordinator.model.commandSearchField = nil }
++    }
++    final class Coordinator: NSObject, NSTextFieldDelegate {
++        let model: StudioModel
++        init(model: StudioModel) { self.model = model }
++        func controlTextDidChange(_ notification: Notification) {
++            guard model.panels.panel == .commands else { return }
++            guard let field = notification.object as? NSTextField else { return }
++            model.commandQuery = field.stringValue
++            model.commandSelectedIndex = 0
++        }
++        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
++            guard model.panels.panel == .commands, !textView.hasMarkedText() else { return false }
++            switch commandSelector {
++            case #selector(NSResponder.moveUp(_:)):
++                model.commandSelectedIndex = max(0, model.commandSelectedIndex - 1); return true
++            case #selector(NSResponder.moveDown(_:)):
++                model.commandSelectedIndex = min(max(model.filteredCommandCount - 1, 0), model.commandSelectedIndex + 1); return true
++            case #selector(NSResponder.insertNewline(_:)):
++                model.executeSelectedCommand(); return true
++            case #selector(NSResponder.cancelOperation(_:)):
++                model.dismissPanel(); return true
++            default: return false
++            }
++        }
++    }
++}
++
+ private struct CommandPalette: View {
+     @ObservedObject var model: StudioModel
+     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+-    @State private var query =
+-        ""
+-    @State private var selectedIndex = 0
+-    @FocusState private var focused: Bool
+ 
+     var body: some View {
+         VStack(alignment: .leading, spacing: 8) {
+@@ -1866,13 +1980,12 @@
+                 Text(panelError).font(.caption).foregroundStyle(.red)
+             }
+             HStack(spacing: 6) {
+-                TextField("Search commands", text: $query)
+-                    .textFieldStyle(.roundedBorder).focused($focused)
+-                    .accessibilityIdentifier("command.search")
+-                if !query.isEmpty {
++                CommandSearchField(model: model).frame(maxWidth: .infinity, minHeight: 22)
++                if !model.commandQuery.isEmpty {
+                     Button {
+-                        query = ""
+-                        focused = true
++                        model.commandQuery = ""
++                        model.commandSelectedIndex = 0
++                        if let field = model.commandSearchField, let window = field.window { window.makeFirstResponder(field) }
+                     } label: {
+                         Image(systemName: "xmark.circle.fill")
+                     }
+@@ -1893,7 +2006,7 @@
+                                 id: \.element.id
+                             ) { index, item in
+                                 Button {
+-                                    run(index)
++                                    run(item.id)
+                                 } label: {
+                                     HStack(spacing: 8) {
+                                         Text(item.title)
+@@ -1909,10 +2022,10 @@
+                                 .buttonStyle(.borderless)
+                                 .padding(.horizontal, 8)
+                                 .background(
+-                                    index == selectedIndex ? Color(nsColor: .controlBackgroundColor) : .clear,
++                                    index == model.commandSelectedIndex ? Color(nsColor: .controlBackgroundColor) : .clear,
+                                     in: RoundedRectangle(cornerRadius: 5)
+                                 )
+-                                .id(index)
++                                .id(item.id)
+                                 .accessibilityIdentifier("command.\(item.title)")
+                             }
+                         }
+@@ -1920,39 +2033,21 @@
+                     }
+                     .frame(height: commandListHeight)
+                     .accessibilityIdentifier("command.results")
+-                    .onChange(of: selectedIndex) { _, index in
+-                        withAnimation(StudioDesign.Motion.animation(StudioDesign.Motion.selection, reduceMotion: reduceMotion)) { proxy.scrollTo(index, anchor: .center) }
++                    .onChange(of: model.commandSelectedIndex) { _, index in
++                        guard filtered.indices.contains(index) else { return }
++                        withAnimation(StudioDesign.Motion.animation(StudioDesign.Motion.selection, reduceMotion: reduceMotion)) { proxy.scrollTo(filtered[index].id, anchor: .center) }
+                     }
+                 }
+             }
+         }
+         .padding(StudioDesign.Spacing.inset)
+         .frame(width: 320)
+-        .onAppear { DispatchQueue.main.async { if model.panels.panel == .commands { focused = true } } }
+-            .onChange(of: query) { _, _ in selectedIndex = 0 }
+-            .onKeyPress(.upArrow) {
+-                selectedIndex = max(
+-                    0,
+-                    selectedIndex - 1
+-                )
+-                return .handled
+-            }.onKeyPress(.downArrow) {
+-                selectedIndex = min(
+-                    max(filtered.count - 1, 0),
+-                    selectedIndex + 1
+-                )
+-                return .handled
+-            }.onKeyPress(.return) {
+-                if !filtered.isEmpty {
+-                    run(selectedIndex)
+-                }
+-                return .handled
+-            }.onExitCommand { model.commandPalettePresented = false }
++            .onExitCommand { model.commandPalettePresented = false }
+     }
+ 
+     private var filtered: [StudioCommand] {
+         model.availableCommands
+-            .filter { query.isEmpty || $0.title.localizedCaseInsensitiveContains(query) }
++            .filter { model.commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(model.commandQuery) }
+     }
+ 
+     private var commandListHeight: CGFloat {
+@@ -1964,18 +2059,9 @@
+         return model.tabs.first(where: { $0.id == id })?.displayTitle ?? "Closed resource"
+     }
+ 
+-    private func run(_ index: Int) {
+-        guard filtered.indices.contains(index) else { return }
+-        let command = filtered[index]
+-        let oldPanel = model.panels.panel
+-        if model.execute(command), model.panels.panel == oldPanel, oldPanel != nil {
+-            switch command.action {
+-            case .newTab, .newTerminal, .selectResource:
+-                model.dismissPanel(restoreFocus: false)
+-                model.focusCurrentPaneContent()
+-            default:
+-                model.dismissPanel()
+-            }
+-        }
+-    }
+-}
++    private func run(_ commandID: String) {
++        guard let index = filtered.firstIndex(where: { $0.id == commandID }) else { return }
++        model.commandSelectedIndex = index
++        model.executeSelectedCommand()
++    }
++}

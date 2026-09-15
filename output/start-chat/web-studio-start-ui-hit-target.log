@@ -1,0 +1,548 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Web Studio.xcodeproj" -scheme "Web Studio" -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /private/tmp/web-studio-final -disableAutomaticPackageResolution -skipPackageUpdates CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO "-only-testing:Web StudioUITests/Web_StudioUITests/testAgentBlankReadAndProviderSettingsFlow"
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm.git @ 1.14.0
+
+2026-09-13 00:22:31.115 xcodebuild[84851:26580517] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (6 targets)
+    Target 'Web StudioUITests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web StudioTests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web Studio' in project 'Web Studio'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: 0283d88bf7b885e8a1acef4a06105e1b
+Build description path: /tmp/web-studio-final/Build/Intermediates.noindex/XCBuildData/0283d88bf7b885e8a1acef4a06105e1b.xcbuilddata
+warning: missing creator for mutated node: ('/tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/MacOS') (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+    cd /tmp/web-studio-final/SourcePackages/checkouts/SwiftTerm
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/web-studio-final/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache
+    cd /Users/huaodong/workspace/Web\ Studio/Web\ Studio.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -o /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache
+
+SwiftDriver Web\ Studio normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist -producttype com.apple.product-type.application -genpkginfo /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist
+
+SwiftGeneratePch normal arm64 Compiling\ bridging\ header (in target 'Web Studio' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'Web Studio' from project 'Web Studio')
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_Studio (in target 'Web Studio' from project 'Web Studio')
+
+EmitSwiftModule normal arm64 (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentController.swift:20:70: warning: call to main actor-isolated initializer 'init(credentials:provider:)' in a synchronous nonisolated context
+    init(store: ResourceStore, service: ConfiguredResponsesService = ConfiguredResponsesService(), configuration: ProviderConfiguration? = nil, reader: (@Sendable (UUID, Int) async -> ResourceSnapshot)? = nil) { self.store = store; self.service = service; self.configuration = configuration; self.reader = reader ?? { id, limit in await store.read(resourceID: id, maxCharacters: limit) } }
+                                                                     ^
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentService.swift:84:5: note: calls to initializer 'init(credentials:provider:)' from outside of its actor context are implicitly asynchronous
+    init(credentials: any CredentialStore = KeychainCredentialStore(), provider: any ResponsesProvider = URLSessionResponsesProvider()) { self.credentials = credentials; self.provider = provider }
+    ^
+/Users/huaodong/workspace/Web Studio/Web Studio/ProviderSettings.swift:30:45: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    init(credentials: any CredentialStore = KeychainCredentialStore(), defaults: UserDefaults = .standard) {
+                                            ^
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentService.swift:35:7: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+actor KeychainCredentialStore: CredentialStore {
+      ^
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentService.swift:35:7: note: main actor isolation inferred from conformance to protocol 'CredentialStore'
+actor KeychainCredentialStore: CredentialStore {
+      ^
+
+SwiftCompile normal arm64 Compiling\ AgentViews.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentViews.swift (in target 'Web Studio' from project 'Web Studio')
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentViews.swift (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftCompile normal arm64 Compiling\ StartPageView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StartPageView.swift (in target 'Web Studio' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StartPageView.swift (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_Studio (in target 'Web Studio' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ Studio normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftsourceinfo (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftsourceinfo /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/arm64-apple-macos.swiftmodule /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.abi.json (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.abi.json /tmp/web-studio-final/Build/Products/Debug/Web_Studio.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriver Web\ StudioTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioTests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling StartPageView.swift (in target 'Web Studio' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ Web_StudioUITests.swift /Users/huaodong/workspace/Web\ Studio/Web\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_StudioUITests (in target 'Web StudioUITests' from project 'Web Studio')
+
+EmitSwiftModule normal arm64 (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_StudioTests (in target 'Web StudioTests' from project 'Web Studio')
+EmitSwiftModule normal arm64 (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftDriver\ Compilation Web\ StudioTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioTests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_StudioUITests (in target 'Web StudioUITests' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftsourceinfo (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftsourceinfo /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json /tmp/web-studio-final/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling AgentViews.swift (in target 'Web Studio' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ ContentView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ContentView.swift (in target 'Web Studio' from project 'Web Studio')
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ContentView.swift (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentController.swift:20:70: warning: call to main actor-isolated initializer 'init(credentials:provider:)' in a synchronous nonisolated context
+    init(store: ResourceStore, service: ConfiguredResponsesService = ConfiguredResponsesService(), configuration: ProviderConfiguration? = nil, reader: (@Sendable (UUID, Int) async -> ResourceSnapshot)? = nil) { self.store = store; self.service = service; self.configuration = configuration; self.reader = reader ?? { id, limit in await store.read(resourceID: id, maxCharacters: limit) } }
+                                                                     ^
+/Users/huaodong/workspace/Web Studio/Web Studio/AgentService.swift:84:5: note: calls to initializer 'init(credentials:provider:)' from outside of its actor context are implicitly asynchronous
+    init(credentials: any CredentialStore = KeychainCredentialStore(), provider: any ResponsesProvider = URLSessionResponsesProvider()) { self.credentials = credentials; self.provider = provider }
+    ^
+
+SwiftDriverJobDiscovery normal arm64 Compiling Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')
+
+SwiftDriver\ Compilation Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_StudioTests (in target 'Web StudioTests' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ StudioTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioTests -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/web-studio-final/Build/Products/Debug/Web_StudioTests.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.abi.json (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.abi.json /tmp/web-studio-final/Build/Products/Debug/Web_StudioTests.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling ContentView.swift (in target 'Web Studio' from project 'Web Studio')
+
+SwiftDriver\ Compilation Web\ Studio normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio -Onone @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-final/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-final/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-final/Build/Products/Debug -F /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F /tmp/web-studio-final/Build/Products/Debug -emit-localized-strings -emit-localized-strings-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-final/SDKStatCaches.noindex/macosx26.5-25F70-688ef53f1462e2c8f657fdc38a81448fe082c4a02f00227109f4ed75e425c832.sdkstatcache -output-file-map /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-final/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-final/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-final/ModuleCache.noindex/Session.modulevalidation -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-generated-files.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-own-target-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-project-headers.hmap -Xcc -I/tmp/web-studio-final/Build/Products/Debug/include -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib normal (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -O0 -L/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/web-studio-final/Build/Products/Debug -F/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F/tmp/web-studio-final/Build/Products/Debug -filelist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.LinkFileList -install_name @rpath/Web\ Studio.debug.dylib -Xlinker -rpath -Xlinker /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -object_path_lto -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_dependency_info.dat -fprofile-instr-generate -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio.swiftmodule @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web_Studio-linker-args.resp -Wl,-no_warn_duplicate_libraries -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -Xlinker -no_adhoc_codesign -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib -Xlinker -add_ast_path -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm.build/Objects-normal/arm64/SwiftTerm.swiftmodule @/tmp/web-studio-final/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm.build/Objects-normal/arm64/SwiftTerm-linker-args.resp
+
+ConstructStubExecutorLinkFileList /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-ExecutorLinkFileList-normal-arm64.txt (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    construct-stub-executor-link-file-list /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'Web Studio' from project 'Web Studio')
+
+Ld /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio normal (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -O0 -L/tmp/web-studio-final/Build/Products/Debug -F/tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F/tmp/web-studio-final/Build/Products/Debug -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio-ExecutorLinkFileList-normal-arm64.txt /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib -Xlinker -no_adhoc_codesign -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --module-name Web_Studio --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk --xcode-version 17F113 --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-Studio --output /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio --dependency-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio_dependency_info.dat --stringsdata-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.SwiftFileList --metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio.DependencyMetadataFileList --static-metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Objects-normal/arm64/Web\ Studio.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-13 00:22:46.620 appintentsmetadataprocessor[85953:26583003] Starting appintentsmetadataprocessor export
+2026-09-13 00:22:46.626 appintentsmetadataprocessor[85953:26583003] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -scanforprivacyfile /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist
+
+Ld /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests normal (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -O0 -L/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/web-studio-final/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -F/tmp/web-studio-final/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.LinkFileList -Xlinker -rpath -Xlinker /tmp/web-studio-final/Build/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -rpath -Xlinker @executable_path/../Frameworks -bundle_loader /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio -Xlinker -object_path_lto -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests.swiftmodule @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web_StudioTests-linker-args.resp -Wl,-no_warn_duplicate_libraries -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib -Xlinker -no_adhoc_codesign -o /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --module-name Web_StudioTests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk --xcode-version 17F113 --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-StudioTests --output /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests --dependency-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests_dependency_info.dat --stringsdata-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.SwiftFileList --metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests.DependencyMetadataFileList --static-metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Web\ StudioTests.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/Objects-normal/arm64/Web\ StudioTests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-13 00:22:47.045 appintentsmetadataprocessor[85962:26583032] Starting appintentsmetadataprocessor export
+2026-09-13 00:22:47.047 appintentsmetadataprocessor[85962:26583032] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/__preview.dylib (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/__preview.dylib
+/tmp/web-studio-final/Build/Products/Debug/Web Studio.app/Contents/MacOS/__preview.dylib: replacing existing signature
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio.app.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app
+
+Validate /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-validationUtility /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+RegisterWithLaunchServices /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /tmp/web-studio-final/Build/Products/Debug/Web\ Studio.app
+
+Ld /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests normal (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk -O0 -L/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/web-studio-final/Build/Products/Debug -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/tmp/web-studio-final/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/web-studio-final/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.LinkFileList -Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -object_path_lto -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule @/tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-linker-args.resp -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -no_adhoc_codesign -o /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests
+
+ProcessInfoPlistFile /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/ProductTypeInfoPlistAdditions.plist -o /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist
+
+CopySwiftLibs /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.6.109.0.Bidh73/Metal.xctoolchain --module-name Web_StudioUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk --xcode-version 17F113 --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-StudioUITests --output /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests --dependency-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_dependency_info.dat --stringsdata-file /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList --metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.DependencyMetadataFileList --static-metadata-file-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-13 00:22:47.437 appintentsmetadataprocessor[86006:26583160] Starting appintentsmetadataprocessor export
+2026-09-13 00:22:47.439 appintentsmetadataprocessor[86006:26583160] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest
+
+CodeSign /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-final/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests.xctest.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-final/Build/Products/Debug/Web\ StudioUITests-Runner.app
+/tmp/web-studio-final/Build/Products/Debug/Web StudioUITests-Runner.app: replacing existing signature
+
+2026-09-13 00:22:48.921360+0800 Web StudioUITests-Runner[86081:26583299] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-09-13 00:22:49.013.
+Test Suite 'Web StudioUITests.xctest' started at 2026-09-13 00:22:49.014.
+Test Suite 'Web_StudioUITests' started at 2026-09-13 00:22:49.014.
+Test Case '-[Web_StudioUITests.Web_StudioUITests testAgentBlankReadAndProviderSettingsFlow]' started.
+    t =     0.00s Start Test at 2026-09-13 00:22:49.015
+    t =     0.33s Set Up
+    t =     0.34s Open com.huaodong.Web-Studio
+    t =     0.34s     Launch com.huaodong.Web-Studio
+2026-09-13 00:22:49.658 xcodebuild[84851:26580517] [MT] IDELaunchParametersSnapshot: The operation couldn’t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)
+2026-09-13 00:22:49.658 xcodebuild[84851:26580517] [MT] IDELaunchParametersSnapshot: no debugger version
+    t =     1.46s         Wait for accessibility to load
+    t =     2.37s         Setting up automation session
+    t =     2.39s         Wait for com.huaodong.Web-Studio to idle
+    t =     2.39s Waiting 3.0s for "agents.inspector" Any to exist
+    t =     3.43s     Checking `Expect predicate `existsNoRetry == 1` for object "agents.inspector" Any`
+    t =     3.43s         Checking existence of `"agents.inspector" Any`
+    t =     3.68s Click "agents.resources" Button
+    t =     3.68s     Wait for com.huaodong.Web-Studio to idle
+    t =     3.68s     Find the "agents.resources" Button
+    t =     3.76s     Check for interrupting elements affecting "agents.resources" Button
+    t =     3.80s     Found 1 interrupting element:
+    t =     3.80s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     3.80s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =     3.80s Checking for user permission dialogs...
+    t =     3.80s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =     4.44s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =     5.04s Checking for Bluetooth Setup Assistant...
+    t =     5.04s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =     5.60s Checking for Notification Center Banners...
+    t =     5.60s Checking for basic alerts
+    t =     5.60s             Checking existence of `"ChatGPT" Window`
+    t =     6.17s             Find the "ChatGPT" Window
+    t =     6.73s             Find the "ChatGPT" Window
+    t =     7.29s No monitors handled UI interruption, checking to see if element still exists...
+    t =     7.30s             Checking existence of `"ChatGPT" Window`
+    t =     7.85s Did not handle the interruption, but will attempt to continue…
+    t =     7.85s     Synthesize event
+    t =     8.26s     Wait for com.huaodong.Web-Studio to idle
+    t =     8.26s Waiting 3.0s for Button (First Match) to exist
+    t =     9.27s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =     9.27s         Checking existence of `Button (First Match)`
+    t =     9.33s Click Button (First Match)
+    t =     9.33s     Wait for com.huaodong.Web-Studio to idle
+    t =     9.34s     Find the Button (First Match)
+    t =     9.37s     Check for interrupting elements affecting "agents.resource.02E6DE11-C1A3-445B-9092-FE045F31DD2E" Button
+    t =     9.39s     Synthesize event
+    t =     9.79s     Wait for com.huaodong.Web-Studio to idle
+    t =    10.82s Checking `Expect predicate `value == "已选择"` for object "agents.resource.02E6DE11-C1A3-445B-9092-FE045F31DD2E" Button`
+    t =    10.82s     Find the "agents.resource.02E6DE11-C1A3-445B-9092-FE045F31DD2E" Button
+    t =    10.88s Click "agents.preview" Button
+    t =    10.88s     Wait for com.huaodong.Web-Studio to idle
+    t =    10.88s     Find the "agents.preview" Button
+    t =    10.96s     Check for interrupting elements affecting "agents.preview" Button
+    t =    10.98s     Found 1 interrupting element:
+    t =    10.98s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    10.98s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    10.99s Checking for user permission dialogs...
+    t =    10.99s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    11.59s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    12.17s Checking for Bluetooth Setup Assistant...
+    t =    12.17s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    12.73s Checking for Notification Center Banners...
+    t =    12.73s Checking for basic alerts
+    t =    12.73s             Checking existence of `"ChatGPT" Window`
+    t =    13.29s             Find the "ChatGPT" Window
+    t =    13.85s             Find the "ChatGPT" Window
+    t =    14.41s No monitors handled UI interruption, checking to see if element still exists...
+    t =    14.42s             Checking existence of `"ChatGPT" Window`
+    t =    14.97s Did not handle the interruption, but will attempt to continue…
+    t =    14.98s     Synthesize event
+    t =    15.36s     Wait for com.huaodong.Web-Studio to idle
+    t =    15.36s Waiting 3.0s for "agents.preview.read" Button to exist
+    t =    16.38s     Checking `Expect predicate `existsNoRetry == 1` for object "agents.preview.read" Button`
+    t =    16.38s         Checking existence of `"agents.preview.read" Button`
+    t =    16.49s Find the "agents.preview.read" Button
+    t =    16.56s Click "agents.preview.read" Button
+    t =    16.56s     Wait for com.huaodong.Web-Studio to idle
+    t =    16.57s     Find the "agents.preview.read" Button
+    t =    16.64s     Check for interrupting elements affecting "agents.preview.read" Button
+    t =    16.66s     Synthesize event
+    t =    17.02s     Wait for com.huaodong.Web-Studio to idle
+    t =    17.07s Waiting 3.0s for "agents.preview.error" Any to exist
+    t =    18.08s     Checking `Expect predicate `existsNoRetry == 1` for object "agents.preview.error" Any`
+    t =    18.08s         Checking existence of `"agents.preview.error" Any`
+    t =    18.12s Find the "agents.preview.error" Any
+    t =    18.15s Find the "agents.preview.error" StaticText
+    t =    18.18s Find the "agents.send" Button
+    t =    18.28s Type '⎋' key (XCUIKeyboardKeyEscape) with no modifiers
+    t =    18.28s     Wait for com.huaodong.Web-Studio to idle
+    t =    18.28s     Find the Target Application 'com.huaodong.Web-Studio'
+    t =    18.33s     Check for interrupting elements affecting "Web Studio" Application
+    t =    18.33s     Synthesize event
+    t =    18.41s     Wait for com.huaodong.Web-Studio to idle
+    t =    18.41s Click "agents.provider-settings" Button
+    t =    18.41s     Wait for com.huaodong.Web-Studio to idle
+    t =    18.42s     Find the "agents.provider-settings" Button
+    t =    18.53s     Check for interrupting elements affecting "agents.provider-settings" Button
+    t =    18.57s     Found 1 interrupting element:
+    t =    18.57s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    18.57s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    18.57s Checking for user permission dialogs...
+    t =    18.57s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    19.24s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    19.83s Checking for Bluetooth Setup Assistant...
+    t =    19.83s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    20.39s Checking for Notification Center Banners...
+    t =    20.39s Checking for basic alerts
+    t =    20.40s             Checking existence of `"ChatGPT" Window`
+    t =    20.96s             Find the "ChatGPT" Window
+    t =    21.52s             Find the "ChatGPT" Window
+    t =    22.07s No monitors handled UI interruption, checking to see if element still exists...
+    t =    22.08s             Checking existence of `"ChatGPT" Window`
+    t =    22.64s     Open com.huaodong.Web-Studio
+    t =    22.64s         Activate com.huaodong.Web-Studio
+    t =    22.65s             Wait for com.huaodong.Web-Studio to idle
+    t =    22.69s Did not handle the interruption, but will attempt to continue…
+    t =    22.69s     Synthesize event
+    t =    22.78s         Falling back to element center point: {1424.5, 165}
+    t =    23.18s     Wait for com.huaodong.Web-Studio to idle
+    t =    23.32s Waiting 3.0s for "provider.model" TextField to exist
+    t =    24.40s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    24.40s         Checking existence of `"provider.model" TextField`
+    t =    24.64s Find the "provider.model" TextField
+    t =    24.71s Click "provider.model" TextField
+    t =    24.71s     Wait for com.huaodong.Web-Studio to idle
+    t =    24.72s     Find the "provider.model" TextField
+    t =    24.80s     Check for interrupting elements affecting "provider.model" TextField
+    t =    24.82s     Synthesize event
+    t =    25.16s     Wait for com.huaodong.Web-Studio to idle
+    t =    25.17s Type 'draft' into "provider.model" TextField
+    t =    25.17s     Wait for com.huaodong.Web-Studio to idle
+    t =    25.18s     Find the "provider.model" TextField
+    t =    25.27s     Check for interrupting elements affecting "provider.model" TextField
+    t =    25.30s     Synthesize event
+    t =    25.61s     Wait for com.huaodong.Web-Studio to idle
+    t =    25.61s Type '⎋' key (XCUIKeyboardKeyEscape) with no modifiers
+    t =    25.61s     Wait for com.huaodong.Web-Studio to idle
+    t =    25.61s     Find the Target Application 'com.huaodong.Web-Studio'
+    t =    25.78s     Check for interrupting elements affecting "Web Studio" Application
+    t =    25.81s     Open com.huaodong.Web-Studio
+    t =    25.81s         Activate com.huaodong.Web-Studio
+    t =    25.86s             Wait for com.huaodong.Web-Studio to idle
+    t =    25.92s     Synthesize event
+    t =    26.01s     Wait for com.huaodong.Web-Studio to idle
+    t =    26.02s Waiting 3.0s for "provider.model" TextField to exist
+    t =    27.05s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    27.05s         Checking existence of `"provider.model" TextField`
+    t =    27.14s         Capturing element debug description
+    t =    27.15s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    27.25s             Find: Descendants matching type TextField
+    t =    27.25s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    27.25s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    27.25s Using snapshot previously cached by application
+    t =    27.26s             Find: Descendants matching type TextField
+    t =    27.26s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    27.26s Using snapshot previously cached by application
+    t =    28.08s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    28.08s         Checking existence of `"provider.model" TextField`
+    t =    28.17s         Capturing element debug description
+    t =    28.17s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    28.27s             Find: Descendants matching type TextField
+    t =    28.28s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    28.28s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    28.28s Using snapshot previously cached by application
+    t =    28.28s             Find: Descendants matching type TextField
+    t =    28.29s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    28.29s Using snapshot previously cached by application
+    t =    29.02s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    29.02s         Checking existence of `"provider.model" TextField`
+    t =    29.10s         Capturing element debug description
+    t =    29.10s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    29.21s             Find: Descendants matching type TextField
+    t =    29.21s             Find: Elements matching predicate '"provider.model" IN identifiers'
+    t =    29.22s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    29.22s Using snapshot previously cached by application
+    t =    29.22s             Find: Descendants matching type TextField
+    t =    29.23s             Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    29.23s Using snapshot previously cached by application
+    t =    29.23s     Checking existence of `"provider.model" TextField`
+    t =    29.30s Collecting debug information to assist test failure triage
+    t =    29.30s     Requesting snapshot of accessibility hierarchy for app with pid 86139
+    t =    29.41s Click "agents.provider-settings" Button
+    t =    29.41s     Wait for com.huaodong.Web-Studio to idle
+    t =    29.41s     Find the "agents.provider-settings" Button
+    t =    29.49s     Check for interrupting elements affecting "agents.provider-settings" Button
+    t =    29.50s     Found 1 interrupting element:
+    t =    29.51s Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    29.51s     Invoking UI interruption monitors for Window at {{0.0, 34.0}, {1470.0, 858.0}} from Application 'com.openai.codex'
+    t =    29.51s Checking for user permission dialogs...
+    t =    29.51s             Checking existence of `StaticText (Elements matching predicate 'value MATCHES[c] ".+ would like ((to|full) access|to find) .+"')`
+    t =    30.10s             Checking existence of `StaticText (Elements matching predicate 'title CONTAINS[c] "Trust This "')`
+    t =    30.67s Checking for Bluetooth Setup Assistant...
+    t =    30.67s             Find the Window at {{0.0, 34.0}, {1470.0, 858.0}}
+    t =    31.22s Checking for Notification Center Banners...
+    t =    31.22s Checking for basic alerts
+    t =    31.23s             Checking existence of `"ChatGPT" Window`
+    t =    31.78s             Find the "ChatGPT" Window
+    t =    32.34s             Find the "ChatGPT" Window
+    t =    32.90s No monitors handled UI interruption, checking to see if element still exists...
+    t =    32.91s             Checking existence of `"ChatGPT" Window`
+    t =    33.47s Did not handle the interruption, but will attempt to continue…
+    t =    33.47s     Synthesize event
+    t =    33.87s     Wait for com.huaodong.Web-Studio to idle
+    t =    33.90s Waiting 3.0s for "provider.model" TextField to exist
+    t =    34.92s     Checking `Expect predicate `existsNoRetry == 1` for object "provider.model" TextField`
+    t =    34.92s         Checking existence of `"provider.model" TextField`
+    t =    35.04s Find the "provider.model" TextField
+    t =    35.11s Tear Down
+Test Case '-[Web_StudioUITests.Web_StudioUITests testAgentBlankReadAndProviderSettingsFlow]' passed (35.446 seconds).
+Test Suite 'Web_StudioUITests' passed at 2026-09-13 00:23:24.462.
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.446 (35.448) seconds
+Test Suite 'Web StudioUITests.xctest' passed at 2026-09-13 00:23:24.463.
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.446 (35.449) seconds
+Test Suite 'Selected tests' passed at 2026-09-13 00:23:24.464.
+	 Executed 1 test, with 0 failures (0 unexpected) in 35.446 (35.451) seconds
+2026-09-13 00:23:35.492 xcodebuild[84851:26580517] [MT] IDETestOperationsObserverDebug: 47.996 elapsed -- Testing started completed.
+2026-09-13 00:23:35.492 xcodebuild[84851:26580517] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-13 00:23:35.492 xcodebuild[84851:26580517] [MT] IDETestOperationsObserverDebug: 47.996 sec, +47.996 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/web-studio-final/Logs/Test/Test-Web Studio-2026.09.13_00-22-31-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

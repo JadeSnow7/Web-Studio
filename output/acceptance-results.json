@@ -1,0 +1,77 @@
+{
+  "verified_on": "2026-09-12",
+  "unit": {
+    "metrics": {
+      "testsCount": "82",
+      "totalCoveragePercentage": "0.199691487869864"
+    },
+    "result": "/private/tmp/web-studio-final-unit.xcresult"
+  },
+  "terminal": {
+    "metrics": {
+      "testsCount": "6",
+      "testsFailedCount": "3",
+      "totalCoveragePercentage": "0.25834683954619125"
+    },
+    "result": "/private/tmp/web-studio-final-terminal.xcresult",
+    "failed_cases": [
+      "shellEmitsUnicodeANSIAndExitCode",
+      "resizeIsAppliedToRealPTY",
+      "interactiveShellRespondsToCtrlCAndContinues"
+    ],
+    "restriction": "Controlling TTY denied by retained App Sandbox"
+  },
+  "ui": {
+    "metrics": {
+      "errorCount": "1",
+      "totalCoveragePercentage": "0.0"
+    },
+    "result": "/private/tmp/web-studio-final-ui.xcresult",
+    "status": "runner initialization failed before test cases",
+    "error": "com.apple.LocalAuthentication Code=-4: System authentication is running"
+  },
+  "ordinary_application": {
+    "path": "/private/tmp/web-studio-final-app/Build/Products/Debug/Web Studio.app",
+    "build": "passed",
+    "signature": "codesign --verify --deep --strict passed",
+    "launch_verified_pid": 53095,
+    "entitlements": {
+      "com.apple.security.app-sandbox": true,
+      "com.apple.security.files.user-selected.read-only": true,
+      "com.apple.security.get-task-allow": true,
+      "com.apple.security.network.client": true
+    }
+  },
+  "external_unverified": [
+    "real model request",
+    "remote SSH login",
+    "final native UI interaction"
+  ],
+  "source_sha256": {
+    "Web Studio/AgentController.swift": "b83d66998371bff87deca52d05a6db7430bdea709f490416c2b3c5674be671ca",
+    "Web Studio/AgentService.swift": "76873edcec9fe8d7a5a447c92a120e2f750bfe7872058c0a039f7ffffbff1371",
+    "Web Studio/AgentViews.swift": "b117b67912db2eeced80741eb7d503f6b23903a5345a9b21ab862c93bd095acf",
+    "Web Studio/ContentView.swift": "d41819ec21765925d8f8eca3f27f8ee95334151f44a9c56fdd62ba7cf6a69b38",
+    "Web Studio/NativeResourceHost.swift": "587ff694b7cb59791508b04337ba173757dd9eda3f3db54d492794496aea6099",
+    "Web Studio/ProviderSettings.swift": "9e349a1019e450ea880343d7a6694261feabf7fa80111e93ec858685ddb1ae18",
+    "Web Studio/ResourceModel.swift": "10d15d48c6eee16b025c2fbaea478dd67775833fccc597e5aaebc16f7aa1738c",
+    "Web Studio/StudioPTY.c": "44889fea2bdbc4ebb0a134db541cf64349f2771d9c1e7a668cfda9df59bc3140",
+    "Web Studio/StudioPTY.h": "7ef7023e9bf152696db64bb880dce97b0f1694c2e88af6720f0e4cdc0f82d0ca",
+    "Web Studio/TerminalSession.swift": "76005a86038a02eb7b2a59c66635564b81f74e5760a5e2ea0b87affca55f1d92",
+    "Web Studio/Web Studio-Bridging-Header.h": "592459889b50c75e2a5edb38345592a2e27f4404660506b78a1b1e80163bf713",
+    "Web Studio/WebRuntime.swift": "17a2ef69790c09b57fa9511b3ac0aa89b159591231746a3c0ecc549003001cb7",
+    "Web Studio/Web_StudioApp.swift": "abfacea1f56ea27b28b804f234fd00f2a2fb4957e2a3fac85dc1b36751443214",
+    "Web Studio/WindowLifecycle.swift": "86e7207ca7e6621607c4739da2356a7feff005325c0f6e6acb68a1b39b9cddd4",
+    "Web Studio/WorkspaceSplitView.swift": "c83ff3e2d4dd639067fee1230c7d4be15ef680cdd12a7abdabf2118f27ddafd5",
+    "Web Studio.xcodeproj/project.pbxproj": "5b1e5175dafe00029ab32cb6c7b3170472b74f18ba61ad984a5ff404d0aae3c9",
+    "Web StudioTests/AgentControllerTests.swift": "268083ba6533938ab9cf58d7dbf6bf8f0b437b24e45fd14a07f8c43982417b50",
+    "Web StudioTests/AgentServiceTests.swift": "16a89a8b5a70ec10639ba0976621132dac74c5075e697cf7e2ef8bf4082d257a",
+    "Web StudioTests/CredentialIntegrationTests.swift": "22ec1ce05486f403a1514b573eeddaa877a54c1b6d01aa19903ee89f6275aaf6",
+    "Web StudioTests/ProviderSettingsTests.swift": "e25bdbe76c6c6c2ced472a587254ccfc21c56264a00ca46913a888cbe099ae80",
+    "Web StudioTests/ResourceReadTests.swift": "5d93e8677eff5fa1f2950e478d31f6333f41a429e5c87b9a70294237829b441e",
+    "Web StudioTests/TerminalTests.swift": "cefbc86a5d86451e435078565c0a18324a913a73d25cad3c3f3ac74468c4cecf",
+    "Web StudioTests/Web_StudioTests.swift": "9d9afc12787a149d54882da30ff3c7aa61814937e909dee69bb318cac8b5df1a",
+    "Web StudioUITests/Web_StudioUITests.swift": "1c2c4a3590090c6f2a6bdddcdce65fc6843480e953dae95b262d75d196f14586",
+    "Web StudioUITests/Web_StudioUITestsLaunchTests.swift": "89efdbcdb3997862cfa0494baf82b7973f184626259c6f68e20cf2e51cbfe0bd"
+  }
+}

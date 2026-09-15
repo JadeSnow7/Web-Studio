@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000004 /* SwiftTerm */; };
+		A10000000000000000000005 /* GhosttyKit in Frameworks */ = {isa = PBXBuildFile; fileRef = A10000000000000000000006 /* GhosttyKit.xcframework */; };
+		A10000000000000000000008 /* Ghostty runtime resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000007 /* ghostty-share */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DD67BAE63054759700F1763D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +33,8 @@
 		DD67BAD83054759500F1763D /* Web Studio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Web Studio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD67BAE53054759700F1763D /* Web StudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Web StudioTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD67BAEF3054759700F1763D /* Web StudioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Web StudioUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000006 /* GhosttyKit.xcframework */ = {isa = PBXFileReference; explicitFileType = wrapper.xcframework; path = "$(GHOSTTY_KIT_PATH)/GhosttyKit.xcframework"; sourceTree = "<group>"; };
+		A10000000000000000000007 /* ghostty resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Vendor/ghostty"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +60,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000001 /* SwiftTerm in Frameworks */,
+				A10000000000000000000005 /* GhosttyKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				DD67BADA3054759500F1763D /* Web Studio */,
+				A10000000000000000000006 /* GhosttyKit.xcframework */,
+				A10000000000000000000007 /* ghostty resources */,
 				DD67BAE83054759700F1763D /* Web StudioTests */,
 				DD67BAF23054759700F1763D /* Web StudioUITests */,
 				DD67BAD93054759500F1763D /* Products */,
@@ -112,6 +124,7 @@
 			);
 			name = "Web Studio";
 			packageProductDependencies = (
+				A10000000000000000000004 /* SwiftTerm */,
 			);
 			productName = "Web Studio";
 			productReference = DD67BAD83054759500F1763D /* Web Studio.app */;
@@ -195,6 +208,9 @@
 			);
 			mainGroup = DD67BACF3054759500F1763D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A10000000000000000000003 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DD67BAD93054759500F1763D /* Products */;
 			projectDirPath = "";
@@ -212,6 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000008 /* Ghostty runtime resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +289,7 @@
 		DD67BAF73054759700F1763D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GHOSTTY_KIT_PATH = "$(PROJECT_DIR)/Vendor";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -335,6 +353,7 @@
 		DD67BAF83054759700F1763D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GHOSTTY_KIT_PATH = "$(PROJECT_DIR)/Vendor";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -395,7 +414,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				// Direct-download desktop build. The future App Store/browser product
+				// will use a separate target and its own sandbox boundary.
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -404,6 +426,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(GHOSTTY_KIT_PATH)/GhosttyKit.xcframework/macos-arm64";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.huaodong.Web-Studio";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -412,6 +435,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Web Studio/Web Studio-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -425,7 +449,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				// Direct-download desktop build. The future App Store/browser product
+				// will use a separate target and its own sandbox boundary.
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -434,6 +461,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "$(GHOSTTY_KIT_PATH)/GhosttyKit.xcframework/macos-arm64";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.huaodong.Web-Studio";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -442,6 +470,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Web Studio/Web Studio-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -563,6 +592,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000000003 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10000000000000000000004 /* SwiftTerm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A10000000000000000000003 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTerm;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DD67BAD03054759500F1763D /* Project object */;
 }

@@ -1,0 +1,36 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": [
+    "Web Studio"
+  ],
+  "locale": "en-US",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": [
+    "Form",
+    "Select/Listbox",
+    "Scrollbar"
+  ],
+  "ownership": {
+    "Form": "native",
+    "Select/Listbox": "native",
+    "Scrollbar": "native"
+  },
+  "requiredCommands": [
+    "unit",
+    "build",
+    "premium"
+  ],
+  "commands": {
+    "unit": "xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath /private/tmp/web-studio-final CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO -only-testing:'Web StudioTests/Web_StudioTests' -only-testing:'Web StudioTests/AgentServiceTests' -only-testing:'Web StudioTests/ResourceReadTests' -only-testing:'Web StudioTests/AgentControllerTests' -only-testing:'Web StudioTests/ProviderSettingsTests'",
+    "build": "xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath /private/tmp/web-studio-final CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build-for-testing",
+    "premium": "python3 /Users/huaodong/.codex/plugins/cache/openai-curated-remote/frontend-design-premium/1.4.0/skills/frontend-design-premium/scripts/audit_project.py . --mode strict --config premium-ui.json --output /private/tmp/web-studio-premium-audit.json",
+    "terminal": "xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath /private/tmp/web-studio-final CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO -only-testing:'Web StudioTests/TerminalTests'",
+    "ui": "xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath /private/tmp/web-studio-final CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO -only-testing:'Web StudioUITests/Web_StudioUITests'",
+    "keychain": "xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath /private/tmp/web-studio-final CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO -only-testing:'Web StudioTests/CredentialIntegrationTests'"
+  },
+  "evidence": {
+    "nativeTests": "Web StudioTests/Web_StudioTests.swift",
+    "nativeUI": "Web StudioUITests/Web_StudioUITests.swift",
+    "acceptance": "output/six-features-acceptance.md"
+  }
+}

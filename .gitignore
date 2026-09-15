@@ -5,6 +5,9 @@ xcuserdata/
 DerivedData/
 build/
 
+# Generated GhosttyKit static archive (rebuild from the pinned upstream source)
+Vendor/GhosttyKit.xcframework/macos-arm64/libghostty-fat.a
+
 # Rust build output (future shared runtime)
 target/
 

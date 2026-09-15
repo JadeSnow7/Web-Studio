@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+if [ "$#" -ge 4 ] && [ "$1" = "-static" ] && [ "$2" = "-o" ]; then
+  archive_output=$3
+  shift 3
+  rm -f "$archive_output"
+  exec "${ZIG_BIN:-zig}" ar --format=darwin qcsL "$archive_output" "$@"
+fi
+exec /usr/bin/libtool "$@"

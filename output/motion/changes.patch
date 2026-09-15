@@ -1,0 +1,736 @@
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -92,7 +92,21 @@
+ SF Symbols distinguish web, local terminal and SSH entries. Icon actions require labels and help. Status needs text in addition to symbols.
+ 
+ ### Motion
+-No custom motion contract. Use native reduced-motion behavior.
++Motion is local and state-scoped. Shared `StudioDesign.Motion` tokens use 120ms for
++hover/press, 160ms for resource selection, 180ms for panels and messages. Task and
++resource buttons keep native semantics while adding quiet hover/press feedback;
++resource selection moves only its accent marker. Floating panels use a stable
++captured identity and a short opacity/6pt/0.98-scale entrance; the retiring surface
++is disabled while it fades and focus is handed back immediately. The command panel
++keeps its native input mounted while its single host uses the same opacity/6pt/0.98
++entrance motion; focus transfers independently. Address focus styling is local.
++`accessibilityReduceMotion` removes displacement and scale and
++skips animation; `accessibilityReduceTransparency` retains the existing opaque
++fallback and increased contrast retains strong focus. Runtime identity, geometry,
++WebKit, SwiftTerm and split dragging are not animated. The start page uses a
++low-saturation static accent radial gradient near its title, with native button and
++recent-resource touch feedback. Agent rows use a short local fade/upward reveal;
++message following remains scoped to existing transcript behavior.
+ 
+ ### Resource surfaces
+ `ResourceStore` owns runtime lifetime. WebKit retains page state across view changes. `TerminalSession` owns an app-launched PTY and SwiftTerm's AppKit terminal view. It must report setup errors before presenting a running session.
+--- a/UX-CONTRACT.md
++++ b/UX-CONTRACT.md
+@@ -82,6 +82,24 @@
+ 
+ ## Accessibility and verification
+ 
++### Motion contract
++
++`StudioDesign.Motion` is the shared source for local hover/press (120ms), selection
++(160ms), panel (180ms) and message (180ms) timing. Native task/resource buttons keep
++their existing click, keyboard, context-menu, close-hit-area and accessibility
++semantics. Group selection is neutral; resource selection uses the accent marker and
++only that marker may move between rows. Panel presentation captures a stable panel
++identity, disables the retiring host during its fade, and restores focus immediately;
++panel content and runtime identities do not animate. The command panel keeps its
++native input mounted while its single host uses opacity/6pt/0.98 entrance motion;
++focus transfer is independent. Other panels retain the captured host presentation.
++Reduced motion removes offset
++and scale, and Reduce Transparency keeps the existing opaque fallback. The start
++page title owns a restrained static accent gradient and its native buttons/recency
++rows expose hover and press feedback. Agent message reveal is local to rows; it does
++not change Agent business logic or evidence gates. These are implementation rules;
++they do not constitute runtime or GUI acceptance evidence.
++
+ Icon actions need meaningful labels, stable IDs and keyboard equivalents. Focus must remain in web/terminal input during ordinary toolbar and layout updates. Native semantics own appearance, contrast and reduced motion. Theme acceptance must use an app-level override, not a system-setting change.
+ 
+ No skipped destination-form test counts as a pass. The native UI suite targets current resource IDs and controls; compilation is separate from successful UI execution. Record model tests, actual native checks, runner initialization failures, sandbox restrictions and missing external configuration separately in [the earlier runtime acceptance report](output/six-features-acceptance.md) and [the current start-page/chat acceptance report](output/start-chat/acceptance.md).
+--- a/Web Studio/AgentViews.swift
++++ b/Web Studio/AgentViews.swift
+@@ -18,6 +18,7 @@
+     @ObservedObject var model: StudioModel
+     @ObservedObject var agent: AgentController
+     @ObservedObject var settings: ProviderSettings
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+ 
+     init(model: StudioModel) {
+         self.model = model
+@@ -49,14 +50,15 @@
+             ScrollView { LazyVStack(alignment: .leading, spacing: 12) {
+             ForEach(agent.messages) { message in
+                 HStack { if message.role == .assistant { bubble(message); Spacer(minLength: 24) } else { Spacer(minLength: 24); bubble(message) } }
++                    .transition(StudioDesign.Motion.messageTransition(reduceMotion: reduceMotion))
+                 if message.role == .user { Button("查看此问题详情") { model.openAgentRunDetails(message.runID) }.buttonStyle(.borderless).font(.caption2).accessibilityIdentifier("agents.run-details.\(message.runID.uuidString)") }
+             }
+             if let run = agent.run, case .requesting = run.state { HStack { ProgressView().controlSize(.small); Text("正在思考…").font(.caption).foregroundStyle(.secondary); Spacer() } }
+             if let run = agent.run { switch run.state { case .failed(let message): HStack { Text("失败：\(message)").font(.caption).foregroundStyle(.red); Spacer(); Button("重试") { agent.retry() }.buttonStyle(.borderless).accessibilityIdentifier("agents.retry") }; case .cancelled: HStack { Text("已取消").font(.caption).foregroundStyle(.secondary); Spacer(); Button("重试") { agent.retry() }.buttonStyle(.borderless).accessibilityIdentifier("agents.retry") }; default: EmptyView() } }
+             Color.clear.frame(height: 1).id("agents.transcript.bottom")
+-            }.padding(16) }
+-            if agent.messages.isEmpty { VStack(spacing: 10) { Image(systemName: "bubble.left.and.bubble.right").font(.title2).foregroundStyle(.secondary); Text("开始对话").font(.callout).foregroundStyle(.secondary) }.allowsHitTesting(false) }
+-        }.onChange(of: agent.messages.count) { _, _ in proxy.scrollTo("agents.transcript.bottom", anchor: .bottom) } }
++            }.padding(16).frame(minHeight: 120).animation(StudioDesign.Motion.animation(StudioDesign.Motion.message, reduceMotion: reduceMotion), value: agent.messages.count) }
++            if agent.messages.isEmpty { VStack(spacing: 10) { Image(systemName: "bubble.left.and.bubble.right").font(.title2).foregroundStyle(.secondary); Text("开始对话").font(.callout).foregroundStyle(.secondary) }.transition(.opacity).allowsHitTesting(false) }
++        }.animation(StudioDesign.Motion.animation(StudioDesign.Motion.message, reduceMotion: reduceMotion), value: agent.messages.count).onChange(of: agent.messages.count) { _, _ in proxy.scrollTo("agents.transcript.bottom", anchor: .bottom) } }
+     }
+     private func bubble(_ message: AgentMessage) -> some View { Text(message.text).textSelection(.enabled).padding(10).background(message.role == .user ? Color.accentColor.opacity(0.14) : Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 12)) }
+     private var sendHint: String? { if agent.configuration == nil { return "请先在设置中配置 Agent" }; if agent.selectedResourceIDs.isEmpty { return "请先选择资源" }; if agent.previewSnapshots.count != agent.selectedResourceIDs.count { return "请先读取预览" }; if agent.previewSnapshots.contains(where: { $0.errorMessage != nil }) { return "资源读取失败，无法发送" }; return nil }
+@@ -71,15 +73,15 @@
+                 Button { model.openAgentPanel(.agentResources) } label: { Label("资源", systemImage: "paperclip") }.buttonStyle(.borderless).accessibilityIdentifier("agents.resources")
+                 Button { model.openAgentPanel(.agentPreview) } label: { Label("预览", systemImage: "doc.text.magnifyingglass") }.buttonStyle(.borderless).accessibilityIdentifier("agents.preview")
+                 Spacer()
+-                if case .requesting? = agent.run?.state {
+-                    Button { agent.cancel() } label: { Image(systemName: "stop.circle.fill") }.buttonStyle(.borderless).accessibilityLabel("停止")
+-                } else {
+-                    Button { agent.send() } label: { Image(systemName: "arrow.up.circle.fill") }.buttonStyle(.borderless).disabled(!agent.canSend).accessibilityLabel("发送").accessibilityIdentifier("agents.send")
+-                }
++                Button { isRequesting ? agent.cancel() : agent.send() } label: {
++                    Image(systemName: isRequesting ? "stop.circle.fill" : "arrow.up.circle.fill").contentTransition(.opacity)
++                }.buttonStyle(.borderless).frame(width: 28, height: 28).animation(StudioDesign.Motion.animation(StudioDesign.Motion.message, reduceMotion: reduceMotion), value: isRequesting).disabled(!isRequesting && !agent.canSend).accessibilityLabel(isRequesting ? "停止" : "发送").accessibilityIdentifier("agents.send")
+                 }.padding(8)
+             }.studioGlassSurface(cornerRadius: StudioDesign.Radius.panel).overlay(RoundedRectangle(cornerRadius: StudioDesign.Radius.panel).stroke(StudioDesign.Color.divider))
+         }.padding(StudioDesign.Spacing.panel)
+     }
++
++    private var isRequesting: Bool { if case .requesting? = agent.run?.state { return true }; return false }
+ 
+ }
+ 
+--- a/Web Studio/ContentView.swift
++++ b/Web Studio/ContentView.swift
+@@ -163,6 +163,9 @@
+     @Published var addressText = ""
+     @Published var addressError: String?
+     @Published private(set) var addressFocusToken = 0
++    @Published var commandQuery = ""
++    @Published var commandSelectedIndex = 0
++    weak var commandSearchField: NSTextField?
+     private var addressTargetResourceID: UUID?
+     private var addressTargetPaneID: UUID?
+     private var addressOriginalText = ""
+@@ -187,6 +190,10 @@
+     var panelTargetResourceID: UUID? { panels.targetResourceID }
+     func dismissPanel(restoreFocus: Bool = true) {
+         if panels.panel == .providerSettings { resetProviderDraft() }
++        if panels.panel == .commands, let field = commandSearchField, let window = field.window,
++           (window.firstResponder === field || field.currentEditor() === window.firstResponder), let fallback = workspaceFocusView, fallback.window === window {
++            window.makeFirstResponder(fallback)
++        }
+         let fallbackView = workspaceFocusView
+         let fallbackWindow = fallbackView?.window
+         panels.close(window: NSApp.keyWindow, restoreFocus: restoreFocus, fallback: {
+@@ -664,7 +671,23 @@
+ 
+     func openCommands() {
+         let pane = focusedPane
+-        panels.open(.commands, targetResourceID: pane.resourceID ?? selectedTabID, paneID: pane.id, originalResponder: NSApp.keyWindow?.firstResponder, store: webRuntimes)
++        if panels.panel != .commands {
++            commandQuery = ""
++            commandSelectedIndex = 0
++        }
++        let originalResponder: NSResponder? = {
++            let responder = commandSearchField?.window?.firstResponder ?? NSApp.keyWindow?.firstResponder
++            if let editor = responder as? NSTextView, editor.isFieldEditor,
++               let field = editor.delegate as? NSTextField { return field }
++            return responder
++        }()
++        panels.open(.commands, targetResourceID: pane.resourceID ?? selectedTabID, paneID: pane.id, originalResponder: originalResponder, store: webRuntimes)
++        if let field = commandSearchField, let window = field.window {
++            field.isEnabled = true
++            field.stringValue = commandQuery
++            window.makeFirstResponder(field)
++            field.selectText(nil)
++        }
+     }
+ 
+     func openGroupEditor(_ id: UUID? = nil) {
+@@ -808,6 +831,26 @@
+             list.append(StudioCommand(title: "Select \(record.customTitle ?? record.title)", shortcut: "", targetResourceID: record.id, action: .selectResource(resourceID: record.id)))
+         }
+         return list
++    }
++
++    var filteredCommandCount: Int {
++        availableCommands.filter { commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(commandQuery) }.count
++    }
++
++    func executeSelectedCommand() {
++        guard panels.panel == .commands else { return }
++        let commands = availableCommands.filter { commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(commandQuery) }
++        guard commands.indices.contains(commandSelectedIndex) else { return }
++        let command = commands[commandSelectedIndex]
++        let oldPanel = panels.panel
++        if execute(command), panels.panel == oldPanel, oldPanel != nil {
++            switch command.action {
++            case .newTab, .newTerminal, .selectResource:
++                dismissPanel(restoreFocus: false); focusCurrentPaneContent()
++            default:
++                dismissPanel()
++            }
++        }
+     }
+ 
+     func webGoBack() { activeWebRuntime?.goBack() }
+@@ -1040,8 +1083,13 @@
+ struct ContentView: View {
+     @ObservedObject var model: StudioModel
+     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+     @State private var sidebarDragStart: CGFloat?
+     @State private var agentsDragStart: CGFloat?
++    @State private var renderedPanel: PanelCoordinator.Panel?
++    @State private var panelHostVisible = false
++    @State private var panelPresentationID = 0
++    @State private var panelHostGeneration = 0
+     var body: some View {
+         GeometryReader { proxy in
+             let plan = StudioLayoutPlan.resolve(
+@@ -1093,15 +1141,81 @@
+             .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
+             .toolbar(removing: .title)
+             .overlay(alignment: .top) {
+-                if model.panels.isCommandsPresented { StudioPanelSurface { CommandPalette(model: model) } }
+-                if model.panels.isGroupEditorPresented { StudioPanelSurface { GroupEditor(model: model) } }
+-                if model.resourceEditorPresented { StudioPanelSurface { ResourceEditor(model: model) } }
+-                if model.panels.panel == .providerSettings { StudioPanelSurface { ProviderSettingsView(settings: model.providerSettings, model: model) } }
+-                if model.panels.panel == .startEntry { StudioPanelSurface { StartEntryView(model: model) } }
+-                if model.panels.panel == .agentResources { StudioPanelSurface { AgentResourcesPanel(model: model) } }
+-                if model.panels.panel == .agentPreview { StudioPanelSurface { AgentPreviewPanel(model: model) } }
+-                if case let .agentRunDetails(runID) = model.panels.panel { StudioPanelSurface { AgentRunDetailsPanel(model: model, runID: runID) } }
+-            }
++                ZStack(alignment: .top) {
++                    ZStack {
++                        if let panel = renderedPanel, panel != .commands {
++                            panelContent(panel)
++                                .id(panelViewIdentity(panel))
++                                .allowsHitTesting(model.panels.panel == panel)
++                                .disabled(!(model.panels.panel == panel))
++                                .accessibilityHidden(!(model.panels.panel == panel))
++                        }
++                    }
++                    .opacity(panelHostVisible ? 1 : 0)
++                    .offset(y: panelHostVisible || reduceMotion ? 0 : 6)
++                    .scaleEffect(panelHostVisible || reduceMotion ? 1 : 0.98)
++                    .animation(StudioDesign.Motion.animation(StudioDesign.Motion.panel, reduceMotion: reduceMotion), value: panelHostVisible)
++                    StudioPanelSurface { CommandPalette(model: model) }
++                        .opacity(model.panels.panel == .commands ? 1 : 0)
++                        .offset(y: model.panels.panel == .commands || reduceMotion ? 0 : 6)
++                        .scaleEffect(model.panels.panel == .commands || reduceMotion ? 1 : 0.98)
++                        .allowsHitTesting(model.panels.panel == .commands)
++                        .disabled(model.panels.panel != .commands)
++                        .accessibilityHidden(model.panels.panel != .commands)
++                        .animation(StudioDesign.Motion.animation(StudioDesign.Motion.panel, reduceMotion: reduceMotion), value: model.panels.panel == .commands)
++                }
++            }
++            .onAppear { syncPanelHost(model.panels.panel) }
++            .onChange(of: model.panels.panel) { _, panel in syncPanelHost(panel) }
++    }
++
++    @ViewBuilder private func panelContent(_ panel: PanelCoordinator.Panel) -> some View {
++        if panel == .groupEditor { StudioPanelSurface { GroupEditor(model: model) } }
++        if case .resourceEditor = panel { StudioPanelSurface { ResourceEditor(model: model) } }
++        if panel == .providerSettings { StudioPanelSurface { ProviderSettingsView(settings: model.providerSettings, model: model) } }
++        if panel == .startEntry { StudioPanelSurface { StartEntryView(model: model) } }
++        if panel == .agentResources { StudioPanelSurface { AgentResourcesPanel(model: model) } }
++        if panel == .agentPreview { StudioPanelSurface { AgentPreviewPanel(model: model) } }
++        if case let .agentRunDetails(runID) = panel { StudioPanelSurface { AgentRunDetailsPanel(model: model, runID: runID) } }
++    }
++
++    private func syncPanelHost(_ panel: PanelCoordinator.Panel?) {
++        panelHostGeneration &+= 1
++        let generation = panelHostGeneration
++        if let panel {
++            if panel != .commands { panelPresentationID &+= 1 }
++            renderedPanel = panel
++            panelHostVisible = false
++            DispatchQueue.main.async {
++                guard generation == panelHostGeneration, model.panels.panel == panel else { return }
++                panelHostVisible = true
++            }
++        } else {
++            panelHostVisible = false
++            DispatchQueue.main.asyncAfter(deadline: .now() + StudioDesign.Motion.panel) {
++                guard generation == panelHostGeneration, model.panels.panel == nil else { return }
++                renderedPanel = nil
++            }
++        }
++    }
++
++    private func panelIdentity(_ panel: PanelCoordinator.Panel?) -> String {
++        switch panel {
++        case .none: return "none"
++        case .destination: return "destination"
++        case .commands: return "commands"
++        case .groupEditor: return "group-editor"
++        case let .resourceEditor(id): return "resource-editor-\(id.uuidString)"
++        case .providerSettings: return "provider-settings"
++        case .startEntry: return "start-entry"
++        case .agentResources: return "agent-resources"
++        case .agentPreview: return "agent-preview"
++        case let .agentRunDetails(id): return "agent-run-details-\(id.uuidString)"
++        }
++    }
++
++    private func panelViewIdentity(_ panel: PanelCoordinator.Panel) -> String {
++        return "\(panelIdentity(panel))-\(panelPresentationID)"
+     }
+ 
+     private var resizeSidebar: some Gesture {
+@@ -1154,6 +1268,10 @@
+                 if mods == [.command], event.charactersIgnoringModifiers?.lowercased() == "k" {
+                     model.openCommands(); return nil
+                 }
++                if event.keyCode == 53, model.panels.panel == .commands,
++                   let editor = model.commandSearchField?.currentEditor() as? NSTextView, editor.hasMarkedText() {
++                    return event
++                }
+                 if event.keyCode == 53, model.panels.panel != nil {
+                     model.dismissPanel()
+                     return nil
+@@ -1185,6 +1303,7 @@
+ 
+ private struct StudioAddressField: View {
+     @ObservedObject var model: StudioModel
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+ 
+     var body: some View {
+         HStack(spacing: 6) {
+@@ -1202,6 +1321,7 @@
+         .padding(.horizontal, StudioDesign.Spacing.control).padding(.vertical, 7)
+         .studioGlassCapsule()
+         .overlay(Capsule().stroke(model.isAddressEditing ? Color.accentColor : Color.secondary.opacity(0.25), lineWidth: 1))
++        .animation(StudioDesign.Motion.animation(StudioDesign.Motion.hover, reduceMotion: reduceMotion), value: model.isAddressEditing)
+         .help("Address (⌘L)")
+     }
+ }
+@@ -1422,6 +1542,8 @@
+ private struct TabStrip: View {
+     @ObservedObject var model: StudioModel
+     let compact: Bool
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
++    @Namespace private var selectionNamespace
+     var body: some View {
+         VStack(alignment: .leading, spacing: 6) {
+             HStack {
+@@ -1434,7 +1556,7 @@
+                 } label: {
+                     Image(systemName: "plus").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                 }
+-                .buttonStyle(.borderless).help("New task group")
++                .buttonStyle(StudioPressButtonStyle()).help("New task group")
+                 .accessibilityLabel("New task group")
+             }
+             ScrollView {
+@@ -1453,7 +1575,7 @@
+                                     } else {
+                                         Label(group.name, systemImage: "square.stack.3d.up")
+                                     }
+-                                }.buttonStyle(.borderless).help(group.name)
++                                }.buttonStyle(StudioPressButtonStyle()).help(group.name)
+                                     .accessibilityAddTraits(model.selectedGroupID == group.id ? .isSelected : [])
+                                     .accessibilityLabel("Task group \(group.name)")
+                                     .accessibilityIdentifier("group.\(group.id.uuidString)").frame(
+@@ -1463,31 +1585,32 @@
+                                 Button {
+                                     model.newTab(in: group.id)
+                                 } label: {
+-                                    Image(systemName: "plus")
++                                    Image(systemName: "plus").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                                 }
+-                                .buttonStyle(.borderless).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                .buttonStyle(StudioPressButtonStyle())
+                                 .help("New Tab in \(group.name) (⌘T)")
+                                 .accessibilityLabel("New Tab in \(group.name)")
+                                 .accessibilityIdentifier("tabs.new.\(group.id.uuidString)")
+                                 Button {
+                                     model.newTerminal(in: group.id)
+                                 } label: {
+-                    Image(systemName: "terminal").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                    Image(systemName: "terminal").frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
+                                 }
+-                                .buttonStyle(.borderless).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle())
++                                .buttonStyle(StudioPressButtonStyle())
+                                 .help("New Terminal in \(group.name) (⌘⇧T)")
+                                 .accessibilityLabel("New Terminal in \(group.name)")
+                                 .accessibilityIdentifier("terminals.new.\(group.id.uuidString)")
+                             }
+                             .padding(.horizontal, compact ? 0 : 6)
+                             .background(
+-                                model.selectedGroupID == group.id ? StudioDesign.Color.selectedFill : .clear,
++                                model.selectedGroupID == group.id ? StudioDesign.Color.groupSelectedFill : .clear,
+                                 in: RoundedRectangle(cornerRadius: 6)
+                             )
++                            .animation(StudioDesign.Motion.animation(StudioDesign.Motion.hover, reduceMotion: reduceMotion), value: model.selectedGroupID)
+                             .contextMenu { Button("Rename Task") { model.beginRenameGroup(group.id) } }
+                             if model.selectedGroupID == group.id {
+                                 ForEach(model.visibleTabs) { tab in
+-                                    ResourceRow(model: model, tab: tab, compact: compact)
++                                        ResourceRow(model: model, tab: tab, compact: compact, selectionNamespace: selectionNamespace)
+                                 }
+                             }
+                         }
+@@ -1511,6 +1634,8 @@
+     @ObservedObject var model: StudioModel
+     let tab: StudioTab
+     let compact: Bool
++    let selectionNamespace: Namespace.ID
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+     var body: some View {
+         let selected = model.selectedTabID == tab.id
+         let record = model.webRuntimes.records[tab.id]
+@@ -1522,13 +1647,17 @@
+                     if !compact { Text(tab.displayTitle).lineLimit(1) }
+                     Spacer(minLength: 0)
+                 }.frame(maxWidth: .infinity, minHeight: 28, alignment: .leading).contentShape(Rectangle())
+-            }.buttonStyle(.borderless).accessibilityAddTraits(selected ? .isSelected : []).accessibilityLabel("Resource \(tab.displayTitle)").accessibilityIdentifier("resource.\(tab.id.uuidString)")
+-            Button { model.close(tabID: tab.id) } label: { Image(systemName: "xmark").font(.caption2).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle()) }.buttonStyle(.borderless).accessibilityLabel("Close resource \(tab.displayTitle)").accessibilityIdentifier("resource.close.\(tab.id.uuidString)").help("Close resource")
++            }.buttonStyle(StudioPressButtonStyle()).accessibilityAddTraits(selected ? .isSelected : []).accessibilityLabel("Resource \(tab.displayTitle)").accessibilityIdentifier("resource.\(tab.id.uuidString)")
++            Button { model.close(tabID: tab.id) } label: { Image(systemName: "xmark").font(.caption2).frame(minWidth: 24, minHeight: 24).contentShape(Rectangle()) }.buttonStyle(StudioPressButtonStyle()).accessibilityLabel("Close resource \(tab.displayTitle)").accessibilityIdentifier("resource.close.\(tab.id.uuidString)").help("Close resource")
+         }.padding(.leading, compact ? 0 : 14).padding(.horizontal, 4).padding(.vertical, 3).frame(maxWidth: .infinity, alignment: .leading)
+             .background(selected ? StudioDesign.Color.selectedFill : .clear, in: RoundedRectangle(cornerRadius: StudioDesign.Radius.row, style: .continuous))
+             .overlay(alignment: .leading) {
+-                if selected { Capsule().fill(Color.accentColor).frame(width: 3, height: 18) }
+-            }
++                if selected {
++                    Capsule().fill(Color.accentColor).frame(width: 3, height: 18)
++                        .matchedGeometryEffect(id: "resource-selection", in: selectionNamespace)
++                }
++            }
++            .animation(StudioDesign.Motion.animation(StudioDesign.Motion.selection, reduceMotion: reduceMotion), value: selected)
+             .contextMenu {
+                 Button("Rename Resource") { model.openResourceEditor(tab.id) }
+                 Button("Add to Agent") { model.agentsVisible = true; model.agentController.addResource(tab.id) }
+@@ -1564,7 +1693,7 @@
+             }
+         }.padding(StudioDesign.Spacing.inset).onAppear {
+                 name = model.groups.first(where: { $0.id == model.editingGroupID })?.name ?? ""
+-                DispatchQueue.main.async { focused = true }
++                DispatchQueue.main.async { if model.panels.panel == .groupEditor { focused = true } }
+             }
+             .frame(width: 300)
+             .onExitCommand { model.groupEditorPresented = false }
+@@ -1590,7 +1719,7 @@
+                     .studioGlassButton(prominent: true).keyboardShortcut(.defaultAction).disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+             }
+         }.padding(StudioDesign.Spacing.inset).frame(width: 320)
+-            .onAppear { if let id = model.panelTargetResourceID, let record = model.webRuntimes.records[id] { title = record.customTitle ?? record.title; DispatchQueue.main.async { focused = true } } else { error = "The resource was closed." } }
++            .onAppear { if let id = model.panelTargetResourceID, let record = model.webRuntimes.records[id] { title = record.customTitle ?? record.title; DispatchQueue.main.async { if model.panels.panel == .resourceEditor(id) { focused = true } } } else { error = "The resource was closed." } }
+             .onExitCommand { model.dismissPanel() }
+     }
+ }
+@@ -1717,7 +1846,7 @@
+         }.padding(StudioDesign.Spacing.inset).frame(width: 330)
+             .onAppear {
+                 prefill()
+-                DispatchQueue.main.async { focusedField = mode == 0 ? .web : .host }
++                DispatchQueue.main.async { if model.panels.panel == .destination { focusedField = mode == 0 ? .web : .host } }
+             }
+             .onChange(of: mode) { _, newMode in
+                 error = nil
+@@ -1781,12 +1910,67 @@
+     }
+ }
+ 
++private struct CommandSearchField: NSViewRepresentable {
++    @ObservedObject var model: StudioModel
++
++    func makeCoordinator() -> Coordinator { Coordinator(model: model) }
++    func makeNSView(context: Context) -> NSTextField {
++        let field = NSTextField(string: model.commandQuery)
++        field.placeholderString = "Search commands"
++        field.isBordered = true
++        field.bezelStyle = .roundedBezel
++        field.font = NSFont.systemFont(ofSize: NSFont.systemFontSize)
++        field.delegate = context.coordinator
++        field.setAccessibilityLabel("Search commands")
++        field.setAccessibilityIdentifier("command.search")
++        model.commandSearchField = field
++        return field
++    }
++    func updateNSView(_ field: NSTextField, context: Context) {
++        let active = model.panels.panel == .commands
++        field.isEnabled = active
++        if !active, let window = field.window,
++           (window.firstResponder === field || field.currentEditor() === window.firstResponder),
++           let fallback = model.workspaceFocusView, fallback.window === window {
++            window.makeFirstResponder(fallback)
++        }
++        if field.stringValue != model.commandQuery,
++           (field.currentEditor() as? NSTextView)?.hasMarkedText() != true {
++            field.stringValue = model.commandQuery
++        }
++    }
++    static func dismantleNSView(_ field: NSTextField, coordinator: Coordinator) {
++        if coordinator.model.commandSearchField === field { coordinator.model.commandSearchField = nil }
++    }
++    final class Coordinator: NSObject, NSTextFieldDelegate {
++        let model: StudioModel
++        init(model: StudioModel) { self.model = model }
++        func controlTextDidChange(_ notification: Notification) {
++            guard model.panels.panel == .commands else { return }
++            guard let field = notification.object as? NSTextField else { return }
++            model.commandQuery = field.stringValue
++            model.commandSelectedIndex = 0
++        }
++        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
++            guard model.panels.panel == .commands, !textView.hasMarkedText() else { return false }
++            switch commandSelector {
++            case #selector(NSResponder.moveUp(_:)):
++                model.commandSelectedIndex = max(0, model.commandSelectedIndex - 1); return true
++            case #selector(NSResponder.moveDown(_:)):
++                model.commandSelectedIndex = min(max(model.filteredCommandCount - 1, 0), model.commandSelectedIndex + 1); return true
++            case #selector(NSResponder.insertNewline(_:)):
++                model.executeSelectedCommand(); return true
++            case #selector(NSResponder.cancelOperation(_:)):
++                model.dismissPanel(); return true
++            default: return false
++            }
++        }
++    }
++}
++
+ private struct CommandPalette: View {
+     @ObservedObject var model: StudioModel
+-    @State private var query =
+-        ""
+-    @State private var selectedIndex = 0
+-    @FocusState private var focused: Bool
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+ 
+     var body: some View {
+         VStack(alignment: .leading, spacing: 8) {
+@@ -1796,13 +1980,12 @@
+                 Text(panelError).font(.caption).foregroundStyle(.red)
+             }
+             HStack(spacing: 6) {
+-                TextField("Search commands", text: $query)
+-                    .textFieldStyle(.roundedBorder).focused($focused)
+-                    .accessibilityIdentifier("command.search")
+-                if !query.isEmpty {
++                CommandSearchField(model: model).frame(maxWidth: .infinity, minHeight: 22)
++                if !model.commandQuery.isEmpty {
+                     Button {
+-                        query = ""
+-                        focused = true
++                        model.commandQuery = ""
++                        model.commandSelectedIndex = 0
++                        if let field = model.commandSearchField, let window = field.window { window.makeFirstResponder(field) }
+                     } label: {
+                         Image(systemName: "xmark.circle.fill")
+                     }
+@@ -1823,7 +2006,7 @@
+                                 id: \.element.id
+                             ) { index, item in
+                                 Button {
+-                                    run(index)
++                                    run(item.id)
+                                 } label: {
+                                     HStack(spacing: 8) {
+                                         Text(item.title)
+@@ -1839,10 +2022,10 @@
+                                 .buttonStyle(.borderless)
+                                 .padding(.horizontal, 8)
+                                 .background(
+-                                    index == selectedIndex ? Color(nsColor: .controlBackgroundColor) : .clear,
++                                    index == model.commandSelectedIndex ? Color(nsColor: .controlBackgroundColor) : .clear,
+                                     in: RoundedRectangle(cornerRadius: 5)
+                                 )
+-                                .id(index)
++                                .id(item.id)
+                                 .accessibilityIdentifier("command.\(item.title)")
+                             }
+                         }
+@@ -1850,39 +2033,21 @@
+                     }
+                     .frame(height: commandListHeight)
+                     .accessibilityIdentifier("command.results")
+-                    .onChange(of: selectedIndex) { _, index in
+-                        withAnimation { proxy.scrollTo(index, anchor: .center) }
++                    .onChange(of: model.commandSelectedIndex) { _, index in
++                        guard filtered.indices.contains(index) else { return }
++                        withAnimation(StudioDesign.Motion.animation(StudioDesign.Motion.selection, reduceMotion: reduceMotion)) { proxy.scrollTo(filtered[index].id, anchor: .center) }
+                     }
+                 }
+             }
+         }
+         .padding(StudioDesign.Spacing.inset)
+         .frame(width: 320)
+-        .onAppear { DispatchQueue.main.async { focused = true } }
+-            .onChange(of: query) { _, _ in selectedIndex = 0 }
+-            .onKeyPress(.upArrow) {
+-                selectedIndex = max(
+-                    0,
+-                    selectedIndex - 1
+-                )
+-                return .handled
+-            }.onKeyPress(.downArrow) {
+-                selectedIndex = min(
+-                    max(filtered.count - 1, 0),
+-                    selectedIndex + 1
+-                )
+-                return .handled
+-            }.onKeyPress(.return) {
+-                if !filtered.isEmpty {
+-                    run(selectedIndex)
+-                }
+-                return .handled
+-            }.onExitCommand { model.commandPalettePresented = false }
++            .onExitCommand { model.commandPalettePresented = false }
+     }
+ 
+     private var filtered: [StudioCommand] {
+         model.availableCommands
+-            .filter { query.isEmpty || $0.title.localizedCaseInsensitiveContains(query) }
++            .filter { model.commandQuery.isEmpty || $0.title.localizedCaseInsensitiveContains(model.commandQuery) }
+     }
+ 
+     private var commandListHeight: CGFloat {
+@@ -1894,18 +2059,9 @@
+         return model.tabs.first(where: { $0.id == id })?.displayTitle ?? "Closed resource"
+     }
+ 
+-    private func run(_ index: Int) {
+-        guard filtered.indices.contains(index) else { return }
+-        let command = filtered[index]
+-        let oldPanel = model.panels.panel
+-        if model.execute(command), model.panels.panel == oldPanel, oldPanel != nil {
+-            switch command.action {
+-            case .newTab, .newTerminal, .selectResource:
+-                model.dismissPanel(restoreFocus: false)
+-                model.focusCurrentPaneContent()
+-            default:
+-                model.dismissPanel()
+-            }
+-        }
+-    }
+-}
++    private func run(_ commandID: String) {
++        guard let index = filtered.firstIndex(where: { $0.id == commandID }) else { return }
++        model.commandSelectedIndex = index
++        model.executeSelectedCommand()
++    }
++}
+--- a/Web Studio/StartPageView.swift
++++ b/Web Studio/StartPageView.swift
+@@ -38,6 +38,12 @@
+         ScrollView {
+             VStack(alignment: .leading, spacing: 28) {
+                 Text("从这里开始").font(.system(size: 28, weight: .semibold, design: .rounded))
++                    .padding(.horizontal, 26).padding(.vertical, 16)
++                    .background {
++                        RadialGradient(colors: [Color.accentColor.opacity(0.07), .clear], center: .center, startRadius: 0, endRadius: 150)
++                            .frame(width: 300, height: 300)
++                            .allowsHitTesting(false)
++                    }
+                     .frame(maxWidth: .infinity, alignment: .center)
+                 ViewThatFits(in: .horizontal) {
+                     HStack(spacing: 12) { actions }
+@@ -51,7 +57,7 @@
+                         Button { model.openStartEntryPanel() } label: {
+                             VStack(spacing: 9) { Image(systemName: "plus").font(.title2); Text("添加入口") }
+                                 .frame(maxWidth: .infinity, minHeight: 84)
+-                        }.buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).accessibilityIdentifier("start.add-pin")
++                        }.buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).studioHoverLift().accessibilityIdentifier("start.add-pin")
+                     }
+                 }
+ 
+@@ -84,7 +90,7 @@
+ 
+     private func startAction(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+         Button(action: action) { Label(title, systemImage: systemImage).frame(maxWidth: .infinity, minHeight: 54) }
+-            .buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).accessibilityIdentifier("start.action.\(title)")
++            .buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).studioHoverLift().accessibilityIdentifier("start.action.\(title)")
+     }
+ 
+     @ViewBuilder private func resourceSection<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
+@@ -97,7 +103,7 @@
+                 Image(systemName: symbol(for: record.destination)).font(.title2)
+                 Text(record.title).lineLimit(1)
+             }.frame(maxWidth: .infinity, minHeight: 84)
+-        }.buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).contextMenu { Button("取消固定") { model.pinnedDestinations.removeAll { $0.id == record.id } } }
++        }.buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).studioHoverLift().contextMenu { Button("取消固定") { model.pinnedDestinations.removeAll { $0.id == record.id } } }
+     }
+ 
+     private func symbol(for destination: StudioDestination) -> String {
+@@ -114,7 +120,7 @@
+                 }
+                 Spacer(); Image(systemName: "chevron.right").foregroundStyle(.secondary)
+             }.padding(.horizontal, 14).padding(.vertical, 10).contentShape(Rectangle())
+-        }.buttonStyle(.plain)
++        }.buttonStyle(StudioPressButtonStyle()).studioHoverLift()
+             .contextMenu {
+                 if model.isPinned(record.id) {
+                     Button("取消固定") { model.unpinDestination(for: record.id) }
+--- a/Web Studio/StudioDesign.swift
++++ b/Web Studio/StudioDesign.swift
+@@ -5,6 +5,19 @@
+ /// Shared visual language for the native workbench. Keep these values semantic so
+ /// macOS appearance, contrast, and accessibility settings remain authoritative.
+ enum StudioDesign {
++    enum Motion {
++        static let hover: TimeInterval = 0.12
++        static let press: TimeInterval = 0.12
++        static let selection: TimeInterval = 0.16
++        static let panel: TimeInterval = 0.18
++        static let message: TimeInterval = 0.18
++        static func animation(_ duration: TimeInterval, reduceMotion: Bool) -> Animation? {
++            reduceMotion ? nil : .easeOut(duration: duration)
++        }
++        static func messageTransition(reduceMotion: Bool) -> AnyTransition {
++            reduceMotion ? .opacity : .opacity.combined(with: .offset(y: 4))
++        }
++    }
+     enum Spacing {
+         static let row: CGFloat = 8
+         static let control: CGFloat = 12
+@@ -21,12 +34,28 @@
+         static let opaqueSurface = SwiftUI.Color(nsColor: .windowBackgroundColor)
+         static let fieldFill = SwiftUI.Color(nsColor: .controlBackgroundColor).opacity(0.35)
+         static let selectedFill = SwiftUI.Color.accentColor.opacity(0.14)
++        static let groupSelectedFill = SwiftUI.Color.secondary.opacity(0.08)
++        static let hoverFill = SwiftUI.Color.primary.opacity(0.06)
+         static let divider = SwiftUI.Color.secondary.opacity(0.22)
+         static let error = SwiftUI.Color.red
+         static let warning = SwiftUI.Color.orange
+     }
+ }
+ 
++struct StudioPressButtonStyle: ButtonStyle {
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
++    @Environment(\.isEnabled) private var isEnabled
++    @State private var isHovered = false
++    func makeBody(configuration: Configuration) -> some View {
++        configuration.label
++            .background(isEnabled && configuration.isPressed ? StudioDesign.Color.selectedFill : (isEnabled && isHovered ? StudioDesign.Color.hoverFill : .clear), in: RoundedRectangle(cornerRadius: StudioDesign.Radius.row, style: .continuous))
++            .scaleEffect(isEnabled && configuration.isPressed && !reduceMotion ? 0.985 : 1)
++            .animation(StudioDesign.Motion.animation(StudioDesign.Motion.press, reduceMotion: reduceMotion), value: configuration.isPressed)
++            .animation(StudioDesign.Motion.animation(StudioDesign.Motion.hover, reduceMotion: reduceMotion), value: isHovered)
++            .onHover { if isEnabled { isHovered = $0 } else { isHovered = false } }
++    }
++}
++
+ extension View {
+     func studioGlassSurface(cornerRadius: CGFloat = StudioDesign.Radius.panel) -> some View {
+         modifier(StudioGlassSurfaceModifier(cornerRadius: cornerRadius))
+@@ -40,6 +69,17 @@
+ 
+     func studioFieldSurface() -> some View { modifier(StudioFieldSurfaceModifier()) }
+     func studioShellScrim() -> some View { modifier(StudioShellScrimModifier()) }
++    func studioHoverLift() -> some View { modifier(StudioHoverLiftModifier()) }
++}
++
++private struct StudioHoverLiftModifier: ViewModifier {
++    @Environment(\.accessibilityReduceMotion) private var reduceMotion
++    @State private var hovering = false
++    func body(content: Content) -> some View {
++        content.offset(y: hovering && !reduceMotion ? -1 : 0)
++            .animation(StudioDesign.Motion.animation(StudioDesign.Motion.hover, reduceMotion: reduceMotion), value: hovering)
++            .onHover { hovering = $0 }
++    }
+ }
+ 
+ private struct StudioGlassSurfaceModifier: ViewModifier {

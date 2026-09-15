@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+if [ "$#" -eq 3 ] && [ "$1" = "--sdk" ] && [ "$2" = "macosx" ] && [ "$3" = "--show-sdk-path" ]; then
+  exec env DEVELOPER_DIR=/Library/Developer/CommandLineTools /usr/bin/xcrun "$@"
+fi
+exec /usr/bin/xcrun "$@"
