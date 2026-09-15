@@ -2,6 +2,13 @@
 
 A native macOS workspace built with SwiftUI, AppKit, WebKit, SwiftTerm and the pinned GhosttyKit core. Resources, their visible panes, layout and Agent requests have separate ownership. [DESIGN.md](DESIGN.md) and [UX-CONTRACT.md](UX-CONTRACT.md) describe the product contract; [the acceptance report](output/six-features-acceptance.md) distinguishes implementation from actual verification.
 
+## License
+
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE).
+Third-party dependencies and vendored code remain under their respective
+licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and
+[`Vendor/ghostty/LICENSE`](Vendor/ghostty/LICENSE).
+
 ## Current implementation
 
 - **Resources:** `ResourceStore` owns stable IDs, ordered records, groups, web runtimes and terminal sessions. Views reference IDs. Groups organize resources and do not isolate logins or permissions. Existing WebKit shared website data storage is retained.
