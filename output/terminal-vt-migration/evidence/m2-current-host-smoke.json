@@ -1,0 +1,40 @@
+{
+  "argv": [
+    "sh",
+    "scripts/test-terminal-vt-host.sh"
+  ],
+  "cwd": "/Users/huaodong/workspace/Web Studio",
+  "started_at": "2026-09-16T06:49:30.671353Z",
+  "ended_at": "2026-09-16T06:49:39.299155Z",
+  "exit_code": 0,
+  "timed_out": false,
+  "wrapper_exit_code": null,
+  "stdout": "enhanced-bytes press=[27, 91, 57, 55, 59, 50, 117] repeat=[27, 91, 57, 55, 59, 50, 58, 50, 117] release=[27, 91, 57, 55, 59, 50, 58, 51, 117]\nTerminal VT host smoke passed\n",
+  "stderr": "enhanced-actual press=[27, 91, 57, 55, 59, 50, 117] repeat=[27, 91, 57, 55, 59, 50, 58, 50, 117] release=[27, 91, 57, 55, 59, 50, 58, 51, 117]\n",
+  "stdout_base64": "ZW5oYW5jZWQtYnl0ZXMgcHJlc3M9WzI3LCA5MSwgNTcsIDU1LCA1OSwgNTAsIDExN10gcmVwZWF0PVsyNywgOTEsIDU3LCA1NSwgNTksIDUwLCA1OCwgNTAsIDExN10gcmVsZWFzZT1bMjcsIDkxLCA1NywgNTUsIDU5LCA1MCwgNTgsIDUxLCAxMTddClRlcm1pbmFsIFZUIGhvc3Qgc21va2UgcGFzc2VkCg==",
+  "stderr_base64": "ZW5oYW5jZWQtYWN0dWFsIHByZXNzPVsyNywgOTEsIDU3LCA1NSwgNTksIDUwLCAxMTddIHJlcGVhdD1bMjcsIDkxLCA1NywgNTUsIDU5LCA1MCwgNTgsIDUwLCAxMTddIHJlbGVhc2U9WzI3LCA5MSwgNTcsIDU1LCA1OSwgNTAsIDU4LCA1MSwgMTE3XQo=",
+  "stdout_present": true,
+  "stderr_present": true,
+  "stdout_required": false,
+  "inputs": {
+    "/Users/huaodong/workspace/Web Studio/Web Studio/TerminalVTView.swift": {
+      "kind": "source",
+      "sha256": "7f9baee7b3c100939b25b5786ff6c9afed7a092b0ba9a1704613d446fef025cd"
+    },
+    "/Users/huaodong/workspace/Web Studio/Web Studio/TerminalVTSession.swift": {
+      "kind": "source",
+      "sha256": "095b6de822f679431a15d160b61df3693bbece2efd5a931044f500340ab7c48a"
+    },
+    "/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-host-smoke.swift": {
+      "kind": "test",
+      "sha256": "6c6e71c5d18280cf9c592ce59166a944c8603d0400bf2d08ce966ce5aa6f48b9"
+    }
+  },
+  "repo": null,
+  "cwd_relative": null,
+  "revision_before": null,
+  "revision_after": null,
+  "revision": null,
+  "revision_changed_paths": [],
+  "result": "passed"
+}

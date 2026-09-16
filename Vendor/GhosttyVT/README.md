@@ -27,7 +27,8 @@ The M0 smoke proves the linked Terminal, Render State, Formatter, key, mouse,
 selection, and resize surfaces. M1 adds the Swift-owned core boundary and
 render snapshot conversion. M2 adds source-level scroll, selection, paste,
 focus, mouse, PWD, and PTY backend adapters. Prior arm64 Debug, core, backend
-and offscreen checks passed for the opt-in target. The latest source-only
-changes are unverified because Xcode 27 requires its license agreement; live
-GUI acceptance and the M3 migration gate remain pending. The app default
+and offscreen checks passed for the opt-in target. The Xcode 27 license block is resolved. Final Debug/Release builds and recorded
+M2 checks passed at their documented checkpoints; extended IME scenarios, full accessibility,
+controlled performance and the M3 migration gate remain pending. See
+[the current migration status](../../output/terminal-vt-migration/STATUS.md). The app default
 remains the current production backend.

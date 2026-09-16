@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "pid": 58293,
+  "started_at": "2026-09-16T07:01:30.275447+00:00",
+  "ended_at": "2026-09-16T07:01:30.309137+00:00",
+  "cli_argv": [
+    "scripts/terminal-benchmark.py",
+    "sample",
+    "--pid",
+    "58293",
+    "--duration",
+    "0.03",
+    "--interval",
+    "0.01",
+    "--output",
+    "output/terminal-vt-migration/evidence/performance-tooling/sample-sleep-0.03-v5.json"
+  ],
+  "cwd": "/Users/huaodong/workspace/Web Studio",
+  "duration_requested_seconds": 0.03,
+  "interval_requested_seconds": 0.01,
+  "system": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "release": "25.6.0",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]"
+  },
+  "sampling": {
+    "source": "ps cumulative CPU time and RSS",
+    "cpu_percent": "interval estimate from cumulative CPU delta / actual monotonic time between first and last valid ps samples; ps historical %CPU is retained only as raw output",
+    "precision": "ps output precision and wall-clock scheduling introduce sampling error",
+    "frame_time": "unavailable",
+    "input_latency": "unavailable",
+    "gpu": "unavailable",
+    "rss": "discrete samples and min/max range, not peak RSS",
+    "scope": "one explicitly selected process; CPU percentage may exceed 100% on multicore systems",
+    "time_boundary": "sample elapsed time includes ps command execution and scheduling overhead"
+  },
+  "limitations": [
+    "load payload byte counts describe this process output, not bytes transmitted through a PTY",
+    "CPU and RSS observations describe one PID only; RSS min/max is not a peak measurement"
+  ],
+  "samples": [
+    {
+      "timestamp": "2026-09-16T07:01:30.275447+00:00",
+      "monotonic_started": 0.023912416,
+      "monotonic_ended": 0.027033791,
+      "argv": [
+        "ps",
+        "-p",
+        "58293",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "58293 58290 00:00   0:00.00   0.0   1136 /bin/sleep 0.25\n",
+      "stderr": "",
+      "pid": 58293,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.25",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:01:30.291127+00:00",
+      "monotonic_started": 0.03958625,
+      "monotonic_ended": 0.042390791,
+      "argv": [
+        "ps",
+        "-p",
+        "58293",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "58293 58290 00:00   0:00.00   0.4   1136 /bin/sleep 0.25\n",
+      "stderr": "",
+      "pid": 58293,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.25",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:01:30.306211+00:00",
+      "monotonic_started": 0.0546675,
+      "monotonic_ended": 0.05755725,
+      "argv": [
+        "ps",
+        "-p",
+        "58293",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "58293 58290 00:00   0:00.00   0.4   1136 /bin/sleep 0.25\n",
+      "stderr": "",
+      "pid": 58293,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.25",
+      "observation_status": "observed"
+    }
+  ],
+  "summary": {
+    "sample_count": 3,
+    "valid_sample_count": 3,
+    "cpu_time_delta_seconds": 0.0,
+    "actual_sample_elapsed_seconds": 0.033644834,
+    "interval_cpu_percent_estimate": 0.0,
+    "cpu_sampling_status": "sufficient",
+    "process_state": "observed",
+    "rss_kb_min": 1136,
+    "rss_kb_max": 1136,
+    "process_disappeared": false
+  }
+}

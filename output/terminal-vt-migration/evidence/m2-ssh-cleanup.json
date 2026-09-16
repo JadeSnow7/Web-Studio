@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-09-16T07:09:37.826636+00:00",
+  "cleanup": [
+    {
+      "pid": 30344,
+      "action": "SIGTERM",
+      "verified_command": "sshd: /usr/sbin/sshd -D -e -f /private/tmp/web-studio-m2-ssh-20260916/sshd_config [listener] 0 of 10-100 startups"
+    },
+    {
+      "pid": 77943,
+      "action": "SIGTERM",
+      "verified_command": "/usr/bin/ssh-agent -D -a /private/tmp/web-studio-m2-ssh-20260916/agent.sock"
+    }
+  ],
+  "host_entries_removed": 1,
+  "closed_pid_check": {
+    "argv": [
+      "ps",
+      "-p",
+      "49064,49591,82164",
+      "-o",
+      "pid=,command="
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": ""
+  }
+}

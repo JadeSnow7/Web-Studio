@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-09-16T07:26:34.550665+00:00",
+  "observer": "user",
+  "input_method": "微信输入法",
+  "user_statement": "使用微信输入法，输入一切正常",
+  "scope": "本轮默认窗口实际中文输入手测",
+  "result": "passed",
+  "screenshot": "m2-wechat-ime-user.png",
+  "screenshot_sha256": "6327e54e2d4862303f47482e59325bf00237a3ba988c1ba63e453e3f7314a9d7",
+  "visually_confirmed": [
+    "IME_RESULT=[中文]",
+    "底部可见带下划线的拼音预编辑文本",
+    "PID=22208；网格45 98"
+  ],
+  "not_independently_established": [
+    "截图未展示候选框或Escape取消的完整时序",
+    "组合中焦点切换、900×560及左右分栏未由此次反馈单独确认"
+  ],
+  "build": "/private/tmp/web-studio-m2-20260916/Build/Products/Debug/Web Studio VT.app",
+  "binary_sha256": "22dcef89c15360bb3a0c0ad5212ac3e853dcbb6ec77688c711240b5aa1cbf9fe"
+}

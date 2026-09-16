@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "/Users/huaodong/Documents/evidence-driven-development/skill/veriflow/scripts/validate_task.py",
+    "output/terminal-vt-migration/task-state.json",
+    "--repo",
+    ".",
+    "--gate",
+    "record"
+  ],
+  "exit_code": 0,
+  "stdout": "{\n  \"ok\": true,\n  \"gate\": \"record\",\n  \"current_revision\": null,\n  \"errors\": [],\n  \"warnings\": [],\n  \"limits\": \"Structural consistency is not proof of product success or authorization authenticity.\"\n}\n",
+  "stderr": ""
+}

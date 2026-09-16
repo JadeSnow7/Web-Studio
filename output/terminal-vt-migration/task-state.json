@@ -1,0 +1,667 @@
+{
+  "schema_version": "1.2",
+  "task": {
+    "id": "VT-M2-20260916",
+    "title": "推进终端 M2 验收并交付可复核的剩余门槛",
+    "mode": "new",
+    "status": "in_progress",
+    "source_ids": [
+      "SRC-001"
+    ]
+  },
+  "discovery": {
+    "status": "ready",
+    "user": "项目维护者",
+    "scenario": "推进终端 M2 验收并交付可复核的剩余门槛",
+    "problem": "当前验收存在已核实缺口",
+    "expected_outcome": "推进终端 M2 验收并交付可复核的剩余门槛",
+    "scope": "真实 IME、窗口截图、交互/AX、生命周期、专用 SSH 与新旧性能基线；保持默认后端",
+    "acceptable_result": "按实际证据报告通过、失败与未判定；不越过生产切换门槛"
+  },
+  "sources": [
+    {
+      "id": "SRC-001",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-16-start-approved-plan",
+      "summary": "用户选择先修 CI 再做终端 M2；先对齐文档，由 coder 实现；skill 改进仅记录汇报；2026-09-16 开始执行。",
+      "adoption": "accepted"
+    },
+    {
+      "id": "SRC-002",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-16-resume-M2",
+      "summary": "精确内容区、IME/VoiceOver/生命周期、规范化性能、预算确认、冻结版本回归；不提交推送、不进入M3。",
+      "adoption": "accepted"
+    },
+    {
+      "id": "SRC-003",
+      "kind": "user_requirement",
+      "reference": "conversation:prepare-commit-and-push",
+      "summary": "在获知M2未完整验收后，用户要求准备提交并推送当前阶段成果；替代此前本轮不提交推送的限制。",
+      "adoption": "accepted"
+    }
+  ],
+  "main_tasks": [
+    {
+      "id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "推进终端 M2 验收并交付可复核的剩余门槛",
+      "scope": [
+        "真实 IME、窗口截图、交互/AX、生命周期、专用 SSH 与新旧性能基线；保持默认后端"
+      ],
+      "non_goals": [
+        "修改 skill 规则或封存实验数据",
+        "合并、部署、生产默认切换"
+      ],
+      "dependencies": [],
+      "assumptions": [
+        "使用当前已核实基线"
+      ],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-001"
+      ],
+      "implementation_task_ids": [
+        "IT-001",
+        "IT-002"
+      ]
+    },
+    {
+      "id": "MT-002",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "goal": "精确内容区、亮暗分栏和扩展IME",
+      "scope": [
+        "精确内容区、亮暗分栏和扩展IME"
+      ],
+      "non_goals": [
+        "生产默认切换、M3、提交推送"
+      ],
+      "dependencies": [],
+      "assumptions": [],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-002"
+      ],
+      "implementation_task_ids": [
+        "IT-003"
+      ]
+    },
+    {
+      "id": "MT-003",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "goal": "VoiceOver与资源生命周期",
+      "scope": [
+        "VoiceOver与资源生命周期"
+      ],
+      "non_goals": [
+        "生产默认切换、M3、提交推送"
+      ],
+      "dependencies": [],
+      "assumptions": [],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-003"
+      ],
+      "implementation_task_ids": [
+        "IT-004"
+      ]
+    },
+    {
+      "id": "MT-004",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "goal": "可比Release性能基线与预算",
+      "scope": [
+        "可比Release性能基线与预算"
+      ],
+      "non_goals": [
+        "生产默认切换、M3、提交推送"
+      ],
+      "dependencies": [],
+      "assumptions": [],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-004"
+      ],
+      "implementation_task_ids": [
+        "IT-005"
+      ]
+    },
+    {
+      "id": "MT-005",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "goal": "冻结版本回归和一致性",
+      "scope": [
+        "冻结版本回归和一致性"
+      ],
+      "non_goals": [
+        "生产默认切换、M3、提交推送"
+      ],
+      "dependencies": [],
+      "assumptions": [],
+      "status": "verified",
+      "metric_ids": [
+        "MET-005"
+      ],
+      "implementation_task_ids": [
+        "IT-006"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "MET-001",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "推进终端 M2 验收并交付可复核的剩余门槛",
+      "baseline": "见当前摘要及原始核查记录",
+      "target": "合同规定的验收均有匹配版本的证据",
+      "method": "主线程核查差异和执行记录，并运行整体验收",
+      "environment_data": "当前本机环境；CI 另记录远程版本与矩阵结果",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-002",
+      "main_task_id": "MT-002",
+      "kind": "mandatory_gate",
+      "name": "精确内容区、亮暗分栏和扩展IME",
+      "baseline": "默认窗口IME已人工通过；精确尺寸与扩展组合输入待验",
+      "target": "900×560内容区有独立几何、真实PNG；亮暗与双栏内容/选区/光标正确，组合输入无丢字重复或候选漂移",
+      "method": "外部AX/CG测量、CUA截图、用户微信输入法回执",
+      "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
+      "evidence_ids": [
+        "EVD-010"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-003",
+      "main_task_id": "MT-003",
+      "kind": "mandatory_gate",
+      "name": "VoiceOver与资源生命周期",
+      "baseline": "历史PTY自动测试及部分隐藏/关闭案例通过",
+      "target": "VoiceOver实际朗读与导航有人工回执；隐藏恢复PID/历史保持；取消保活、确认回收且无关进程存活",
+      "method": "人工听读、AX观察、进程树与退出状态独立核对",
+      "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-004",
+      "main_task_id": "MT-004",
+      "kind": "mandatory_gate",
+      "name": "可比Release性能基线与预算",
+      "baseline": "旧数据网格/外观不一致，仅探索性",
+      "target": "固定窗口/字体/网格/主题/负载/预热/重复次数得到有效CPU/RSS及可用trace；用户确认预算后再判定",
+      "method": "条件快照、进程累计CPU/RSS、分轮生成器、Metal/System trace；无法可靠测得则未判定",
+      "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-005",
+      "main_task_id": "MT-005",
+      "kind": "mandatory_gate",
+      "name": "冻结版本回归和一致性",
+      "baseline": "旧构建/smoke缺少revision token",
+      "target": "必要回归结果真实通过且执行前后revision相同；文档和待提交范围一致",
+      "method": "record_execution --repo --state；主线程读取原始输出和diff",
+      "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
+      "evidence_ids": [
+        "EVD-006",
+        "EVD-007",
+        "EVD-008",
+        "EVD-009"
+      ],
+      "status": "passed",
+      "verification": "execution"
+    }
+  ],
+  "implementation_tasks": [
+    {
+      "id": "IT-001",
+      "main_task_id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "有界实现与回归测试",
+      "file_scope": [
+        "scripts/terminal-benchmark.py",
+        "scripts/test-terminal-benchmark.py",
+        "output/terminal-vt-migration/evidence/performance-tooling"
+      ],
+      "interface_constraints": [
+        "遵守 handoffs/performance-tooling.md；不改App源码、不操作真实窗口"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-001"
+      ],
+      "support_reason": "主线程独立冻结版本回归与原始记录审查通过；不替代整体M2。",
+      "evidence_ids": [
+        "EVD-009"
+      ],
+      "owner": "coder",
+      "status": "verified"
+    },
+    {
+      "id": "IT-002",
+      "main_task_id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "共享文档、审查、整体验收与报告",
+      "file_scope": [
+        "output/terminal-vt-migration",
+        "Vendor/GhosttyVT/README.md"
+      ],
+      "interface_constraints": [
+        "共享状态仅主线程写入"
+      ],
+      "dependencies": [
+        "IT-001"
+      ],
+      "acceptance": [
+        "MET-001"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "main-thread",
+      "status": "in_progress"
+    },
+    {
+      "id": "IT-003",
+      "main_task_id": "MT-002",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "scope": "精确内容区、亮暗分栏和扩展IME",
+      "file_scope": [
+        "output/terminal-vt-migration/evidence",
+        "output/terminal-vt-migration/task-state.json",
+        "output/terminal-vt-migration/work-log.md"
+      ],
+      "interface_constraints": [
+        "共享文件仅主线程写入，规范文档已冻结"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-002"
+      ],
+      "support_reason": "主线程现场验证与证据审查",
+      "evidence_ids": [],
+      "owner": "main-thread",
+      "status": "in_progress"
+    },
+    {
+      "id": "IT-004",
+      "main_task_id": "MT-003",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "scope": "VoiceOver与资源生命周期",
+      "file_scope": [
+        "output/terminal-vt-migration/evidence",
+        "output/terminal-vt-migration/task-state.json",
+        "output/terminal-vt-migration/work-log.md"
+      ],
+      "interface_constraints": [
+        "共享文件仅主线程写入，规范文档已冻结"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-003"
+      ],
+      "support_reason": "主线程现场验证与证据审查",
+      "evidence_ids": [],
+      "owner": "main-thread",
+      "status": "in_progress"
+    },
+    {
+      "id": "IT-005",
+      "main_task_id": "MT-004",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "scope": "可比Release性能基线与预算",
+      "file_scope": [
+        "output/terminal-vt-migration/evidence",
+        "output/terminal-vt-migration/task-state.json",
+        "output/terminal-vt-migration/work-log.md"
+      ],
+      "interface_constraints": [
+        "共享文件仅主线程写入，规范文档已冻结"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-004"
+      ],
+      "support_reason": "主线程现场验证与证据审查",
+      "evidence_ids": [],
+      "owner": "main-thread",
+      "status": "in_progress"
+    },
+    {
+      "id": "IT-006",
+      "main_task_id": "MT-005",
+      "source_ids": [
+        "SRC-002"
+      ],
+      "scope": "冻结版本回归和一致性",
+      "file_scope": [
+        "output/terminal-vt-migration/evidence",
+        "output/terminal-vt-migration/task-state.json",
+        "output/terminal-vt-migration/work-log.md"
+      ],
+      "interface_constraints": [
+        "共享文件仅主线程写入，规范文档已冻结"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-005"
+      ],
+      "support_reason": "主线程独立冻结版本回归与原始记录审查通过；不替代整体M2。",
+      "evidence_ids": [
+        "EVD-006",
+        "EVD-007",
+        "EVD-008",
+        "EVD-009"
+      ],
+      "owner": "main-thread",
+      "status": "verified"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-001",
+      "path": "output/terminal-vt-migration/evidence/m2-current-debug-build-host.json",
+      "result": "passed",
+      "scope": "VT Debug build",
+      "kind": "execution",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T06:49:20.416126Z",
+      "sha256": "d5f75bc63f11b152a7df234bc43ae2fed38762fd5c9952dcac2297ae966eccec",
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+    },
+    {
+      "id": "EVD-002",
+      "path": "output/terminal-vt-migration/evidence/m2-current-host-smoke.json",
+      "result": "passed",
+      "scope": "native host interfaces",
+      "kind": "execution",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T06:49:39.299155Z",
+      "sha256": "f75c4bda5db2e51cc14d3383ad98a54c846528667c648de2832ae5e637700e6f",
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+    },
+    {
+      "id": "EVD-003",
+      "path": "output/terminal-vt-migration/evidence/m2-current-backend-pty.json",
+      "result": "passed",
+      "scope": "PTY/backend/ASan",
+      "kind": "execution",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T06:53:38.453882Z",
+      "sha256": "4f313af59f2b57a96182cd6f0e9d1cdea62c4d69cfb30213b893c7f1ef97795f",
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+    },
+    {
+      "id": "EVD-004",
+      "path": "output/terminal-vt-migration/evidence/m2-current-vt-release-build.json",
+      "result": "passed",
+      "scope": "VT Release build",
+      "kind": "execution",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T06:52:02.234826Z",
+      "sha256": "e1bce437323685a9f2789549eed96a6b9b78a076ad94bbafb17b45b53d460c08",
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+    },
+    {
+      "id": "EVD-005",
+      "path": "output/terminal-vt-migration/evidence/m2-current-legacy-release-build.json",
+      "result": "passed",
+      "scope": "legacy Release build",
+      "kind": "execution",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T06:52:27.465565Z",
+      "sha256": "dace6c238bdadaef5485180b63b91cbb61ee906eca032108926d978cb4339b17",
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+    },
+    {
+      "id": "EVD-006",
+      "path": "output/terminal-vt-migration/evidence/m2-frozen-debug-build-host-v2.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "m2-frozen-debug-build-host-v2.json",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T07:45:53.858916Z",
+      "sha256": "d9c86e04adb33214cc38d3516282830d8caacc5089b52d6577ec0ffce1a5c713"
+    },
+    {
+      "id": "EVD-007",
+      "path": "output/terminal-vt-migration/evidence/m2-frozen-vt-release-build-v2.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "m2-frozen-vt-release-build-v2.json",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T07:46:03.050797Z",
+      "sha256": "175fcc02d2af602c728b2390f0be0fadcad6e0b5242fa85c8cc05f88dfff7ae9"
+    },
+    {
+      "id": "EVD-008",
+      "path": "output/terminal-vt-migration/evidence/m2-frozen-legacy-release-build-v2.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "m2-frozen-legacy-release-build-v2.json",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T07:46:11.652329Z",
+      "sha256": "a2e408532e18eb0a131c02dd5d6720fe6867296220d3ec994f546663d1cab877"
+    },
+    {
+      "id": "EVD-009",
+      "path": "output/terminal-vt-migration/evidence/m2-frozen-regression-v2.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "m2-frozen-regression-v2.json",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T07:46:53.191766Z",
+      "sha256": "a9f640a7af2a453c226ea6d772c5c859109745d7b889f89ebc046893d565bc8a"
+    },
+    {
+      "id": "EVD-010",
+      "path": "output/terminal-vt-migration/evidence/m2-frozen-geometry.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "m2-frozen-geometry.json",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T07:46:53.131022Z",
+      "sha256": "0ce3a33cecfa6e215177102837562c9c8d17c5611c2927cde3f71bfbaec43889"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-001",
+      "purpose": "归档M2阶段验收证据与只读采样/几何工具",
+      "paths": [
+        "Vendor/GhosttyVT/README.md",
+        "output/terminal-vt-migration",
+        "scripts/terminal-benchmark.py",
+        "scripts/test-terminal-benchmark.py",
+        "scripts/terminal-window-probe.swift",
+        "scripts/test-terminal-window-probe.sh"
+      ],
+      "implementation_task_ids": [
+        "IT-001",
+        "IT-002",
+        "IT-006"
+      ],
+      "source_ids": [
+        "SRC-003"
+      ],
+      "status": "reviewed",
+      "review": {
+        "status": "passed",
+        "reviewer": "main-thread",
+        "note": "工具diff、文档、原始冻结回归与实际revision已审查；M2整体不通过。"
+      },
+      "evidence_ids": [
+        "EVD-006",
+        "EVD-007",
+        "EVD-008",
+        "EVD-009",
+        "EVD-010"
+      ],
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54"
+    }
+  ],
+  "overall_acceptance": {
+    "metric_ids": [
+      "MET-001",
+      "MET-002",
+      "MET-003",
+      "MET-004",
+      "MET-005"
+    ],
+    "evidence_ids": [
+      "EVD-006",
+      "EVD-007",
+      "EVD-008",
+      "EVD-009",
+      "EVD-010"
+    ],
+    "status": "undetermined"
+  },
+  "baseline": {
+    "git_ref": "2631e149787c6cfd8d9b0903c89995e8cde96083",
+    "worktree_status": "dirty_dependency_confirmed",
+    "ownership": "主线程拥有共享状态；coder 按合同拥有实现路径；保留其他工作",
+    "foreign_paths": [],
+    "prepared_at": "2026-09-16T07:30:12.139720+00:00"
+  },
+  "authorization": {
+    "commit": {
+      "status": "authorized",
+      "source_id": "SRC-003"
+    },
+    "push": {
+      "status": "authorized",
+      "source_id": "SRC-003"
+    },
+    "merge": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "deploy": {
+      "status": "not_authorized",
+      "source_id": null
+    }
+  },
+  "delivery": {
+    "local_validation": "unavailable",
+    "remote_ci": "not_started",
+    "remote_ci_revision": null,
+    "note": "冻结版本三构建与终端回归已带task revision token通过；完整M2因人工IME/VoiceOver、剩余场景及规范化性能仍未判定。当前GUI与新构建二进制边界分别记录。"
+  },
+  "actions": [
+    {
+      "id": "ACT-001",
+      "kind": "commit",
+      "target": "main",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54",
+      "status": "in_progress",
+      "source_id": "SRC-003",
+      "authorization_action": "commit",
+      "idempotency_key": "VT-M2-checkpoint-commit-80ff04c868f1",
+      "receipt": null
+    },
+    {
+      "id": "ACT-002",
+      "kind": "push",
+      "target": "origin/main",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54",
+      "status": "planned",
+      "source_id": "SRC-003",
+      "authorization_action": "push",
+      "idempotency_key": "VT-M2-checkpoint-push-80ff04c868f1",
+      "receipt": null
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "decision": "Default-configuration CPU/RSS samples are exploratory because VT and legacy grids differ; frame/input/GPU remain unavailable."
+    },
+    {
+      "id": "DEC-002",
+      "decision": "用户确认微信输入法在本轮默认Debug窗口输入正常；人工用例通过，整体M2仍未判定。",
+      "evidence_path": "output/terminal-vt-migration/evidence/m2-wechat-ime-user.json"
+    },
+    {
+      "id": "DEC-003",
+      "decision": "本轮明确不提交推送；保留现有任务改动。先独立测量内容区，再执行窗口与生命周期、性能对齐和冻结回归。"
+    },
+    {
+      "id": "DEC-004",
+      "decision": "保持深色900×560双栏SPLIT_IME现场等待人工回执；原系统外观为自动，现场结束后恢复。性能私有字体匹配待验证，无有效基线前不提出数值预算。",
+      "evidence_path": "output/terminal-vt-migration/evidence/m2-resume-results.md"
+    },
+    {
+      "id": "DEC-005",
+      "source_id": "SRC-003",
+      "decision": "按用户新指令交付当前阶段快照；完整M2仍未判定，未将未验项目改为通过。此次明确提交推送指令优先于skill完整M2验收门禁；保留门禁实际失败回执。默认旧后端、M3与部署边界不变。"
+    }
+  ],
+  "hypotheses": [],
+  "recovery_strategy": {
+    "trigger": "修复引入回归或证据不完整",
+    "steps": [
+      "停止后续交付",
+      "保留原始证据，修复后重跑受影响检查"
+    ],
+    "owner": "main-thread"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-09-16T07:48:47.518486+00:00",
+  "argv": [
+    "python3",
+    "/Users/huaodong/Documents/evidence-driven-development/skill/veriflow/scripts/validate_task.py",
+    "output/terminal-vt-migration/task-state.json",
+    "--repo",
+    ".",
+    "--gate",
+    "acceptance"
+  ],
+  "exit_code": 1,
+  "stdout": "{\n  \"ok\": false,\n  \"gate\": \"acceptance\",\n  \"current_revision\": \"patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54\",\n  \"errors\": [\n    {\n      \"code\": \"MANDATORY_GATE\",\n      \"message\": \"MET-001 (mandatory_gate) is 'undetermined', not passed\"\n    },\n    {\n      \"code\": \"MANDATORY_GATE\",\n      \"message\": \"MET-002 (mandatory_gate) is 'undetermined', not passed\"\n    },\n    {\n      \"code\": \"MANDATORY_GATE\",\n      \"message\": \"MET-003 (mandatory_gate) is 'undetermined', not passed\"\n    },\n    {\n      \"code\": \"MANDATORY_GATE\",\n      \"message\": \"MET-004 (mandatory_gate) is 'undetermined', not passed\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-001 is not verified\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-002 is not verified\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-003 is not verified\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-004 is not verified\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-005 is not verified\"\n    },\n    {\n      \"code\": \"IMPLEMENTATION_NOT_VERIFIED\",\n      \"message\": \"IT-006 is not verified\"\n    },\n    {\n      \"code\": \"MAIN_TASK_NOT_VERIFIED\",\n      \"message\": \"MT-001 is not verified\"\n    },\n    {\n      \"code\": \"MAIN_TASK_NOT_VERIFIED\",\n      \"message\": \"MT-002 is not verified\"\n    },\n    {\n      \"code\": \"MAIN_TASK_NOT_VERIFIED\",\n      \"message\": \"MT-003 is not verified\"\n    },\n    {\n      \"code\": \"MAIN_TASK_NOT_VERIFIED\",\n      \"message\": \"MT-004 is not verified\"\n    },\n    {\n      \"code\": \"MAIN_TASK_NOT_VERIFIED\",\n      \"message\": \"MT-005 is not verified\"\n    },\n    {\n      \"code\": \"CHANGES_MISSING\",\n      \"message\": \"local commit gate needs at least one reviewed CHG-* record\"\n    },\n    {\n      \"code\": \"OVERALL_NOT_PASSED\",\n      \"message\": \"overall end-to-end acceptance is not passed\"\n    }\n  ],\n  \"warnings\": [],\n  \"limits\": \"Structural consistency is not proof of product success or authorization authenticity.\"\n}\n",
+  "stderr": ""
+}

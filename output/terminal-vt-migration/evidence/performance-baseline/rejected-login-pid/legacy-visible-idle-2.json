@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "pid": 61245,
+  "started_at": "2026-09-16T07:03:38.596476+00:00",
+  "ended_at": "2026-09-16T07:03:43.607260+00:00",
+  "cli_argv": [
+    "scripts/terminal-benchmark.py",
+    "sample",
+    "--pid",
+    "61245",
+    "--duration",
+    "5",
+    "--interval",
+    "0.5",
+    "--output",
+    "output/terminal-vt-migration/evidence/performance-baseline/legacy-visible-idle-2.json"
+  ],
+  "cwd": "/Users/huaodong/workspace/Web Studio",
+  "duration_requested_seconds": 5.0,
+  "interval_requested_seconds": 0.5,
+  "system": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "release": "25.6.0",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]"
+  },
+  "sampling": {
+    "source": "ps cumulative CPU time and RSS",
+    "cpu_percent": "interval estimate from cumulative CPU delta / actual monotonic time between first and last valid ps samples; ps historical %CPU is retained only as raw output",
+    "precision": "ps output precision and wall-clock scheduling introduce sampling error",
+    "frame_time": "unavailable",
+    "input_latency": "unavailable",
+    "gpu": "unavailable",
+    "rss": "discrete samples and min/max range, not peak RSS",
+    "scope": "one explicitly selected process; CPU percentage may exceed 100% on multicore systems",
+    "time_boundary": "sample elapsed time includes ps command execution and scheduling overhead"
+  },
+  "limitations": [
+    "load payload byte counts describe this process output, not bytes transmitted through a PTY",
+    "CPU and RSS observations describe one PID only; RSS min/max is not a peak measurement"
+  ],
+  "samples": [
+    {
+      "timestamp": "2026-09-16T07:03:38.596476+00:00",
+      "monotonic_started": 0.023523125,
+      "monotonic_ended": 0.026601708,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:16   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:39.102250+00:00",
+      "monotonic_started": 0.52928525,
+      "monotonic_ended": 0.535156291,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:17   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:39.610072+00:00",
+      "monotonic_started": 1.037107666,
+      "monotonic_ended": 1.041269875,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:17   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:40.117871+00:00",
+      "monotonic_started": 1.544915291,
+      "monotonic_ended": 1.549294583,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:18   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:40.627344+00:00",
+      "monotonic_started": 2.05439025,
+      "monotonic_ended": 2.058444083,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:18   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:41.134488+00:00",
+      "monotonic_started": 2.561537958,
+      "monotonic_ended": 2.566421,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:19   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:41.643401+00:00",
+      "monotonic_started": 3.070437291,
+      "monotonic_ended": 3.074482666,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:19   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:42.152530+00:00",
+      "monotonic_started": 3.579566708,
+      "monotonic_ended": 3.583869833,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:20   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:42.661909+00:00",
+      "monotonic_started": 4.088955625,
+      "monotonic_ended": 4.092348041,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:20   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:43.168851+00:00",
+      "monotonic_started": 4.595896,
+      "monotonic_ended": 4.60065275,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:21   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:03:43.601544+00:00",
+      "monotonic_started": 5.028589041,
+      "monotonic_ended": 5.034247958,
+      "argv": [
+        "ps",
+        "-p",
+        "61245",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "61245 60825 01:21   0:00.02   0.0   7584 /usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'\n",
+      "stderr": "",
+      "pid": 61245,
+      "cumulative_cpu_seconds": 0.02,
+      "rss_kb": 7584,
+      "command": "/usr/bin/login -flp huaodong /bin/bash --noprofile --norc -c exec -l '/bin/zsh' '-il'",
+      "observation_status": "observed"
+    }
+  ],
+  "summary": {
+    "sample_count": 11,
+    "valid_sample_count": 11,
+    "cpu_time_delta_seconds": 0.0,
+    "actual_sample_elapsed_seconds": 5.010724833,
+    "interval_cpu_percent_estimate": 0.0,
+    "cpu_sampling_status": "sufficient",
+    "process_state": "observed",
+    "rss_kb_min": 7584,
+    "rss_kb_max": 7584,
+    "process_disappeared": false
+  }
+}

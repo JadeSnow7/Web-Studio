@@ -1,0 +1,9 @@
+{
+  "observed_at": "2026-09-16T07:38:58.807927+00:00",
+  "pid": 21524,
+  "result": "failed",
+  "exit_code": 134,
+  "error": "NSInvalidArgumentException: Invalid number value (infinite) in JSON write",
+  "scope": "first external geometry probe; no valid measurement produced",
+  "next": "coder finite-value repair then independent rerun"
+}

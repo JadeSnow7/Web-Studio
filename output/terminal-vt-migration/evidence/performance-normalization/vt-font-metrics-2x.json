@@ -1,0 +1,24 @@
+{
+  "advanceWidthPoints" : 8.0361328125,
+  "ascentPoints" : 12.568359375,
+  "availableFontFamily" : false,
+  "backingScale" : 2,
+  "cellHeightPixelsAt2x" : 35,
+  "cellHeightPointsAt2x" : 17.5,
+  "cellWidthPixelsAt2x" : 17,
+  "cellWidthPointsAt2x" : 8.5,
+  "contentInsetPoints" : {
+    "bottom" : 12,
+    "left" : 16,
+    "right" : 16,
+    "top" : 12
+  },
+  "descentPoints" : 2.7421875,
+  "displayName" : ".SF NS Mono Light Regular",
+  "fontFamily" : ".AppleSystemUIFontMonospaced",
+  "fontName" : ".AppleSystemUIFontMonospaced-Regular",
+  "glyphForM" : 134,
+  "leadingPoints" : 0,
+  "pointSize" : 13,
+  "weight" : "regular"
+}

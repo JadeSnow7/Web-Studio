@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-09-16T07:03:15.774629+00:00",
+  "source_commit": "2631e149787c6cfd8d9b0903c89995e8cde96083",
+  "app_configuration": "arm64 Release, ad-hoc signed, sandbox disabled for both isolated builds",
+  "window": "default window with sidebar and Agent visible; screenshot transport scales images to 1252x768; native dimensions not measured",
+  "vt_grid": [
+    45,
+    98
+  ],
+  "legacy_grid": [
+    47,
+    108
+  ],
+  "comparability": "same machine and default viewport, differing default terminal cell grid; exploratory as-shipped baseline only, not normalized renderer comparison",
+  "metrics": "single process CPU time delta and discrete RSS only; frame time/input latency/GPU unavailable",
+  "tool_sources": [
+    {
+      "path": "scripts/terminal-benchmark.py",
+      "sha256": "699ffff2308755245614f2f48b4c852a5d2164fb517d25245fa454b82e11a212"
+    },
+    {
+      "path": "scripts/test-terminal-benchmark.py",
+      "sha256": "36ea8357480b35ac807f6d751b6d7fe413a67e999f14b018ab468eeb98b009f1"
+    }
+  ],
+  "binaries": [
+    {
+      "variant": "vt",
+      "pid": 49064,
+      "path": "/private/tmp/web-studio-m2-20260916/Build/Products/Release/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+      "sha256": "dc1d709dcdf8bf57d037fe3df9453d56aa2191f236e645bd13cd809aaca82a26"
+    },
+    {
+      "variant": "legacy",
+      "pid": 60825,
+      "path": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "sha256": "c1eb7592d824fa14f8a3bb3762b0655e850949bc61f98d97542ebd89ead0ada2"
+    }
+  ],
+  "idle_protocol": "Five consecutive 5 second samples, 0.5 second requested sampling interval, foreground terminal awaiting shell input. Apps had been running over one minute before sampling. Other user apps remained running; background CPU not controlled.",
+  "load_protocol": "One 25 second process sampling envelope per backend; five consecutive Unicode loads of 10000 lines with sleep 2 between iterations. UI dispatch occurs after sampler starts, so dispatch/idle tails differ. Aggregate data only, not five independently timed repetitions.",
+  "load_command": "i=1; while [ $i -le 5 ]; do /usr/bin/python3 '/Users/huaodong/workspace/Web Studio/scripts/terminal-benchmark.py' output --kind unicode --lines 10000; i=$((i+1)); sleep 2; done; printf '\\nFIVE_BURSTS_DONE\\n'"
+}

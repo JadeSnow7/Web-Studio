@@ -1,0 +1,31 @@
+There has been no change in the accessibility tree for Window: "Web Studio VT".
+The focused UI element is 73 text entry area Description: Terminal, Value: SPLIT_RIGHT PID=81191              
+ASCII abc XYZ 0123                 
+Unicode 中文 é 😀                  
+30 35                              
+SPLIT_IME>                         
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   

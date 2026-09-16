@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "pid": 21931,
+  "started_at": "2026-09-16T06:50:25.345224+00:00",
+  "duration_requested_seconds": 0.03,
+  "interval_requested_seconds": 0.01,
+  "system": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "release": "25.6.0",
+    "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]"
+  },
+  "sampling": {
+    "source": "ps cumulative CPU time and RSS",
+    "cpu_percent": "interval estimate from cumulative CPU delta / requested sample interval; ps historical %CPU is retained only as raw output",
+    "precision": "ps output precision and wall-clock scheduling introduce sampling error",
+    "frame_time": "unavailable",
+    "input_latency": "unavailable",
+    "gpu": "unavailable"
+  },
+  "samples": [
+    {
+      "timestamp": "2026-09-16T06:50:25.345224+00:00",
+      "argv": [
+        "ps",
+        "-p",
+        "21931",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "21931 21930 00:00   0:00.00   0.4   1136 /bin/sleep 0.3\n",
+      "stderr": "",
+      "pid": 21931,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.3"
+    },
+    {
+      "timestamp": "2026-09-16T06:50:25.363535+00:00",
+      "argv": [
+        "ps",
+        "-p",
+        "21931",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "21931 21930 00:00   0:00.00   0.4   1136 /bin/sleep 0.3\n",
+      "stderr": "",
+      "pid": 21931,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.3"
+    },
+    {
+      "timestamp": "2026-09-16T06:50:25.376264+00:00",
+      "argv": [
+        "ps",
+        "-p",
+        "21931",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "21931 21930 00:00   0:00.00   0.4   1136 /bin/sleep 0.3\n",
+      "stderr": "",
+      "pid": 21931,
+      "cumulative_cpu_seconds": 0.0,
+      "rss_kb": 1136,
+      "command": "/bin/sleep 0.3"
+    }
+  ],
+  "summary": {
+    "sample_count": 3,
+    "valid_sample_count": 3,
+    "cpu_time_delta_seconds": 0.0,
+    "interval_cpu_percent_estimate": 0.0,
+    "rss_kb_min": 1136,
+    "rss_kb_max": 1136,
+    "process_disappeared": false
+  }
+}

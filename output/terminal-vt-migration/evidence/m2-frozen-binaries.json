@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-09-16T07:47:16.200086+00:00",
+  "bundles": [
+    {
+      "configuration": "Debug",
+      "bundle": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Debug/Web Studio VT.app",
+      "files": [
+        {
+          "path": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Debug/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+          "sha256": "5c586754fde44feb86d605095bc376b436ca48ee1ee918f93c5d980923fec3f2"
+        },
+        {
+          "path": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Debug/Web Studio VT.app/Contents/MacOS/Web Studio VT.debug.dylib",
+          "sha256": "aeb66e8c285e20770f3d3d9ed05437eda0f035e9f891901b065f6b6aef0298d0"
+        },
+        {
+          "path": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Debug/Web Studio VT.app/Contents/MacOS/__preview.dylib",
+          "sha256": "56ae3d9732a66857345ab77d1c14d83e745f9b524790f9b79967e195af2c20b0"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "bundle": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Release/Web Studio VT.app",
+      "files": [
+        {
+          "path": "/private/tmp/web-studio-m2-20260916-frozen/Build/Products/Release/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+          "sha256": "15d33c90a7ba53d00ac2c2f6aac1dbffdc4280e2fc0f62e5fbceb5364827681d"
+        }
+      ]
+    },
+    {
+      "configuration": "Release",
+      "bundle": "/private/tmp/web-studio-m2-legacy-20260916-frozen/Build/Products/Release/Web Studio.app",
+      "files": [
+        {
+          "path": "/private/tmp/web-studio-m2-legacy-20260916-frozen/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+          "sha256": "16bc1589c0f7e2c4f8f5d862679ff31497ef19fa53434c888be312fd4e3beb17"
+        }
+      ]
+    }
+  ],
+  "boundary": "Fresh build artifacts not launched for manual GUI; current UI remains prior Debug PID21524"
+}

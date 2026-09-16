@@ -1,0 +1,7 @@
+BEGIN TERMINAL-BENCHMARK kind=unicode requested_lines=5
+Unicode line=000000 中文 é café 🚀 rgb=[38;2;0;0;0m0000000[0m
+Unicode line=000001 中文 é café 🚀 rgb=[38;2;1;3;7m0000019[0m
+Unicode line=000002 中文 é café 🚀 rgb=[38;2;2;6;14m0000038[0m
+Unicode line=000003 中文 é café 🚀 rgb=[38;2;3;9;21m0000057[0m
+Unicode line=000004 中文 é café 🚀 rgb=[38;2;4;12;28m0000076[0m
+DONE TERMINAL-BENCHMARK kind=unicode lines=5 payload_bytes=364 total_bytes=499

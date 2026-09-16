@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "xcrun",
+    "xctrace",
+    "list",
+    "templates"
+  ],
+  "cwd": "/Users/huaodong/workspace/Web Studio",
+  "started_at": "2026-09-16T07:32:27.420055Z",
+  "ended_at": "2026-09-16T07:32:30.044943Z",
+  "exit_code": 0,
+  "timed_out": false,
+  "wrapper_exit_code": null,
+  "stdout": "== Standard Templates ==\nActivity Monitor\nAllocations\nAnimation Hitches\nApp Launch\nAudio System Trace\nCPU Counters\nCPU Profiler\nCore AI\nData Persistence\nFile Activity\nFoundation Models\nGame Memory\nGame Performance\nGame Performance Overview\nLeaks\nLogging\nMetal System Trace\nNetwork\nPower Profiler\nProcessor Trace\nRealityKit Trace\nSwift Concurrency\nSwiftUI\nSystem Trace\nTime Profiler\n",
+  "stderr": "",
+  "stdout_base64": "PT0gU3RhbmRhcmQgVGVtcGxhdGVzID09CkFjdGl2aXR5IE1vbml0b3IKQWxsb2NhdGlvbnMKQW5pbWF0aW9uIEhpdGNoZXMKQXBwIExhdW5jaApBdWRpbyBTeXN0ZW0gVHJhY2UKQ1BVIENvdW50ZXJzCkNQVSBQcm9maWxlcgpDb3JlIEFJCkRhdGEgUGVyc2lzdGVuY2UKRmlsZSBBY3Rpdml0eQpGb3VuZGF0aW9uIE1vZGVscwpHYW1lIE1lbW9yeQpHYW1lIFBlcmZvcm1hbmNlCkdhbWUgUGVyZm9ybWFuY2UgT3ZlcnZpZXcKTGVha3MKTG9nZ2luZwpNZXRhbCBTeXN0ZW0gVHJhY2UKTmV0d29yawpQb3dlciBQcm9maWxlcgpQcm9jZXNzb3IgVHJhY2UKUmVhbGl0eUtpdCBUcmFjZQpTd2lmdCBDb25jdXJyZW5jeQpTd2lmdFVJClN5c3RlbSBUcmFjZQpUaW1lIFByb2ZpbGVyCg==",
+  "stderr_base64": "",
+  "stdout_present": true,
+  "stderr_present": false,
+  "stdout_required": false,
+  "inputs": {},
+  "repo": "/Users/huaodong/workspace/Web Studio",
+  "cwd_relative": ".",
+  "revision_before": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:1e113b55142a354a6db6c487def53dbeacf1b6fb49ba35768de464bda52fcdbb",
+  "revision_after": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:1e113b55142a354a6db6c487def53dbeacf1b6fb49ba35768de464bda52fcdbb",
+  "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:1e113b55142a354a6db6c487def53dbeacf1b6fb49ba35768de464bda52fcdbb",
+  "revision_changed_paths": [],
+  "result": "passed"
+}

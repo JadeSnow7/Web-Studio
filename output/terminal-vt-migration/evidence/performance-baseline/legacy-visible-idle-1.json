@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "pid": 60825,
+  "started_at": "2026-09-16T07:04:46.535076+00:00",
+  "ended_at": "2026-09-16T07:04:51.543123+00:00",
+  "cli_argv": [
+    "scripts/terminal-benchmark.py",
+    "sample",
+    "--pid",
+    "60825",
+    "--duration",
+    "5",
+    "--interval",
+    "0.5",
+    "--output",
+    "output/terminal-vt-migration/evidence/performance-baseline/legacy-visible-idle-1.json"
+  ],
+  "cwd": "/Users/huaodong/workspace/Web Studio",
+  "duration_requested_seconds": 5.0,
+  "interval_requested_seconds": 0.5,
+  "system": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "release": "25.6.0",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]"
+  },
+  "sampling": {
+    "source": "ps cumulative CPU time and RSS",
+    "cpu_percent": "interval estimate from cumulative CPU delta / actual monotonic time between first and last valid ps samples; ps historical %CPU is retained only as raw output",
+    "precision": "ps output precision and wall-clock scheduling introduce sampling error",
+    "frame_time": "unavailable",
+    "input_latency": "unavailable",
+    "gpu": "unavailable",
+    "rss": "discrete samples and min/max range, not peak RSS",
+    "scope": "one explicitly selected process; CPU percentage may exceed 100% on multicore systems",
+    "time_boundary": "sample elapsed time includes ps command execution and scheduling overhead"
+  },
+  "limitations": [
+    "load payload byte counts describe this process output, not bytes transmitted through a PTY",
+    "CPU and RSS observations describe one PID only; RSS min/max is not a peak measurement"
+  ],
+  "samples": [
+    {
+      "timestamp": "2026-09-16T07:04:46.535076+00:00",
+      "monotonic_started": 0.060236166,
+      "monotonic_ended": 0.06496,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:31   0:01.45   0.1  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.45,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:47.044924+00:00",
+      "monotonic_started": 0.57007975,
+      "monotonic_ended": 0.575250125,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:32   0:01.46   0.3  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:47.555210+00:00",
+      "monotonic_started": 1.080369833,
+      "monotonic_ended": 1.084059791,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:32   0:01.46   0.3  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:48.063446+00:00",
+      "monotonic_started": 1.588599125,
+      "monotonic_ended": 1.592809541,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:33   0:01.46   0.0  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:48.572724+00:00",
+      "monotonic_started": 2.0978875,
+      "monotonic_ended": 2.102361541,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:33   0:01.46   0.0  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:49.082280+00:00",
+      "monotonic_started": 2.607444083,
+      "monotonic_ended": 2.611788083,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:34   0:01.46   0.0  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:49.590211+00:00",
+      "monotonic_started": 3.115373916,
+      "monotonic_ended": 3.11973575,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:34   0:01.46   0.0  90592 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.46,
+      "rss_kb": 90592,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:50.099701+00:00",
+      "monotonic_started": 3.624848958,
+      "monotonic_ended": 3.6296365,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:35   0:01.47   0.3  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.47,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:50.607294+00:00",
+      "monotonic_started": 4.13244025,
+      "monotonic_ended": 4.136361083,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:35   0:01.47   0.1  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.47,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:51.114199+00:00",
+      "monotonic_started": 4.63935475,
+      "monotonic_ended": 4.643143625,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:36   0:01.47   0.5  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.47,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    },
+    {
+      "timestamp": "2026-09-16T07:04:51.538093+00:00",
+      "monotonic_started": 5.063244541,
+      "monotonic_ended": 5.068192875,
+      "argv": [
+        "ps",
+        "-p",
+        "60825",
+        "-o",
+        "pid=,ppid=,etime=,time=,%cpu=,rss=,command="
+      ],
+      "returncode": 0,
+      "stdout": "60825     1 02:36   0:01.47   0.0  90608 /private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio\n",
+      "stderr": "",
+      "pid": 60825,
+      "cumulative_cpu_seconds": 1.47,
+      "rss_kb": 90608,
+      "command": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "observation_status": "observed"
+    }
+  ],
+  "summary": {
+    "sample_count": 11,
+    "valid_sample_count": 11,
+    "cpu_time_delta_seconds": 0.020000000000000018,
+    "actual_sample_elapsed_seconds": 5.007956709,
+    "interval_cpu_percent_estimate": 0.39936447461810554,
+    "cpu_sampling_status": "sufficient",
+    "process_state": "observed",
+    "rss_kb_min": 90592,
+    "rss_kb_max": 90608,
+    "process_disappeared": false
+  }
+}

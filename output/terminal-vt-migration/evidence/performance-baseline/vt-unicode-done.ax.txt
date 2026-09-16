@@ -1,0 +1,91 @@
+The following is a diff from the previous accessibility tree for Window: "Web Studio VT" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			61 text entry area Description: Terminal, Value: Unicode line=009960 中文 é café 🚀 rgb=0189240                                                    
+Unicode line=009961 中文 é café 🚀 rgb=0189259                                                    
+Unicode line=009962 中文 é café 🚀 rgb=0189278                                                    
+Unicode line=009963 中文 é café 🚀 rgb=0189297                                                    
+Unicode line=009964 中文 é café 🚀 rgb=0189316                                                    
+Unicode line=009965 中文 é café 🚀 rgb=0189335                                                    
+Unicode line=009966 中文 é café 🚀 rgb=0189354                                                    
+Unicode line=009967 中文 é café 🚀 rgb=0189373                                                    
+Unicode line=009968 中文 é café 🚀 rgb=0189392                                                    
+Unicode line=009969 中文 é café 🚀 rgb=0189411                                                    
+Unicode line=009970 中文 é café 🚀 rgb=0189430                                                    
+Unicode line=009971 中文 é café 🚀 rgb=0189449                                                    
+Unicode line=009972 中文 é café 🚀 rgb=0189468                                                    
+Unicode line=009973 中文 é café 🚀 rgb=0189487                                                    
+Unicode line=009974 中文 é café 🚀 rgb=0189506                                                    
+Unicode line=009975 中文 é café 🚀 rgb=0189525                                                    
+Unicode line=009976 中文 é café 🚀 rgb=0189544                                                    
+Unicode line=009977 中文 é café 🚀 rgb=0189563                                                    
+Unicode line=009978 中文 é café 🚀 rgb=0189582                                                    
+Unicode line=009979 中文 é café 🚀 rgb=0189601                                                    
+Unicode line=009980 中文 é café 🚀 rgb=0189620                                                    
+Unicode line=009981 中文 é café 🚀 rgb=0189639                                                    
+Unicode line=009982 中文 é café 🚀 rgb=0189658                                                    
+Unicode line=009983 中文 é café 🚀 rgb=0189677                                                    
+Unicode line=009984 中文 é café 🚀 rgb=0189696                                                    
+Unicode line=009985 中文 é café 🚀 rgb=0189715                                                    
+Unicode line=009986 中文 é café 🚀 rgb=0189734                                                    
+Unicode line=009987 中文 é café 🚀 rgb=0189753                                                    
+Unicode line=009988 中文 é café 🚀 rgb=0189772                                                    
+Unicode line=009989 中文 é café 🚀 rgb=0189791                                                    
+Unicode line=009990 中文 é café 🚀 rgb=0189810                                                    
+Unicode line=009991 中文 é café 🚀 rgb=0189829                                                    
+Unicode line=009992 中文 é café 🚀 rgb=0189848                                                    
+Unicode line=009993 中文 é café 🚀 rgb=0189867                                                    
+Unicode line=009994 中文 é café 🚀 rgb=0189886                                                    
+Unicode line=009995 中文 é café 🚀 rgb=0189905                                                    
+Unicode line=009996 中文 é café 🚀 rgb=0189924                                                    
+Unicode line=009997 中文 é café 🚀 rgb=0189943                                                    
+Unicode line=009998 中文 é café 🚀 rgb=0189962                                                    
+Unicode line=009999 中文 é café 🚀 rgb=0189981                                                    
+DONE TERMINAL-BENCHMARK kind=unicode lines=10000 payload_bytes=767067 total_bytes=767248 note=outp
+ut_bytes_not_pty_bytes                                                                            
+                                                                                                  
+FIVE_BURSTS_DONE                                                                                  
+sh-3.2$                                                                                           
+The focused UI element is 61 text entry area Description: Terminal, Value: Unicode line=009960 中文 é café 🚀 rgb=0189240                                                    
+Unicode line=009961 中文 é café 🚀 rgb=0189259                                                    
+Unicode line=009962 中文 é café 🚀 rgb=0189278                                                    
+Unicode line=009963 中文 é café 🚀 rgb=0189297                                                    
+Unicode line=009964 中文 é café 🚀 rgb=0189316                                                    
+Unicode line=009965 中文 é café 🚀 rgb=0189335                                                    
+Unicode line=009966 中文 é café 🚀 rgb=0189354                                                    
+Unicode line=009967 中文 é café 🚀 rgb=0189373                                                    
+Unicode line=009968 中文 é café 🚀 rgb=0189392                                                    
+Unicode line=009969 中文 é café 🚀 rgb=0189411                                                    
+Unicode line=009970 中文 é café 🚀 rgb=0189430                                                    
+Unicode line=009971 中文 é café 🚀 rgb=0189449                                                    
+Unicode line=009972 中文 é café 🚀 rgb=0189468                                                    
+Unicode line=009973 中文 é café 🚀 rgb=0189487                                                    
+Unicode line=009974 中文 é café 🚀 rgb=0189506                                                    
+Unicode line=009975 中文 é café 🚀 rgb=0189525                                                    
+Unicode line=009976 中文 é café 🚀 rgb=0189544                                                    
+Unicode line=009977 中文 é café 🚀 rgb=0189563                                                    
+Unicode line=009978 中文 é café 🚀 rgb=0189582                                                    
+Unicode line=009979 中文 é café 🚀 rgb=0189601                                                    
+Unicode line=009980 中文 é café 🚀 rgb=0189620                                                    
+Unicode line=009981 中文 é café 🚀 rgb=0189639                                                    
+Unicode line=009982 中文 é café 🚀 rgb=0189658                                                    
+Unicode line=009983 中文 é café 🚀 rgb=0189677                                                    
+Unicode line=009984 中文 é café 🚀 rgb=0189696                                                    
+Unicode line=009985 中文 é café 🚀 rgb=0189715                                                    
+Unicode line=009986 中文 é café 🚀 rgb=0189734                                                    
+Unicode line=009987 中文 é café 🚀 rgb=0189753                                                    
+Unicode line=009988 中文 é café 🚀 rgb=0189772                                                    
+Unicode line=009989 中文 é café 🚀 rgb=0189791                                                    
+Unicode line=009990 中文 é café 🚀 rgb=0189810                                                    
+Unicode line=009991 中文 é café 🚀 rgb=0189829                                                    
+Unicode line=009992 中文 é café 🚀 rgb=0189848                                                    
+Unicode line=009993 中文 é café 🚀 rgb=0189867                                                    
+Unicode line=009994 中文 é café 🚀 rgb=0189886                                                    
+Unicode line=009995 中文 é café 🚀 rgb=0189905                                                    
+Unicode line=009996 中文 é café 🚀 rgb=0189924                                                    
+Unicode line=009997 中文 é café 🚀 rgb=0189943                                                    
+Unicode line=009998 中文 é café 🚀 rgb=0189962                                                    
+Unicode line=009999 中文 é café 🚀 rgb=0189981                                                    
+DONE TERMINAL-BENCHMARK kind=unicode lines=10000 payload_bytes=767067 total_bytes=767248 note=outp
+ut_bytes_not_pty_bytes                                                                            
+                                                                                                  
+FIVE_BURSTS_DONE                                                                                  
+sh-3.2$                                                                                           

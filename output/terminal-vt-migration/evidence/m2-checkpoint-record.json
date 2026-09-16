@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python3",
+    "/Users/huaodong/Documents/evidence-driven-development/skill/veriflow/scripts/validate_task.py",
+    "output/terminal-vt-migration/task-state.json",
+    "--repo",
+    ".",
+    "--gate",
+    "record"
+  ],
+  "exit_code": 1,
+  "stdout": "{\n  \"ok\": false,\n  \"gate\": \"record\",\n  \"current_revision\": null,\n  \"errors\": [\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"CHG-001.evidence_ids is required\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"CHG-001.revision is required\"\n    },\n    {\n      \"code\": \"CHANGE_STATUS\",\n      \"message\": \"CHG-001 has invalid status\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-001.authorization_action is required\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-001.idempotency_key is required\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-001.receipt is required\"\n    },\n    {\n      \"code\": \"ACTION_AUTH\",\n      \"message\": \"ACT-001.authorization_action must name an authorization entry\"\n    },\n    {\n      \"code\": \"ACTION_KEY\",\n      \"message\": \"ACT-001.idempotency_key must be a non-empty string\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-002.authorization_action is required\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-002.idempotency_key is required\"\n    },\n    {\n      \"code\": \"FIELD_MISSING\",\n      \"message\": \"ACT-002.receipt is required\"\n    },\n    {\n      \"code\": \"ACTION_AUTH\",\n      \"message\": \"ACT-002.authorization_action must name an authorization entry\"\n    },\n    {\n      \"code\": \"ACTION_KEY\",\n      \"message\": \"ACT-002.idempotency_key must be a non-empty string\"\n    }\n  ],\n  \"warnings\": [],\n  \"limits\": \"Structural consistency is not proof of product success or authorization authenticity.\"\n}\n",
+  "stderr": ""
+}

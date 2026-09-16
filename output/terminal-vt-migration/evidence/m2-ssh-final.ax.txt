@@ -1,0 +1,129 @@
+Window: "Web Studio VT", App: Web Studio VT.
+0 standard window Web Studio VT, Secondary Actions: Raise, ID: SwiftUI.ModifiedContent<Web_Studio_VT.StudioWindowRoot, SwiftUI._PreferenceWritingModifier<SwiftUI.PreferredColorSchemeKey>>-1-AppWindow-1
+	1 container
+		2 text Tasks
+		3 button Description: New task group, ID: groups.new
+		4 scroll area
+			5 button (selected) Description: Task group Workspace, Help: Workspace, ID: group.A8B8552B-649D-4E4B-AEF6-949789E90511
+			6 button Description: New Web Page in Workspace, Help: New Web Page in Workspace (⌘T), ID: tabs.new.A8B8552B-649D-4E4B-AEF6-949789E90511
+			7 button Description: New Terminal in Workspace, Help: New Terminal in Workspace (⌘⇧T), ID: terminals.new.A8B8552B-649D-4E4B-AEF6-949789E90511
+			8 button Description: Resource New Tab, ID: resource.BEDBC8B3-285F-4EBB-9AC0-11B833502F98
+			9 button Description: Close resource New Tab, Help: Close resource, ID: resource.close.BEDBC8B3-285F-4EBB-9AC0-11B833502F98
+			10 button (selected) Description: Resource huaodong@127.0.0.1:60013, ID: resource.4F598201-AEC4-4B72-BCEB-C6E95A2A30B2
+			11 button Description: Close resource huaodong@127.0.0.1:60013, Help: Close resource, ID: resource.close.4F598201-AEC4-4B72-BCEB-C6E95A2A30B2
+		12 split group
+			13 container pane.D14CC3B0-C289-4AE7-BF57-E9E6AFB0421A
+				14 text Exited (7)
+				15 text entry area Description: Terminal, Value: The authenticity of host '[127.0.0.1]:60013 ([127.0.0.1]:60013)' can't be established.                                                
+ED25519 key fingerprint is: SHA256:Ly9AZZGhZZDrbA71CCQRff8wMXVBCqGfTd1NjHQ5u9E                                                        
+This key is not known by any other names.                                                                                             
+Are you sure you want to continue connecting (yes/no/[fingerprint])? SHA256:Ly9AZZGhZZDrbA71CCQRff8wMXVBCqGfTd1NjHQ5u9E               
+Warning: Permanently added '[127.0.0.1]:60013' (ED25519) to the list of known hosts.                                                  
+Last login: Wed Sep 16 15:02:22 2026                                                                                                  
+  ~ ❯ printf 'DEDICATED_SSH_READY PID=%s\n' "$$"; stty size                                                                         
+DEDICATED_SSH_READY PID=82164                                                                                                         
+45 98                                                                                                                                 
+  ~ ❯ printf 'SSH_RESIZED PID=%s\n' "$$"; stty size; printf 'SSH_FINAL_7\n'; exit 7       huaodong@huaodongdeMacBook-Air  15:08:45 
+SSH_RESIZED PID=82164                                                                                                                 
+45 134                                                                                                                                
+SSH_FINAL_7                                                                                                                           
+Connection to 127.0.0.1 closed.                                                                                                       
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+	16 toolbar
+		17 text field (settable) Description: Address, Help: Address (⌘L), Value: ssh://huaodong@127.0.0.1:60013, Placeholder: Enter website, SSH host, or terminal path, ID: destination.address
+		18 menu button huaodong@127.0.0.1:60013, Description: Tabs in Workspace, ID: workspace.tabs.menu
+		19 button Description: Toggle tab strip, Value: Shown, ID: sidebar.leading, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		20 button (disabled) Description: Back, ID: web.back, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		21 button (disabled) Description: Forward, ID: web.forward, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		22 button (disabled) Description: Reload, ID: web.reloadOrStop, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		23 button Description: Commands, ID: commands.button, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Move next, Remove from toolbar
+		24 menu button Description: Layout, ID: layout.menu
+		25 button Description: Toggle Agents, Value: Hidden, ID: agents.button, Secondary Actions: Increment, Decrement, Delete, Cancel, Move previous, Remove from toolbar
+	26 close button
+	27 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	28 minimize button
+29 menu bar
+	30 Web Studio VT
+	31 File
+	32 Edit
+	33 View
+	34 Page
+	35 Layout
+	36 Window
+	37 Help
+
+The focused UI element is 15 text entry area Description: Terminal, Value: The authenticity of host '[127.0.0.1]:60013 ([127.0.0.1]:60013)' can't be established.                                                
+ED25519 key fingerprint is: SHA256:Ly9AZZGhZZDrbA71CCQRff8wMXVBCqGfTd1NjHQ5u9E                                                        
+This key is not known by any other names.                                                                                             
+Are you sure you want to continue connecting (yes/no/[fingerprint])? SHA256:Ly9AZZGhZZDrbA71CCQRff8wMXVBCqGfTd1NjHQ5u9E               
+Warning: Permanently added '[127.0.0.1]:60013' (ED25519) to the list of known hosts.                                                  
+Last login: Wed Sep 16 15:02:22 2026                                                                                                  
+  ~ ❯ printf 'DEDICATED_SSH_READY PID=%s\n' "$$"; stty size                                                                         
+DEDICATED_SSH_READY PID=82164                                                                                                         
+45 98                                                                                                                                 
+  ~ ❯ printf 'SSH_RESIZED PID=%s\n' "$$"; stty size; printf 'SSH_FINAL_7\n'; exit 7       huaodong@huaodongdeMacBook-Air  15:08:45 
+SSH_RESIZED PID=82164                                                                                                                 
+45 134                                                                                                                                
+SSH_FINAL_7                                                                                                                           
+Connection to 127.0.0.1 closed.                                                                                                       
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      
+                                                                                                                                      

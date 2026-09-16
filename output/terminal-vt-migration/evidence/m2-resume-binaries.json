@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-09-16T07:41:51.153544+00:00",
+  "release": [
+    {
+      "variant": "vt",
+      "bundle": "/private/tmp/web-studio-m2-20260916/Build/Products/Release/Web Studio VT.app",
+      "executable": "/private/tmp/web-studio-m2-20260916/Build/Products/Release/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+      "sha256": "dc1d709dcdf8bf57d037fe3df9453d56aa2191f236e645bd13cd809aaca82a26"
+    },
+    {
+      "variant": "legacy",
+      "bundle": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app",
+      "executable": "/private/tmp/web-studio-m2-legacy-20260916/Build/Products/Release/Web Studio.app/Contents/MacOS/Web Studio",
+      "sha256": "c1eb7592d824fa14f8a3bb3762b0655e850949bc61f98d97542ebd89ead0ada2"
+    }
+  ]
+}

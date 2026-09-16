@@ -1,0 +1,5 @@
+BEGIN TERMINAL-BENCHMARK kind=ascii requested_lines=3
+ASCII line=000000 ansi=[38;5;0m payload=0000000[0m
+ASCII line=000001 ansi=[38;5;1m payload=0000017[0m
+ASCII line=000002 ansi=[38;5;2m payload=0000034[0m
+DONE TERMINAL-BENCHMARK kind=ascii lines=3 payload_bytes=159 total_bytes=290
