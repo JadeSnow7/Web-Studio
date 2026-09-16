@@ -276,7 +276,7 @@ struct PinnedDestination: Identifiable, Equatable {
             let start = max(0, full.count - limit); let text = String(full.dropFirst(start))
             let error = record.errorMessage
             let sourceURL: URL? = { if case let .ssh(host, user, port) = record.location { var components = URLComponents(); components.scheme = "ssh"; components.host = host; components.port = port; components.user = user.isEmpty ? nil : user; return components.url }; return nil }()
-            return ResourceSnapshot(resourceID: resourceID, collectedAt: Date(), text: text, isTruncated: start > 0, errorMessage: nil, sourceURL: sourceURL, title: record.customTitle ?? record.title, range: start..<(start + text.count), knownDirectory: session.knownDirectory, lifecycle: record.lifecycle, runtimeErrorMessage: error)
+            return ResourceSnapshot(resourceID: resourceID, collectedAt: Date(), text: text, isTruncated: start > 0 || session.snapshotWasTruncated, errorMessage: nil, sourceURL: sourceURL, title: record.customTitle ?? record.title, range: start..<(start + text.count), knownDirectory: session.knownDirectory, lifecycle: record.lifecycle, runtimeErrorMessage: error)
         }
         guard record.kind == .web, let runtime=runtimes[resourceID] else { return .failure(resourceID:resourceID,message:"Resource is not readable yet.") }
         let snapshot=await runtime.readSnapshot(resourceID:resourceID,maxCharacters:maxCharacters)

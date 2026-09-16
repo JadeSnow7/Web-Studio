@@ -17,6 +17,21 @@ runtime resource folder is bundled as `Contents/Resources/ghostty`. The final
 release inventory still needs a license review for Ghostty's native dependency
 archives (including glslang, SPIRV-Cross, libintl and ImGui) before publishing.
 
+## Standalone GhosttyVT
+
+The opt-in standalone VT artifact is pinned to Ghostty commit
+`d4c88d8069912b653d707191388ca98e24751f12`, built with Zig `0.16.0` for
+`aarch64-macos`. The artifact and public headers are recorded under
+`Vendor/GhosttyVT`; see `DEPENDENCY.lock` for checksums and build flags.
+This source path is pending full app and live acceptance and does not change
+the default backend. Ghostty's upstream license remains the governing license;
+the copied notice is retained with the vendor artifact.
+
+Ghostty is distributed under the MIT License. The pinned source commit is
+`d4c88d8069912b653d707191388ca98e24751f12`; the vendored license text is
+`Vendor/GhosttyVT/LICENSE`, and the source/checksum/toolchain record is
+`Vendor/GhosttyVT/DEPENDENCY.lock`.
+
 ## SwiftTerm
 
 Web Studio links the native SwiftTerm library through Swift Package Manager, pinned to version 1.14.0 (commit `849e8a4f3d6f79ddee07152400137f1370c32621`).

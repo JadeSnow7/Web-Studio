@@ -1,0 +1,685 @@
+2026-09-16 13:43:21.481 xcodebuild[97771:54893556] [MT] DVTPlugInLoading: Failed to load code for plug-in com.apple.dt.DVTCoreDeviceCore (/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework), error = Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}, dyldError = dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice
+2026-09-16 13:43:21.481 xcodebuild[97771:54893556] [MT] DVTPlugInExtensionFaulting: Failed to fire fault for extension Xcode.Device.CoreDevice: Error Domain=DVTPlugInErrorDomain Code=2 "Loading a plug-in failed." UserInfo={DVTPlugInIdentifierErrorKey=com.apple.dt.DVTCoreDeviceCore, DVTPlugInExecutablePathErrorKey=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSLocalizedRecoverySuggestion=The plug-in or one of its prerequisite plug-ins may be missing or damaged and may need to be reinstalled., DVTPlugInDYLDErrorMessageErrorKey=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSLocalizedDescription=Loading a plug-in failed., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedFailureReason=The plug-in “com.apple.dt.DVTCoreDeviceCore” at path “/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework” could not be loaded.  The plug-in or one of its prerequisite plug-ins may be missing or damaged., NSUnderlyingError=0xa612588d0 {Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}}}
+2026-09-16 13:43:21.481 xcodebuild[97771:54893556] [MT] DVTAssertions: Warning in DVTFrameworks/DVTFoundation/Devices/DVTDevice.m:381
+Details:  No locator class for device extension 'Xcode.Device.CoreDevice', error: Error Domain=DVTPlugInErrorDomain Code=2 "Loading a plug-in failed." UserInfo={DVTPlugInIdentifierErrorKey=com.apple.dt.DVTCoreDeviceCore, DVTPlugInExecutablePathErrorKey=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSLocalizedRecoverySuggestion=The plug-in or one of its prerequisite plug-ins may be missing or damaged and may need to be reinstalled., DVTPlugInDYLDErrorMessageErrorKey=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSLocalizedDescription=Loading a plug-in failed., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedFailureReason=The plug-in “com.apple.dt.DVTCoreDeviceCore” at path “/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework” could not be loaded.  The plug-in or one of its prerequisite plug-ins may be missing or damaged., NSUnderlyingError=0xa612588d0 {Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}}}
+Object:   <DVTDevice>
+Method:   +_knownDeviceLocators
+Thread:   <_NSMainThread: 0x1034a9cd0>{number = 1, name = main}
+Please file a bug at https://feedbackassistant.apple.com with this warning message and any useful information you can provide.
+2026-09-16 13:43:21.484 xcodebuild[97771:54893649]  DVTErrorPresenter: Unable to load simulator devices.
+Domain: DVTCoreSimulatorAdditionsErrorDomain
+Code: 3
+Failure Reason: The version of the CoreSimulator framework installed on this Mac is out-of-date and not supported by this version of Xcode.
+Recovery Suggestion: Please ensure that you have installed all available updates to your Mac's software, and that you are running the most recent version of Xcode supported by macOS.
+--
+CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0).
+Domain: DVTCoreSimulatorAdditionsErrorDomain
+Code: 3
+--
+
+2026-09-16 13:43:21.484 xcodebuild[97771:54893649]  iOSSimulator: [SimServiceContext sharedServiceContextForDeveloperDir:error:] returned nil (Error Domain=DVTCoreSimulatorAdditionsErrorDomain Code=3 "CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0)." UserInfo={NSLocalizedDescription=CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0).}). Simulator device support disabled.
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Web Studio.xcodeproj" -scheme "Web Studio" -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /private/tmp/web-studio-ghostty-tests CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= test -parallel-testing-enabled NO "-only-testing:Web StudioTests"
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm.git @ 1.14.0
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (6 targets)
+    Target 'Web StudioUITests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web StudioTests' in project 'Web Studio'
+        ➜ Explicit dependency on target 'Web Studio' in project 'Web Studio'
+    Target 'Web Studio' in project 'Web Studio'
+        ➜ Explicit dependency on target 'SwiftTerm-product' in project 'SwiftTerm'
+    Target 'SwiftTerm-product' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: 5d55ef983ba020288d6176ddd007a33e
+Build description path: /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/XCBuildData/5d55ef983ba020288d6176ddd007a33e.xcbuilddata
+warning: missing creator for mutated node: ('/tmp/web-studio-ghostty-tests/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/MacOS') (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+ProcessInfoPlistFile /tmp/web-studio-ghostty-tests/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm-b.build/empty-SwiftTerm_SwiftTerm.plist (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+    cd /tmp/web-studio-ghostty-tests/SourcePackages/checkouts/SwiftTerm
+    builtin-infoPlistUtility /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/SwiftTerm.build/Debug/SwiftTerm_SwiftTerm-b.build/empty-SwiftTerm_SwiftTerm.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/web-studio-ghostty-tests/Build/Products/Debug/SwiftTerm_SwiftTerm.bundle/Contents/Info.plist
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /tmp/web-studio-ghostty-tests/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/huaodong/workspace/Web\ Studio/Web\ Studio.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /tmp/web-studio-ghostty-tests/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+SwiftDriver Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-ghostty-tests/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-ghostty-tests/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-ghostty-tests/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-ghostty-tests/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-ghostty-tests/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-ghostty-tests/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-ghostty-tests/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-ghostty-tests/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Products/Debug/include -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+CopySwiftLibs /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.v84ODJ/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ProcessInfoPlistFile /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/empty-Web\ Studio.plist -producttype com.apple.product-type.application -genpkginfo /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/Info.plist
+
+ProcessInfoPlistFile /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/empty-Web\ StudioTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -scanforprivacyfile /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Resources/SwiftTerm_SwiftTerm.bundle -o /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Info.plist
+
+CopySwiftLibs /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest (in target 'Web StudioTests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/MacOS/Web\ StudioTests --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.v84ODJ/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/PlugIns/Web\ StudioTests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+CodeSign /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/Web\ Studio.debug.dylib
+/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/MacOS/Web Studio.debug.dylib: replacing existing signature
+
+CodeSign /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/__preview.dylib (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app/Contents/MacOS/__preview.dylib
+/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/MacOS/__preview.dylib: replacing existing signature
+
+CodeSign /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio.build/Web\ Studio.app.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app
+/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app: replacing existing signature
+
+Validate /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-validationUtility /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+RegisterWithLaunchServices /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app (in target 'Web Studio' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-lsregisterurl --record-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/XCBuildData/registered-launchservices.txt -- /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ Studio.app
+
+ProcessInfoPlistFile /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/empty-Web\ StudioUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/ProductTypeInfoPlistAdditions.plist -o /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Info.plist
+
+SwiftDriver\ Compilation\ Requirements Web\ StudioUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_StudioUITests -Onone @/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-ghostty-tests/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /tmp/web-studio-ghostty-tests/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-ghostty-tests/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/web-studio-ghostty-tests/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-ghostty-tests/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-ghostty-tests/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-ghostty-tests/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-ghostty-tests/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web\ StudioUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-generated-files.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-own-target-headers.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Web\ StudioUITests-project-headers.hmap -Xcc -I/tmp/web-studio-ghostty-tests/Build/Products/Debug/include -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests-Swift.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/Objects-normal/arm64/Web_StudioUITests.abi.json /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web_StudioUITests.swiftmodule/arm64-apple-macos.abi.json
+
+CopySwiftLibs /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest (in target 'Web StudioUITests' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/MacOS/Web\ StudioUITests --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/PlugIns --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.v84ODJ/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-ghostty-tests/Build/Products/Debug/Web\ StudioUITests-Runner.app/Contents/PlugIns/Web\ StudioUITests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ StudioUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+PruneExplicitPrecompiledModules /tmp/web-studio-ghostty-tests/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/web-studio-ghostty-tests/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+2026-09-16 13:43:24.314225+0800 Web Studio[97967:54894163] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.314521+0800 Web Studio[97967:54894163] [Application] Error registering app with intents framework: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.315354+0800 Web Studio[97967:54894172] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.315370+0800 Web Studio[97967:54894172] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.316353+0800 Web Studio[97967:54894164] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.316364+0800 Web Studio[97967:54894164] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.317204+0800 Web Studio[97967:54894164] [Connection] Will NOT re-try to establish the connection
+2026-09-16 13:43:24.317228+0800 Web Studio[97967:54894163] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.317239+0800 Web Studio[97967:54894163] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-09-16 13:43:24.424917+0800 Web Studio[97967:54894102] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to /var/folders/87/gyhx13hs45351j7vwkdrr4sr0000gn/T/com.huaodong.Web-Studio.savedState
+Test Suite 'All tests' started at 2026-09-16 13:43:24.823.
+Test Suite 'All tests' passed at 2026-09-16 13:43:24.824.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite AgentControllerTests started.
+◇ Test newChatClearsTranscriptAndIgnoresLateResponse() started.
+✔ Test newChatClearsTranscriptAndIgnoresLateResponse() passed after 0.068 seconds.
+◇ Test newChatIgnoresLatePreviewRead() started.
+✔ Test newChatIgnoresLatePreviewRead() passed after 0.055 seconds.
+◇ Test sequentialRunsDisplayTranscriptAndKeepIndividualPayloads() started.
+✔ Test sequentialRunsDisplayTranscriptAndKeepIndividualPayloads() passed after 0.087 seconds.
+◇ Test previewIsExplicitAndSendKeepsSnapshotAfterResourceRemoval() started.
+✔ Test previewIsExplicitAndSendKeepsSnapshotAfterResourceRemoval() passed after 0.109 seconds.
+◇ Test unconfiguredSendDoesNotCreateRun() started.
+✔ Test unconfiguredSendDoesNotCreateRun() passed after 0.001 seconds.
+◇ Test delayedRunRetainsOriginalRequestAfterSelectionAndDeletion() started.
+✔ Test delayedRunRetainsOriginalRequestAfterSelectionAndDeletion() passed after 0.100 seconds.
+◇ Test cancelIgnoresLateProviderResult() started.
+✔ Test cancelIgnoresLateProviderResult() passed after 0.071 seconds.
+◇ Test previewBudgetStopsReaderAtFortyEightThousand() started.
+✔ Test previewBudgetStopsReaderAtFortyEightThousand() passed after 0.069 seconds.
+◇ Test retryUsesOriginalRequestAfterDraftChanges() started.
+✔ Test retryUsesOriginalRequestAfterDraftChanges() passed after 0.080 seconds.
+◇ Test failedReaderPreventsSend() started.
+✔ Test failedReaderPreventsSend() passed after 0.038 seconds.
+◇ Test pendingReaderCannotSendAndCancelledLateReadIsIgnored() started.
+✔ Test pendingReaderCannotSendAndCancelledLateReadIsIgnored() passed after 0.058 seconds.
+◇ Test runningRequestSurvivesPreviewCancellation() started.
+✔ Test runningRequestSurvivesPreviewCancellation() passed after 0.122 seconds.
+◇ Test readerReturnsOversizedTextIsCapped() started.
+✔ Test readerReturnsOversizedTextIsCapped() passed after 0.048 seconds.
+✔ Suite AgentControllerTests passed after 0.912 seconds.
+◇ Suite AgentServiceTests started.
+◇ Test configurationRejectsUnsafeEndpoints() started.
+✔ Test configurationRejectsUnsafeEndpoints() passed after 0.001 seconds.
+◇ Test missingCredentialIsExplicit() started.
+✔ Test missingCredentialIsExplicit() passed after 0.001 seconds.
+◇ Test requestUsesInjectedCredentialAndProvider() started.
+✔ Test requestUsesInjectedCredentialAndProvider() passed after 0.001 seconds.
+◇ Test responseProviderParsesRealTransportPayload() started.
+✔ Test responseProviderParsesRealTransportPayload() passed after 0.005 seconds.
+◇ Test responseProviderReportsHTTPMalformedAndRefusal() started.
+✔ Test responseProviderReportsHTTPMalformedAndRefusal() passed after 0.002 seconds.
+◇ Test responseProviderReportsEmptyIncompleteAndFailedResponses() started.
+✔ Test responseProviderReportsEmptyIncompleteAndFailedResponses() passed after 0.001 seconds.
+◇ Test responseProviderRejectsInvalidCredentialBeforeTransport() started.
+✔ Test responseProviderRejectsInvalidCredentialBeforeTransport() passed after 0.001 seconds.
+◇ Test responseProviderDeniesRedirects() started.
+✔ Test responseProviderDeniesRedirects() passed after 0.001 seconds.
+◇ Test responseProviderCancellationStopsDelayedTransport() started.
+✔ Test responseProviderCancellationStopsDelayedTransport() passed after 0.009 seconds.
+◇ Test keychainRejectsBlankAndControlCredentials() started.
+✔ Test keychainRejectsBlankAndControlCredentials() passed after 0.001 seconds.
+✔ Suite AgentServiceTests passed after 0.021 seconds.
+◇ Suite CodexBackendTests started.
+◇ Test parsesCompletedAgentTranscript() started.
+✔ Test parsesCompletedAgentTranscript() passed after 0.001 seconds.
+◇ Test parsesDataArrivingInPartialUTF8Chunks() started.
+✔ Test parsesDataArrivingInPartialUTF8Chunks() passed after 0.001 seconds.
+◇ Test rejectsMalformedOrIncompleteTranscripts() started.
+✔ Test rejectsMalformedOrIncompleteTranscripts() passed after 0.001 seconds.
+◇ Test requiresCompletedAgentMessageBeforeTurnCompletion() started.
+✔ Test requiresCompletedAgentMessageBeforeTurnCompletion() passed after 0.001 seconds.
+◇ Test rejectsAnswerArrivingAfterCompletion() started.
+✔ Test rejectsAnswerArrivingAfterCompletion() passed after 0.001 seconds.
+◇ Test combinesMultipleCompletedAgentMessagesInOrder() started.
+✔ Test combinesMultipleCompletedAgentMessagesInOrder() passed after 0.001 seconds.
+◇ Test codexBackendDoesNotReadResponsesKeychain() started.
+✔ Test codexBackendDoesNotReadResponsesKeychain() passed after 0.001 seconds.
+✔ Suite CodexBackendTests passed after 0.001 seconds.
+◇ Suite CodexProcessRunnerTests started.
+◇ Test capturesBothStreamsAndExitStatus() started.
+✔ Test capturesBothStreamsAndExitStatus() passed after 0.008 seconds.
+◇ Test drainsPipeSizedInputAndOutputConcurrently() started.
+✔ Test drainsPipeSizedInputAndOutputConcurrently() passed after 0.009 seconds.
+◇ Test drainsLargeMixedStreamsWithoutDeadlock() started.
+✔ Test drainsLargeMixedStreamsWithoutDeadlock() passed after 0.009 seconds.
+◇ Test timeoutKillsProcessIgnoringTerminate() started.
+✔ Test timeoutKillsProcessIgnoringTerminate() passed after 1.111 seconds.
+◇ Test timeoutDoesNotWaitForInheritedOutputPipe() started.
+✔ Test timeoutDoesNotWaitForInheritedOutputPipe() passed after 0.109 seconds.
+◇ Test timeoutBoundsAlreadyExitedParentWithInheritedPipe() started.
+✔ Test timeoutBoundsAlreadyExitedParentWithInheritedPipe() passed after 0.104 seconds.
+◇ Test timeoutStopsBlockedInputWriterHeldByDescendant() started.
+✔ Test timeoutStopsBlockedInputWriterHeldByDescendant() passed after 0.106 seconds.
+◇ Test cancellationReapsProcess() started.
+✔ Test cancellationReapsProcess() passed after 1.167 seconds.
+◇ Test outputLimitTerminatesAndReportsError() started.
+✔ Test outputLimitTerminatesAndReportsError() passed after 0.011 seconds.
+◇ Test missingExecutableReportsLaunchFailure() started.
+✔ Test missingExecutableReportsLaunchFailure() passed after 0.001 seconds.
+◇ Test cancellationBeforeStartIsObserved() started.
+✔ Test cancellationBeforeStartIsObserved() passed after 0.001 seconds.
+✔ Suite CodexProcessRunnerTests passed after 2.640 seconds.
+◇ Suite CredentialIntegrationTests started.
+◇ Test productionKeychainCrudUsesOnlyUniqueTestEndpoint() started.
+2026-09-16 13:43:28.412417+0800 Web Studio[97967:54894164] [logging-persist] cannot open file at line 51044 of [f0ca7bba1c]
+2026-09-16 13:43:28.412444+0800 Web Studio[97967:54894164] [logging-persist] os_unix.c:51044: (2) open(/private/var/db/DetachedSignatures) - No such file or directory
+✔ Test productionKeychainCrudUsesOnlyUniqueTestEndpoint() passed after 0.055 seconds.
+✔ Suite CredentialIntegrationTests passed after 0.055 seconds.
+◇ Suite GhosttyIntegrationTests started.
+◇ Test launchesExactShellAndCapturesUnicodeAnsiAndUnknownExitStatus() started.
+2026-09-16 13:43:28.470120+0800 Web Studio[97967:54894102] [default] ghostty version=1.3.1
+2026-09-16 13:43:28.470174+0800 Web Studio[97967:54894102] [default] ghostty build optimize=ReleaseFast
+2026-09-16 13:43:28.470181+0800 Web Studio[97967:54894102] [default] runtime=.none
+2026-09-16 13:43:28.470185+0800 Web Studio[97967:54894102] [default] font_backend=.coretext
+2026-09-16 13:43:28.470189+0800 Web Studio[97967:54894102] [default] renderer=renderer.generic.Renderer(renderer.Metal)
+2026-09-16 13:43:28.470193+0800 Web Studio[97967:54894102] [default] libxev default backend=kqueue
+2026-09-16 13:43:28.470454+0800 Web Studio[97967:54894102] [os_locale] os_locale: detected system locale=en_US.UTF-8
+2026-09-16 13:43:28.470630+0800 Web Studio[97967:54894102] [os_locale] os_locale: setlocale from env result=en_US.UTF-8
+2026-09-16 13:43:28.471452+0800 Web Studio[97967:54894102] [default] reading configuration file path=/private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/web-studio.conf
+2026-09-16 13:43:28.471814+0800 Web Studio[97967:54894102] [config] config: default shell src=passwd value=/bin/zsh
+2026-09-16 13:43:28.471828+0800 Web Studio[97967:54894102] [config] config: default working directory src=passwd value=/Users/huaodong
+2026-09-16 13:43:28.477962+0800 Web Studio[97967:54894102] [io_exec] io_exec: found Ghostty resources dir: /private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/ghostty
+2026-09-16 13:43:28.478026+0800 Web Studio[97967:54894102] [io_exec] io_exec: shell could not be detected, no automatic shell integration will be injected
+2026-09-16 13:43:28.482005+0800 Web Studio[97967:54894826] [io_exec] io_exec: started subcommand path=/usr/bin/login pid=98257
+2026-09-16 13:43:28.531824+0800 Web Studio[97967:54894830] [io_exec] io_exec: pty fd closed, read thread exiting
+2026-09-16 13:43:28.531850+0800 Web Studio[97967:54894102] [surface] surface: abnormal process exit detected, showing error message
+2026-09-16 13:43:28.536768+0800 Web Studio[97967:54894825] [font_codepoint_resolver] font_codepoint_resolver: found codepoint 0x4F60 in fallback face=苹方-简 常规体
+2026-09-16 13:43:28.548593+0800 Web Studio[97967:54894102] [surface] surface: surface closed addr=85f418000
+✔ Test launchesExactShellAndCapturesUnicodeAnsiAndUnknownExitStatus() passed after 0.088 seconds.
+◇ Test appliesResizeAndContinuesAfterCtrlC() started.
+2026-09-16 13:43:28.557621+0800 Web Studio[97967:54894102] [io_exec] io_exec: found Ghostty resources dir: /private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/ghostty
+2026-09-16 13:43:28.557668+0800 Web Studio[97967:54894102] [io_exec] io_exec: shell could not be detected, no automatic shell integration will be injected
+2026-09-16 13:43:28.561063+0800 Web Studio[97967:54894846] [io_exec] io_exec: started subcommand path=/usr/bin/login pid=98261
+2026-09-16 13:43:28.590429+0800 Web Studio[97967:54894848] [stream] stream: unimplemented mode: 1034
+2026-09-16 13:43:28.774756+0800 Web Studio[97967:54894848] [io_exec] io_exec: pty fd closed, read thread exiting
+2026-09-16 13:43:28.774816+0800 Web Studio[97967:54894102] [surface] surface: abnormal process exit detected, showing error message
+2026-09-16 13:43:28.827045+0800 Web Studio[97967:54894102] [surface] surface: surface closed addr=85d11c000
+✔ Test appliesResizeAndContinuesAfterCtrlC() passed after 0.278 seconds.
+◇ Test unmountAndRemountKeepsGhosttyChildAlive() started.
+2026-09-16 13:43:28.846166+0800 Web Studio[97967:54894102] [io_exec] io_exec: found Ghostty resources dir: /private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/ghostty
+2026-09-16 13:43:28.846254+0800 Web Studio[97967:54894102] [io_exec] io_exec: shell could not be detected, no automatic shell integration will be injected
+2026-09-16 13:43:28.850770+0800 Web Studio[97967:54894886] [io_exec] io_exec: started subcommand path=/usr/bin/login pid=98277
+2026-09-16 13:43:28.887296+0800 Web Studio[97967:54894888] [stream] stream: unimplemented mode: 1034
+2026-09-16 13:43:28.957618+0800 Web Studio[97967:54894888] [io_exec] io_exec: pty fd closed, read thread exiting
+2026-09-16 13:43:28.970249+0800 Web Studio[97967:54894102] [surface] surface: surface closed addr=85f418000
+✔ Test unmountAndRemountKeepsGhosttyChildAlive() passed after 0.143 seconds.
+◇ Test closeStopsOwnedShellButLeavesUnrelatedChildRunning() started.
+2026-09-16 13:43:28.982746+0800 Web Studio[97967:54894102] [io_exec] io_exec: found Ghostty resources dir: /private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/ghostty
+2026-09-16 13:43:28.982796+0800 Web Studio[97967:54894102] [io_exec] io_exec: shell could not be detected, no automatic shell integration will be injected
+2026-09-16 13:43:28.985845+0800 Web Studio[97967:54894923] [io_exec] io_exec: started subcommand path=/usr/bin/login pid=98292
+2026-09-16 13:43:29.041872+0800 Web Studio[97967:54894925] [io_exec] io_exec: pty fd closed, read thread exiting
+2026-09-16 13:43:29.053744+0800 Web Studio[97967:54894102] [surface] surface: surface closed addr=85d11c000
+✔ Test closeStopsOwnedShellButLeavesUnrelatedChildRunning() passed after 0.083 seconds.
+✔ Suite GhosttyIntegrationTests passed after 0.594 seconds.
+◇ Suite PageChromeTests started.
+◇ Test activeRuntimeLookupDoesNotCreateAnUnshownRuntime() started.
+✔ Test activeRuntimeLookupDoesNotCreateAnUnshownRuntime() passed after 0.002 seconds.
+◇ Test windowlessCaptureIsInertAfterTeardown() started.
+✔ Test windowlessCaptureIsInertAfterTeardown() passed after 0.033 seconds.
+✔ Suite PageChromeTests passed after 0.036 seconds.
+◇ Suite ProviderSettingsTests started.
+◇ Test saveReplaceDeleteAndEndpointIsolation() started.
+✔ Test saveReplaceDeleteAndEndpointIsolation() passed after 0.007 seconds.
+◇ Test cancelResetsUncommittedDraft() started.
+✔ Test cancelResetsUncommittedDraft() passed after 0.001 seconds.
+◇ Test failedSavePreservesCommittedConfiguration() started.
+✔ Test failedSavePreservesCommittedConfiguration() passed after 0.001 seconds.
+◇ Test twoEndpointsKeepSecretsIsolated() started.
+✔ Test twoEndpointsKeepSecretsIsolated() passed after 0.002 seconds.
+◇ Test unsavedDraftDoesNotChangeCommittedStatus() started.
+✔ Test unsavedDraftDoesNotChangeCommittedStatus() passed after 0.022 seconds.
+◇ Test cliSaveDoesNotTouchKeychainAndPreservesAPIValues() started.
+✔ Test cliSaveDoesNotTouchKeychainAndPreservesAPIValues() passed after 0.001 seconds.
+◇ Test resetDraftRestoresCommittedBackendAndMatchingModel() started.
+✔ Test resetDraftRestoresCommittedBackendAndMatchingModel() passed after 0.001 seconds.
+◇ Test cancellingPendingCLICheckClearsBusyAndIgnoresLateResult() started.
+✔ Test cancellingPendingCLICheckClearsBusyAndIgnoresLateResult() passed after 0.039 seconds.
+✔ Suite ProviderSettingsTests passed after 0.078 seconds.
+◇ Suite ResourceReadTests started.
+◇ Test terminalReadUsesLatestBoundedUnicodeText() started.
+✔ Test terminalReadUsesLatestBoundedUnicodeText() passed after 0.002 seconds.
+◇ Test closedResourceReadIsExplicitFailure() started.
+✔ Test closedResourceReadIsExplicitFailure() passed after 0.001 seconds.
+◇ Test emptyWebReadReportsUnavailable() started.
+✔ Test emptyWebReadReportsUnavailable() passed after 0.001 seconds.
+◇ Test actualWKWebViewHTMLReadIsBounded() started.
+2026-09-16 13:43:29.230351+0800 Web Studio[97967:54894102] [general] WebContent[98302] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.230546+0800 Web Studio[97967:54894163] [Utility] AFIsDeviceGreymatterEligible Missing entitlements for os_eligibility lookup
+2026-09-16 13:43:29.230768+0800 Web Studio[97967:54894102] [general] WebContent[98302] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.230808+0800 Web Studio[97967:54894102] [general] WebContent[98302] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.235864+0800 Web Studio[97967:54894102] [access] WebContent[98302] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0xa6f118480
+2026-09-16 13:43:29.235884+0800 Web Studio[97967:54894102] [access] WebContent[98302] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-16 13:43:29.235923+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.235934+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.235947+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.235999+0800 Web Studio[97967:54894102] [cas] WebContent[98302] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-16 13:43:29.236562+0800 Web Studio[97967:54894102] [cas] WebContent[98302] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-16 13:43:29.237502+0800 Web Studio[97967:54894102] WebContent[98302] invalid product id '(null)'
+2026-09-16 13:43:29.239142+0800 Web Studio[97967:54894102] [sharedcache] WebContent[98302] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-16 13:43:29.240973+0800 Web Studio[97967:54894102] [connection] WebContent[98302] The sandbox in this process does not allow access to RunningBoard.
+2026-09-16 13:43:29.240990+0800 Web Studio[97967:54894102] [connection] WebContent[98302] Handshake aborted as the connection has been invalidated
+2026-09-16 13:43:29.241075+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.241558+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.241573+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.241578+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.241580+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.241587+0800 Web Studio[97967:54894102] [default] WebContent[98302] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.243140+0800 Web Studio[97967:54894102] [Connection] WebContent[98302] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-16 13:43:29.243227+0800 Web Studio[97967:54894102] [Application] WebContent[98302] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-16 13:43:29.251026+0800 Web Studio[97967:54894102] [ResourceLoadStatistics] WebContent[98302] Unable to filter tracking query parameters (missing data)
+2026-09-16 13:43:29.251387+0800 Web Studio[97967:54894102] WebContent[98302] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.251411+0800 Web Studio[97967:54894102] WebContent[98302] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.255579+0800 Web Studio[97967:54894102] [audiocomp] WebContent[98302] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+2026-09-16 13:43:29.256530+0800 Web Studio[97967:54895066] [ResourceLoadStatistics] WebContent[98302] Unable to hide query parameters from script (missing data)
+✔ Test actualWKWebViewHTMLReadIsBounded() passed after 0.101 seconds.
+◇ Test sameDocumentPushStateUpdatesRecordWithoutReplacingWebView() started.
+2026-09-16 13:43:29.297036+0800 Web Studio[97967:54894246] [assertion] Error acquiring assertion: <Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}>
+2026-09-16 13:43:29.297057+0800 Web Studio[97967:54894246] [ProcessSuspension] 0x1231502a0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=98302, error: Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}
+2026-09-16 13:43:29.298993+0800 Web Studio[97967:54894102] [general] WebContent[98320] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.299023+0800 Web Studio[97967:54894102] [general] WebContent[98320] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.299087+0800 Web Studio[97967:54894102] [general] WebContent[98320] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.304801+0800 Web Studio[97967:54894102] [access] WebContent[98320] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0x859120480
+2026-09-16 13:43:29.304817+0800 Web Studio[97967:54894102] [access] WebContent[98320] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-16 13:43:29.304865+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.304877+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.304881+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.304963+0800 Web Studio[97967:54894102] [cas] WebContent[98320] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-16 13:43:29.305396+0800 Web Studio[97967:54894102] [cas] WebContent[98320] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-16 13:43:29.306364+0800 Web Studio[97967:54894102] WebContent[98320] invalid product id '(null)'
+2026-09-16 13:43:29.308027+0800 Web Studio[97967:54894102] [sharedcache] WebContent[98320] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-16 13:43:29.309690+0800 Web Studio[97967:54894102] [connection] WebContent[98320] The sandbox in this process does not allow access to RunningBoard.
+2026-09-16 13:43:29.309698+0800 Web Studio[97967:54894102] [connection] WebContent[98320] Handshake aborted as the connection has been invalidated
+2026-09-16 13:43:29.309764+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.310010+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.310018+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.310028+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.310032+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.310036+0800 Web Studio[97967:54894102] [default] WebContent[98320] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.311421+0800 Web Studio[97967:54894102] [Connection] WebContent[98320] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-16 13:43:29.311482+0800 Web Studio[97967:54894102] [Application] WebContent[98320] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-16 13:43:29.318522+0800 Web Studio[97967:54894102] WebContent[98320] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.318546+0800 Web Studio[97967:54894102] WebContent[98320] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.319614+0800 Web Studio[97967:54894102] [audiocomp] WebContent[98320] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test sameDocumentPushStateUpdatesRecordWithoutReplacingWebView() passed after 0.098 seconds.
+◇ Test cancelledReadReturnsFailure() started.
+2026-09-16 13:43:29.395078+0800 Web Studio[97967:54894164] [assertion] Error acquiring assertion: <Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 98320<WebProcess98320> does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 98320<WebProcess98320> does not exist}>
+2026-09-16 13:43:29.395101+0800 Web Studio[97967:54894164] [ProcessSuspension] 0x1231503c0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=98320, error: Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 98320<WebProcess98320> does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 98320<WebProcess98320> does not exist}
+2026-09-16 13:43:29.396053+0800 Web Studio[97967:54894102] [general] WebContent[98324] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.396071+0800 Web Studio[97967:54894102] [general] WebContent[98324] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.396148+0800 Web Studio[97967:54894102] [general] WebContent[98324] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.401601+0800 Web Studio[97967:54894102] [access] WebContent[98324] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0x871100480
+2026-09-16 13:43:29.401639+0800 Web Studio[97967:54894102] [access] WebContent[98324] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-16 13:43:29.401698+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.401703+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.401707+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.401750+0800 Web Studio[97967:54894102] [cas] WebContent[98324] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-16 13:43:29.402229+0800 Web Studio[97967:54894102] [cas] WebContent[98324] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-16 13:43:29.406531+0800 Web Studio[97967:54894102] WebContent[98324] invalid product id '(null)'
+2026-09-16 13:43:29.409753+0800 Web Studio[97967:54894102] [sharedcache] WebContent[98324] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-16 13:43:29.411367+0800 Web Studio[97967:54894102] [connection] WebContent[98324] The sandbox in this process does not allow access to RunningBoard.
+2026-09-16 13:43:29.411377+0800 Web Studio[97967:54894102] [connection] WebContent[98324] Handshake aborted as the connection has been invalidated
+2026-09-16 13:43:29.411408+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.411645+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.411657+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.411661+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.411664+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.411666+0800 Web Studio[97967:54894102] [default] WebContent[98324] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.413116+0800 Web Studio[97967:54894102] [Connection] WebContent[98324] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-16 13:43:29.413162+0800 Web Studio[97967:54894102] [Application] WebContent[98324] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-16 13:43:29.420396+0800 Web Studio[97967:54894102] WebContent[98324] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.420421+0800 Web Studio[97967:54894102] WebContent[98324] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.421459+0800 Web Studio[97967:54894102] [audiocomp] WebContent[98324] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test cancelledReadReturnsFailure() passed after 0.062 seconds.
+◇ Test navigationDuringReadIsReportedAsFailure() started.
+2026-09-16 13:43:29.461127+0800 Web Studio[97967:54894102] [general] WebContent[98327] Connection to 'pboard' server had an error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.461162+0800 Web Studio[97967:54894102] [general] WebContent[98327] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.461223+0800 Web Studio[97967:54894102] [general] WebContent[98327] Failed to set up CFPasteboardRef 'Apple CFPasteboard general'. Error: <dictionary: 0x1efd96080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1efd961c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}
+Invalidation reason: Connection init failed at lookup with error 159 - Sandbox restriction
+2026-09-16 13:43:29.466708+0800 Web Studio[97967:54894102] [access] WebContent[98327] send_message_with_reply_sync(): XPC_ERROR_CONNECTION_INVALID for message 0x729108480
+2026-09-16 13:43:29.466724+0800 Web Studio[97967:54894102] [access] WebContent[98327] TCCAccessRequest_block_invoke: Connection invalid
+2026-09-16 13:43:29.466737+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.466744+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.466748+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.466814+0800 Web Studio[97967:54894102] [cas] WebContent[98327] CONNECT: Attempt to connect to launchservicesd prohibited because kLSServerConnectionStatusProcessIsDaemonMask is set.
+2026-09-16 13:43:29.467282+0800 Web Studio[97967:54894102] [cas] WebContent[98327] CRASHSTRING: rdar://problem/28724618 Couldn't connect to launchservicesd.
+2026-09-16 13:43:29.468164+0800 Web Studio[97967:54894102] WebContent[98327] invalid product id '(null)'
+2026-09-16 13:43:29.469873+0800 Web Studio[97967:54894102] [sharedcache] WebContent[98327] checkinWithServer Failed bootstrap_lookup2 for name of coreservicesd, kern_return_t=#1100/0x44c Permission denied name=com.apple.CoreServices.coreservicesd
+2026-09-16 13:43:29.471452+0800 Web Studio[97967:54894102] [connection] WebContent[98327] The sandbox in this process does not allow access to RunningBoard.
+2026-09-16 13:43:29.471459+0800 Web Studio[97967:54894102] [connection] WebContent[98327] Handshake aborted as the connection has been invalidated
+2026-09-16 13:43:29.471503+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.471733+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.471751+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.471756+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.471759+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.471762+0800 Web Studio[97967:54894102] [default] WebContent[98327] Conn 0x0 is not a valid connection ID.
+2026-09-16 13:43:29.473402+0800 Web Studio[97967:54894102] [Connection] WebContent[98327] Missing com.apple.linkd.application-service / com.apple.linkd.autoShortcut mach-lookup entitlement, will NOT register the process
+2026-09-16 13:43:29.473429+0800 Web Studio[97967:54894102] [Application] WebContent[98327] Error registering app with intents framework: Error Domain=LNProcessInstanceRegistryClientErrorDomain Code=1
+2026-09-16 13:43:29.479914+0800 Web Studio[97967:54894102] WebContent[98327] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.479941+0800 Web Studio[97967:54894102] WebContent[98327] networkd_settings_read_from_file_locked Sandbox is preventing this process from reading networkd settings file at "/Library/Preferences/com.apple.networkd.plist", please add an exception.
+2026-09-16 13:43:29.480930+0800 Web Studio[97967:54894102] [audiocomp] WebContent[98327] AudioComponentPluginMgr.mm:591   reg server remote proxy error Error Domain=NSCocoaErrorDomain Code=4099 "The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted." UserInfo={NSDebugDescription=The connection to service named com.apple.audio.AudioComponentRegistrar was invalidated: Connection init failed at lookup with error 1 - Operation not permitted.}
+✔ Test navigationDuringReadIsReportedAsFailure() passed after 0.315 seconds.
+◇ Test terminalAndSSHMetadataRemainDistinct() started.
+2026-09-16 13:43:29.751387+0800 Web Studio[97967:54895066] [ProcessSuspension] WebContent[98327] 0x10e058100 - [sessionID=1] WebProcess::markAllLayersVolatile: Failed to mark layers as volatile for webPageID=53
+✔ Test terminalAndSSHMetadataRemainDistinct() passed after 0.004 seconds.
+✔ Suite ResourceReadTests passed after 0.586 seconds.
+◇ Suite TerminalTests started.
+◇ Test shellEmitsUnicodeANSIAndExitCode() started.
+2026-09-16 13:43:29.756209+0800 Web Studio[97967:54894245] [assertion] Error acquiring assertion: <Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}>
+2026-09-16 13:43:29.756260+0800 Web Studio[97967:54894245] [ProcessSuspension] 0x1231501e0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=98327, error: Error Domain=RBSServiceErrorDomain Code=1 "(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)" UserInfo={NSLocalizedFailureReason=(target is not running or doesn't have entitlement com.apple.runningboard.assertions.webkit AND originator doesn't have entitlement com.apple.runningboard.assertions.webkit)}
+✔ Test shellEmitsUnicodeANSIAndExitCode() passed after 0.375 seconds.
+◇ Test resizeIsAppliedToRealPTY() started.
+✔ Test resizeIsAppliedToRealPTY() passed after 0.219 seconds.
+◇ Test interactiveShellRespondsToCtrlCAndContinues() started.
+2026-09-16 13:43:30.360967+0800 Web Studio[97967:54894102] [io_exec] io_exec: found Ghostty resources dir: /private/tmp/web-studio-ghostty-tests/Build/Products/Debug/Web Studio.app/Contents/Resources/ghostty/ghostty
+2026-09-16 13:43:30.361065+0800 Web Studio[97967:54894102] [io_exec] io_exec: shell could not be detected, no automatic shell integration will be injected
+2026-09-16 13:43:30.366755+0800 Web Studio[97967:54895251] [io_exec] io_exec: started subcommand path=/usr/bin/login pid=98384
+2026-09-16 13:43:30.558711+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=/tmp
+2026-09-16 13:43:30.562227+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=stty
+2026-09-16 13:43:30.564528+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=/tmp
+2026-09-16 13:43:30.573338+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=printf
+2026-09-16 13:43:30.573500+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=/tmp
+2026-09-16 13:43:30.631287+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=while
+2026-09-16 13:43:30.943914+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=/tmp
+2026-09-16 13:43:30.963348+0800 Web Studio[97967:54895250] [font_codepoint_resolver] font_codepoint_resolver: found codepoint 0x2718 in fallback face=MesloLGS NF Regular
+2026-09-16 13:43:31.109702+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=printf
+2026-09-16 13:43:31.109897+0800 Web Studio[97967:54895255] [stream] stream: OSC 1 (change icon) received and ignored icon=/tmp
+2026-09-16 13:43:31.154911+0800 Web Studio[97967:54895255] [io_exec] io_exec: pty fd closed, read thread exiting
+2026-09-16 13:43:31.165867+0800 Web Studio[97967:54894102] [surface] surface: surface closed addr=85f418000
+✔ Test interactiveShellRespondsToCtrlCAndContinues() passed after 0.816 seconds.
+◇ Test invalidDirectoryAndExecutableBecomeFailures() started.
+✔ Test invalidDirectoryAndExecutableBecomeFailures() passed after 0.116 seconds.
+◇ Test immediateCloseAndWaitReapsChild() started.
+✔ Test immediateCloseAndWaitReapsChild() passed after 0.112 seconds.
+◇ Test closingOwnedSessionLeavesUnrelatedProcessRunning() started.
+✔ Test closingOwnedSessionLeavesUnrelatedProcessRunning() passed after 0.112 seconds.
+✔ Suite TerminalTests passed after 1.752 seconds.
+◇ Suite Web_StudioTests started.
+◇ Test bareDomainNormalizesToHTTPS() started.
+✔ Test bareDomainNormalizesToHTTPS() passed after 0.001 seconds.
+◇ Test sshDefaultsPortAndRejectsInvalidValues() started.
+✔ Test sshDefaultsPortAndRejectsInvalidValues() passed after 0.001 seconds.
+◇ Test closingLastTabReturnsToBlankTab() started.
+✔ Test closingLastTabReturnsToBlankTab() passed after 0.004 seconds.
+◇ Test closingInactiveTabPreservesSelection() started.
+✔ Test closingInactiveTabPreservesSelection() passed after 0.001 seconds.
+◇ Test taskGroupsKeepSelectionAndMoveActiveTab() started.
+✔ Test taskGroupsKeepSelectionAndMoveActiveTab() passed after 0.001 seconds.
+◇ Test movingInactiveTabDoesNotChangeCurrentSelection() started.
+✔ Test movingInactiveTabDoesNotChangeCurrentSelection() passed after 0.001 seconds.
+◇ Test selectingEmptyGroupCreatesItsBlankTab() started.
+✔ Test selectingEmptyGroupCreatesItsBlankTab() passed after 0.001 seconds.
+◇ Test workspaceActionsTargetTheirOwningGroup() started.
+✔ Test workspaceActionsTargetTheirOwningGroup() passed after 0.003 seconds.
+◇ Test closingActiveTabPrefersAnotherTabInSameGroup() started.
+✔ Test closingActiveTabPrefersAnotherTabInSameGroup() passed after 0.001 seconds.
+◇ Test layoutResolverCompactsAndProtectsMainWidth() started.
+✔ Test layoutResolverCompactsAndProtectsMainWidth() passed after 0.001 seconds.
+◇ Test modalOpenersRemainMutuallyExclusive() started.
+✔ Test modalOpenersRemainMutuallyExclusive() passed after 0.001 seconds.
+◇ Test nonDefaultSSHPortAppearsInTabTitleAndWebPathIsSeparate() started.
+✔ Test nonDefaultSSHPortAppearsInTabTitleAndWebPathIsSeparate() passed after 0.003 seconds.
+◇ Test addressParserRoutesWebSSHAndLocalTerminalInputs() started.
+✔ Test addressParserRoutesWebSSHAndLocalTerminalInputs() passed after 0.001 seconds.
+◇ Test addressParserRejectsUnsupportedOrMalformedInputs() started.
+✔ Test addressParserRejectsUnsupportedOrMalformedInputs() passed after 0.001 seconds.
+◇ Test addressFieldTracksIdleTabSelectionAndPreservesSourceSession() started.
+✔ Test addressFieldTracksIdleTabSelectionAndPreservesSourceSession() passed after 0.001 seconds.
+◇ Test addressFieldAllowsSecondSubmissionWithoutResettingDraft() started.
+✔ Test addressFieldAllowsSecondSubmissionWithoutResettingDraft() passed after 0.001 seconds.
+◇ Test webRuntimeIsCreatedOncePerTabAndKeepsItsWebView() started.
+✔ Test webRuntimeIsCreatedOncePerTabAndKeepsItsWebView() passed after 0.004 seconds.
+◇ Test closingAWebTabReleasesItsRuntime() started.
+✔ Test closingAWebTabReleasesItsRuntime() passed after 0.007 seconds.
+◇ Test openingSSHFromWebKeepsWebResourceAndCreatesSibling() started.
+✔ Test openingSSHFromWebKeepsWebResourceAndCreatesSibling() passed after 0.004 seconds.
+◇ Test panelCoordinatorCapturesTargetAndReportsClosedResource() started.
+✔ Test panelCoordinatorCapturesTargetAndReportsClosedResource() passed after 0.001 seconds.
+◇ Test committedNavigationFollowsTheLivePageOnWebTabsOnly() started.
+✔ Test committedNavigationFollowsTheLivePageOnWebTabsOnly() passed after 0.001 seconds.
+◇ Test popupNavigationOpensASiblingTabInTheSameTask() started.
+✔ Test popupNavigationOpensASiblingTabInTheSameTask() passed after 0.001 seconds.
+◇ Test activeWebStateResetsWhenSelectionLeavesTheWebTab() started.
+✔ Test activeWebStateResetsWhenSelectionLeavesTheWebTab() passed after 0.007 seconds.
+◇ Test webCommandsAreInertWithoutAWebRuntime() started.
+✔ Test webCommandsAreInertWithoutAWebRuntime() passed after 0.001 seconds.
+◇ Test navigationPolicyRendersWebAndHandsOffOnlyClickedAppSchemes() started.
+✔ Test navigationPolicyRendersWebAndHandsOffOnlyClickedAppSchemes() passed after 0.001 seconds.
+◇ Test cancelledAndInterruptedLoadsAreNotReportedAsFailures() started.
+✔ Test cancelledAndInterruptedLoadsAreNotReportedAsFailures() passed after 0.001 seconds.
+◇ Test commandPaletteListsPageCommandsOnlyWhenTheyCanRun() started.
+✔ Test commandPaletteListsPageCommandsOnlyWhenTheyCanRun() passed after 0.001 seconds.
+◇ Test tabCyclingCommandsAppearOnlyWithMoreThanOneTab() started.
+✔ Test tabCyclingCommandsAppearOnlyWithMoreThanOneTab() passed after 0.001 seconds.
+◇ Test selectingTabByNumberMatchesSafariNumbering() started.
+✔ Test selectingTabByNumberMatchesSafariNumbering() passed after 0.001 seconds.
+◇ Test tabCyclingWrapsWithinTheSelectedTask() started.
+✔ Test tabCyclingWrapsWithinTheSelectedTask() passed after 0.001 seconds.
+◇ Test tabTitleFollowsPageTitleAndFallsBackToDestination() started.
+✔ Test tabTitleFollowsPageTitleAndFallsBackToDestination() passed after 0.001 seconds.
+◇ Test backgroundTabTitleUpdatesWithoutTouchingTheToolbar() started.
+✔ Test backgroundTabTitleUpdatesWithoutTouchingTheToolbar() passed after 0.001 seconds.
+◇ Test resourceStoreKeepsStableIDsAndOwnsWebRuntime() started.
+✔ Test resourceStoreKeepsStableIDsAndOwnsWebRuntime() passed after 0.003 seconds.
+◇ Test closingLastTabCreatesANewResourceID() started.
+✔ Test closingLastTabCreatesANewResourceID() passed after 0.001 seconds.
+◇ Test closingSelectedTabWithTwoTabsSelectsRemainingResource() started.
+✔ Test closingSelectedTabWithTwoTabsSelectsRemainingResource() passed after 0.001 seconds.
+◇ Test pruningWebRuntimesDoesNotDeleteNonWebRecords() started.
+✔ Test pruningWebRuntimesDoesNotDeleteNonWebRecords() passed after 0.001 seconds.
+◇ Test sshRejectsControlCharactersAndOptionInjection() started.
+✔ Test sshRejectsControlCharactersAndOptionInjection() passed after 0.001 seconds.
+◇ Test capturedPaneNewTabReplacesOnlyCapturedPane() started.
+✔ Test capturedPaneNewTabReplacesOnlyCapturedPane() passed after 0.001 seconds.
+◇ Test shutdownAwaitsRemovedResourcesAndIsIdempotent() started.
+✔ Test shutdownAwaitsRemovedResourcesAndIsIdempotent() passed after 0.005 seconds.
+◇ Test storeShutdownIsScopedAndCallbackRunsOnce() started.
+✔ Test storeShutdownIsScopedAndCallbackRunsOnce() passed after 0.001 seconds.
+◇ Test windowCloseShutsDownWebOnlyStore() started.
+✔ Test windowCloseShutsDownWebOnlyStore() passed after 0.015 seconds.
+◇ Test panelCloseRestoresCapturedWindowAndUsesFallback() started.
+✔ Test panelCloseRestoresCapturedWindowAndUsesFallback() passed after 0.004 seconds.
+◇ Test sshExit255MapsToInterruptedAndUnknownResourceIsIgnored() started.
+✔ Test sshExit255MapsToInterruptedAndUnknownResourceIsIgnored() passed after 0.003 seconds.
+◇ Test splitSupportsAllResourceKindsWithoutDuplicateMounts() started.
+✔ Test splitSupportsAllResourceKindsWithoutDuplicateMounts() passed after 0.002 seconds.
+◇ Test layoutRejectsUnknownPaneAndResourceAndPreservesSwapIdentity() started.
+✔ Test layoutRejectsUnknownPaneAndResourceAndPreservesSwapIdentity() passed after 0.001 seconds.
+◇ Test closePanePreservesResourceAndCloseResourcePrunesLayout() started.
+✔ Test closePanePreservesResourceAndCloseResourcePrunesLayout() passed after 0.001 seconds.
+◇ Test splitRatioIsClamped() started.
+✔ Test splitRatioIsClamped() passed after 0.001 seconds.
+◇ Test splitSupportsWebWebAndTerminalTerminal() started.
+✔ Test splitSupportsWebWebAndTerminalTerminal() passed after 0.002 seconds.
+◇ Test panelKeepsCapturedPaneWhenSelectionChanges() started.
+✔ Test panelKeepsCapturedPaneWhenSelectionChanges() passed after 0.001 seconds.
+◇ Test nativeResourceHostReplacesOnlyOwnedView() started.
+✔ Test nativeResourceHostReplacesOnlyOwnedView() passed after 0.001 seconds.
+◇ Test capturedDestinationRejectsClosedResource() started.
+✔ Test capturedDestinationRejectsClosedResource() passed after 0.001 seconds.
+◇ Test closedCapturedPaneRejectsActionWhileResourceSurvives() started.
+✔ Test closedCapturedPaneRejectsActionWhileResourceSurvives() passed after 0.001 seconds.
+◇ Test reparentedNativeViewSurvivesOldHostUnmount() started.
+✔ Test reparentedNativeViewSurvivesOldHostUnmount() passed after 0.001 seconds.
+◇ Test blankTabsDoNotConsumeRecentSlots() started.
+✔ Test blankTabsDoNotConsumeRecentSlots() passed after 0.001 seconds.
+◇ Test explicitWebDestinationAddsRecentResource() started.
+✔ Test explicitWebDestinationAddsRecentResource() passed after 0.001 seconds.
+◇ Test pinnedWebDestinationSurvivesSourceCloseAndReusesBlank() started.
+✔ Test pinnedWebDestinationSurvivesSourceCloseAndReusesBlank() passed after 0.001 seconds.
+◇ Test duplicatePinnedDestinationUpdatesLabel() started.
+✔ Test duplicatePinnedDestinationUpdatesLabel() passed after 0.001 seconds.
+◇ Test pinnedTerminalFromSecondaryPaneUsesSourceGroupAndPane() started.
+✔ Test pinnedTerminalFromSecondaryPaneUsesSourceGroupAndPane() passed after 0.001 seconds.
+✔ Suite Web_StudioTests passed after 0.096 seconds.
+✔ Test run with 128 tests in 11 suites passed after 6.777 seconds.
+2026-09-16 13:43:31.877 xcodebuild[97771:54893556] [MT] IDETestOperationsObserverDebug: 8.123 elapsed -- Testing started completed.
+2026-09-16 13:43:31.877 xcodebuild[97771:54893556] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-09-16 13:43:31.877 xcodebuild[97771:54893556] [MT] IDETestOperationsObserverDebug: 8.123 sec, +8.123 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/web-studio-ghostty-tests/Logs/Test/Test-Web Studio-2026.09.16_13-43-22-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

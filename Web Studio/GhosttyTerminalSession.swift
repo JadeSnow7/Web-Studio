@@ -1,3 +1,4 @@
+#if !WEB_STUDIO_VT
 import AppKit
 import Foundation
 import GhosttyKit
@@ -177,7 +178,6 @@ final class GhosttyTerminalRuntime {
         DispatchQueue.main.async { view.onChildExit?(nil) }
     }
 }
-
 private extension Dictionary where Key == String, Value == String {
     func withCStringPairs<T>(_ body: (CStringPairs) throws -> T) rethrows -> T {
         let values = map { (key: strdup($0.key), value: strdup($0.value)) }
@@ -409,7 +409,6 @@ final class GhosttyTerminalView: NSView, NSTextInputClient {
         if let surfacePointer { ghostty_surface_free(surfacePointer) }
     }
 }
-
 private extension NSEvent {
     func ghosttyKeyEvent(_ action: ghostty_input_action_e) -> ghostty_input_key_s {
         var key = ghostty_input_key_s()
@@ -429,3 +428,4 @@ private extension NSEvent {
         return ghostty_input_mods_e(rawValue: raw)
     }
 }
+#endif

@@ -1,0 +1,224 @@
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:13:10: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+11 |     t.start(executable: "/bin/zsh", argv: ["/bin/zsh", "-df"], environment: ["TERM":"xterm-256color","PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+12 |     precondition(done.wait(timeout: .now() + 3) == .success)
+13 |     lock.lock(); let text = String(decoding: output, as: UTF8.self); let accepted = ok; lock.unlock()
+   |          `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+14 |     precondition(accepted && text.contains("SWIFT_READY"))
+15 |     let stream = TerminalPTYTransport()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:13:94: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+11 |     t.start(executable: "/bin/zsh", argv: ["/bin/zsh", "-df"], environment: ["TERM":"xterm-256color","PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+12 |     precondition(done.wait(timeout: .now() + 3) == .success)
+13 |     lock.lock(); let text = String(decoding: output, as: UTF8.self); let accepted = ok; lock.unlock()
+   |                                                                                              `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+14 |     precondition(accepted && text.contains("SWIFT_READY"))
+15 |     let stream = TerminalPTYTransport()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:28:16: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+26 |     stream.start(executable: "/bin/sh", argv: ["/bin/sh", "-f"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+27 |     precondition(streamDone.wait(timeout: .now() + 5) == .success)
+28 |     streamLock.lock(); let streamedData = streamOutput; let streamed = String(decoding: streamedData, as: UTF8.self); streamLock.unlock()
+   |                `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+29 |     precondition(streamedData.count >= 1_100_000 && streamed.contains("STREAM_MARK"))
+30 |     let pressure = TerminalPTYTransport()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:28:130: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+26 |     stream.start(executable: "/bin/sh", argv: ["/bin/sh", "-f"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+27 |     precondition(streamDone.wait(timeout: .now() + 5) == .success)
+28 |     streamLock.lock(); let streamedData = streamOutput; let streamed = String(decoding: streamedData, as: UTF8.self); streamLock.unlock()
+   |                                                                                                                                  `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+29 |     precondition(streamedData.count >= 1_100_000 && streamed.contains("STREAM_MARK"))
+30 |     let pressure = TerminalPTYTransport()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:32:12: warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+30 |     let pressure = TerminalPTYTransport()
+31 |     pressure.start(executable: "/bin/sleep", argv: ["/bin/sleep", "10"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+32 |     Thread.sleep(forTimeInterval: 0.1)
+   |            `- warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+33 |     precondition(pressure.write(Data(repeating: 0x41, count: 256 * 1024)))
+34 |     precondition(!pressure.write(Data(repeating: 0x42, count: 1)))
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSThread.h:69:1: note: 'sleep(forTimeInterval:)' declared here
+ 67 | ///
+ 68 | /// - Parameter ti: The duration of the sleep.
+ 69 | + (void)sleepForTimeInterval:(NSTimeInterval)ti NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use Task.sleep(until:clock:) instead.");
+    | `- note: 'sleep(forTimeInterval:)' declared here
+ 70 | 
+ 71 | /// Terminates the current thread.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:41:12: warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+39 |     await sleeper.closeAndWait(); precondition(exited.wait(timeout: .now()) == .success); sleeper.close()
+40 |     let natural = TerminalPTYTransport(); natural.start(executable: "/bin/sh", argv: ["/bin/sh", "-c", "exit 0"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+41 |     Thread.sleep(forTimeInterval: 0.2); await natural.closeAndWait(); precondition(!natural.write(Data("x".utf8))); await natural.closeAndWait()
+   |            `- warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+42 |     let before = TerminalPTYTransport(); await before.closeAndWait(); before.close(); before.start(executable: "/bin/sleep", argv: ["/bin/sleep", "10"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24); Thread.sleep(forTimeInterval: 0.1); precondition(before.currentPID() == nil)
+43 |     guard let fixturePath = ProcessInfo.processInfo.environment["FIXTURE_PATH"] else { fatalError("missing fixture") }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSThread.h:69:1: note: 'sleep(forTimeInterval:)' declared here
+ 67 | ///
+ 68 | /// - Parameter ti: The duration of the sleep.
+ 69 | + (void)sleepForTimeInterval:(NSTimeInterval)ti NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use Task.sleep(until:clock:) instead.");
+    | `- note: 'sleep(forTimeInterval:)' declared here
+ 70 | 
+ 71 | /// Terminates the current thread.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:42:240: warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+40 |     let natural = TerminalPTYTransport(); natural.start(executable: "/bin/sh", argv: ["/bin/sh", "-c", "exit 0"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+41 |     Thread.sleep(forTimeInterval: 0.2); await natural.closeAndWait(); precondition(!natural.write(Data("x".utf8))); await natural.closeAndWait()
+42 |     let before = TerminalPTYTransport(); await before.closeAndWait(); before.close(); before.start(executable: "/bin/sleep", argv: ["/bin/sleep", "10"], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24); Thread.sleep(forTimeInterval: 0.1); precondition(before.currentPID() == nil)
+   |                                                                                                                                                                                                                                                `- warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+43 |     guard let fixturePath = ProcessInfo.processInfo.environment["FIXTURE_PATH"] else { fatalError("missing fixture") }
+44 |     let unrelated = Process(); unrelated.executableURL = URL(fileURLWithPath: "/bin/sleep"); unrelated.arguments = ["10"]; try! unrelated.run()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSThread.h:69:1: note: 'sleep(forTimeInterval:)' declared here
+ 67 | ///
+ 68 | /// - Parameter ti: The duration of the sleep.
+ 69 | + (void)sleepForTimeInterval:(NSTimeInterval)ti NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use Task.sleep(until:clock:) instead.");
+    | `- note: 'sleep(forTimeInterval:)' declared here
+ 70 | 
+ 71 | /// Terminates the current thread.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:51:30: warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+49 |     resistant.start(executable: fixturePath, argv: [fixturePath], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+50 |     var childPID: pid_t = -1; var backgroundPID: pid_t = -1
+51 |     for _ in 0..<50 { Thread.sleep(forTimeInterval: 0.02); resistantLock.lock(); let text = String(decoding: resistantOutput, as: UTF8.self); resistantLock.unlock(); if let range = text.range(of: "CHILD_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { childPID = pid_t(value) }; if let range = text.range(of: "BACKGROUND_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { backgroundPID = pid_t(value) }; if childPID > 0 && backgroundPID > 0 { break } }
+   |                              `- warning: class method 'sleep' is unavailable from asynchronous contexts; Use Task.sleep(until:clock:) instead.; this is an error in the Swift 6 language mode
+52 |     precondition(childPID > 0 && backgroundPID > 0)
+53 |     let resistantCloseDone = DispatchSemaphore(value: 0)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSThread.h:69:1: note: 'sleep(forTimeInterval:)' declared here
+ 67 | ///
+ 68 | /// - Parameter ti: The duration of the sleep.
+ 69 | + (void)sleepForTimeInterval:(NSTimeInterval)ti NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use Task.sleep(until:clock:) instead.");
+    | `- note: 'sleep(forTimeInterval:)' declared here
+ 70 | 
+ 71 | /// Terminates the current thread.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:51:74: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+49 |     resistant.start(executable: fixturePath, argv: [fixturePath], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+50 |     var childPID: pid_t = -1; var backgroundPID: pid_t = -1
+51 |     for _ in 0..<50 { Thread.sleep(forTimeInterval: 0.02); resistantLock.lock(); let text = String(decoding: resistantOutput, as: UTF8.self); resistantLock.unlock(); if let range = text.range(of: "CHILD_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { childPID = pid_t(value) }; if let range = text.range(of: "BACKGROUND_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { backgroundPID = pid_t(value) }; if childPID > 0 && backgroundPID > 0 { break } }
+   |                                                                          `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+52 |     precondition(childPID > 0 && backgroundPID > 0)
+53 |     let resistantCloseDone = DispatchSemaphore(value: 0)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:51:157: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+49 |     resistant.start(executable: fixturePath, argv: [fixturePath], environment: ["PATH":"/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
+50 |     var childPID: pid_t = -1; var backgroundPID: pid_t = -1
+51 |     for _ in 0..<50 { Thread.sleep(forTimeInterval: 0.02); resistantLock.lock(); let text = String(decoding: resistantOutput, as: UTF8.self); resistantLock.unlock(); if let range = text.range(of: "CHILD_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { childPID = pid_t(value) }; if let range = text.range(of: "BACKGROUND_PID="), let value = Int32(text[range.upperBound...].prefix(while: { $0.isNumber })) { backgroundPID = pid_t(value) }; if childPID > 0 && backgroundPID > 0 { break } }
+   |                                                                                                                                                             `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+52 |     precondition(childPID > 0 && backgroundPID > 0)
+53 |     let resistantCloseDone = DispatchSemaphore(value: 0)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:69:19: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+67 |     precondition(kill(-backgroundPID, 0) != 0 && errno == ESRCH)
+68 |     precondition(unrelated.isRunning); unrelated.terminate(); unrelated.waitUntilExit()
+69 |     resistantLock.lock(); precondition(exitCallbacks == 1); resistantLock.unlock()
+   |                   `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+70 |     let naturalUnrelated = Process(); naturalUnrelated.executableURL = URL(fileURLWithPath: "/bin/sleep"); naturalUnrelated.arguments = ["10"]; try! naturalUnrelated.run()
+71 |     let naturalResistant = TerminalPTYTransport(); let naturalDone = DispatchSemaphore(value: 0); let naturalLock = NSLock(); var naturalOutput = Data(); var naturalResult: TerminalPTYTransport.Exit?
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:69:75: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+67 |     precondition(kill(-backgroundPID, 0) != 0 && errno == ESRCH)
+68 |     precondition(unrelated.isRunning); unrelated.terminate(); unrelated.waitUntilExit()
+69 |     resistantLock.lock(); precondition(exitCallbacks == 1); resistantLock.unlock()
+   |                                                                           `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+70 |     let naturalUnrelated = Process(); naturalUnrelated.executableURL = URL(fileURLWithPath: "/bin/sleep"); naturalUnrelated.arguments = ["10"]; try! naturalUnrelated.run()
+71 |     let naturalResistant = TerminalPTYTransport(); let naturalDone = DispatchSemaphore(value: 0); let naturalLock = NSLock(); var naturalOutput = Data(); var naturalResult: TerminalPTYTransport.Exit?
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:77:17: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+75 |     precondition(naturalDone.wait(timeout: .now() + 5) == .success)
+76 |     await naturalResistant.closeAndWait()
+77 |     naturalLock.lock(); let naturalText = String(decoding: naturalOutput, as: UTF8.self); let observedNatural = naturalResult; naturalLock.unlock()
+   |                 `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+78 |     precondition(observedNatural?.code == 7 && naturalText.contains("NATURAL_READY"))
+79 |     if let range = naturalText.range(of: "CHILD_PID="), let value = Int32(naturalText[range.upperBound...].prefix(while: { $0.isNumber })) { precondition(kill(pid_t(value), 0) != 0 && errno == ESRCH); precondition(kill(-pid_t(value), 0) != 0 && errno == ESRCH) } else { preconditionFailure("missing natural foreground pid") }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-pty-transport-swift-smoke.swift:77:140: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+75 |     precondition(naturalDone.wait(timeout: .now() + 5) == .success)
+76 |     await naturalResistant.closeAndWait()
+77 |     naturalLock.lock(); let naturalText = String(decoding: naturalOutput, as: UTF8.self); let observedNatural = naturalResult; naturalLock.unlock()
+   |                                                                                                                                            `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+78 |     precondition(observedNatural?.code == 7 && naturalText.contains("NATURAL_READY"))
+79 |     if let range = naturalText.range(of: "CHILD_PID="), let value = Int32(naturalText[range.upperBound...].prefix(while: { $0.isNumber })) { precondition(kill(pid_t(value), 0) != 0 && errno == ESRCH); precondition(kill(-pid_t(value), 0) != 0 && errno == ESRCH) } else { preconditionFailure("missing natural foreground pid") }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+Swift TerminalPTYTransport smoke passed

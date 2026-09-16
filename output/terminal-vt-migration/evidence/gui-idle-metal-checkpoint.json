@@ -1,0 +1,13 @@
+{
+  "app_pid": 30261,
+  "duration_seconds": 10,
+  "injected_input": false,
+  "ps_cpu_percent": 0.0,
+  "ps_rss_kib": 30992,
+  "visibility": "not independently established",
+  "build": "unique-gui-build checkpoint, before latest PTY/AX/input changes",
+  "submissions_rows": 0,
+  "gpu_rows_all_processes": 70,
+  "gpu_rows_target_process": 0,
+  "binary_sha256": "a7dec092a56d6d1a371ea88402a95f614c86be2dd5c2e827332e26737ab764f4"
+}

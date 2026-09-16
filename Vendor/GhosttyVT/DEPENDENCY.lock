@@ -1,0 +1,17 @@
+# Web Studio libghostty-vt M0 dependency lock
+source = "https://github.com/ghostty-org/ghostty.git"
+commit = "d4c88d8069912b653d707191388ca98e24751f12"
+version = "main@2026-09-15"
+zig_version = "0.16.0"
+zig_target = "aarch64-macos"
+zig_tarball = "https://ziglang.org/download/0.16.0/zig-aarch64-macos-0.16.0.tar.xz"
+zig_sha256 = "b23d70deaa879b5c2d486ed3316f7eaa53e84acf6fc9cc747de152450d401489"
+build_flags = "-Demit-lib-vt=true -Demit-xcframework=false -Doptimize=ReleaseFast"
+artifact_sha256 = "dc8b44f3591acd227c1176b67238287ea894fe8af37cb114bf2a45a7669ce10b"
+api_header_sha256 = "014813d7dba136ae6faecb515d23e7d7dc675672094174f91e2d84ab2bb55732"
+header_manifest_sha256 = "c9411d65c3d3bff7c4b7ed440ab64e0e125ff97b048b0e7542e00909de2db44a"
+source_license_sha256 = "386211873e5b7a02f663ae4d7adf96285999f91608f8f9f31fecfd0f4095e6f1"
+
+# The C surface is intentionally pinned to an upstream commit. The upstream
+# header is explicitly unstable; do not follow main without updating this
+# file and rerunning the smoke checks.

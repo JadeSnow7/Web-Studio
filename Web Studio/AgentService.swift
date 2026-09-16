@@ -39,7 +39,7 @@ enum AgentServiceError: Error, Equatable, LocalizedError {
     }
 }
 
-protocol CredentialStore: Sendable {
+nonisolated protocol CredentialStore: Sendable {
     func save(apiKey: String, for endpoint: URL) async throws
     func read(for endpoint: URL) async throws -> String?
     func delete(for endpoint: URL) async throws
@@ -62,8 +62,8 @@ actor KeychainCredentialStore: CredentialStore {
     func delete(for endpoint: URL) async throws { let status = SecItemDelete(query(endpoint) as CFDictionary); guard status == errSecSuccess || status == errSecItemNotFound else { throw AgentServiceError.keychain(status) } }
 }
 
-protocol ResponsesProvider: Sendable { func answer(request: AgentRequest, apiKey: String) async throws -> String }
-protocol AgentBackendProvider: Sendable { func answer(request: AgentRequest) async throws -> String }
+nonisolated protocol ResponsesProvider: Sendable { func answer(request: AgentRequest, apiKey: String) async throws -> String }
+nonisolated protocol AgentBackendProvider: Sendable { func answer(request: AgentRequest) async throws -> String }
 
 final class URLSessionResponsesProvider: NSObject, ResponsesProvider, URLSessionTaskDelegate, @unchecked Sendable {
     private let session: URLSession

@@ -1,0 +1,19 @@
+/Users/huaodong/workspace/Web Studio/Web Studio/TerminalVTView.swift:103:19: warning: immutable value 'command' was never used; consider replacing with '_' or removing it [#NoUsage]
+101 |         if let window { occluded = !window.occlusionState.contains(.visible) }
+102 |         guard !occluded, let drawable = metalLayer.nextDrawable(), let frame = terminalFrame, let renderer,
+103 |               let command = renderer.render(frame: frame, geometry: geometry, theme: theme,
+    |                   `- warning: immutable value 'command' was never used; consider replacing with '_' or removing it [#NoUsage]
+104 |                                             target: drawable.texture, drawable: drawable)
+105 |         else {
+
+/Users/huaodong/workspace/Web Studio/Web Studio/TerminalVTView.swift:212:31: warning: 'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h) [#DeprecatedDeclaration]
+210 |         case .numberOfCharacters: return accessibilityTextAndSelection().0.utf16.count
+211 |         case .visibleCharacterRange: return NSValue(range: NSRange(location: 0, length: accessibilityTextAndSelection().0.utf16.count))
+212 |         default: return super.accessibilityAttributeValue(attribute)
+    |                               `- warning: 'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h) [#DeprecatedDeclaration]
+213 |         }
+214 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+Terminal VT host smoke passed

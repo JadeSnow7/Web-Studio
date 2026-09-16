@@ -1,0 +1,591 @@
+2026-09-16 11:51:54.890 xcodebuild[10088:53960057] [MT] DVTPlugInLoading: Failed to load code for plug-in com.apple.dt.DVTCoreDeviceCore (/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework), error = Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}, dyldError = dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice
+2026-09-16 11:51:54.890 xcodebuild[10088:53960057] [MT] DVTPlugInExtensionFaulting: Failed to fire fault for extension Xcode.Device.CoreDevice: Error Domain=DVTPlugInErrorDomain Code=2 "Loading a plug-in failed." UserInfo={DVTPlugInIdentifierErrorKey=com.apple.dt.DVTCoreDeviceCore, DVTPlugInExecutablePathErrorKey=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSLocalizedRecoverySuggestion=The plug-in or one of its prerequisite plug-ins may be missing or damaged and may need to be reinstalled., DVTPlugInDYLDErrorMessageErrorKey=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSLocalizedDescription=Loading a plug-in failed., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedFailureReason=The plug-in “com.apple.dt.DVTCoreDeviceCore” at path “/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework” could not be loaded.  The plug-in or one of its prerequisite plug-ins may be missing or damaged., NSUnderlyingError=0xc2529c930 {Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}}}
+2026-09-16 11:51:54.890 xcodebuild[10088:53960057] [MT] DVTAssertions: Warning in DVTFrameworks/DVTFoundation/Devices/DVTDevice.m:381
+Details:  No locator class for device extension 'Xcode.Device.CoreDevice', error: Error Domain=DVTPlugInErrorDomain Code=2 "Loading a plug-in failed." UserInfo={DVTPlugInIdentifierErrorKey=com.apple.dt.DVTCoreDeviceCore, DVTPlugInExecutablePathErrorKey=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSLocalizedRecoverySuggestion=The plug-in or one of its prerequisite plug-ins may be missing or damaged and may need to be reinstalled., DVTPlugInDYLDErrorMessageErrorKey=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0000): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSLocalizedDescription=Loading a plug-in failed., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedFailureReason=The plug-in “com.apple.dt.DVTCoreDeviceCore” at path “/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework” could not be loaded.  The plug-in or one of its prerequisite plug-ins may be missing or damaged., NSUnderlyingError=0xc2529c930 {Error Domain=NSCocoaErrorDomain Code=3588 "dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice" UserInfo={NSLocalizedFailureReason=The bundle couldn’t be loaded., NSLocalizedRecoverySuggestion=Try reinstalling the bundle., NSFilePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, NSDebugDescription=dlopen(/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/DVTCoreDeviceCore, 0x0109): Symbol not found: _$s10CoreDevice17DetailedOperationC7metricsSDySSAA12CodableValueOGvg
+  Referenced from: <E47C0F61-0399-382B-A241-7222F33F774E> /Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework/Versions/A/DVTCoreDeviceCore
+  Expected in:     <BF770DE4-8425-37CA-99BB-029235010A99> /Library/Developer/PrivateFrameworks/CoreDevice.framework/Versions/A/CoreDevice, NSBundlePath=/Applications/Xcode.app/Contents/SharedFrameworks/DVTCoreDeviceCore.framework, NSLocalizedDescription=The bundle “DVTCoreDeviceCore” couldn’t be loaded.}}}
+Object:   <DVTDevice>
+Method:   +_knownDeviceLocators
+Thread:   <_NSMainThread: 0x101d31cd0>{number = 1, name = main}
+Please file a bug at https://feedbackassistant.apple.com with this warning message and any useful information you can provide.
+2026-09-16 11:51:54.892 xcodebuild[10088:53960113]  DVTErrorPresenter: Unable to load simulator devices.
+Domain: DVTCoreSimulatorAdditionsErrorDomain
+Code: 3
+Failure Reason: The version of the CoreSimulator framework installed on this Mac is out-of-date and not supported by this version of Xcode.
+Recovery Suggestion: Please ensure that you have installed all available updates to your Mac's software, and that you are running the most recent version of Xcode supported by macOS.
+--
+CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0).
+Domain: DVTCoreSimulatorAdditionsErrorDomain
+Code: 3
+--
+
+2026-09-16 11:51:54.892 xcodebuild[10088:53960113]  iOSSimulator: [SimServiceContext sharedServiceContextForDeveloperDir:error:] returned nil (Error Domain=DVTCoreSimulatorAdditionsErrorDomain Code=3 "CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0)." UserInfo={NSLocalizedDescription=CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0).}). Simulator device support disabled.
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Web Studio.xcodeproj" -scheme "Web Studio VT" -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /private/tmp/web-studio-vt-unique -disableAutomaticPackageResolution CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= PRODUCT_BUNDLE_IDENTIFIER=com.huaodong.Web-Studio.VTValidation20260916 build
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+    PRODUCT_BUNDLE_IDENTIFIER = com.huaodong.Web-Studio.VTValidation20260916
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm.git @ 1.14.0
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'Web Studio VT' in project 'Web Studio' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 30d9f08753b6dd49cf610a07ffb3b13c
+Build description path: /tmp/web-studio-vt-unique/Build/Intermediates.noindex/XCBuildData/30d9f08753b6dd49cf610a07ffb3b13c.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /tmp/web-studio-vt-unique/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/huaodong/workspace/Web\ Studio/Web\ Studio.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /tmp/web-studio-vt-unique/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+ProcessInfoPlistFile /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Info.plist /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-infoPlistUtility /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist -producttype com.apple.product-type.application -genpkginfo /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist -o /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Info.plist
+
+SwiftDriver Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/web-studio-vt-unique/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-vt-unique/Build/Products/Debug -I /Users/huaodong/workspace/Web\ Studio/scripts -F /tmp/web-studio-vt-unique/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-vt-unique/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-vt-unique/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-vt-unique/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Products/Debug/include -Xcc -I/Users/huaodong/workspace/Web\ Studio/Web -Xcc -IStudio -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftGeneratePch normal arm64 Compiling\ bridging\ header (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ TerminalVTView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalVTView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalVTView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile TerminalVTView.swift
+
+/Users/huaodong/workspace/Web Studio/Web Studio/TerminalVTView.swift:268:31: warning: 'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h) [#DeprecatedDeclaration]
+266 |         case .numberOfCharacters: return accessibilityTextAndSelection().0.utf16.count
+267 |         case .visibleCharacterRange: return NSValue(range: NSRange(location: 0, length: accessibilityTextAndSelection().0.utf16.count))
+268 |         default: return super.accessibilityAttributeValue(attribute)
+    |                               `- warning: 'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h) [#DeprecatedDeclaration]
+269 |         }
+270 |     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+SwiftCompile normal arm64 Compiling\ Web_StudioApp.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web_StudioApp.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web_StudioApp.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile Web_StudioApp.swift
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_Studio_VT (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+
+SwiftCompile normal arm64 Compiling\ GhosttyTerminalSession.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/GhosttyTerminalSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/GhosttyTerminalSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile GhosttyTerminalSession.swift
+
+SwiftCompile normal arm64 Compiling\ CodexProcessRunner.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+/Users/huaodong/workspace/Web Studio/Web Studio/CodexProcessRunner.swift:120:50: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+ 91 | 
+ 92 |     func start(continuation: CheckedContinuation<CodexProcessResult, Error>) {
+ 93 |         queue.async {
+    |                     |- note: 'self' implicitly strongly captured here
+    |                     `- note: add 'self' as a capture list item to silence
+ 94 |             self.continuation = continuation
+ 95 |             if self.terminalError != nil {
+    :
+118 |             self.installReader(pipe: stdoutPipe, isStdout: true)
+119 |             self.installReader(pipe: stderrPipe, isStdout: false)
+120 |             process.terminationHandler = { [weak self] process in
+    |                                                  |- warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+    |                                                  `- note: explicitly assign the capture list item to silence
+121 |                 guard let state = self else { return }
+122 |                 state.queue.async { state.didExit(process.terminationStatus) }
+
+/Users/huaodong/workspace/Web Studio/Web Studio/CodexProcessRunner.swift:138:50: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+ 91 | 
+ 92 |     func start(continuation: CheckedContinuation<CodexProcessResult, Error>) {
+ 93 |         queue.async {
+    |                     |- note: 'self' implicitly strongly captured here
+    |                     `- note: add 'self' as a capture list item to silence
+ 94 |             self.continuation = continuation
+ 95 |             if self.terminalError != nil {
+    :
+136 | 
+137 |             let interval = max(0, self.timeout.secondsAsDouble)
+138 |             let timer = DispatchWorkItem { [weak self] in self?.timeoutReached() }
+    |                                                  |- warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+    |                                                  `- note: explicitly assign the capture list item to silence
+139 |             self.timer = timer
+140 |             self.queue.asyncAfter(deadline: .now() + interval, execute: timer)
+
+[#ImplicitStrongCapture]: <https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture>
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile CodexProcessRunner.swift
+
+SwiftCompile normal arm64 Compiling\ ContentView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ContentView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ContentView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile ContentView.swift
+
+SwiftCompile normal arm64 Compiling\ TerminalMetalRenderer.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile TerminalMetalRenderer.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling GhosttyTerminalSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ AgentController.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentController.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentController.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile AgentController.swift
+
+SwiftCompile normal arm64 Compiling\ StartPageView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StartPageView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StartPageView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile StartPageView.swift
+
+SwiftCompile normal arm64 Compiling\ WebRuntime.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:89:29: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 87 | 
+ 88 |     nonisolated static func makeConfiguration() -> WKWebViewConfiguration {
+ 89 |         let configuration = WKWebViewConfiguration()
+    |                             `- warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 90 |         // Shared default store: cookies and local storage persist across tabs and launches.
+ 91 |         configuration.websiteDataStore = .default()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/objc/NSObject.h:66:1: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 64 | 
+ 65 | + (void)initialize;
+ 66 | - (instancetype)init
+    | `- note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 67 | #if NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER
+ 68 |     NS_DESIGNATED_INITIALIZER
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:91:23: warning: main actor-isolated property 'websiteDataStore' can not be mutated from a nonisolated context
+ 89 |         let configuration = WKWebViewConfiguration()
+ 90 |         // Shared default store: cookies and local storage persist across tabs and launches.
+ 91 |         configuration.websiteDataStore = .default()
+    |                       `- warning: main actor-isolated property 'websiteDataStore' can not be mutated from a nonisolated context
+ 92 |         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:126:51: note: mutation of this property is only permitted within the actor
+124 | /*! @abstract The website data store to be used by the web view.
+125 |  */
+126 | @property (nonatomic, strong) WKWebsiteDataStore *websiteDataStore API_AVAILABLE(macos(10.11), ios(9.0));
+    |                                                   `- note: mutation of this property is only permitted within the actor
+127 | 
+128 | /*! @abstract A Boolean value indicating whether the web view suppresses
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:91:43: warning: call to main actor-isolated class method 'default()' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 89 |         let configuration = WKWebViewConfiguration()
+ 90 |         // Shared default store: cookies and local storage persist across tabs and launches.
+ 91 |         configuration.websiteDataStore = .default()
+    |                                           `- warning: call to main actor-isolated class method 'default()' in a synchronous nonisolated context [#ActorIsolatedCall]
+ 92 |         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebsiteDataStore.h:47:1: note: calls to class method 'default()' from outside of its actor context are implicitly asynchronous
+ 45 | 
+ 46 | /* @abstract Returns the default data store. */
+ 47 | + (WKWebsiteDataStore *)defaultDataStore;
+    | `- note: calls to class method 'default()' from outside of its actor context are implicitly asynchronous
+ 48 | 
+ 49 | /** @abstract Returns a new non-persistent data store.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:92:49: warning: main actor-isolated property 'allowsContentJavaScript' can not be mutated from a nonisolated context
+ 90 |         // Shared default store: cookies and local storage persist across tabs and launches.
+ 91 |         configuration.websiteDataStore = .default()
+ 92 |         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+    |                                                 `- warning: main actor-isolated property 'allowsContentJavaScript' can not be mutated from a nonisolated context
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+ 94 |         // No autoplay: a workspace shell should not make noise on tab open.
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebpagePreferences.h:102:28: note: mutation of this property is only permitted within the actor
+100 |  The default value is YES.
+101 | */
+102 | @property (nonatomic) BOOL allowsContentJavaScript API_AVAILABLE(macos(11.0), ios(14.0));
+    |                            `- note: mutation of this property is only permitted within the actor
+103 | 
+104 | /*! @abstract A boolean indicating whether lockdown mode is enabled.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:92:23: warning: main actor-isolated property 'defaultWebpagePreferences' can not be referenced from a nonisolated context
+ 90 |         // Shared default store: cookies and local storage persist across tabs and launches.
+ 91 |         configuration.websiteDataStore = .default()
+ 92 |         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+    |                       `- warning: main actor-isolated property 'defaultWebpagePreferences' can not be referenced from a nonisolated context
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+ 94 |         // No autoplay: a workspace shell should not make noise on tab open.
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:159:68: note: property declared here
+157 |  in -webView:decidePolicyForNavigationAction:preferences:decisionHandler:.
+158 |  */
+159 | @property (null_resettable, nonatomic, copy) WKWebpagePreferences *defaultWebpagePreferences API_AVAILABLE(macos(10.15), ios(13.0));
+    |                                                                    `- note: property declared here
+160 | 
+161 | @property (nonatomic) BOOL limitsNavigationsToAppBoundDomains API_AVAILABLE(macos(11.0), ios(14.0));
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:93:23: warning: main actor-isolated property 'upgradeKnownHostsToHTTPS' can not be mutated from a nonisolated context
+ 91 |         configuration.websiteDataStore = .default()
+ 92 |         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+    |                       `- warning: main actor-isolated property 'upgradeKnownHostsToHTTPS' can not be mutated from a nonisolated context
+ 94 |         // No autoplay: a workspace shell should not make noise on tab open.
+ 95 |         configuration.mediaTypesRequiringUserActionForPlayback = .all
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:151:28: note: mutation of this property is only permitted within the actor
+149 |  @discussion The default value is YES.
+150 |  */
+151 | @property (nonatomic) BOOL upgradeKnownHostsToHTTPS API_AVAILABLE(macos(11.3), ios(14.5));
+    |                            `- note: mutation of this property is only permitted within the actor
+152 | 
+153 | @property (nonatomic) WKAudiovisualMediaTypes mediaTypesRequiringUserActionForPlayback API_AVAILABLE(macos(10.12), ios(10.0));
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:95:23: warning: main actor-isolated property 'mediaTypesRequiringUserActionForPlayback' can not be mutated from a nonisolated context
+ 93 |         configuration.upgradeKnownHostsToHTTPS = true
+ 94 |         // No autoplay: a workspace shell should not make noise on tab open.
+ 95 |         configuration.mediaTypesRequiringUserActionForPlayback = .all
+    |                       `- warning: main actor-isolated property 'mediaTypesRequiringUserActionForPlayback' can not be mutated from a nonisolated context
+ 96 |         // The engine genuinely is Safari's WebKit; the Safari token keeps site gating honest.
+ 97 |         configuration.applicationNameForUserAgent = "Version/26.0 Safari/605.1.15 WebStudio/1.0"
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:153:47: note: mutation of this property is only permitted within the actor
+151 | @property (nonatomic) BOOL upgradeKnownHostsToHTTPS API_AVAILABLE(macos(11.3), ios(14.5));
+152 | 
+153 | @property (nonatomic) WKAudiovisualMediaTypes mediaTypesRequiringUserActionForPlayback API_AVAILABLE(macos(10.12), ios(10.0));
+    |                                               `- note: mutation of this property is only permitted within the actor
+154 | 
+155 | /*! @abstract The set of default webpage preferences to use when loading and rendering content.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:97:23: warning: main actor-isolated property 'applicationNameForUserAgent' can not be mutated from a nonisolated context
+ 95 |         configuration.mediaTypesRequiringUserActionForPlayback = .all
+ 96 |         // The engine genuinely is Safari's WebKit; the Safari token keeps site gating honest.
+ 97 |         configuration.applicationNameForUserAgent = "Version/26.0 Safari/605.1.15 WebStudio/1.0"
+    |                       `- warning: main actor-isolated property 'applicationNameForUserAgent' can not be mutated from a nonisolated context
+ 98 |         return configuration
+ 99 |     }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:136:49: note: mutation of this property is only permitted within the actor
+134 | /*! @abstract The name of the application as used in the user agent string.
+135 | */
+136 | @property (nullable, nonatomic, copy) NSString *applicationNameForUserAgent API_AVAILABLE(macos(10.11), ios(9.0));
+    |                                                 `- note: mutation of this property is only permitted within the actor
+137 | 
+138 | /*! @abstract A Boolean value indicating whether AirPlay is allowed.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:479:21: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+477 |     /// The requesting origin is named so a dialog cannot impersonate the app itself.
+478 |     private nonisolated static func makeAlert(message: String, origin: WKFrameInfo) -> NSAlert {
+479 |         let alert = NSAlert()
+    |                     `- warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+480 |         alert.alertStyle = .informational
+481 |         alert.messageText = origin.request.url?.host ?? "This page"
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/objc/NSObject.h:66:1: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 64 | 
+ 65 | + (void)initialize;
+ 66 | - (instancetype)init
+    | `- note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 67 | #if NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER
+ 68 |     NS_DESIGNATED_INITIALIZER
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:480:15: warning: main actor-isolated property 'alertStyle' can not be mutated from a nonisolated context
+478 |     private nonisolated static func makeAlert(message: String, origin: WKFrameInfo) -> NSAlert {
+479 |         let alert = NSAlert()
+480 |         alert.alertStyle = .informational
+    |               `- warning: main actor-isolated property 'alertStyle' can not be mutated from a nonisolated context
+481 |         alert.messageText = origin.request.url?.host ?? "This page"
+482 |         alert.informativeText = message
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:121:24: note: mutation of this property is only permitted within the actor
+119 | 
+120 | /// Indicates the alert’s severity level. See the `NSAlertStyle` enumeration for the list of alert style constants.
+121 | @property NSAlertStyle alertStyle;
+    |                        `- note: mutation of this property is only permitted within the actor
+122 | 
+123 | /// Specifies whether the alert has a help button.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:481:15: warning: main actor-isolated property 'messageText' can not be mutated from a nonisolated context
+479 |         let alert = NSAlert()
+480 |         alert.alertStyle = .informational
+481 |         alert.messageText = origin.request.url?.host ?? "This page"
+    |               `- warning: main actor-isolated property 'messageText' can not be mutated from a nonisolated context
+482 |         alert.informativeText = message
+483 |         return alert
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:71:28: note: mutation of this property is only permitted within the actor
+ 69 | /// The text that is displayed prominently in the alert.
+ 70 | /// - Note: Use this string to get the user’s attention and communicate the reason for displaying the alert.
+ 71 | @property (copy) NSString *messageText;
+    |                            `- note: mutation of this property is only permitted within the actor
+ 72 | 
+ 73 | /// The descriptive text that provides more details about the reason for the alert.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:481:36: warning: main actor-isolated property 'request' can not be referenced from a nonisolated context
+479 |         let alert = NSAlert()
+480 |         alert.alertStyle = .informational
+481 |         alert.messageText = origin.request.url?.host ?? "This page"
+    |                                    `- warning: main actor-isolated property 'request' can not be referenced from a nonisolated context
+482 |         alert.informativeText = message
+483 |         return alert
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKFrameInfo.h:50:53: note: property declared here
+48 | /*! @abstract The frame's current request.
+49 |  */
+50 | @property (nonatomic, readonly, copy) NSURLRequest *request;
+   |                                                     `- note: property declared here
+51 | 
+52 | /*! @abstract The frame's current security origin.
+
+/Users/huaodong/workspace/Web Studio/Web Studio/WebRuntime.swift:482:15: warning: main actor-isolated property 'informativeText' can not be mutated from a nonisolated context
+480 |         alert.alertStyle = .informational
+481 |         alert.messageText = origin.request.url?.host ?? "This page"
+482 |         alert.informativeText = message
+    |               `- warning: main actor-isolated property 'informativeText' can not be mutated from a nonisolated context
+483 |         return alert
+484 |     }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:75:28: note: mutation of this property is only permitted within the actor
+ 73 | /// The descriptive text that provides more details about the reason for the alert.
+ 74 | /// - Note: The informative text string is displayed below the message text and is less prominent. Use this string to provide additional context about the reason for the alert or about the actions that the user might take.
+ 75 | @property (copy) NSString *informativeText;
+    |                            `- note: mutation of this property is only permitted within the actor
+ 76 | 
+ 77 | // MARK: - Accessing a Custom Alert Icon
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile WebRuntime.swift
+
+SwiftCompile normal arm64 Compiling\ AgentViews.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentViews.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentViews.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile AgentViews.swift
+
+SwiftCompile normal arm64 Compiling\ StudioDesign.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StudioDesign.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/StudioDesign.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile StudioDesign.swift
+
+SwiftCompile normal arm64 Compiling\ AgentService.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentService.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/AgentService.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile AgentService.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling Web_StudioApp.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ ProviderSettings.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile ProviderSettings.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling AgentController.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ ResourceModel.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ResourceModel.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/ResourceModel.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile ResourceModel.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ TerminalVTSession.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile TerminalVTSession.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling StudioDesign.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalVTView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling AgentService.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling StartPageView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_Studio_VT (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/web-studio-vt-unique/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-vt-unique/Build/Products/Debug -I /Users/huaodong/workspace/Web\ Studio/scripts -F /tmp/web-studio-vt-unique/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-vt-unique/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-vt-unique/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-vt-unique/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Products/Debug/include -Xcc -I/Users/huaodong/workspace/Web\ Studio/Web -Xcc -IStudio -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Web_Studio_VT-Swift.h /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftHeaderTool -arch arm64 /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -o /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Web_Studio_VT-Swift.h
+
+Copy /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftmodule /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftsourceinfo (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftsourceinfo /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Copy /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.abi.json /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.abi.json (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.abi.json /tmp/web-studio-vt-unique/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling ResourceModel.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling AgentViews.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ContentView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 Compiling\ WorkspaceSplitView.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WorkspaceSplitView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WorkspaceSplitView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile WorkspaceSplitView.swift
+
+SwiftCompile normal arm64 Compiling\ WindowLifecycle.swift /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WindowLifecycle.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/workspace/Web\ Studio/Web\ Studio/WindowLifecycle.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-SwiftPerFileCompile WindowLifecycle.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling WindowLifecycle.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling WorkspaceSplitView.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriver\ Compilation Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/web-studio-vt-unique/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/web-studio-vt-unique/Build/Products/Debug -I /Users/huaodong/workspace/Web\ Studio/scripts -F /tmp/web-studio-vt-unique/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/web-studio-vt-unique/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/web-studio-vt-unique/ModuleCache.noindex -sdk-module-cache-path /tmp/web-studio-vt-unique/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/web-studio-vt-unique/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/tmp/web-studio-vt-unique/Build/Products/Debug/include -Xcc -I/Users/huaodong/workspace/Web\ Studio/Web -Xcc -IStudio -Xcc -I/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/include -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/workspace/Web\ Studio/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/workspace/Web\ Studio -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib normal (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/web-studio-vt-unique/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/web-studio-vt-unique/Build/Products/Debug -L/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/lib -F/tmp/web-studio-vt-unique/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/web-studio-vt-unique/Build/Products/Debug -filelist /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.LinkFileList -install_name @rpath/Web\ Studio\ VT.debug.dylib -Xlinker -object_path_lto -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -framework AppKit -framework Metal -framework QuartzCore -framework CoreText -framework Security -framework Foundation -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -lghostty-vt -Xlinker -no_adhoc_codesign -o /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib
+
+ConstructStubExecutorLinkFileList /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    construct-stub-executor-link-file-list /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'Web Studio VT' from project 'Web Studio')
+
+Ld /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT normal (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/web-studio-vt-unique/Build/Products/Debug -L/Users/huaodong/workspace/Web\ Studio/Vendor/GhosttyVT/lib -F/tmp/web-studio-vt-unique/Build/Products/Debug -Xlinker -rpath -Xlinker @executable_path -rdynamic -Xlinker -no_deduplicate -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib -Xlinker -no_adhoc_codesign -o /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT
+
+CopySwiftLibs /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib --scan-folder /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Frameworks --scan-folder /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/PlugIns --scan-folder /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Library/SystemExtensions --scan-folder /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Web_Studio_VT --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A266a --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-Studio.VTValidation20260916 --output /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT --dependency-file /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_dependency_info.dat --stringsdata-file /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList --metadata-file-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyMetadataFileList --static-metadata-file-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-09-16 11:52:00.596 appintentsmetadataprocessor[10474:53960993] Starting appintentsmetadataprocessor export
+2026-09-16 11:52:00.600 appintentsmetadataprocessor[10474:53960993] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+CodeSign /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib
+
+CodeSign /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib
+
+CodeSign /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /tmp/web-studio-vt-unique/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent --timestamp\=none --generate-entitlement-der /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app
+
+RegisterExecutionPolicyException /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-RegisterExecutionPolicyException /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app
+
+Validate /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-validationUtility /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+Touch /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    /usr/bin/touch -c /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app
+
+RegisterWithLaunchServices /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/workspace/Web\ Studio
+    builtin-lsregisterurl --record-path /tmp/web-studio-vt-unique/Build/Intermediates.noindex/XCBuildData/registered-launchservices.txt -- /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /tmp/web-studio-vt-unique/Build/Products/Debug/Web\ Studio\ VT.app
+
+PruneExplicitPrecompiledModules /tmp/web-studio-vt-unique/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/web-studio-vt-unique/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/web-studio-vt-unique/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+** BUILD SUCCEEDED **
+

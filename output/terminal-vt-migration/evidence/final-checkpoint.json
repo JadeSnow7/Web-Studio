@@ -1,0 +1,409 @@
+{
+  "recorded_at": "2026-09-16T13:47:13.584880+08:00",
+  "milestones": {
+    "M0": "complete",
+    "M1": "integrated, builds and bounded GUI passed",
+    "M2": "partial acceptance",
+    "M3": "not switched; gates pending"
+  },
+  "app_tests": {
+    "tests": 128,
+    "suites": 11,
+    "seconds": 6.777,
+    "result": "passed",
+    "scope": "Web StudioTests; standalone VT tests separate"
+  },
+  "source_files": [
+    {
+      "path": "Web Studio/AgentController.swift",
+      "sha256": "c31eaf7eedb492354ad4c5cefcc7df090e26adf6d0f6bf9c8f89a1590561fa17"
+    },
+    {
+      "path": "Web Studio/AgentService.swift",
+      "sha256": "815cdc1aef5c00750ea47810d37772a99c3a603ea4368a0345d38e1a99bf17ca"
+    },
+    {
+      "path": "Web Studio/AgentViews.swift",
+      "sha256": "326e3a196fec886ecf272d885bcb4aee1d8852aed410454e2e2d077bb366dbaf"
+    },
+    {
+      "path": "Web Studio/CodexProcessRunner.swift",
+      "sha256": "22af52fca5112cc8b1f447fdf3e4fec8706342a400d906eacf3f304bfe3592b1"
+    },
+    {
+      "path": "Web Studio/ContentView.swift",
+      "sha256": "1e5027b3fe0b461593aa5e0f44695079622943577aeee97da65ac10ce770b7da"
+    },
+    {
+      "path": "Web Studio/GhosttyTerminalSession.swift",
+      "sha256": "a10c1192da6bfd769cd6d04e3ce3be30fd7ac5c9ada43dc120d073ac258e86e6"
+    },
+    {
+      "path": "Web Studio/NativeResourceHost.swift",
+      "sha256": "587ff694b7cb59791508b04337ba173757dd9eda3f3db54d492794496aea6099"
+    },
+    {
+      "path": "Web Studio/ProviderSettings.swift",
+      "sha256": "23b3a70863207aa2f597843e4e59630c7fefc6394f9c2e7ab459a448b9ebadd1"
+    },
+    {
+      "path": "Web Studio/ResourceModel.swift",
+      "sha256": "4a74062c1b8e6d4ef9202e88d2b01c500992e367621422b3294cdbb4dc981fd5"
+    },
+    {
+      "path": "Web Studio/StartPageView.swift",
+      "sha256": "e1fca715b66ae263bda5bc89f0903f9c2e7ae3a4b057b418ff6adeae7e4c5dca"
+    },
+    {
+      "path": "Web Studio/StudioDesign.swift",
+      "sha256": "df0f4f5da2aba4f238ef871855e28f24f602e45b4c7e0534346ee3958a3f062b"
+    },
+    {
+      "path": "Web Studio/StudioPTY.c",
+      "sha256": "fbd85dbb4fc8f44780f57772924277b81ba70f1a95898182292edb1e2cf894ae"
+    },
+    {
+      "path": "Web Studio/StudioPTY.h",
+      "sha256": "3a0b56fa164a02ccbb65cfb89cf6653843d36d7116ee3f6656b87d40795684a3"
+    },
+    {
+      "path": "Web Studio/StudioVTCore.c",
+      "sha256": "f7a04f604b4b03bd3cd091ba3e0681692672c15693843067b208757655b2e65d"
+    },
+    {
+      "path": "Web Studio/StudioVTCore.h",
+      "sha256": "e75f246bfa42cf435bbaab13f1e74c29e787a414edede566e4ffd1ab702f8521"
+    },
+    {
+      "path": "Web Studio/TerminalMetalRenderer.swift",
+      "sha256": "44f7702330e5b4f5dde3ec817ed4f79017c3733afa09aaa3225c57a7cfe44c0d"
+    },
+    {
+      "path": "Web Studio/TerminalPTYTransport.swift",
+      "sha256": "09fa27d95edd1f132f35d6204c9b2510fedfc0b4072a9bb80376433979a3bf72"
+    },
+    {
+      "path": "Web Studio/TerminalSession.swift",
+      "sha256": "0a23414bf0a5408cd2928a88736395a6897cd82c5fbf17e64e3066cf551e6ca5"
+    },
+    {
+      "path": "Web Studio/TerminalVTBackend.swift",
+      "sha256": "31975f5a4277d97d505574ee0401476ab62006fc40f27e89fc7d2692cb8c377d"
+    },
+    {
+      "path": "Web Studio/TerminalVTCore.swift",
+      "sha256": "658b9943adc031408ef33600602ec232d392b2dedab9229d7a2e9e1e83d05e98"
+    },
+    {
+      "path": "Web Studio/TerminalVTSession.swift",
+      "sha256": "095b6de822f679431a15d160b61df3693bbece2efd5a931044f500340ab7c48a"
+    },
+    {
+      "path": "Web Studio/TerminalVTView.swift",
+      "sha256": "7f9baee7b3c100939b25b5786ff6c9afed7a092b0ba9a1704613d446fef025cd"
+    },
+    {
+      "path": "Web Studio/TerminalVisuals.swift",
+      "sha256": "6525810892d4590791109501606ff3aecf77b82914064122431a856d39d39ece"
+    },
+    {
+      "path": "Web Studio/Web Studio-Bridging-Header.h",
+      "sha256": "592459889b50c75e2a5edb38345592a2e27f4404660506b78a1b1e80163bf713"
+    },
+    {
+      "path": "Web Studio/WebRuntime.swift",
+      "sha256": "0f6bdf05a40ebe0ad9b43c79fd3a4bed0535de5b9fdf6d9212ee69bbe182d3a8"
+    },
+    {
+      "path": "Web Studio/Web_StudioApp.swift",
+      "sha256": "58b8b66d466cdcd761bc61b36c61eb250aae05010ee7c57aa7fd9e7e94d49e83"
+    },
+    {
+      "path": "Web Studio/WindowLifecycle.swift",
+      "sha256": "be1f2664a8f4503586c2b29cdc30b352f0aee2fe47e95b0b08343a02a484fe68"
+    },
+    {
+      "path": "Web Studio/WorkspaceSplitView.swift",
+      "sha256": "4b1d4e07425467b5edb35bed15f3a66234ba3e76c2ba1b0690baff8d393e7605"
+    },
+    {
+      "path": "scripts/build-ghostty-vt.sh",
+      "sha256": "f5852ba3c5921fda6e56d259d9ad442215ea0cd30e9eb3be09de37c77976fbf0"
+    },
+    {
+      "path": "scripts/build-ghostty.sh",
+      "sha256": "ea4b7cd5a9faa4801a33d24803d1c28c14d482f25895f30d0088e94fa24e269c"
+    },
+    {
+      "path": "scripts/ghostty-vt-smoke.c",
+      "sha256": "bdc8ed44ba7e338477980321a238a4bd02ce2ea9ce295ee56c0ba19bb1638a4b"
+    },
+    {
+      "path": "scripts/module.modulemap",
+      "sha256": "70ccf9bc2a6aeadac5bbac81b98e036ea40a4b81701d8a1ee3e65a556e065d8e"
+    },
+    {
+      "path": "scripts/terminal-metal-smoke.swift",
+      "sha256": "d485f480d9c44382f39a560416a5ee8faffb75356eb5e965b318b1d073c9a874"
+    },
+    {
+      "path": "scripts/terminal-pty-resistant-fixture.c",
+      "sha256": "1e8bea2e4eef541d26ba6eb2833f16db77739d565e19ecd6e35ea4716df8481c"
+    },
+    {
+      "path": "scripts/terminal-pty-sigmask-fixture.c",
+      "sha256": "f390cce05e3015dfa8f569b28959d418f3b2bf3823f5fd9777061d2535f2cffa"
+    },
+    {
+      "path": "scripts/terminal-pty-transport-smoke.c",
+      "sha256": "12e5e5d325b823133da7464395bb964e58efb20bdd1409522496700a10b3752e"
+    },
+    {
+      "path": "scripts/terminal-pty-transport-swift-smoke.swift",
+      "sha256": "5b7515a64ffd903b57b3e64fec6e1522bd6c4f446b79202ae5176af17e8101dd"
+    },
+    {
+      "path": "scripts/terminal-vt-backend-fixture.c",
+      "sha256": "f153b485aa6f14fc4fa505b4c194ff337a8064770eee62ed2b579775c341495b"
+    },
+    {
+      "path": "scripts/terminal-vt-backend-smoke.swift",
+      "sha256": "57094663ae0893696ac380a1d52f269e99c2d8cebad9902c72ea422d6a213306"
+    },
+    {
+      "path": "scripts/terminal-vt-core-swift-smoke.swift",
+      "sha256": "09450a44cb0a5359e0c429904a62a55cd197ee87dcc8bbfe1324cf2708874e3d"
+    },
+    {
+      "path": "scripts/terminal-vt-host-smoke.swift",
+      "sha256": "6c6e71c5d18280cf9c592ce59166a944c8603d0400bf2d08ce966ce5aa6f48b9"
+    },
+    {
+      "path": "scripts/test-ghostty-vt.sh",
+      "sha256": "5990b75ebf6ac8507d34d7f3900aeafcdda5ec534ad3f3bab83a0b1ef5c603a0"
+    },
+    {
+      "path": "scripts/test-terminal-metal.sh",
+      "sha256": "f7af67a77e2fe37ab45d8d3ca06bdd9febe67b69b3351f5b20b1120ed3998be5"
+    },
+    {
+      "path": "scripts/test-terminal-pty-transport-swift.sh",
+      "sha256": "1516d675ccf8c6400e965a8a6cd416d0ad157d0187dc32e56e8243a63ff0bf51"
+    },
+    {
+      "path": "scripts/test-terminal-pty-transport.sh",
+      "sha256": "a31f14e8abbe9de632e4340b0debb25f790eb7018d2eede062f55f72712d4fea"
+    },
+    {
+      "path": "scripts/test-terminal-vt-backend.sh",
+      "sha256": "f0c81a08374ab253c533c1c503cdeae3c356a29ea4547c940a602ddb519d9c48"
+    },
+    {
+      "path": "scripts/test-terminal-vt-core-asan.sh",
+      "sha256": "4a263a49031b2e2e3e4acef3bcdaa108af743910a726aad4abfe59b561060a4a"
+    },
+    {
+      "path": "scripts/test-terminal-vt-core.sh",
+      "sha256": "f0482249c4e20701a718fbba6a3dd2fbb56fba71a1484fe71c340b5d70ac45b6"
+    },
+    {
+      "path": "scripts/test-terminal-vt-host.sh",
+      "sha256": "8149b2ae674e3412caa34f35dacf9ef3446fdf6f266ec8873237e75e84c165fa"
+    },
+    {
+      "path": "scripts/vt-core-test.c",
+      "sha256": "d434aa3aa56153287d0a050f966b06c46499f0b0969903aa33715614e3e34062"
+    },
+    {
+      "path": "Vendor/GhosttyVT/DEPENDENCY.lock",
+      "sha256": "d158ab3bb4cd70bde91f4402791a7ce4fcd91148ca170a4a86c94cd5841331a1"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/allocator.h",
+      "sha256": "7cb27e69a89d30368638c5c6e7f233bd73f203ddaec38ecf23899760994c83f6"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/build_info.h",
+      "sha256": "535e44c29b5fd9c8df172605f58616df735432f7786ca24e3cc58d7cb3ba8361"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/color.h",
+      "sha256": "73e0db10e4b324122be1a8a46bb6619fe5ab264bf6713543336c3e5deb7035f3"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/color_scheme.h",
+      "sha256": "eab0dc56e057dfc03334cba109da6e7ae118513cb2be9dc4f3b0bffc7bdad465"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/device.h",
+      "sha256": "79c61cd5d54fc15c60d0ce87c69adf89c85b7b748b912c41b91230979f4319fe"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/focus.h",
+      "sha256": "ddc28ead578ca9f683a4140420807ec9988a45f669d719e28cdf840913ea56b4"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/formatter.h",
+      "sha256": "9945b7aff284597d8801eb9201abc95609b3cf71360e14f2db6b8a527838a8cd"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/grid_ref.h",
+      "sha256": "80cc49f02d63025605d605c86f1207638ad9534ce74e9a14766299e0518d4987"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/grid_ref_tracked.h",
+      "sha256": "78c65cf69c1a6ee439849175221084366ca4392455503cc44e93cfdf9ddbc021"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/io.h",
+      "sha256": "2d79995aadc23ce175b519e3ff401ca20664da9068177aac117e0b490f45daee"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/key/encoder.h",
+      "sha256": "6963a275e2ba154a647382c462c416840dcdc2beb6d59aa200d80f37f9a5e196"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/key/event.h",
+      "sha256": "0eb11bfab67b887f4b409557b396a5da6ea17e9e62d92b97a38e723b46db635d"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/key.h",
+      "sha256": "2de93a84da8e9c1c1f6ac8d1d281ba054869225858a5d88ec8ec5f0d091b5eac"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/kitty_graphics.h",
+      "sha256": "a7e1f37191684e66835b54339fe714b14eaa882b5c1d3459fb6fc8b4a32ec8eb"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/modes.h",
+      "sha256": "bd40aa01f76e4351e09a1825693b27c1e4a53539411968432fc3e59e0f890f66"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/mouse/encoder.h",
+      "sha256": "2e409c50fcd06806dd1a86cf66751ff35362c65e14ff588e2592e8a09141c017"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/mouse/event.h",
+      "sha256": "68f14cd03109919cb8da36b17f70670334a3369af5c685496118c913c3049abf"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/mouse.h",
+      "sha256": "96273f9340608a2694ba56e35d3b1bd108f57882e289b027b5408b19a21ddae7"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/osc.h",
+      "sha256": "a5021912c111f199d9b7272301a67bcb87335e56af05b15401c0e9f90d4f99c5"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/paste.h",
+      "sha256": "5bfeb6733f29bd00bdccad100c3ccc9f959eff6dc35db5080fcb70af2d55d85d"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/point.h",
+      "sha256": "1ed7b2cda14904814727b93d406f39284e8392af706f938cf0fa1dbeaa42e774"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/render.h",
+      "sha256": "33db708310fe10fb35d1a3cdd54461a773b6f3f781934aa41a277e69397fada5"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/screen.h",
+      "sha256": "d9a3ab36f8410184fd0af4a20de1c1d3a0f09e8bd28ec2de89cb243dbd008fa3"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/search.h",
+      "sha256": "57703a9b2bcdc75ce6d0b8c4ca66fbc26dc5b266898dd87a0bab1c0e3c7402a6"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/selection.h",
+      "sha256": "839b495f8e24ed678fd71b6eeb75a7cebd9d634334a3303ec31d05d468f2c520"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/sgr.h",
+      "sha256": "8292084973e64ce61555c6721591411dba9cf968ea9ae2d9820b4f6c381f1ce5"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/size_report.h",
+      "sha256": "a86cd1b0e5cf2307411030646285e5f2dcb1e6ca26e938cb6d578b16301e94a7"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/snapshot.h",
+      "sha256": "6fb8e35fb09f47fa37907eb9e6b6ee1e55816437e280a001559a9c7498149597"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/style.h",
+      "sha256": "ebb50a1821952dd954dd51d5897f9881c6927abd73b909e2e2f1deb3a52f31a9"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/sys.h",
+      "sha256": "5ae31311e2d988a0d77dc5d67c242f08378cb8409689ce46ebb44184e307d2bb"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/terminal.h",
+      "sha256": "118487c13ef962585611954165856aa55720105e99a998502d506b95417ee905"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/types.h",
+      "sha256": "6c30315aa292971c5863b90ace46d241682f8baac2fe9244acb785b0c883020e"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/unicode.h",
+      "sha256": "d5533c9abcebc9284033eb9c6acc0ed707a3a68a98f0d2e3d8c9b28a2beae796"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt/wasm.h",
+      "sha256": "0136093c504af9fb2a33b7e50a70cb6b4cee0c2375beed3d73b579c092195fee"
+    },
+    {
+      "path": "Vendor/GhosttyVT/include/ghostty/vt.h",
+      "sha256": "014813d7dba136ae6faecb515d23e7d7dc675672094174f91e2d84ab2bb55732"
+    },
+    {
+      "path": "Vendor/GhosttyVT/lib/libghostty-vt.a",
+      "sha256": "dc8b44f3591acd227c1176b67238287ea894fe8af37cb114bf2a45a7669ce10b"
+    },
+    {
+      "path": "Web Studio.xcodeproj/project.pbxproj",
+      "sha256": "78d138c15d2f1b659b82c448b57cabab466736c26e70a937cffe627bc803aa8e"
+    },
+    {
+      "path": "Web Studio.xcodeproj/xcshareddata/xcschemes/Web Studio VT.xcscheme",
+      "sha256": "0c1761bf9876c6e0c3e8eeeae8dddf97168f1fcd55f27ef94143459f06010478"
+    }
+  ],
+  "binaries": [
+    {
+      "configuration": "Debug",
+      "files": [
+        {
+          "path": "/private/tmp/web-studio-vt-final/Build/Products/Debug/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+          "sha256": "1a5542912d9baba2a0381e145e9dabec6aea825d670f5f2f49b890f8e963eeb9"
+        },
+        {
+          "path": "/private/tmp/web-studio-vt-final/Build/Products/Debug/Web Studio VT.app/Contents/MacOS/Web Studio VT.debug.dylib",
+          "sha256": "53c8b955342f6e768ba29d6b0b56aa6dfbc602d4786ab03d9eabee10e044ab5a"
+        }
+      ],
+      "vt_terminal_symbol": true,
+      "legacy_surface_symbols": false
+    },
+    {
+      "configuration": "Release",
+      "files": [
+        {
+          "path": "/private/tmp/web-studio-vt-final/Build/Products/Release/Web Studio VT.app/Contents/MacOS/Web Studio VT",
+          "sha256": "4c416c5dee2962545e93a36be1b203bf63d919b674d70188fbbae837e4cb01f2"
+        }
+      ],
+      "vt_terminal_symbol": true,
+      "legacy_surface_symbols": false
+    }
+  ],
+  "limits": [
+    "GUI process preceded final shared Agent protocol annotation repair",
+    "Real Chinese system IME unverified",
+    "Controlled performance comparison pending",
+    "Standalone actual GUI PNG archival pending",
+    "Full VoiceOver and dedicated SSH resource host-key flow pending"
+  ]
+}

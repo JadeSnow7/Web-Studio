@@ -623,11 +623,10 @@ struct StudioCommand: Identifiable {
 
     func beginAddressEditing(targetResourceID: UUID? = nil, paneID: UUID? = nil) {
         guard !addressIsEditing else { return }
-        let pane = paneID.flatMap { id in
-            [layout.primary, layout.secondary].compactMap { $0 }.first { $0.id == id }
-        } ?? targetResourceID.flatMap { id in
-            [layout.primary, layout.secondary].compactMap { $0 }.first { $0.resourceID == id }
-        } ?? focusedPane
+        let panes: [PaneState] = [layout.primary, layout.secondary].compactMap { $0 }
+        let paneByID = paneID.flatMap { id in panes.first { $0.id == id } }
+        let paneByResource = targetResourceID.flatMap { id in panes.first { $0.resourceID == id } }
+        let pane = paneByID ?? paneByResource ?? focusedPane
         addressTargetPaneID = pane.id
         addressTargetResourceID = targetResourceID ?? pane.resourceID ?? selectedTabID
         addressOriginalText = addressValue(for: addressTargetResourceID)
@@ -1740,11 +1739,11 @@ struct TerminalSessionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             if case let .failed(message) = session.state { Text(message).foregroundStyle(.red).padding(.horizontal, 8) }
-            Text(statusText).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8)
+            if !statusText.isEmpty { Text(statusText).font(.caption).foregroundStyle(.secondary).padding(.horizontal, 8) }
             TerminalNativeView(view: session.nativeView)
         }
     }
-    private var statusText: String { switch session.state { case .starting: "Starting terminal…"; case .running: "Terminal running"; case .exited(let code): code.map { "Exited (\($0))" } ?? "Exited (status unavailable)"; case .interrupted: "Interrupted"; case .failed: "Terminal failed"; case .idle: "Idle" } }
+    private var statusText: String { switch session.state { case .starting: "Starting terminal…"; case .running: ""; case .exited(let code): code.map { "Exited (\($0))" } ?? "Exited (status unavailable)"; case .interrupted: "Interrupted"; case .failed: "Terminal failed"; case .idle: "Idle" } }
 }
 private struct TerminalNativeView: NSViewRepresentable {
     let view: NSView

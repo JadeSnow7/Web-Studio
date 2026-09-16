@@ -1,0 +1,97 @@
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:27:83: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+25 |     precondition(recorder.wait({ $0.output.range(of: Data("QUERY_OK".utf8)) != nil })); let pid = interactive.currentPID(); precondition(pid != nil)
+26 |     interactive.resize(columns: 97, rows: 31, cellWidthPixels: 8, cellHeightPixels: 16); precondition(recorder.wait({ $0.frames.contains { $0.columns == 97 && $0.rows == 31 } })); interactive.sendRaw(Data("SIZE?\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("SIZE=31,97,776,496".utf8)) != nil }))
+27 |     interactive.setVisible(false); _ = interactive.snapshot(); recorder.condition.lock(); let hiddenCount = recorder.frames.count; recorder.condition.unlock(); interactive.sendRaw(Data("HIDDEN\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("HIDDEN_MARK".utf8)) != nil })); recorder.condition.lock(); let hiddenFrames = recorder.frames.count; recorder.condition.unlock(); precondition(hiddenFrames == hiddenCount)
+   |                                                                                   `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:27:151: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+25 |     precondition(recorder.wait({ $0.output.range(of: Data("QUERY_OK".utf8)) != nil })); let pid = interactive.currentPID(); precondition(pid != nil)
+26 |     interactive.resize(columns: 97, rows: 31, cellWidthPixels: 8, cellHeightPixels: 16); precondition(recorder.wait({ $0.frames.contains { $0.columns == 97 && $0.rows == 31 } })); interactive.sendRaw(Data("SIZE?\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("SIZE=31,97,776,496".utf8)) != nil }))
+27 |     interactive.setVisible(false); _ = interactive.snapshot(); recorder.condition.lock(); let hiddenCount = recorder.frames.count; recorder.condition.unlock(); interactive.sendRaw(Data("HIDDEN\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("HIDDEN_MARK".utf8)) != nil })); recorder.condition.lock(); let hiddenFrames = recorder.frames.count; recorder.condition.unlock(); precondition(hiddenFrames == hiddenCount)
+   |                                                                                                                                                       `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:27:311: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+25 |     precondition(recorder.wait({ $0.output.range(of: Data("QUERY_OK".utf8)) != nil })); let pid = interactive.currentPID(); precondition(pid != nil)
+26 |     interactive.resize(columns: 97, rows: 31, cellWidthPixels: 8, cellHeightPixels: 16); precondition(recorder.wait({ $0.frames.contains { $0.columns == 97 && $0.rows == 31 } })); interactive.sendRaw(Data("SIZE?\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("SIZE=31,97,776,496".utf8)) != nil }))
+27 |     interactive.setVisible(false); _ = interactive.snapshot(); recorder.condition.lock(); let hiddenCount = recorder.frames.count; recorder.condition.unlock(); interactive.sendRaw(Data("HIDDEN\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("HIDDEN_MARK".utf8)) != nil })); recorder.condition.lock(); let hiddenFrames = recorder.frames.count; recorder.condition.unlock(); precondition(hiddenFrames == hiddenCount)
+   |                                                                                                                                                                                                                                                                                                                       `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:27:380: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+25 |     precondition(recorder.wait({ $0.output.range(of: Data("QUERY_OK".utf8)) != nil })); let pid = interactive.currentPID(); precondition(pid != nil)
+26 |     interactive.resize(columns: 97, rows: 31, cellWidthPixels: 8, cellHeightPixels: 16); precondition(recorder.wait({ $0.frames.contains { $0.columns == 97 && $0.rows == 31 } })); interactive.sendRaw(Data("SIZE?\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("SIZE=31,97,776,496".utf8)) != nil }))
+27 |     interactive.setVisible(false); _ = interactive.snapshot(); recorder.condition.lock(); let hiddenCount = recorder.frames.count; recorder.condition.unlock(); interactive.sendRaw(Data("HIDDEN\n".utf8)); precondition(recorder.wait({ $0.output.range(of: Data("HIDDEN_MARK".utf8)) != nil })); recorder.condition.lock(); let hiddenFrames = recorder.frames.count; recorder.condition.unlock(); precondition(hiddenFrames == hiddenCount)
+   |                                                                                                                                                                                                                                                                                                                                                                                            `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:30:132: warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+30 |     precondition(interactive.sendRaw(Data("EXIT7\n".utf8))); precondition(recorder.wait({ $0.exitCode == 7 })); recorder.condition.lock(); let callbacks = recorder.callbacks; recorder.condition.unlock(); precondition(callbacks.first == "start" && callbacks.last == "exit7"); precondition(interactive.snapshot()?.visibleData.range(of: Data("EXIT_FINAL".utf8)) != nil); await interactive.closeAndWait(); print("TerminalVTBackend interactive smoke passed")
+   |                                                                                                                                    `- warning: instance method 'lock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+31 |   }
+32 | }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:15:1: note: 'lock()' declared here
+ 13 | 
+ 14 | /// Attempts to acquire a lock, blocking a thread's execution until the lock can be acquired.
+ 15 | - (void)lock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'lock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+
+/Users/huaodong/workspace/Web Studio/scripts/terminal-vt-backend-smoke.swift:30:195: warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+28 |     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+29 |     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+30 |     precondition(interactive.sendRaw(Data("EXIT7\n".utf8))); precondition(recorder.wait({ $0.exitCode == 7 })); recorder.condition.lock(); let callbacks = recorder.callbacks; recorder.condition.unlock(); precondition(callbacks.first == "start" && callbacks.last == "exit7"); precondition(interactive.snapshot()?.visibleData.range(of: Data("EXIT_FINAL".utf8)) != nil); await interactive.closeAndWait(); print("TerminalVTBackend interactive smoke passed")
+   |                                                                                                                                                                                                   `- warning: instance method 'unlock' is unavailable from asynchronous contexts; Use async-safe scoped locking instead; this is an error in the Swift 6 language mode
+31 |   }
+32 | }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSLock.h:18:1: note: 'unlock()' declared here
+ 16 | 
+ 17 | /// Relinquishes a previously acquired lock.
+ 18 | - (void)unlock NS_SWIFT_UNAVAILABLE_FROM_ASYNC("Use async-safe scoped locking instead");
+    | `- note: 'unlock()' declared here
+ 19 | 
+ 20 | @end
+TerminalVTBackend smoke passed
+TerminalVTBackend interactive smoke passed

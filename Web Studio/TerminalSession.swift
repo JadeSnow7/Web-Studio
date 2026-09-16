@@ -1,3 +1,4 @@
+#if !WEB_STUDIO_VT
 import AppKit
 import Combine
 import Darwin
@@ -143,7 +144,6 @@ private final class PTYProcess: @unchecked Sendable {
     private func scheduleKill() { killTimer?.cancel(); let timer = DispatchSource.makeTimerSource(queue: queue); timer.schedule(deadline: .now() + .milliseconds(350)); timer.setEventHandler { [weak self] in guard let self, !self.finished else { return }; if self.ownedGroup > 0 { _ = kill(-self.ownedGroup, SIGKILL) }; if self.pid > 0 { _ = kill(self.pid, SIGKILL) }; self.killTimer?.cancel(); self.killTimer = nil }; timer.resume(); killTimer = timer }
     private func closeFD() { guard fd >= 0 else { return }; _ = studio_pty_close(fd); fd = -1 }
 }
-
 @MainActor final class TerminalSession: NSObject, ObservableObject, TerminalViewDelegate {
     enum State: Equatable { case idle, starting, running, exited(Int32?), failed(String), interrupted }
     let resourceID: UUID; let terminalView: TerminalView
@@ -256,6 +256,9 @@ private final class PTYProcess: @unchecked Sendable {
         let raw = terminalView.getTerminal().getBufferAsData()
         return (String(data: raw, encoding: .utf8) ?? "").replacingOccurrences(of: "\0", with: "")
     }
+    // The legacy view returns its full requested viewport; ResourceStore owns
+    // the maxCharacters truncation applied to legacy snapshots.
+    var snapshotWasTruncated: Bool { false }
     func renderedSnapshot(maxBytes: Int = 64 * 1024) -> Data {
         Data(renderedText().utf8.prefix(max(0, maxBytes)))
     }
@@ -289,3 +292,4 @@ private final class PTYProcess: @unchecked Sendable {
     func sizeChanged(source: TerminalView, newCols: Int, newRows: Int) { resize(cols: newCols, rows: newRows) }; func setTerminalTitle(source: TerminalView, title: String) {}; func hostCurrentDirectoryUpdate(source: TerminalView, directory: String?) { guard let directory, !directory.isEmpty, !directory.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f }) else { return }; let url = directory.hasPrefix("/") ? URL(fileURLWithPath: directory) : URL(string: directory); guard let url, url.isFileURL, url.path.hasPrefix("/") else { return }; knownDirectory = url.path }; func scrolled(source: TerminalView, position: Double) {}
     func requestOpenLink(source: TerminalView, link: String, params: [String : String]) { if let url = URL(string: link), ["http", "https"].contains(url.scheme?.lowercased()) { NSWorkspace.shared.open(url) } }; func bell(source: TerminalView) {}; func clipboardCopy(source: TerminalView, content: Data) {}; func clipboardRead(source: TerminalView) -> Data? { nil }; func iTermContent(source: TerminalView, content: ArraySlice<UInt8>) {}; func rangeChanged(source: TerminalView, startY: Int, endY: Int) {}
 }
+#endif

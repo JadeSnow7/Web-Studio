@@ -104,3 +104,37 @@ xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' \
 Model and Agent offline tests explicitly disable terminal process launch or inject test providers. The current Ghostty regression run passed 107 tests with 0 failures and 0 skips; its result and log paths are recorded in the [Ghostty acceptance report](output/ghostty-integration-acceptance.md). Full IME composition, remote SSH, TUI-specific behavior, developer signing/notarization, Intel, and App Store targets remain outside that acceptance. See [start-page and chat acceptance](output/start-chat/acceptance.md) for the separate UI scope.
 
 No distribution signing, release publication, or system-setting change is implied by this build. Bundle identifier: `com.huaodong.Web-Studio`.
+
+## Pinned GhosttyVT migration boundary
+
+The opt-in standalone VT path is pinned to Ghostty commit
+`d4c88d8069912b653d707191388ca98e24751f12`, Zig `0.16.0`, target
+`aarch64-macos`, and the checksums in `Vendor/GhosttyVT/DEPENDENCY.lock`.
+Rebuild and test it with `./scripts/build-ghostty-vt.sh` and
+`./scripts/test-ghostty-vt.sh`. The opt-in `Web Studio VT` arm64/macOS target
+uses the canonical core/backend/Metal/host scripts below; final arm64 Debug/Release,
+core, backend, host and offscreen checks passed. The existing app regression suite
+also passed 128 tests in 11 suites under Xcode 27 / Swift 6.4. The Xcode 27 license block is resolved.
+The rebuilt MTKView app has passed the bounded GUI cases documented in the
+[GUI checkpoint](output/terminal-vt-migration/GUI-20260916.md). M2 implementation
+and complete acceptance remain in progress; the existing default backend is unchanged.
+
+```sh
+./scripts/test-terminal-vt-core.sh
+./scripts/test-terminal-vt-backend.sh
+./scripts/test-terminal-metal.sh
+./scripts/test-terminal-vt-host.sh
+./scripts/test-terminal-vt-core-asan.sh
+```
+
+See [the migration acceptance record](output/terminal-vt-migration/ACCEPTANCE.md)
+for evidence boundaries.
+
+Opt-in target build:
+
+```sh
+xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio VT' \
+  -configuration Debug -destination 'platform=macOS,arch=arm64' \
+  -derivedDataPath /private/tmp/web-studio-vt \
+  CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build
+```

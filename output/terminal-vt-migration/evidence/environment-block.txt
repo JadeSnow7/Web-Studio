@@ -1,0 +1,5 @@
+Main verification: xcodebuild -version reports Xcode 27.0, build 27A266a.
+/usr/bin/swiftc --version exits 69: Xcode license agreements have not been accepted.
+Computer Use reports the Mac is locked and automatic unlock is unavailable.
+The user has been asked to handle the license and unlock manually.
+Do not treat logs captured before final source fixes as verification of the current tree.

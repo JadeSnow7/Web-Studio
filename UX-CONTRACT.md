@@ -82,6 +82,15 @@ Preview disclosures expose exact text, source ID/title/URL, time, range, truncat
 
 Only configured HTTPS Responses endpoints are supported. Endpoint and model may be stored in ordinary preferences. Secrets are write-only UI input to an endpoint-bound Keychain item; no secret is persisted in preferences or logs. Configuration presence does not claim a successful API response. Resource evidence is untrusted context, separate from system instructions; requests have no tools, hidden history or automatic action permissions.
 
+## Standalone VT acceptance boundary
+
+M1/M2 GhosttyVT APIs are opt-in source contracts for snapshots, scrolling,
+selection, paste, focus, mouse, PWD and backend forwarding. They are pinned to
+commit `d4c88d8069912b653d707191388ca98e24751f12`, Zig `0.16.0`, and
+`aarch64-macos` as recorded in `Vendor/GhosttyVT/DEPENDENCY.lock`. Local
+compile/smoke results remain separate from live app and GUI acceptance. The
+existing terminal backend remains the default until an explicit migration gate.
+
 ## Accessibility and verification
 
 ### Motion contract

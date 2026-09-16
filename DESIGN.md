@@ -123,5 +123,32 @@ AgentInspectorView exposes explicit resource selection, exact text snapshot prev
 - Do not infer complete process semantics from terminal text.
 - Do not add horizontal tabs, CSS chrome, arbitrary Shell commands in the palette, or hidden automatic resource collection. Pane content has no per-pane header; split focus uses a subtle content edge cue only.
 
+## GhosttyVT migration boundary
+
+The standalone VT adapter is an opt-in M1/M2 implementation. Its source and
+local smoke checks use Ghostty commit `d4c88d8069912b653d707191388ca98e24751f12`
+with Zig `0.16.0` for `aarch64-macos`; reproducibility data lives in
+`Vendor/GhosttyVT/DEPENDENCY.lock`. These checks do not establish production
+backend replacement. Actual Metal, GUI, TUI and isolated SSH observations are
+recorded separately in [the migration acceptance report](output/terminal-vt-migration/ACCEPTANCE.md).
+The current app default remains the existing backend.
+
+The terminal visual reference tokens are dark background `#252A2E`, dark
+foreground/cursor `#D8DEE4`, light background `#F7F8FA`, light cursor
+`#29323A`, monospace size `13pt` with `2pt` leading, and `16pt`/`12pt`
+content insets. `TerminalVTCore` owns VT state and snapshots; the backend owns
+PTY admission and serialized mutation; the view owns geometry and input
+routing; the renderer owns Metal draw state. These boundaries are source
+contracts. The Xcode 27 license block is resolved; M2 implementation and
+complete acceptance remain in progress.
+
 ## Verification
 Actual results and limits are recorded in [the acceptance report](output/six-features-acceptance.md). Compilation, model checks, native interaction and external-service acceptance are separate evidence categories.
+
+The VT theme follows each window's effective appearance. Increased contrast changes
+only default foreground/cursor; explicit ANSI/truecolor values remain intact.
+Reduced motion or the public macOS nonblinking insertion-indicator preference
+disables cursor blinking. A 0.6-second timer otherwise runs only for a visible,
+focused, running terminal whose VT cursor requests blinking. Hidden views continue
+parsing but suspend rendering. These source contracts have deterministic host
+coverage; live preference timing and full VoiceOver acceptance remain separate.
