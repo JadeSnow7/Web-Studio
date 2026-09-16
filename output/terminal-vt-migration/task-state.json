@@ -604,7 +604,7 @@
     "local_validation": "unavailable",
     "remote_ci": "not_started",
     "remote_ci_revision": null,
-    "note": "冻结版本三构建与终端回归已带task revision token通过；完整M2因人工IME/VoiceOver、剩余场景及规范化性能仍未判定。当前GUI与新构建二进制边界分别记录。"
+    "note": "冻结版本三构建与终端回归已带task revision token通过；完整M2因人工IME/VoiceOver、剩余场景及规范化性能仍未判定。当前GUI与新构建二进制边界分别记录。 阶段快照6f789f4d33e9dd62cf00c438dc8ded752fefc91f已推送并由ls-remote确认；CI未核验，不声明线上CI通过。"
   },
   "actions": [
     {
@@ -612,22 +612,32 @@
       "kind": "commit",
       "target": "main",
       "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54",
-      "status": "in_progress",
+      "status": "completed",
       "source_id": "SRC-003",
       "authorization_action": "commit",
       "idempotency_key": "VT-M2-checkpoint-commit-80ff04c868f1",
-      "receipt": null
+      "receipt": {
+        "commit": "6f789f4d33e9dd62cf00c438dc8ded752fefc91f"
+      }
     },
     {
       "id": "ACT-002",
       "kind": "push",
       "target": "origin/main",
-      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54",
-      "status": "planned",
+      "revision": "6f789f4d33e9dd62cf00c438dc8ded752fefc91f",
+      "status": "completed",
       "source_id": "SRC-003",
       "authorization_action": "push",
       "idempotency_key": "VT-M2-checkpoint-push-80ff04c868f1",
-      "receipt": null
+      "receipt": {
+        "observed_at": "2026-09-16T07:58:37.805686+00:00",
+        "commit": "6f789f4d33e9dd62cf00c438dc8ded752fefc91f",
+        "remote": "origin",
+        "ref": "refs/heads/main",
+        "remote_sha": "6f789f4d33e9dd62cf00c438dc8ded752fefc91f",
+        "push_exit_code": 0,
+        "note": "阶段快照已推送；此回执作为后续文档同步提交归档，M2未整体验收。"
+      }
     }
   ],
   "decisions": [
