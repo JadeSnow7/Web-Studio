@@ -60,3 +60,15 @@
 五轮连续完整 `Web StudioTests` 在被测 HEAD `82c29eaaee64a3ceb0cf15fa0f32d24fadd6184d` 上执行；执行时工作树仅有本文件的未提交 B1 记录修改。每轮 xcodebuild 退出码均为 `0`，xcresult 均为 283 总数、283 通过、0 失败、0 跳过；`interactiveShellRespondsToCtrlCAndContinues()` 五轮均通过。原始日志和 xcresult 保存在 `/private/tmp/ws-phase2/unit-round-{1..5}.{log,xcresult}`，执行绑定与限制见 `/Users/huaodong/Documents/Codex/2026-10-02/files-pasted-by-the-user-main/work/web-phase2/diagnostic-evidence.json`。
 
 偶发失败未复现，根因未知。测试保留原有两个 150ms 等待和原有等待条件；仅在原等待条件为 false 时输出终端快照最后 20 行。用户于 2026-10-03 接受在根因未知状态下继续。
+
+## B4 可重复检查命令 — 2026-10-03
+
+被测提交：`aa32a10f827b7b381ecce83c9639daad947e5b67`；运行前后工作树均为空。
+实际入口：`./scripts/check.sh`。构建 xcodebuild 退出 0；单元测试 xcodebuild 退出 0；脚本退出 0。Swift Testing 为 283 通过、0 失败、0 跳过，Ctrl+C 用例通过。
+UTC：`2026-10-02T16:44:48.823502+00:00` 至 `2026-10-02T16:45:32.227875+00:00`。
+完整日志：`/Users/huaodong/Documents/Codex/2026-10-02/files-pasted-by-the-user-main/work/web-phase2/check-aa32a10/run.log`；SHA-256：`65b1bcd191d221017e357fbb8dad495b9c5390f7e24b57801967c22d2150e2df`。
+
+该脚本依次构建和执行 Web StudioTests，可用 --ui 追加完整 UI；打印 xcresult 的通过/失败数并保留 xcodebuild 失败退出码。使用现有缓存和锁包参数，不自动安装或更新依赖。
+另以命令替身验证全成功、单元失败、UI 失败、构建失败、非法参数五种分支，分别返回 0、65、66、67、2；这是脚本控制流测试，不是五次真实 Xcode 测试。
+
+与第一阶段 282/1 相比，本次 283/0；这不证明原偶发失败已经修复，诊断结论仍为“偶发失败未复现、根因未知”。失败快照钩子尚未因真实失败触发。UI 的独立运行结果见 UI-RESULT.md。
