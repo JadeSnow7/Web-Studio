@@ -1,0 +1,130 @@
+--- a/Web Studio/ContentView.swift
++++ b/Web Studio/ContentView.swift
+@@ -193,7 +193,8 @@
+     set { selectResource(newValue) }
+   }
+   /// Navigation state of the selected tab's web runtime, mirrored here so the toolbar
+-  /// re-renders without observing a runtime that may not exist yet.
++  /// re-renders without observing a runtime that may not exist yet. Holds `toolbarMirror`
++  /// (no load progress), so progress ticks don't invalidate every view observing the model.
+   @Published var activeWebState = WebNavigationState()
+   private var webStates: [UUID: WebNavigationState] = [:]
+   /// One WKWebView per live web tab.
+@@ -530,7 +531,8 @@
+         owner.resourceStore.updateTitle(resourceID: id, title: title)
+       }
+       if self.webStates[id] != state { self.webStates[id] = state }
+-      if self.session === owner, self.selectedTabID == id, self.activeWebState != state { self.activeWebState = state }
++      let mirror = state.toolbarMirror
++      if self.session === owner, self.selectedTabID == id, self.activeWebState != mirror { self.activeWebState = mirror }
+     }
+     // WorkspaceSession waits for Agent cleanup before shutting down its store.
+     store.onShutdown = { [weak owner] in owner?.agentController.shutdown() }
+@@ -1554,7 +1556,7 @@
+ 
+   func refreshActiveWebState() {
+     let id = selectedTabID
+-    let next = webStates[id] ?? activeWebRuntime?.state ?? WebNavigationState()
++    let next = (webStates[id] ?? activeWebRuntime?.state ?? WebNavigationState()).toolbarMirror
+     if activeWebState != next { activeWebState = next }
+     if !addressIsEditing { addressText = addressValue(for: id) }
+   }
+@@ -1616,8 +1618,8 @@
+   func recordWebState(tabID: UUID, state: WebNavigationState) {
+     if webStates[tabID] != state { webStates[tabID] = state }
+     if let title = state.pageTitle { webRuntimes.updateTitle(resourceID: tabID, title: title) }
+-    if tabID == selectedTabID, activeWebState != state {
+-      activeWebState = state
++    if tabID == selectedTabID, activeWebState != state.toolbarMirror {
++      activeWebState = state.toolbarMirror
+     }
+   }
+ 
+--- a/Web Studio/WebRuntime.swift
++++ b/Web Studio/WebRuntime.swift
+@@ -37,6 +37,17 @@
+     let message: String
+ }
+ 
++extension WebNavigationState {
++    /// The part the window-wide toolbar mirror keeps. `progress` is left out: only the tab's own
++    /// progress bar shows it, and that bar observes the runtime directly, so load ticks of the
++    /// selected tab don't re-evaluate every view observing `StudioModel`.
++    var toolbarMirror: WebNavigationState {
++        var mirror = self
++        mirror.progress = 0
++        return mirror
++    }
++}
++
+ // MARK: - Per-tab runtime
+ 
+ /// Owns one `WKWebView` for the lifetime of one web tab, so back/forward history and
+--- a/Web StudioTests/ObservationChurnTests.swift
++++ b/Web StudioTests/ObservationChurnTests.swift
+@@ -140,7 +140,8 @@
+         #expect(model.webRuntimes.records[background]?.lifecycle == .starting)
+         activeRuntime.mutateState { $0.url = url; $0.pageTitle = "Active"; $0.isLoading = true; $0.progress = 0.5 }
+         #expect(model.webRuntimes.records[active]?.title == "Active")
+-        #expect(model.activeWebState.progress == 0.5)
++        #expect(model.activeWebState.isLoading)
++        #expect(model.activeWebState.progress == 0, "progress stays on the runtime, not the window-wide mirror")
+ 
+         emissions.count = 0
+         for _ in 0..<100 {
+@@ -159,6 +160,32 @@
+         #expect(model.webRuntimes.records[background]?.title == "Background 2")
+     }
+ 
++    @Test func progressTicksOfTheActiveTabDoNotInvalidateTheModel() throws {
++        let model = StudioModel(launchTerminalProcesses: false)
++        model.newTab()
++        let active = model.selectedTabID
++        let runtime = try #require(model.webRuntimes.runtime(for: active))
++        let url = try #require(URL(string: "https://example.com/page"))
++        runtime.mutateState { $0.url = url; $0.pageTitle = "Active"; $0.isLoading = true; $0.progress = 0.01 }
++        #expect(model.activeWebState.isLoading)
++        let (modelEmissions, modelWatch) = watch(model.objectWillChange)
++        let (runtimeEmissions, runtimeWatch) = watch(runtime.objectWillChange)
++        defer { withExtendedLifetime((modelWatch, runtimeWatch)) {} }
++
++        for tick in 2...101 { runtime.mutateState { $0.progress = Double(tick) / 102 } }
++        // The progress bar observes the runtime itself, which still publishes every tick...
++        #expect(runtimeEmissions.count == 100)
++        #expect(runtime.state.progress == 101.0 / 102)
++        // ...while the window-wide model only mirrors what the toolbar shows.
++        #expect(modelEmissions.count == 0)
++
++        // Toolbar-visible transitions of the active tab still publish.
++        runtime.mutateState { $0.isLoading = false; $0.progress = 1; $0.canGoBack = true }
++        #expect(modelEmissions.count > 0)
++        #expect(model.activeWebState.isLoading == false)
++        #expect(model.activeWebState.canGoBack)
++    }
++
+     @Test func activeWebStateMirrorPublishesOnlyWhenTheStateChanges() {
+         let model = StudioModel(launchTerminalProcesses: false)
+         model.newTab()
+@@ -168,15 +195,19 @@
+         defer { withExtendedLifetime(cancellable) {} }
+ 
+         model.recordWebState(tabID: id, state: state)
+-        #expect(model.activeWebState == state)
++        #expect(model.activeWebState == state.toolbarMirror)
+         let afterFirst = emissions.count
+         #expect(afterFirst > 0)
+         for _ in 0..<100 { model.recordWebState(tabID: id, state: state) }
+         #expect(emissions.count == afterFirst)
+ 
+-        var next = state; next.progress = 0.75
++        var ticked = state; ticked.progress = 0.75
++        model.recordWebState(tabID: id, state: ticked)
++        #expect(emissions.count == afterFirst, "a progress-only change is not mirrored")
++
++        var next = ticked; next.isLoading = false
+         model.recordWebState(tabID: id, state: next)
+-        #expect(model.activeWebState == next)
++        #expect(model.activeWebState == next.toolbarMirror)
+         #expect(emissions.count > afterFirst)
+     }
+ 

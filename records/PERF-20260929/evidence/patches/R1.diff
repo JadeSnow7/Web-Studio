@@ -1,0 +1,318 @@
+diff --git a/Web Studio/TerminalMetalRenderer.swift b/Web Studio/TerminalMetalRenderer.swift
+index a57676c..faddd7e 100644
+--- a/Web Studio/TerminalMetalRenderer.swift	
++++ b/Web Studio/TerminalMetalRenderer.swift	
+@@ -32,6 +32,16 @@
+       var advance: Float
+       var isColor: Bool
+     }
++    /// Atlas lookup key: the (font name, point size) identity of a renderer font id, the scale bits and the grapheme text.
++    private struct GlyphKey: Hashable {
++      var font: UInt32
++      var scale: UInt64
++      var text: String
++    }
++    private struct AtlasEntry {
++      var page: Int
++      var glyph: Glyph
++    }
+     private final class PreparedAtlas {
+       private typealias Rasterized = (CGImage, CGSize, CGPoint, CGFloat, Bool)
+       private static var rasterCache: [String: Rasterized] = [:]
+@@ -39,19 +49,21 @@
+       private static let rasterLock = NSLock()
+       let size = 2048
+       let textures: [MTLTexture]
+-      let entries: [String: (page: Int, glyph: Glyph)]
++      let table: [AtlasEntry]
++      let index: [GlyphKey: Int32]
+       private let device: MTLDevice
+       init(
+-        device: MTLDevice, requests: [(key: String, text: String, font: NSFont, scale: CGFloat)]
++        device: MTLDevice, requests: [(key: GlyphKey, text: String, font: NSFont, scale: CGFloat)]
+       ) throws {
+         self.device = device
+         let pageSize = 2048
+-        var images: [(key: String, image: CGImage, bearing: CGPoint, advance: CGFloat, isColor: Bool)] = []
++        var images: [(key: GlyphKey, image: CGImage, bearing: CGPoint, advance: CGFloat, isColor: Bool)] = []
+         images.reserveCapacity(requests.count)
+         for request in requests {
+           let item: Rasterized?
++          let rasterKey = "\(request.font.fontName)|\(request.font.pointSize)|\(request.scale)|\(request.text)"
+           Self.rasterLock.lock()
+-          item = Self.rasterCache[request.key]
++          item = Self.rasterCache[rasterKey]
+           Self.rasterLock.unlock()
+           let raster = item ?? Self.rasterize(request.text, font: request.font, scale: request.scale)
+           guard let raster else {
+@@ -59,9 +71,9 @@
+           }
+           if item == nil {
+             Self.rasterLock.lock()
+-            Self.rasterCache[request.key] = raster
+-            Self.rasterOrder.removeAll { $0 == request.key }
+-            Self.rasterOrder.append(request.key)
++            Self.rasterCache[rasterKey] = raster
++            Self.rasterOrder.removeAll { $0 == rasterKey }
++            Self.rasterOrder.append(rasterKey)
+             if Self.rasterOrder.count > 1024 {
+               let evicted = Self.rasterOrder.removeFirst()
+               Self.rasterCache.removeValue(forKey: evicted)
+@@ -73,7 +85,10 @@
+         var pagePixels: [[UInt8]] = []
+         var nextX = 1, nextY = 1, rowHeight = 0
+         var page = -1
+-        var builtEntries: [String: (page: Int, glyph: Glyph)] = [:]
++        var builtTable: [AtlasEntry] = []
++        var builtIndex: [GlyphKey: Int32] = [:]
++        builtTable.reserveCapacity(images.count)
++        builtIndex.reserveCapacity(images.count)
+         for item in images {
+           if page < 0 || !Self.fits(item.image.width, item.image.height, x: nextX, y: nextY, rowHeight: rowHeight) {
+             pagePixels.append(Array(repeating: 0, count: pageSize * pageSize * 4))
+@@ -90,15 +105,17 @@
+           }
+           if nextY + item.image.height + 1 > pageSize { continue }
+           Self.copy(item.image, into: &pagePixels[page], size: pageSize, x: nextX, y: nextY)
+-          builtEntries[item.key] = (
+-            page: page,
+-            glyph: Glyph(
+-              uv: SIMD4(
+-                Float(nextX) / Float(pageSize), Float(nextY) / Float(pageSize),
+-                Float(item.image.width) / Float(pageSize), Float(item.image.height) / Float(pageSize)),
+-              size: SIMD2(Float(item.image.width), Float(item.image.height)),
+-              bearing: SIMD2(Float(item.bearing.x), Float(item.bearing.y)),
+-              advance: Float(item.advance), isColor: item.isColor))
++          builtIndex[item.key] = Int32(builtTable.count)
++          builtTable.append(
++            AtlasEntry(
++              page: page,
++              glyph: Glyph(
++                uv: SIMD4(
++                  Float(nextX) / Float(pageSize), Float(nextY) / Float(pageSize),
++                  Float(item.image.width) / Float(pageSize), Float(item.image.height) / Float(pageSize)),
++                size: SIMD2(Float(item.image.width), Float(item.image.height)),
++                bearing: SIMD2(Float(item.bearing.x), Float(item.bearing.y)),
++                advance: Float(item.advance), isColor: item.isColor)))
+           nextX += item.image.width + 1
+           rowHeight = max(rowHeight, item.image.height)
+         }
+@@ -119,7 +136,8 @@
+           builtTextures.append(texture)
+         }
+         textures = builtTextures
+-        entries = builtEntries
++        table = builtTable
++        index = builtIndex
+       }
+       private static func fits(_ width: Int, _ height: Int, x: Int, y: Int, rowHeight: Int) -> Bool {
+         let pageSize = 2048
+@@ -182,9 +200,52 @@
+         }
+       }
+     }
++    /// Frame-independent lookup state: a direct table for single-byte ASCII cells and the per-cell atlas indices of the frame being rendered.
++    private final class GlyphLookup {
++      static let asciiSlots = 4 * 128
++      /// Atlas table index per (font slot << 7 | ASCII byte); -2 means not resolved yet for the current atlas and scale.
++      let ascii = UnsafeMutablePointer<Int32>.allocate(capacity: asciiSlots)
++      var asciiScaleBits: UInt64 = 0
++      /// Resident font id per font slot; UInt32.max means the slot has not been resolved yet.
++      let fontIDs = UnsafeMutablePointer<UInt32>.allocate(capacity: 4)
++      /// Atlas table index (or -1) per grid cell of the frame being rendered.
++      var cells: UnsafeMutablePointer<Int32>?
++      var cellCapacity = 0
++      init() {
++        ascii.initialize(repeating: -2, count: Self.asciiSlots)
++        fontIDs.initialize(repeating: UInt32.max, count: 4)
++      }
++      deinit {
++        ascii.deallocate()
++        fontIDs.deallocate()
++        cells?.deallocate()
++      }
++      func resetASCII() {
++        ascii.update(repeating: -2, count: Self.asciiSlots)
++      }
++      func reserveCells(_ count: Int) -> UnsafeMutablePointer<Int32> {
++        if let cells, cellCapacity >= count { return cells }
++        cells?.deallocate()
++        let capacity = max(count, 1024)
++        let allocated = UnsafeMutablePointer<Int32>.allocate(capacity: capacity)
++        cells = allocated
++        cellCapacity = capacity
++        return allocated
++      }
++    }
++    private struct FontIdentity: Hashable {
++      var name: String
++      var size: UInt64
++    }
+     private let device: MTLDevice, queue: MTLCommandQueue, pipeline: MTLRenderPipelineState,
+       sampler: MTLSamplerState
+-    private var atlas: PreparedAtlas?
++    private var atlas: PreparedAtlas? {
++      didSet { lookup.resetASCII() }
++    }
++    private let lookup = GlyphLookup()
++    /// Resident fonts by traits (bit 0 bold, bit 1 italic), resolved lazily once with the same construction as before.
++    private var residentFonts: [NSFont?] = [nil, nil, nil, nil]
++    private var fontIdentities: [FontIdentity: UInt32] = [:]
+     private let inflightGate = DispatchSemaphore(value: 3)
+     public private(set) var lastError: Swift.Error?
+     public init(device supplied: MTLDevice? = nil) throws {
+@@ -244,21 +305,23 @@
+         if !permitHandedOff { inflightGate.signal() }
+       }
+       let scale = max(CGFloat(1), geometry.backingScale)
+-      var requests: [String: (key: String, text: String, font: NSFont, scale: CGFloat)] = [:]
+-      for cell in frame.cells where !cell.text.isEmpty && cell.wide.rawValue != 2 && cell.wide.rawValue != 3 {
+-        let f = font(for: cell)
+-        let key = "\(f.fontName)|\(f.pointSize)|\(scale)|\(cell.text)"
+-        requests[key] = (key, cell.text, f, scale)
+-      }
+-      let requiredKeys = Set(requests.keys)
+-      if atlas == nil || !requiredKeys.allSatisfy({ atlas?.entries[$0] != nil }) {
++      let scaleBits = Double(scale).bitPattern
++      let gridCount = min(frame.cells.count, frame.columns * frame.rows)
++      let cellGlyphs = lookup.reserveCells(gridCount)
++      if atlas == nil
++        || !resolveGlyphs(
++          frame.cells, gridCount: gridCount, scaleBits: scaleBits, stopAtMiss: true, into: cellGlyphs)
++      {
+         do {
+-          atlas = try PreparedAtlas(device: device, requests: Array(requests.values))
++          atlas = try PreparedAtlas(
++            device: device, requests: glyphRequests(frame.cells, scale: scale, scaleBits: scaleBits))
+           lastError = nil
+         } catch {
+           lastError = error
+           return nil
+         }
++        _ = resolveGlyphs(
++          frame.cells, gridCount: gridCount, scaleBits: scaleBits, stopAtMiss: false, into: cellGlyphs)
+       }
+       let prepared = atlas
+       guard let command = queue.makeCommandBuffer(),
+@@ -339,7 +402,7 @@
+         let width = cw * (frame.cursor.wideTail ? 2 : 1)
+         quad(cx, cy, width, ch, col(frame.cursorColor ?? theme.cursor), SIMD4(0, 0, 0, 0), 0, into: &cursorUnderlayVertices)
+       }
+-      for i in 0..<min(frame.cells.count, frame.columns * frame.rows) {
++      for i in 0..<gridCount {
+         let cell = frame.cells[i]
+         let cx = i % frame.columns
+         let ry = i / frame.columns
+@@ -355,12 +418,9 @@
+         if cell.hidden { fg = bg }
+         if cell.selected { bg = theme.selection }
+         if i == cursorCell { swap(&fg, &bg) }
+-        let f = font(for: cell)
+-        let key = "\(f.fontName)|\(f.pointSize)|\(scale)|\(cell.text)"
+         let baseline = iy + Float(ry) * ch + Float(geometry.baseline) * Float(scale)
+-        if !cell.hidden && cell.wide.rawValue != 2 && cell.wide.rawValue != 3,
+-          !cell.text.isEmpty, let item = prepared?.entries[key]
+-        {
++        if !cell.hidden, cellGlyphs[i] >= 0, let atlas = prepared {
++          let item = atlas.table[Int(cellGlyphs[i])]
+           let g = item.glyph
+           quad(
+             x + g.bearing.x, baseline + g.bearing.y, g.size.x, g.size.y, col(fg), g.uv,
+@@ -454,21 +514,90 @@
+       permitHandedOff = true
+       return command
+     }
+-    private func font(for cell: VTCell) -> NSFont {
+-      let base = NSFont.monospacedSystemFont(ofSize: 13, weight: cell.bold ? .bold : .regular)
+-      if cell.italic { return NSFontManager.shared.convert(base, toHaveTrait: .italicFontMask) }
+-      return base
++    /// Same construction as the former per-cell `font(for:)`; resolved once per traits slot (bit 0 bold, bit 1 italic).
++    private func resolveResidentFont(_ traits: Int) -> NSFont {
++      if let resident = residentFonts[traits] { return resident }
++      let base = NSFont.monospacedSystemFont(ofSize: 13, weight: traits & 1 != 0 ? .bold : .regular)
++      let resolved = traits & 2 != 0 ? NSFontManager.shared.convert(base, toHaveTrait: .italicFontMask) : base
++      residentFonts[traits] = resolved
++      lookup.fontIDs[traits] = fontID(for: resolved)
++      return resolved
++    }
++    /// Fonts with the same name and point size share an id, matching the former "fontName|pointSize" key text.
++    private func fontID(for font: NSFont) -> UInt32 {
++      let identity = FontIdentity(name: font.fontName, size: Double(font.pointSize).bitPattern)
++      if let known = fontIdentities[identity] { return known }
++      let assigned = UInt32(fontIdentities.count)
++      fontIdentities[identity] = assigned
++      return assigned
++    }
++    /// Cheap steady-state pass: stores the atlas table index (or -1) of every grid cell and reports whether the current
++    /// atlas holds every needed glyph (`stopAtMiss` returns at the first lacking glyph, leaving `out` incomplete).
++    /// Performs no heap allocation when the atlas already holds every glyph.
++    private func resolveGlyphs(
++      _ cells: [VTCell], gridCount: Int, scaleBits: UInt64, stopAtMiss: Bool,
++      into out: UnsafeMutablePointer<Int32>
++    ) -> Bool {
++      guard let atlas else { return false }
++      var complete = true
++      if lookup.asciiScaleBits != scaleBits {
++        lookup.resetASCII()
++        lookup.asciiScaleBits = scaleBits
++      }
++      let ascii = lookup.ascii
++      let fontIDs = lookup.fontIDs
++      for i in 0..<cells.count {
++        let cell = cells[i]
++        var found: Int32 = -1
++        let wide = cell.wide.rawValue
++        if wide != 2 && wide != 3 && !cell.text.isEmpty {
++          let slot = (cell.bold ? 1 : 0) | (cell.italic ? 2 : 0)
++          var byte = -1
++          var units = cell.text.utf8.makeIterator()
++          if let first = units.next(), first < 128, units.next() == nil { byte = Int(first) }
++          if byte >= 0, ascii[slot << 7 | byte] >= 0 {
++            found = ascii[slot << 7 | byte]
++          } else {
++            if fontIDs[slot] == UInt32.max { _ = resolveResidentFont(slot) }
++            let key = GlyphKey(font: fontIDs[slot], scale: scaleBits, text: cell.text)
++            if let hit = atlas.index[key] {
++              found = hit
++              if byte >= 0 { ascii[slot << 7 | byte] = hit }
++            } else {
++              if stopAtMiss { return false }
++              complete = false
++            }
++          }
++        }
++        if i < gridCount { out[i] = found }
++      }
++      return complete
++    }
++    /// Miss path only: the deduplicated glyph requests of every visible cell head, in first-appearance order.
++    private func glyphRequests(_ cells: [VTCell], scale: CGFloat, scaleBits: UInt64) -> [(
++      key: GlyphKey, text: String, font: NSFont, scale: CGFloat
++    )] {
++      var requests: [(key: GlyphKey, text: String, font: NSFont, scale: CGFloat)] = []
++      var seen = Set<GlyphKey>()
++      for cell in cells where !cell.text.isEmpty && cell.wide.rawValue != 2 && cell.wide.rawValue != 3 {
++        let slot = (cell.bold ? 1 : 0) | (cell.italic ? 2 : 0)
++        let f = resolveResidentFont(slot)
++        let key = GlyphKey(font: lookup.fontIDs[slot], scale: scaleBits, text: cell.text)
++        if seen.insert(key).inserted { requests.append((key, cell.text, f, scale)) }
++      }
++      return requests
+     }
+     public func prepareGlyphs(
+       frame: VTFrame, font: NSFont = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
+       scale: CGFloat = 1
+     ) {
+-      var requests: [String: (key: String, text: String, font: NSFont, scale: CGFloat)] = [:]
++      var requests: [GlyphKey: (key: GlyphKey, text: String, font: NSFont, scale: CGFloat)] = [:]
++      let id = fontID(for: font)
+       for c in frame.cells where !c.text.isEmpty {
+-        let key = "\(font.fontName)|\(font.pointSize)|\(scale)|\(c.text)"
++        let key = GlyphKey(font: id, scale: Double(scale).bitPattern, text: c.text)
+         requests[key] = (key, c.text, font, scale)
+       }
+-      if atlas == nil || !requests.keys.allSatisfy({ atlas?.entries[$0] != nil }) {
++      if atlas == nil || !requests.keys.allSatisfy({ atlas?.index[$0] != nil }) {
+         do {
+           atlas = try PreparedAtlas(device: device, requests: Array(requests.values))
+         } catch {

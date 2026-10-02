@@ -1,0 +1,1204 @@
+{
+  "schema_version": "1.3",
+  "spec": {
+    "version": "B1-SPEC-2",
+    "authority": "records/WORKSPACE-B1-20260917/SPEC.md",
+    "source_ids": [
+      "SRC-001",
+      "SRC-002",
+      "SRC-003"
+    ],
+    "goal_ref": "discovery.expected_outcome",
+    "scope_ref": "discovery.scope",
+    "constraints": [
+      "遵守 SPEC.md 不变量；保留既有修改",
+      "按依赖执行P0-P4，未满足场景不宣称B1完成",
+      "无提交推送合并部署授权；源文件单写入者；优先coder，委派不可用时由主线程接手独立文件"
+    ],
+    "exceptions": [
+      "环境缺失保持 undetermined；未获用户延期决定不能 deferred"
+    ],
+    "conditions": [
+      {
+        "id": "SC-PREP",
+        "metric_ids": [
+          "MET-PREP"
+        ],
+        "deliverables": [
+          "records/WORKSPACE-B1-20260917/SPEC.md",
+          "records/WORKSPACE-B1-20260917/ARCHITECTURE.md",
+          "records/WORKSPACE-B1-20260917/ACCEPTANCE.md",
+          "records/WORKSPACE-B1-20260917/handoffs/P0-coder.md",
+          "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md"
+        ]
+      },
+      {
+        "id": "SC-P0",
+        "metric_ids": [
+          "MET-P0"
+        ],
+        "deliverables": [
+          "records/WORKSPACE-B1-20260917/prototype/index.html",
+          "records/WORKSPACE-B1-20260917/P0-FLOWS.md"
+        ]
+      },
+      {
+        "id": "SC-P1",
+        "metric_ids": [
+          "MET-P1"
+        ],
+        "deliverables": [
+          "Web Studio/WorkspaceSession.swift",
+          "Web Studio/WorkspaceRegistry.swift",
+          "Web Studio/WindowCoordinator.swift",
+          "Web StudioTests/WorkspaceOwnershipTests.swift",
+          "Web StudioTests/WorkspaceModelTests.swift",
+          "Web StudioTests/WorkspaceResourceLifecycleTests.swift"
+        ]
+      },
+      {
+        "id": "SC-P2",
+        "metric_ids": [
+          "MET-P2"
+        ],
+        "deliverables": [
+          "Web Studio/WorkspaceRepository.swift",
+          "Web StudioTests/WorkspacePersistenceTests.swift"
+        ]
+      },
+      {
+        "id": "SC-P3",
+        "metric_ids": [
+          "MET-P3"
+        ],
+        "deliverables": [
+          "Web Studio/ContentView.swift",
+          "Web Studio/AgentController.swift",
+          "Web Studio/AgentViews.swift",
+          "Web StudioTests/AgentControllerTests.swift"
+        ]
+      },
+      {
+        "id": "SC-P4",
+        "metric_ids": [
+          "MET-P4"
+        ],
+        "deliverables": [
+          "records/WORKSPACE-B1-20260917/B1-RESULTS.md",
+          "README.md",
+          "DESIGN.md",
+          "UX-CONTRACT.md"
+        ]
+      }
+    ],
+    "contracts": [
+      "records/WORKSPACE-B1-20260917/SPEC.md",
+      "records/WORKSPACE-B1-20260917/ARCHITECTURE.md",
+      "records/WORKSPACE-B1-20260917/ACCEPTANCE.md",
+      "records/WORKSPACE-B1-20260917/handoffs/P0-coder.md",
+      "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md"
+    ],
+    "open_items": []
+  },
+  "task": {
+    "id": "WORKSPACE-B1-20260917",
+    "title": "B1 项目工作空间实现与本地验证",
+    "mode": "resume",
+    "status": "in_progress",
+    "source_ids": [
+      "SRC-001",
+      "SRC-002",
+      "SRC-003"
+    ]
+  },
+  "discovery": {
+    "status": "ready",
+    "user": "围绕长期项目使用网页、终端、SSH和AI问答的桌面用户",
+    "scenario": "创建空间、并排资源、提问、切换回来及重启恢复配置",
+    "problem": "当前分组与窗口状态耦合，没有跨退出的工作空间配置保存",
+    "expected_outcome": "按准备包开始执行，实现并验证 SC-P0–SC-P4 的 B1 工作空间闭环",
+    "scope": "P0原型、B1空间/生命周期/配置保存/导航/单次问答及验证，排除VT/性能及B1.1",
+    "acceptable_result": "准备资料可接续；产品完整完成必须另有全部强制场景的当前证据"
+  },
+  "sources": [
+    {
+      "id": "SRC-001",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-17/veriflow-准备实现",
+      "summary": "用户提供 B-Plan v1 并要求使用 Veriflow 准备实现；当前执行交付为实施准备",
+      "adoption": "accepted"
+    },
+    {
+      "id": "SRC-002",
+      "kind": "external_material",
+      "reference": "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md",
+      "summary": "用户粘贴的 B-Plan v1，产品目标、推荐默认值、P0-P4及验收场景作为实施准备依据",
+      "adoption": "accepted"
+    },
+    {
+      "id": "SRC-003",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-17/开始执行",
+      "summary": "用户要求按已准备的 B1 实施包开始执行；依照 P0-P4 依赖推进，不含提交推送发布",
+      "adoption": "accepted"
+    }
+  ],
+  "main_tasks": [
+    {
+      "id": "MT-PREP",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "实施资料完整且保留既有工作",
+      "scope": [
+        "核对输入原件、文件与路径存在性、阶段/指标对应关系、baseline 的源码与既有 dirty 文件 hash；运行记录/实施就绪门槛并主线程自审"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "implemented",
+      "metric_ids": [
+        "MET-PREP"
+      ],
+      "implementation_task_ids": [
+        "IT-PREP"
+      ]
+    },
+    {
+      "id": "MT-P0",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "交互原型中操作对象及关闭恢复后果明确",
+      "scope": [
+        "ACCEPTANCE.md A01：实际操作离线原型，三种窗口尺寸，走查关闭与恢复语义；用户可理解性反馈单独采集"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [
+        "MT-PREP"
+      ],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "implemented",
+      "metric_ids": [
+        "MET-P0"
+      ],
+      "implementation_task_ids": [
+        "IT-P0"
+      ]
+    },
+    {
+      "id": "MT-P1",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "会话内空间状态隔离与运行时保持",
+      "scope": [
+        "ACCEPTANCE.md A02-A05：隔离状态、延迟回调、运行时身份/启动计数、双窗口归属及隐藏空间清理"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [
+        "MT-P0"
+      ],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "implemented",
+      "metric_ids": [
+        "MET-P1"
+      ],
+      "implementation_task_ids": [
+        "IT-P1"
+      ]
+    },
+    {
+      "id": "MT-P2",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "本地配置安全保存及无副作用恢复",
+      "scope": [
+        "ACCEPTANCE.md A06-A08：磁盘回读、恢复启动计数0、故障注入与原件hash、并发写入和目录失效"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [
+        "MT-P1"
+      ],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "implemented",
+      "metric_ids": [
+        "MET-P2"
+      ],
+      "implementation_task_ids": [
+        "IT-P2"
+      ]
+    },
+    {
+      "id": "MT-P3",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "导航分屏和单次问答形成完整操作闭环",
+      "scope": [
+        "ACCEPTANCE.md A09-A13：捕获目标、分屏身份、实例快照与重试、问题历史、复制入口的模型和原生检查"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [
+        "MT-P1",
+        "MT-P2"
+      ],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "implemented",
+      "metric_ids": [
+        "MET-P3"
+      ],
+      "implementation_task_ids": [
+        "IT-P3"
+      ]
+    },
+    {
+      "id": "MT-P4",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "goal": "真实 B1 路径及兼容性验收",
+      "scope": [
+        "ACCEPTANCE.md A01-A16：真实进程、多空间/窗口、重启、窄窗、IME/VoiceOver、SSH及Provider；文档一致性审查"
+      ],
+      "non_goals": [
+        "不替换终端后端，不实现B1.1"
+      ],
+      "dependencies": [
+        "MT-P1",
+        "MT-P2",
+        "MT-P3"
+      ],
+      "assumptions": [
+        "采用冻结方案推荐默认值；具体实现受前阶段合同约束"
+      ],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-P4"
+      ],
+      "implementation_task_ids": [
+        "IT-P4"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "MET-PREP",
+      "main_task_id": "MT-PREP",
+      "kind": "mandatory_gate",
+      "name": "实施资料完整且保留既有工作",
+      "baseline": "当前准备文件新建；源码/既有修改 hash 见 evidence/baseline.json",
+      "target": "冻结输入和源码归档完整；合同覆盖范围；既有无关工作保持；产品变更按阶段审查",
+      "method": "核对冻结输入/归档hash和既有foreign文件保护；审查合同、依赖、验收覆盖及结构化记录",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-P0",
+      "main_task_id": "MT-P0",
+      "kind": "mandatory_gate",
+      "name": "交互原型中操作对象及关闭恢复后果明确",
+      "baseline": "仅有方案文本，无交互原型",
+      "target": "满足 SPEC.md SC-P0；对应场景预期均有证据，未测不能通过",
+      "method": "ACCEPTANCE.md A01：实际操作离线原型，三种窗口尺寸，走查关闭与恢复语义；用户可理解性反馈单独采集",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-P1",
+      "main_task_id": "MT-P1",
+      "kind": "mandatory_gate",
+      "name": "会话内空间状态隔离与运行时保持",
+      "baseline": "每窗口单 StudioModel，共享一份布局与 AgentController；空分组自动建网页",
+      "target": "满足 SPEC.md SC-P1；对应场景预期均有证据，未测不能通过",
+      "method": "ACCEPTANCE.md A02-A05：隔离状态、延迟回调、运行时身份/启动计数、双窗口归属及隐藏空间清理",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-P2",
+      "main_task_id": "MT-P2",
+      "kind": "mandatory_gate",
+      "name": "本地配置安全保存及无副作用恢复",
+      "baseline": "无空间 JSON Repository；终端注册立即启动",
+      "target": "满足 SPEC.md SC-P2；对应场景预期均有证据，未测不能通过",
+      "method": "ACCEPTANCE.md A06-A08：磁盘回读、恢复启动计数0、故障注入与原件hash、并发写入和目录失效",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-P3",
+      "main_task_id": "MT-P3",
+      "kind": "mandatory_gate",
+      "name": "导航分屏和单次问答形成完整操作闭环",
+      "baseline": "跨组 move 修改归属；newChat 清空问题和历史",
+      "target": "满足 SPEC.md SC-P3；对应场景预期均有证据，未测不能通过",
+      "method": "ACCEPTANCE.md A09-A13：捕获目标、分屏身份、实例快照与重试、问题历史、复制入口的模型和原生检查",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-P4",
+      "main_task_id": "MT-P4",
+      "kind": "mandatory_gate",
+      "name": "真实 B1 路径及兼容性验收",
+      "baseline": "未执行 B1；既有终端证据不能替代本次验收",
+      "target": "满足 SPEC.md SC-P4；对应场景预期均有证据，未测不能通过",
+      "method": "ACCEPTANCE.md A01-A16：真实进程、多空间/窗口、重启、窄窗、IME/VoiceOver、SSH及Provider；文档一致性审查",
+      "environment_data": "macOS本地仓库；源码基线见 evidence/baseline.json；P0-P4 fixture 及运行环境按 ACCEPTANCE.md",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    }
+  ],
+  "implementation_tasks": [
+    {
+      "id": "IT-PREP",
+      "main_task_id": "MT-PREP",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "scope": "实施资料完整且保留既有工作",
+      "file_scope": [
+        "records/WORKSPACE-B1-20260917/SPEC.md",
+        "records/WORKSPACE-B1-20260917/ARCHITECTURE.md",
+        "records/WORKSPACE-B1-20260917/ACCEPTANCE.md",
+        "records/WORKSPACE-B1-20260917/handoffs/P0-coder.md",
+        "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md",
+        "records/WORKSPACE-B1-20260917/task-state.json",
+        "records/WORKSPACE-B1-20260917/task-summary.md",
+        "records/WORKSPACE-B1-20260917/work-log.md",
+        "records/WORKSPACE-B1-20260917/evidence/"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；共享文件同一时间只允许一个 coder 写；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-PREP"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "main-thread",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-P0",
+      "main_task_id": "MT-P0",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002",
+        "SRC-003"
+      ],
+      "scope": "交互原型中操作对象及关闭恢复后果明确",
+      "file_scope": [
+        "records/WORKSPACE-B1-20260917/prototype/",
+        "records/WORKSPACE-B1-20260917/P0-FLOWS.md",
+        ".playwright-mcp/console-2026-09-17T05-46-16-042Z.log",
+        ".playwright-mcp/page-2026-09-17T05-46-16-385Z.yml"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；共享文件同一时间只允许一个 coder 写；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [
+        "IT-PREP"
+      ],
+      "acceptance": [
+        "MET-P0"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "coder_p0_repair",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-P1",
+      "main_task_id": "MT-P1",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "scope": "会话内空间状态隔离与运行时保持",
+      "file_scope": [
+        "Web Studio/WorkspaceSession.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/ContentView.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/WindowLifecycle.swift",
+        "Web Studio/Web_StudioApp.swift",
+        "Web StudioTests/Web_StudioTests.swift",
+        "README.md",
+        "DESIGN.md",
+        "UX-CONTRACT.md",
+        "Web Studio/WorkspaceSplitView.swift",
+        "Web Studio/StartPageView.swift",
+        "Web Studio/AgentViews.swift",
+        "Web Studio/ProviderSettings.swift",
+        "Web StudioTests/AgentControllerTests.swift",
+        "Web StudioTests/ResourceReadTests.swift",
+        "Web Studio/AgentController.swift",
+        "Web StudioTests/WorkspaceOwnershipTests.swift",
+        "Web StudioTests/WorkspaceModelTests.swift"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；每个文件同一时间只允许一个写入者；工具容量不足时主线程按AGENTS例外接手独立文件；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [
+        "IT-P0"
+      ],
+      "acceptance": [
+        "MET-P1"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL"
+      ],
+      "owner": "root + coder_workspace_core (disjoint paths)",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-P2",
+      "main_task_id": "MT-P2",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "scope": "本地配置安全保存及无副作用恢复",
+      "file_scope": [
+        "Web Studio/WorkspaceRepository.swift",
+        "Web Studio/WorkspaceSession.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/ContentView.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/WindowLifecycle.swift",
+        "Web Studio/Web_StudioApp.swift",
+        "Web StudioTests/WorkspacePersistenceTests.swift",
+        "README.md",
+        "DESIGN.md",
+        "UX-CONTRACT.md",
+        "Web Studio/WorkspaceConfiguration.swift",
+        "Web Studio/WorkspaceSaveController.swift",
+        "Web Studio/WorkspaceSplitView.swift",
+        "Web Studio/AgentController.swift",
+        "Web StudioTests/WorkspaceResourceLifecycleTests.swift",
+        "Web StudioTests/WorkspaceModelTests.swift",
+        "Web StudioTests/WorkspaceSaveControllerTests.swift",
+        "Web StudioTests/WorkspaceRestorationTests.swift",
+        "Web StudioTests/WorkspaceClosePreparationTests.swift",
+        "Web StudioTests/WorkspaceIntegrationTests.swift"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；每个文件同一时间只允许一个写入者；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [
+        "IT-P1"
+      ],
+      "acceptance": [
+        "MET-P2"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL"
+      ],
+      "owner": "core implementation reviewed; current bounded validation in primary thread",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-P3",
+      "main_task_id": "MT-P3",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "scope": "导航分屏和单次问答形成完整操作闭环",
+      "file_scope": [
+        "Web Studio/ContentView.swift",
+        "Web Studio/StartPageView.swift",
+        "Web Studio/AgentViews.swift",
+        "Web Studio/AgentController.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/NativeResourceHost.swift",
+        "Web Studio/WorkspaceSplitView.swift",
+        "Web Studio/ProviderSettings.swift",
+        "Web Studio/WorkspaceSession.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web StudioTests/Web_StudioTests.swift",
+        "Web StudioTests/AgentControllerTests.swift",
+        "Web StudioTests/ResourceReadTests.swift",
+        "README.md",
+        "DESIGN.md",
+        "UX-CONTRACT.md",
+        "Web StudioTests/WorkspaceQuestionTests.swift",
+        "Web Studio/AgentService.swift",
+        "Web Studio/StudioDesign.swift",
+        "Web Studio/WebRuntime.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web StudioTests/WorkspaceCopyTests.swift",
+        "Web StudioTests/WorkspaceNavigationTests.swift",
+        "Web StudioTests/WorkspaceCompactTests.swift",
+        "Web StudioTests/WorkspaceTerminalActionsTests.swift",
+        "Web StudioTests/WorkspaceLaunchOptionsTests.swift"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；共享文件同一时间只允许一个 coder 写；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [
+        "IT-P1",
+        "IT-P2"
+      ],
+      "acceptance": [
+        "MET-P3"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL"
+      ],
+      "owner": "coder_terminal_finish; reviewed by main-thread",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-P4",
+      "main_task_id": "MT-P4",
+      "source_ids": [
+        "SRC-001",
+        "SRC-002"
+      ],
+      "scope": "真实 B1 路径及兼容性验收",
+      "file_scope": [
+        "Web StudioUITests/",
+        "records/WORKSPACE-B1-20260917/B1-RESULTS.md",
+        "README.md",
+        "DESIGN.md",
+        "UX-CONTRACT.md",
+        "premium-ui.json"
+      ],
+      "interface_constraints": [
+        "SPEC.md 为行为合同，ARCHITECTURE.md 为所有权/状态设计",
+        "阶段串行派发；共享文件同一时间只允许一个 coder 写；主线程拥有记录",
+        "P0 已派发修复；P1 需P0工程流程审查，P2/P3需前阶段合同稳定"
+      ],
+      "dependencies": [
+        "IT-P1",
+        "IT-P2",
+        "IT-P3"
+      ],
+      "acceptance": [
+        "MET-P4"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-PREMIUM",
+        "EVD-P4-CLOSURE"
+      ],
+      "owner": "main-thread: final native checks and remaining external/manual acceptance",
+      "status": "in_progress"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-PREP-READY",
+      "path": "records/WORKSPACE-B1-20260917/evidence/readiness.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-PREP"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T05:08:39.741489Z",
+      "sha256": "30b7a83a5db460c0c857d9d4ba13e568a5d43b888fa6e0dc922e80cad5363f4d",
+      "stale_reason": "用户开始执行，Spec升级为B1-SPEC-2；保留准备阶段原始证据"
+    },
+    {
+      "id": "EVD-PREP-AUDIT",
+      "path": "records/WORKSPACE-B1-20260917/evidence/preparation-audit.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-PREP"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T05:09:20.161444Z",
+      "sha256": "027e007df985a45e1926f6841f8c7c6e7136b26fc3c7c56fc43df5da70ef366f",
+      "stale_reason": "用户开始执行，Spec升级为B1-SPEC-2；保留准备阶段原始证据"
+    },
+    {
+      "id": "EVD-P0-STATIC",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p0-reviewed-static.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P0"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T06:42:25.498488+00:00",
+      "sha256": "6ac76e58a2d988506da389ca587ed7aeba35a300165c11921d78d8a4b9d230a1",
+      "stale_reason": "后续原生实现/阶段基线已推进；保留阶段原始结果和源文件hash，不作为B1最终修订的有效验收。"
+    },
+    {
+      "id": "EVD-P0-CORE",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p0-engineering-review.json",
+      "kind": "manual",
+      "supports": [
+        "MET-P0"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T06:42:25.498488+00:00",
+      "sha256": "37ef77e8f83e67dc0655369ad60180dddbca02cedc168df9862d0094207c8119",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:34fa1dc72719ea1ac5b1a5c61723c43e6270fe27f0be6fa8374ebf9c64bcf521:spec:1d1225719bc2824c34278301936a6ea93bb7221f464b9dfbe54f58b1a34f8fac",
+      "spec_version": "B1-SPEC-2",
+      "spec_sha256": "1d1225719bc2824c34278301936a6ea93bb7221f464b9dfbe54f58b1a34f8fac",
+      "stale_reason": "后续原生实现/阶段基线已推进；保留阶段原始结果和源文件hash，不作为B1最终修订的有效验收。"
+    },
+    {
+      "id": "EVD-P1-TESTS",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p1-integration-tests-05.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T07:29:44.824292Z",
+      "sha256": "ad583abb1e74879cb009a7e6e7452f8048f18809f0671ab49c6c03dad47c0b57",
+      "stale_reason": "后续原生实现/阶段基线已推进；保留阶段原始结果和源文件hash，不作为B1最终修订的有效验收。"
+    },
+    {
+      "id": "EVD-P2-FOUNDATION",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p2-foundation-tests-03.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P2"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T08:00:43.439598Z",
+      "sha256": "73cd83673c7a2e1f9f31550c7906cb638fc9a610dad4b394b585913eb94db291",
+      "stale_reason": "Foundation checkpoint source hashes preserved in p2-foundation-review.json; downstream save and question integration now starts. Not full P2 acceptance."
+    },
+    {
+      "id": "EVD-P2C-P3A",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p2c-p3a-tests-03.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T08:29:49.189546Z",
+      "sha256": "e872f219c05418706a71efae7bb181a55433db0a85e322fdb03178ee1a0d87ed",
+      "stale_reason": "Checkpoint hashes in p2c-p3a-review.json. Downstream Registry and native question UI now advancing source; not final product acceptance."
+    },
+    {
+      "id": "EVD-P2-RESTORATION",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p2-restoration-tests-03.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T09:10:19.970849Z",
+      "sha256": "035bb9b724734669d9e310bb8469c6e63812c8b5dee214c1d50281e3dc64743a",
+      "stale_reason": "151-test checkpoint fixed by p2-restoration-review.json; close and native UI implementation continues. Not complete product acceptance."
+    },
+    {
+      "id": "EVD-P2-UI-CLOSE",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p2-ui-close-tests-02.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T09:49:03.736328Z",
+      "sha256": "88cb24117d3889b7c9ee6d67d82656910ab3a33c606d5a1cf1fcae3f070a3745",
+      "stale_reason": "173-test checkpoint fixed by p2-ui-close-review.json; P3 implementation continues. Not native or complete product acceptance."
+    },
+    {
+      "id": "EVD-P3-COPY-CHECKPOINT",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p3-copy-navigation-tests-02.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T14:22:50.028578Z",
+      "sha256": "072dc0ce51252cc887c76cf0c7d09c5811a7ba578c3cd9c35f8e8fffab41abf4",
+      "stale_reason": "后续搜索与来源UI继续修改；本证据仅为固定revision的中间checkpoint。"
+    },
+    {
+      "id": "EVD-P3-SEARCH-SOURCES-CHECKPOINT",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p3-search-sources-tests-02.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T14:48:12.979240Z",
+      "sha256": "0207a315fb54061929aa0e50cf4ddbb698fe53657f1f6d70528ff71656ba7d78",
+      "stale_reason": "230-test frozen checkpoint. Compact layout and launch isolation implementation continues; no final native acceptance."
+    },
+    {
+      "id": "EVD-P3-COMPACT-LAUNCH-CHECKPOINT",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p3-compact-launch-tests-01.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T14:56:54.420674Z",
+      "sha256": "1d9017034b8c280cf87c0325ac6cbda555d2fad9852a3be350baa75fc199e136",
+      "stale_reason": "239-test checkpoint; subsequent terminal actions/localization and native overflow fix in progress."
+    },
+    {
+      "id": "EVD-P3-TERMINAL-UI-MODEL",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p3-terminal-ui-tests-03.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3"
+      ],
+      "status": "stale",
+      "result": "passed",
+      "observed_at": "2026-09-17T15:34:55.324315Z",
+      "sha256": "9877d50d3f08c2da660f6ff0f9d670d06ca3863ac73f8d99a7c0d04991ae2d9d",
+      "stale_reason": "One subsequent SplitResourcePicker accessibility container fix; rerun pending."
+    },
+    {
+      "id": "EVD-P4-FINAL-MODEL",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p4-final-model-tests-02.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3",
+        "MET-P4"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-17T16:13:38.501230Z",
+      "sha256": "c1cfc7f5634bb64ee94ba2589ccde49058f1a5c16b4c113f4937df2922cb6d28"
+    },
+    {
+      "id": "EVD-P4-PREMIUM",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p4-final-premium-audit.execution.json",
+      "kind": "execution",
+      "supports": [
+        "MET-P4"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-17T16:13:22.350400Z",
+      "sha256": "7d968149672bb4827a87246585e1d04a19efe0153f230d29bb1f1de48009205a"
+    },
+    {
+      "id": "EVD-P4-CLOSURE",
+      "path": "records/WORKSPACE-B1-20260917/evidence/p4-final-closure-review.json",
+      "kind": "manual",
+      "supports": [
+        "MET-P1",
+        "MET-P2",
+        "MET-P3",
+        "MET-P4"
+      ],
+      "status": "current",
+      "result": "undetermined",
+      "observed_at": "2026-09-17T16:19:01.121014+00:00",
+      "sha256": "70f5e0d14a97b2131891d312f7702fe66c7ed5345fe88555e1fbf1ccf58d2379",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:17ab7ff5cc9c70a83bb43ade8d7437e2bcf796c44b2a63cef0523133636bbd8d:spec:c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc",
+      "spec_version": "B1-SPEC-2",
+      "spec_sha256": "c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-PREP",
+      "implementation_task_ids": [
+        "IT-PREP"
+      ],
+      "paths": [
+        "records/WORKSPACE-B1-20260917/SPEC.md",
+        "records/WORKSPACE-B1-20260917/ARCHITECTURE.md",
+        "records/WORKSPACE-B1-20260917/ACCEPTANCE.md",
+        "records/WORKSPACE-B1-20260917/handoffs/P0-coder.md",
+        "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md",
+        "records/WORKSPACE-B1-20260917/task-state.json",
+        "records/WORKSPACE-B1-20260917/task-summary.md",
+        "records/WORKSPACE-B1-20260917/work-log.md",
+        "records/WORKSPACE-B1-20260917/evidence/",
+        "records/WORKSPACE-B1-20260917/"
+      ],
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:17ab7ff5cc9c70a83bb43ade8d7437e2bcf796c44b2a63cef0523133636bbd8d:spec:c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc",
+      "status": "reviewed"
+    },
+    {
+      "id": "CHG-P0",
+      "implementation_task_ids": [
+        "IT-P0"
+      ],
+      "paths": [
+        "records/WORKSPACE-B1-20260917/prototype",
+        "records/WORKSPACE-B1-20260917/P0-FLOWS.md",
+        ".playwright-mcp/console-2026-09-17T05-46-16-042Z.log",
+        ".playwright-mcp/page-2026-09-17T05-46-16-385Z.yml"
+      ],
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:17ab7ff5cc9c70a83bb43ade8d7437e2bcf796c44b2a63cef0523133636bbd8d:spec:c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc",
+      "status": "reviewed"
+    },
+    {
+      "id": "CHG-P1",
+      "implementation_task_ids": [
+        "IT-P1"
+      ],
+      "paths": [
+        "Web Studio/WorkspaceSession.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/ContentView.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/WindowLifecycle.swift",
+        "Web Studio/Web_StudioApp.swift",
+        "Web StudioTests/Web_StudioTests.swift",
+        "README.md",
+        "DESIGN.md",
+        "UX-CONTRACT.md",
+        "Web Studio/WorkspaceSplitView.swift",
+        "Web Studio/StartPageView.swift",
+        "Web Studio/AgentViews.swift",
+        "Web Studio/ProviderSettings.swift",
+        "Web StudioTests/AgentControllerTests.swift",
+        "Web StudioTests/ResourceReadTests.swift",
+        "Web Studio/AgentController.swift",
+        "Web StudioTests/WorkspaceOwnershipTests.swift",
+        "Web StudioTests/WorkspaceModelTests.swift"
+      ],
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:17ab7ff5cc9c70a83bb43ade8d7437e2bcf796c44b2a63cef0523133636bbd8d:spec:c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc",
+      "status": "reviewed"
+    },
+    {
+      "id": "CHG-B1-FINAL",
+      "implementation_task_ids": [
+        "IT-P1",
+        "IT-P2",
+        "IT-P3",
+        "IT-P4"
+      ],
+      "paths": [
+        "DESIGN.md",
+        "README.md",
+        "UX-CONTRACT.md",
+        "Web Studio/AgentController.swift",
+        "Web Studio/AgentService.swift",
+        "Web Studio/AgentViews.swift",
+        "Web Studio/ContentView.swift",
+        "Web Studio/NativeResourceHost.swift",
+        "Web Studio/ProviderSettings.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/StartPageView.swift",
+        "Web Studio/StudioDesign.swift",
+        "Web Studio/WebRuntime.swift",
+        "Web Studio/Web_StudioApp.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/WindowLifecycle.swift",
+        "Web Studio/WorkspaceConfiguration.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web Studio/WorkspaceRepository.swift",
+        "Web Studio/WorkspaceSaveController.swift",
+        "Web Studio/WorkspaceSession.swift",
+        "Web Studio/WorkspaceSplitView.swift",
+        "Web StudioTests/AgentControllerTests.swift",
+        "Web StudioTests/ResourceReadTests.swift",
+        "Web StudioTests/Web_StudioTests.swift",
+        "Web StudioTests/WorkspaceClosePreparationTests.swift",
+        "Web StudioTests/WorkspaceCompactTests.swift",
+        "Web StudioTests/WorkspaceCopyTests.swift",
+        "Web StudioTests/WorkspaceIntegrationTests.swift",
+        "Web StudioTests/WorkspaceLaunchOptionsTests.swift",
+        "Web StudioTests/WorkspaceModelTests.swift",
+        "Web StudioTests/WorkspaceNavigationTests.swift",
+        "Web StudioTests/WorkspaceOwnershipTests.swift",
+        "Web StudioTests/WorkspacePersistenceTests.swift",
+        "Web StudioTests/WorkspaceQuestionTests.swift",
+        "Web StudioTests/WorkspaceResourceLifecycleTests.swift",
+        "Web StudioTests/WorkspaceRestorationTests.swift",
+        "Web StudioTests/WorkspaceSaveControllerTests.swift",
+        "Web StudioTests/WorkspaceTerminalActionsTests.swift",
+        "Web StudioUITests/",
+        "premium-ui.json",
+        "records/WORKSPACE-B1-20260917/B1-RESULTS.md"
+      ],
+      "evidence_ids": [
+        "EVD-P4-FINAL-MODEL",
+        "EVD-P4-CLOSURE"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:17ab7ff5cc9c70a83bb43ade8d7437e2bcf796c44b2a63cef0523133636bbd8d:spec:c7618fa4b80c85493af8abe8b821922cca274973d5ed8ff88d4f5011b24ca3dc",
+      "status": "reviewed"
+    }
+  ],
+  "overall_acceptance": {
+    "metric_ids": [
+      "MET-PREP",
+      "MET-P0",
+      "MET-P1",
+      "MET-P2",
+      "MET-P3",
+      "MET-P4"
+    ],
+    "evidence_ids": [
+      "EVD-P4-FINAL-MODEL",
+      "EVD-P4-CLOSURE"
+    ],
+    "status": "undetermined"
+  },
+  "baseline": {
+    "git_ref": "ced7edc25bd6ab6434712ce4da0b4bd16afad499",
+    "worktree_status": "clean",
+    "ownership": "任务相关产品源码干净；既有 dirty/untracked 全部列为foreign。输入附件复制为本任务独立冻结文件，不修改原研究记录。",
+    "foreign_paths": [
+      "output/terminal-vt-migration/ACCEPTANCE.md",
+      "output/terminal-vt-migration/M2-CURRENT-RESULTS.md",
+      "output/terminal-vt-migration/MANUAL-ACCEPTANCE.md",
+      "output/terminal-vt-migration/SKILL-OBSERVATIONS.md",
+      "output/terminal-vt-migration/STATUS.md",
+      "output/terminal-vt-migration/evidence/m2-resume-results.md",
+      "output/terminal-vt-migration/task-state.json",
+      "output/terminal-vt-migration/task-summary.md",
+      "output/terminal-vt-migration/work-log.md",
+      "PERFORMANCE-PLAN.md",
+      "default.profraw",
+      "output/interaction-research-20260917/",
+      "output/terminal-vt-migration/evidence/m2-followup-address.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-appearance-restored.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-before.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-cancel-processes.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-cancel.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-confirm.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-dialog.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-result.json",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-dark-single.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-dark-single.png",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single.png",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-split.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-split.png",
+      "output/terminal-vt-migration/evidence/m2-followup-final-appearance.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-final-cleanup.json",
+      "output/terminal-vt-migration/evidence/m2-followup-final-safe-scene.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-focus-return.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-font-grid-main-v2.json",
+      "output/terminal-vt-migration/evidence/m2-followup-font-grid-main.json",
+      "output/terminal-vt-migration/evidence/m2-followup-gui-results.json",
+      "output/terminal-vt-migration/evidence/m2-followup-hidden-processes.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-initial-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-followup-initial.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-palette.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-pending-files.json",
+      "output/terminal-vt-migration/evidence/m2-followup-probe-tests.json",
+      "output/terminal-vt-migration/evidence/m2-followup-record-review-v2.json",
+      "output/terminal-vt-migration/evidence/m2-followup-record-review.json",
+      "output/terminal-vt-migration/evidence/m2-followup-regression-impact.json",
+      "output/terminal-vt-migration/evidence/m2-followup-resource-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-resource-restored.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-skill-additional.md",
+      "output/terminal-vt-migration/evidence/m2-followup-user-receipts.json",
+      "output/terminal-vt-migration/evidence/m2-followup-version-check.json",
+      "output/terminal-vt-migration/evidence/m2-followup-voiceover-pending.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-output-done.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-ready.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-scroll-up.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-output-done.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-output-done.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-ready.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-ready.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-scroll-up.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-trace-end.ax.txt",
+      "output/terminal-vt-migration/evidence/performance-alignment-20260916/",
+      "output/terminal-vt-migration/evidence/performance-investigation-20260916/",
+      "output/terminal-vt-migration/evidence/performance-normalized-20260916/",
+      "output/test-releases/",
+      "scripts/__pycache__/",
+      "scripts/app-performance-baseline.py",
+      "scripts/terminal-font-frame-equivalence.swift",
+      "scripts/terminal-m2-concurrent-test.py",
+      "scripts/terminal-m2-concurrent.py",
+      "scripts/terminal-m2-investigate-test.py",
+      "scripts/terminal-m2-investigate.py",
+      "scripts/terminal-m2-matrix-test.py",
+      "scripts/terminal-m2-matrix.py",
+      "scripts/terminal-m2-memory-test.py",
+      "scripts/terminal-m2-memory.py",
+      "scripts/terminal-m2-profile-test.py",
+      "scripts/terminal-m2-profile.py",
+      "scripts/terminal-performance-probe-build.sh",
+      "scripts/terminal-performance-probe-prepare.sh",
+      "scripts/terminal-performance-probe-scenarios-test.sh",
+      "scripts/terminal-performance-probe-scenarios.sh",
+      "scripts/terminal-performance-probe-test.sh",
+      "scripts/terminal-performance-probe.swift",
+      "scripts/terminal-unicode-diagnostic.swift",
+      "scripts/test-app-performance-baseline.py",
+      "scripts/test-terminal-font-frame-equivalence.sh",
+      "scripts/test-terminal-unicode-diagnostic.sh",
+      "records/PERF-20260917/"
+    ],
+    "prepared_at": "2026-09-17T05:03:10.080351+00:00"
+  },
+  "binding": {
+    "receipt_paths": [
+      "records/WORKSPACE-B1-20260917/evidence/baseline.json",
+      "records/WORKSPACE-B1-20260917/evidence/initial-status.txt",
+      "records/WORKSPACE-B1-20260917/evidence/source-baseline.tar.gz",
+      "records/WORKSPACE-B1-20260917/evidence/readiness.execution.json",
+      "records/WORKSPACE-B1-20260917/evidence/preparation-audit.execution.json",
+      "records/WORKSPACE-B1-20260917/evidence/final-record.execution.json",
+      "records/WORKSPACE-B1-20260917/evidence/preparation-state.json",
+      "records/WORKSPACE-B1-20260917/evidence/preparation-SPEC.md"
+    ]
+  },
+  "authorization": {
+    "commit": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "push": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "merge": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "deploy": {
+      "status": "not_authorized",
+      "source_id": null
+    }
+  },
+  "delivery": {
+    "local_validation": "unavailable",
+    "remote_ci": "not_started",
+    "remote_ci_revision": null
+  },
+  "actions": [],
+  "decisions": [
+    {
+      "id": "DEC-P1-START",
+      "source_ids": [
+        "SRC-003"
+      ],
+      "summary": "主线程已核验P0核心离线流程；依ACCEPTANCE允许在最终用户可理解性验收前继续P1，MET-P0仍undetermined，不免除产品要求。",
+      "status": "accepted"
+    },
+    {
+      "id": "DEC-P2-START",
+      "source_ids": [
+        "SRC-003"
+      ],
+      "summary": "P1所有权/关闭核心已审查，94项模型与集成测试通过；沿既有授权进入P2。P1真实GUI/进程场景仍undetermined，最终P4统一验收，不能把P1工程checkpoint等同产品通过。",
+      "status": "accepted"
+    }
+  ],
+  "hypotheses": [],
+  "recovery_strategy": {
+    "trigger": "恢复实施时基线漂移、产品门槛失败或保存格式异常",
+    "steps": [
+      "核对基线/Spec/diff和既有记录，不覆盖无关修改",
+      "只撤回本任务已审查改动；保留配置原件、备份和失败证据",
+      "源码或Spec变动后重跑受影响检查，旧证据标stale"
+    ],
+    "owner": "main-thread"
+  }
+}

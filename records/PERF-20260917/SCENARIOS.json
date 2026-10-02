@@ -1,0 +1,384 @@
+{
+  "schema": "web-studio.performance-scenarios.v1",
+  "task_id": "PERF-20260917",
+  "measurement_policy": {
+    "environment": "Release arm64, coverage/sanitizer off; same host, performance and stress runs serial",
+    "measurement_start": "Each scenario defines its own boundary; CPU windows and command submission must not be labelled presentation.",
+    "measurement_end": "CPU uses first/last valid process counter samples; GUI readiness/completion needs separate observed receipts.",
+    "missing_data": null,
+    "ui_observation": "backend, scenario, resource_count, and visibility are caller observations and remain unverified unless separate GUI evidence exists",
+    "budget_status": "proposed; absolute user-operation budgets remain null"
+  },
+  "scenarios": [
+    {
+      "id": "W0-startup-default",
+      "workload": "cold and warm process startup",
+      "backend": "GhosttyKit",
+      "resource_count": 1,
+      "visibility": "visible",
+      "repetitions": 6,
+      "measurement_start": "process launch receipt",
+      "measurement_end": "first interactive receipt",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "reliable p95 requires more samples",
+        "no launch automation in baseline sampler"
+      ]
+    },
+    {
+      "id": "W0-startup-vt",
+      "workload": "cold and warm process startup",
+      "backend": "VT",
+      "resource_count": 1,
+      "visibility": "visible",
+      "repetitions": 6,
+      "measurement_start": "process launch receipt",
+      "measurement_end": "first interactive receipt",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "VT build/runtime identity not supplied"
+      ]
+    },
+    {
+      "id": "W0-ui-switching",
+      "workload": "100 resource switches and Cmd-L/Cmd-K",
+      "backend": "GhosttyKit",
+      "resource_count": "1/10/30",
+      "visibility": "visible",
+      "repetitions": 6,
+      "measurement_start": "first action receipt",
+      "measurement_end": "last action receipt",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "body updates and hitch data require GUI/instrument evidence"
+      ]
+    },
+    {
+      "id": "W0-web-scale",
+      "workload": "static, dynamic, and large DOM pages",
+      "backend": "GhosttyKit",
+      "resource_count": "1/10/30",
+      "visibility": "foreground/background/inactive",
+      "repetitions": 6,
+      "measurement_start": "load-ready receipt",
+      "measurement_end": "idle-window end",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "screenshot/GPU/wakeup counters unavailable to sampler"
+      ]
+    },
+    {
+      "id": "W0-terminal-scenes",
+      "workload": "existing eight terminal scenes from terminal-m2 helpers",
+      "backend": "GhosttyKit/VT",
+      "resource_count": "1/4/8",
+      "visibility": "visible/hidden",
+      "repetitions": 6,
+      "measurement_start": "scene-ready receipt",
+      "measurement_end": "scene completion receipt",
+      "status": "partial",
+      "results": {
+        "app_control_mixed_windows": 1,
+        "completed_pairs": 0,
+        "evidence": "evidence/app-mixed-incomplete"
+      },
+      "gaps": [
+        "input-to-present and GPU completion are unmeasured",
+        "AX observation cost must be recorded separately"
+      ]
+    },
+    {
+      "id": "W0-lifecycle",
+      "workload": "open-close cycles and 60 minute mixed operation",
+      "backend": "GhosttyKit",
+      "resource_count": "Web 1/10/30; terminals 1/4/8",
+      "visibility": "visible/background",
+      "repetitions": {
+        "open_close_cycles": 30,
+        "mixed_duration_minutes": 60
+      },
+      "measurement_start": "cycle-ready receipt",
+      "measurement_end": "fixed observation end",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "object lifetime, file descriptors, and child attribution require dedicated evidence"
+      ]
+    },
+    {
+      "id": "W1-font-cache",
+      "workload": "frame-local four-trait font reuse paired control/experiment",
+      "backend": "VT",
+      "resource_count": 1,
+      "visibility": "visible",
+      "repetitions": 6,
+      "measurement_start": "render-scene-ready receipt",
+      "measurement_end": "scene completion receipt",
+      "status": "partial",
+      "results": {
+        "offscreen_pairs_completed": 6,
+        "raw_offscreen_records": 288,
+        "app_pairs_completed": 0,
+        "app_control_windows": 1,
+        "app_candidate_windows": 0,
+        "adoption": "undetermined",
+        "evidence": "evidence/offscreen-results.json"
+      },
+      "gaps": [
+        "full App eight-scene matrix interrupted by GUI ready timeout",
+        "real IME/accessibility/selection/hidden-restore/resource pressure remain unverified"
+      ]
+    },
+    {
+      "id": "W2-web-propagation",
+      "workload": "10/30 page load and background progress propagation",
+      "backend": "GhosttyKit",
+      "resource_count": "10/30",
+      "visibility": "foreground/background",
+      "repetitions": 6,
+      "measurement_start": "load-ready receipt",
+      "measurement_end": "propagation-window end",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "body update cause and effect unmeasured"
+      ]
+    },
+    {
+      "id": "W3-hidden-terminal",
+      "workload": "hidden continuous output and directory update comparison",
+      "backend": "GhosttyKit/VT",
+      "resource_count": "1/4/8",
+      "visibility": "hidden/visible",
+      "repetitions": 6,
+      "measurement_start": "output-ready receipt",
+      "measurement_end": "fixed output window end",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "snapshot/allocation counters absent"
+      ]
+    },
+    {
+      "id": "W4-memory",
+      "workload": "1/4/8 terminal and resource residency trend",
+      "backend": "GhosttyKit/VT",
+      "resource_count": "1/4/8",
+      "visibility": "visible/background",
+      "repetitions": 6,
+      "measurement_start": "resource-ready receipt",
+      "measurement_end": "fixed residency end",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "RSS is discrete and not a peak; footprint attribution may be unavailable"
+      ]
+    },
+    {
+      "id": "W5-agent",
+      "workload": "1/4/10 resource preview and 100/500 message conversations",
+      "backend": "GhosttyKit",
+      "resource_count": "1/4/10",
+      "visibility": "visible",
+      "repetitions": 6,
+      "measurement_start": "immediately before preview/read request, encoding, CLI launch or composer action; measure these phases separately",
+      "measurement_end": "preview or conversation completion receipt",
+      "status": "not_run",
+      "results": null,
+      "gaps": [
+        "remote/model wait and local rendering need separate counters",
+        "slow/failed page, oversized DOM, cancel/retry/new-chat fixtures and local/remote boundaries not instrumented"
+      ]
+    },
+    {
+      "id": "W1-app-ascii",
+      "workload": "ASCII 10000 lines",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 5s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios ascii",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-chinese",
+      "workload": "Chinese 10000 lines",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 5s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios chinese",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-mixed",
+      "workload": "mixed Unicode 10000 lines",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 5s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios mixed",
+      "status": "incomplete",
+      "results": {
+        "control_windows": 1,
+        "candidate_windows": 0,
+        "completed_pairs": 0
+      },
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-visible-idle",
+      "workload": "visible terminal idle",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 20s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios visible-idle",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-hidden-idle",
+      "workload": "hidden terminal idle",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 20s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios hidden-idle",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-history-scroll",
+      "workload": "10000-line aligned history scroll",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 20s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios history-scroll",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-resize",
+      "workload": "1400 to 1176pt width alternating six times",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 20s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios resize",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W1-app-concurrent",
+      "workload": "20-second fixture: 20 inputs, 200 outputs, 20 echoes",
+      "measurement_start": "after actual 134x45 grid/readiness and two fixture warmups; first process sample",
+      "measurement_end": "last process sample in fixed 23s envelope; separate final content/UI receipt",
+      "repetitions": "six alternating pairs; cross-session replication of key benefit",
+      "entrypoint": "scripts/terminal-m2-matrix.py --scenarios concurrent",
+      "status": "not_run",
+      "results": null,
+      "controls": [
+        "same build/font/grid/theme/history/observation protocol",
+        "high- and low-AX frequency protocols separate for concurrent"
+      ],
+      "gaps": [
+        "input-to-present is unmeasured",
+        "GUI protocol currently blocked"
+      ]
+    },
+    {
+      "id": "W0-default-sampler-pilot",
+      "workload": "fresh process, 5s dwell then 20s attachment; GUI readiness not verified",
+      "measurement_start": "first validated process sample",
+      "measurement_end": "last validated process sample at requested 20s deadline",
+      "repetitions": 1,
+      "status": "tool_integration_passed",
+      "results": {
+        "cpu_s": 0.02639966666666671,
+        "samples": 80,
+        "file": "evidence/default-pilot.json",
+        "comparable_baseline": false
+      },
+      "gaps": [
+        "not a W0 accepted scenario baseline",
+        "no resource-count/GUI-readiness verification",
+        "not backend performance ranking"
+      ]
+    },
+    {
+      "id": "W0-vt-control-sampler-pilot",
+      "workload": "fresh process, 5s dwell then 20s attachment; GUI readiness not verified",
+      "measurement_start": "first validated process sample",
+      "measurement_end": "last validated process sample at requested 20s deadline",
+      "repetitions": 1,
+      "status": "tool_integration_passed",
+      "results": {
+        "cpu_s": 0.6072045833333334,
+        "samples": 80,
+        "file": "evidence/vt-control-pilot.json",
+        "comparable_baseline": false
+      },
+      "gaps": [
+        "not a W0 accepted scenario baseline",
+        "no resource-count/GUI-readiness verification",
+        "not backend performance ranking"
+      ]
+    }
+  ]
+}

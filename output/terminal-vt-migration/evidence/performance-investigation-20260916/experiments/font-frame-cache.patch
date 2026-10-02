@@ -1,0 +1,33 @@
+diff --git a/Web Studio/TerminalMetalRenderer.swift b/Web Studio/TerminalMetalRenderer.swift
+index a57676c..84e0852 100644
+--- a/Web Studio/TerminalMetalRenderer.swift	
++++ b/Web Studio/TerminalMetalRenderer.swift	
+@@ -244,9 +244,18 @@
+         if !permitHandedOff { inflightGate.signal() }
+       }
+       let scale = max(CGFloat(1), geometry.backingScale)
++      // Keep font resolution local to this render; misses retain font(for:)'s exact behavior.
++      var frameFonts: [Int: NSFont] = [:]
++      func cachedFont(for cell: VTCell) -> NSFont {
++        let key = (cell.bold ? 1 : 0) | (cell.italic ? 2 : 0)
++        if let cached = frameFonts[key] { return cached }
++        let resolved = font(for: cell)
++        frameFonts[key] = resolved
++        return resolved
++      }
+       var requests: [String: (key: String, text: String, font: NSFont, scale: CGFloat)] = [:]
+       for cell in frame.cells where !cell.text.isEmpty && cell.wide.rawValue != 2 && cell.wide.rawValue != 3 {
+-        let f = font(for: cell)
++        let f = cachedFont(for: cell)
+         let key = "\(f.fontName)|\(f.pointSize)|\(scale)|\(cell.text)"
+         requests[key] = (key, cell.text, f, scale)
+       }
+@@ -355,7 +364,7 @@
+         if cell.hidden { fg = bg }
+         if cell.selected { bg = theme.selection }
+         if i == cursorCell { swap(&fg, &bg) }
+-        let f = font(for: cell)
++        let f = cachedFont(for: cell)
+         let key = "\(f.fontName)|\(f.pointSize)|\(scale)|\(cell.text)"
+         let baseline = iy + Float(ry) * ch + Float(geometry.baseline) * Float(scale)
+         if !cell.hidden && cell.wide.rawValue != 2 && cell.wide.rawValue != 3,

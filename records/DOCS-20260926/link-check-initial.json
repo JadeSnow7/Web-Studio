@@ -1,0 +1,74 @@
+[
+  {
+    "file": "output/ssh-passwordless-2026-09-13.md",
+    "target": "/private/tmp/web-studio-ssh-auth-0913/baseline.log"
+  },
+  {
+    "file": "output/ssh-passwordless-2026-09-13.md",
+    "target": "/private/tmp/web-studio-ssh-auth-0913/terminal-tests.log"
+  },
+  {
+    "file": "output/ssh-passwordless-2026-09-13.md",
+    "target": "/private/tmp/web-studio-ssh-auth-0913/terminal.xcresult"
+  },
+  {
+    "file": "output/ssh-passwordless-2026-09-13.md",
+    "target": "/private/tmp/web-studio-ssh-auth-0913/entitlements.plist"
+  },
+  {
+    "file": "output/ssh-passwordless-2026-09-13.md",
+    "target": "/private/tmp/web-studio-ssh-auth-0913/source-sha256.txt"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/sandbox-cached.log"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/sandbox-cached.xcresult"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/sandbox-entitlements.plist"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/ui-entitlements.plist"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/ui-process-before.txt"
+  },
+  {
+    "file": "output/terminal-automation-2026-09-13.md",
+    "target": "/private/tmp/web-studio-terminal-0913/ui-process-after.json"
+  },
+  {
+    "file": "output/codex-cli/acceptance.md",
+    "target": "/private/tmp/web-studio-codex-acceptance/unit-tests.log"
+  },
+  {
+    "file": "output/codex-cli/acceptance.md",
+    "target": "/private/tmp/web-studio-codex-acceptance/ui-tests.log"
+  },
+  {
+    "file": "output/codex-cli/acceptance.md",
+    "target": "/private/tmp/web-studio-codex-acceptance/default-build.log"
+  },
+  {
+    "file": "output/codex-cli/acceptance.md",
+    "target": "/private/tmp/web-studio-codex-acceptance/cancel-process-check.json"
+  },
+  {
+    "file": "output/codex-cli/acceptance.md",
+    "target": "/private/tmp/web-studio-codex-acceptance/premium-audit.json"
+  },
+  {
+    "file": "STATUS.md",
+    "target": "records/DOCS-20260926/REVIEW.md"
+  },
+  {
+    "file": "DOCUMENTATION.md",
+    "target": "records/DOCS-20260926/REVIEW.md"
+  }
+]

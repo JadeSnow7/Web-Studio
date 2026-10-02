@@ -1,0 +1,35 @@
+diff --git a/Web Studio/StudioVTCore.c b/Web Studio/StudioVTCore.c
+index 47d4823..d1c0ea8 100644
+--- a/Web Studio/StudioVTCore.c	
++++ b/Web Studio/StudioVTCore.c	
+@@ -69,6 +69,10 @@ StudioVT *studio_vt_create(uint16_t cols, uint16_t rows, uint32_t cw, uint32_t c
+       ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_WRITE_PTY, ctx->write_callback) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
+   GhosttyTerminalModeConfig grapheme = { .mode = GHOSTTY_MODE_GRAPHEME_CLUSTER, .value = true };
+   if (ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_MODE_DEFAULT, &grapheme) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
++  // Byte-capped history like the legacy GhosttyKit backend (Ghostty's scrollback-limit default, 10 MB per terminal).
++  // Without it libghostty-vt keeps ~10 KB, i.e. only one or two 353-row pages at 134 columns.
++  size_t scrollback_bytes = 10000000;
++  if (ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_SCROLLBACK_MAX_BYTES, &scrollback_bytes) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
+   return ctx;
+ }
+ 
+diff --git a/scripts/vt-core-test.c b/scripts/vt-core-test.c
+index 209851d..7a12bc1 100644
+--- a/scripts/vt-core-test.c
++++ b/scripts/vt-core-test.c
+@@ -95,6 +95,15 @@ int main(void) {
+   for (size_t i=0;i<8;i++) studio_vt_feed(history,(const uint8_t*)"x\r\n",3);
+   studio_vt_feed(history,(const uint8_t*)"NEW_VISIBLE_TOKEN",17);
+   StudioVTSnapshot hs={.size=sizeof(hs)}; assert(studio_vt_snapshot(history,&hs)==GHOSTTY_SUCCESS && !contains(hs.viewport_text,hs.viewport_text_len,"OLD_HISTORY_TOKEN") && contains(hs.viewport_text,hs.viewport_text_len,"NEW_VISIBLE_TOKEN")); studio_vt_snapshot_free(&hs); studio_vt_free(history);
++  // Scrollback is capped by bytes (10 MB, the legacy GhosttyKit default): 12000 lines of 120 ASCII columns at 134 columns
++  // (~1.16 KB/row) keep thousands of rows yet are still pruned. libghostty prunes in ~353-row pages, hence the wide bounds.
++  StudioVT *deep = studio_vt_create(134, 45, 8, 16, NULL, NULL); assert(deep);
++  char deep_line[122]; memset(deep_line, 'a', 120); deep_line[120] = '\r'; deep_line[121] = '\n';
++  for (size_t i=0;i<12000;i++) studio_vt_feed(deep,(const uint8_t*)deep_line,sizeof(deep_line));
++  StudioVTSnapshot ds={.size=sizeof(ds)}; assert(studio_vt_snapshot(deep,&ds)==GHOSTTY_SUCCESS);
++  fprintf(stderr, "scrollback after 12000 lines: total rows=%llu\n", (unsigned long long)ds.scrollbar.total);
++  assert(ds.scrollbar.total >= 7000 && ds.scrollbar.total < 12000);
++  studio_vt_snapshot_free(&ds); studio_vt_free(deep);
+   studio_vt_free(vt);
+   StudioVT *long_vt = studio_vt_create(400, 2, 8, 16, NULL, NULL); assert(long_vt);
+   uint8_t long_text[450]; for (size_t i=0;i<150;i++) { long_text[i*3]='e'; long_text[i*3+1]=0xcc; long_text[i*3+2]=0x81; }

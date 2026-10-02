@@ -1,0 +1,5 @@
+# sha256	bytes	path-relative-to-this-directory
+8341bef7c2257290cce071a8cbf381bdad1fe37972d8db6dc8e74c1cb88bd592	14597	data/baseline-gates-at-HEAD.json
+0745c69fc1bdcf1d12eeba181c0d9671351afefebceb2692d7f94394b9439a3d	43080	data/baseline-results-and-noise-floor.json
+c2a8d181824fb95d86a1c40c23a6b8398eaa91f2768f5113338708a76c002e7d	69913	data/bench-compare-summary.json
+752f8c944d14c4eb78898aa9ed2a1244927175e0df6b595c307dda3c6a8253f7	352	data/final-gates-summary.txt

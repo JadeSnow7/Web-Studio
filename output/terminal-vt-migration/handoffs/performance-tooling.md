@@ -1,5 +1,7 @@
 # 固定负载与进程采样合同
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的派发约束与交接记录，不是当前待执行清单。当前实现、后续修复和验收缺口见 [状态总览](../../../STATUS.md)。
+
 所有者 coder；你不是唯一执行者，不撤销其他修改。仅可写 `scripts/terminal-benchmark.py`、`scripts/test-terminal-benchmark.py`、`output/terminal-vt-migration/evidence/performance-tooling/`。主线程维护 STATUS、task-state、work-log。禁止改 App 源码、skill 或生产默认。
 
 目标：为同一机器的新旧真实 App 提供可复跑的终端负载和原始进程采样，不把工具自测当性能验收。

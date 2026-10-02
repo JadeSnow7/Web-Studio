@@ -1,5 +1,7 @@
 # Seamless toolbar background — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 The root backdrop Group now ignores only the top container safe area inside the background builder. Both the native effect and opaque Reduce Transparency fallback extend behind the toolbar. Foreground content keeps its original safe-area layout; native toolbar/background suppression and window lifecycle are unchanged.
 
 Final Debug arm64 build passed (build.log). git diff --check passed. Reviewed final source diff: view background scope only, plus design documentation.

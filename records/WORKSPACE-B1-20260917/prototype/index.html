@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Web Studio · 工作空间交互原型</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="toolbar">
+      <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="brand">Web Studio<small>交互原型 · 全部模拟</small></div>
+      <button class="workspace-select" id="workspaceMenu" aria-haspopup="dialog"><span class="dot"></span><span id="activeName">临时空间</span><span>⌄</span></button>
+      <button class="btn" id="saveSpace">保存为工作空间</button>
+      <div class="toolbar-spacer"></div>
+      <button class="btn" id="layoutBtn">并排</button><button class="btn" id="aiToggle">AI</button><button class="btn" id="simulateSaveFailure">模拟保存失败</button><button class="btn" id="restartBtn">模拟重启</button>
+      <span class="simulate">交互原型 · 运行、保存与重启均为模拟</span>
+    </header>
+    <main class="shell">
+      <aside class="sidebar"><div class="side-head"><span>工作空间</span><button id="newSpace" aria-label="新建工作空间">＋</button></div><div id="spaceList"></div><div class="side-head"><span>本空间资源</span></div><div id="resourceList"></div><div class="resource-actions"><button class="add-resource" id="addWeb">＋ 新网页</button><button class="add-resource" id="addTerminal">＋ 新终端</button><button class="add-resource" id="addSSH">＋ SSH 连接</button></div></aside>
+      <section class="content"><div class="content-bar"><div class="crumb">工作空间 / <strong id="crumbName">临时空间</strong></div><div class="actions"><span id="saveState" class="save-state">临时空间 · 未保存</span><button class="btn" id="archiveBtn">归档</button><button class="btn danger" id="closeBtn">关闭空间</button><button class="btn danger" id="closeWindowBtn">关闭窗口</button></div></div><div class="mode-switcher" role="tablist" aria-label="面板切换"><button class="active" data-mode="content">内容</button><button data-mode="ai">AI</button></div><div class="workspace" id="workspaceView"></div></section>
+      <aside class="inspector" id="inspector"><div class="inspector-head"><h2>AI 问答</h2><span class="sim-pill">模拟 Provider</span></div><p class="notice">问答只保留至关闭空间或退出应用。每次发送只携带当前问题和明确预览的快照。</p><div class="tabs" role="tablist"><button class="active" data-mode="content">资料</button><button data-mode="ai">AI</button></div><div id="aiView"></div></aside>
+    </main>
+  </div>
+  <div class="modal-wrap" id="modalWrap"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><div id="modalBody"></div><div class="modal-actions" id="modalActions"></div></div></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+--- a/Web Studio/TerminalVTBackend.swift	
++++ b/Web Studio/TerminalVTBackend.swift	
+@@ -43,6 +43,8 @@
+     private var started = false
+     private var closed = false
+     private var inOutput = false
++    private var pwdStale = false
++    private var lastPwd = ""
+     private let publishDeferred = Atomic<Bool>(false)
+     public var hasUndrainedFrame: (() -> Bool)?
+     public var onStart: ((Bool, String?) -> Void)?
+@@ -50,6 +52,7 @@
+     public var onError: ((String) -> Void)?
+     public var onOutput: ((Data) -> Void)?
+     public var onFrame: ((VTFrame) -> Void)?
++    public var onDirectory: ((String) -> Void)?
+ 
+     public init(columns: Int, rows: Int) {
+       core = TerminalVTCore(columns: columns, rows: rows)
+@@ -157,6 +160,7 @@
+       onOutput?(data)
+       inOutput = true
+       core.feed(data)
++      pwdStale = true
+       let reply = core.takeQueryResponses()
+       if !reply.isEmpty { _ = transport.write(reply) }
+       inOutput = false
+@@ -190,7 +194,16 @@
+       }
+       guard let frame = core.snapshot() else { return }
+       onFrame?(frame)
++      notifyDirectory()
+     }
++    /// Reads the cwd only after new input, and reports it only when the raw OSC 7 string actually changed.
++    private func notifyDirectory() {
++      guard pwdStale, let notify = onDirectory else { return }
++      pwdStale = false
++      guard let raw = core.pwd(), raw != lastPwd else { return }
++      lastPwd = raw
++      notify(raw)
++    }
+     private func finish(_ result: TerminalPTYTransport.Exit) {
+       publishFrame(force: true)
+       closed = true
+--- a/Web Studio/TerminalVTSession.swift	
++++ b/Web Studio/TerminalVTSession.swift	
+@@ -12,6 +12,12 @@
+     func hasValue() -> Bool { lock.lock(); defer { lock.unlock() }; return latest != nil }
+ }
+ 
++private final class VTDirectoryMailbox: @unchecked Sendable {
++    private let lock = NSLock(); private var latest: String?; private var scheduled = false
++    func offer(_ value: String) -> Bool { lock.lock(); defer { lock.unlock() }; latest = value; if scheduled { return false }; scheduled = true; return true }
++    func take() -> String? { lock.lock(); defer { lock.unlock() }; let value = latest; latest = nil; scheduled = false; return value }
++}
++
+ @MainActor
+ final class TerminalSession: NSObject, ObservableObject {
+     enum State: Equatable { case idle, starting, running, exited(Int32?), failed(String), interrupted }
+@@ -25,6 +31,8 @@
+     private var closeRequested = false
+     private var frame: VTFrame?
+     private let frameMailbox = VTFrameMailbox()
++    private let directoryMailbox = VTDirectoryMailbox()
++    private var lastRawDirectory: String?
+     var onEncodedKeyForTesting: ((GhosttyKey, GhosttyMods, GhosttyKeyAction, String) -> Void)?
+ 
+     init(resourceID: UUID, frame: CGRect = .zero) {
+@@ -38,6 +46,7 @@
+         backend.onError = { [weak self] message in Task { @MainActor in self?.failed(message) } }
+         backend.onExit = { [weak self] exit in Task { @MainActor in self?.exited(exit.code) } }
+         backend.hasUndrainedFrame = { [frameMailbox] in frameMailbox.hasValue() }
++        backend.onDirectory = { [weak self] raw in guard let self, self.directoryMailbox.offer(raw) else { return }; Task { @MainActor in self.applyDirectory() } }
+     }
+     func setKnownDirectory(_ directory: String) { if state == .idle { knownDirectory = directory } }
+     func retainSecurityScope(_ url: URL) { if url.startAccessingSecurityScopedResource() { securityScopedURL = url } }
+@@ -66,7 +75,7 @@
+     }
+     private func started(_ ok: Bool, _ message: String?) { guard state == .starting else { return }; if ok { state = closeRequested ? .interrupted : .running } else { failed(message ?? "Unable to start terminal") } }
+     private func failed(_ message: String) { state = .failed(message) }
+-    private func exited(_ code: Int32?) { drainFrames(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
++    private func exited(_ code: Int32?) { drainFrames(); applyDirectory(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
+     private func normalizedDirectory(_ value: String) -> String? {
+         guard !value.isEmpty, value.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
+         if !value.lowercased().hasPrefix("file://") && !value.hasPrefix("/") { return nil }
+@@ -74,7 +83,8 @@
+         guard url.isFileURL, url.path.hasPrefix("/"), url.path.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
+         return url.standardizedFileURL.path
+     }
+-    private func drainFrames() { if let latest = frameMailbox.take() { backend.frameDrained(); frame = latest; if let pwd = backend.pwd(), let directory = normalizedDirectory(pwd) { knownDirectory = directory }; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
++    private func applyDirectory() { guard let raw = directoryMailbox.take(), raw != lastRawDirectory else { return }; lastRawDirectory = raw; if let directory = normalizedDirectory(raw), directory != knownDirectory { knownDirectory = directory } }
++    private func drainFrames() { if let latest = frameMailbox.take() { backend.frameDrained(); frame = latest; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
+     func reportRenderError(_ message: String) { if state == .running { state = .failed(message) } }
+     func sendRaw(_ data: Data) { _ = backend.sendRaw(data) }
+     func send(data: Data) { sendRaw(data) }
+--- a/Web Studio/TerminalVTCore.swift	
++++ b/Web Studio/TerminalVTCore.swift	
+@@ -62,7 +62,7 @@
+     private var handle: OpaquePointer?
+     private let replies = ReplyBuffer()
+     private var generation: UInt64 = 0
+-    private var snapshotCount = 0
++    private var snapshotCount = 0, pwdReadCount = 0
+     private static let replyCallback: StudioVTReplyFn = { bytes, len, userdata in
+       guard let userdata, let bytes else { return }
+       let buffer = Unmanaged<ReplyBuffer>.fromOpaque(userdata).takeUnretainedValue()
+@@ -199,6 +199,7 @@
+         scrollbar: bar, snapshotTruncated: raw.viewport_text_truncated)
+     }
+     public func snapshotCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return snapshotCount }
++    public func pwdReadCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return pwdReadCount }
+     public func scroll(rows: Int) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_delta(handle, Int(rows)) }
+     public func scroll(toOffset offset: UInt64) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_to(handle, Int(offset)) }
+     public func scrollToBottom() { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_bottom(handle) }
+@@ -221,6 +222,6 @@
+     public func focus(_ focused: Bool) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_focus(handle, focused, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
+     public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; let result = studio_vt_mouse(handle, Int32(action), Int32(button), modifiers, xPixels, yPixels, UInt32(clamping: geometry.screenWidth), UInt32(clamping: geometry.screenHeight), UInt32(clamping: geometry.cellWidth), UInt32(clamping: geometry.cellHeight), UInt32(clamping: geometry.paddingTop), UInt32(clamping: geometry.paddingBottom), UInt32(clamping: geometry.paddingLeft), UInt32(clamping: geometry.paddingRight), &p, &n); guard result == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
+     public func mouseReporting() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_mouse_reporting(handle) }
+-    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
++    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; pwdReadCount += 1; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
+   }
+ #endif
+--- a/scripts/terminal-vt-backend-smoke.swift	
++++ b/scripts/terminal-vt-backend-smoke.swift	
+@@ -53,6 +53,11 @@
+   var exitStatus: Int32? { lock.lock(); defer { lock.unlock() }; return exitCode }
+   var lastFrameTextAtExit: String? { lock.lock(); defer { lock.unlock() }; return finalFrameHadMarkerBeforeExit }
+ }
++private final class LaneDirectories: @unchecked Sendable {
++  private let lock = NSLock(); private var list = [String]()
++  func attach(to backend: GhosttyVTBackend) { backend.onDirectory = { [self] raw in lock.lock(); list.append(raw); lock.unlock() } }
++  var values: [String] { lock.lock(); defer { lock.unlock() }; return list }
++}
+ private enum LaneBSmoke {
+   static func eventually(_ timeout: TimeInterval = 4, _ predicate: () -> Bool) -> Bool { let deadline = Date(timeIntervalSinceNow: timeout); while Date() < deadline { if predicate() { return true }; usleep(5_000) }; return predicate() }
+   static func settle(_ milliseconds: Int = 120) { usleep(UInt32(milliseconds * 1_000)) }
+@@ -65,9 +70,24 @@
+   static func run() async {
+     await hiddenOutputTakesNoSnapshots()
+     await undrainedFrameDefersSnapshots()
++    await directoryNotifiedOncePerChange()
+     print("TerminalVTBackend lane B smoke passed")
+   }
+ 
++  // B2: the cwd is read only after new input and reported once per distinct raw OSC 7 value (never for repeats); nothing here touches the main thread.
++  static func directoryNotifiedOncePerChange() async {
++    func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
++    let directories = LaneDirectories()
++    let script = [osc7("/tmp/x"), osc7("/tmp/x"), osc7("/tmp/y"), osc7("/tmp/y"), osc7("/tmp/x")].joined(separator: "; sleep 0.12; ") + "; sleep 0.12; printf PWD_DONE; IFS= read -r l; exit 0"
++    let (backend, recorder) = launch(script, configure: { directories.attach(to: $0) }); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("PWD_DONE") }, "B2: script did not finish"); settle(150); barrier(backend)
++    precondition(directories.values == ["file://host/tmp/x", "file://host/tmp/y", "file://host/tmp/x"], "B2: expected exactly one notification per directory change, got \(directories.values)")
++    let reads = core.pwdReadCountForTesting(); precondition(reads >= 3 && reads <= recorder.frameCount, "B2: pwd read \(reads) times for \(recorder.frameCount) frames")
++    let frames = recorder.frameCount; for _ in 0..<3 { backend.scrollToBottom(); settle(60) }; barrier(backend)
++    precondition(recorder.frameCount > frames, "B2: scroll frames were not published"); precondition(core.pwdReadCountForTesting() == reads, "B2: pwd was re-read without new input"); precondition(directories.values.count == 3, "B2: unchanged directory was notified again")
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }, "B2: exit not delivered"); await backend.closeAndWait()
++  }
++
+   // B1: a hidden terminal never snapshots and never calls onFrame, the synchronous snapshot stays live, and unhiding always yields a fresh frame.
+   static func hiddenOutputTakesNoSnapshots() async {
+     let (backend, recorder) = launch("stty -echo; printf READY_H; IFS= read -r l; printf HID_A; IFS= read -r l; printf HID_B; IFS= read -r l; exit 0"); let core = backend.coreForTesting
+--- a/scripts/terminal-vt-host-smoke.swift	
++++ b/scripts/terminal-vt-host-smoke.swift	
+@@ -1,5 +1,6 @@
+ #if WEB_STUDIO_VT
+ import AppKit
++import Combine
+ import Foundation
+ import StudioVTCoreC
+ 
+@@ -139,6 +140,17 @@
+     ime.insertText("文", replacementRange: NSRange(location: 0, length: 1)); precondition(!ime.hasMarkedText())
+     ime.unmarkText(); precondition(ime.selectedRange().location == NSNotFound)
+     await interactive.closeAndWait()
++    // Lane B (B2): OSC 7 reaches knownDirectory once per distinct directory; repeats and the unchanged start directory publish nothing, and setKnownDirectory only works while idle.
++    let osc = TerminalSession(resourceID: UUID()); var oscDirectories: [String?] = []; let oscSink = osc.$knownDirectory.sink { oscDirectories.append($0) }
++    osc.setKnownDirectory("/var"); precondition(osc.knownDirectory == "/var", "idle setKnownDirectory did not apply")
++    func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
++    osc.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", [osc7("/tmp"), osc7("/usr/local"), osc7("/usr/local"), osc7("/usr/share"), osc7("/usr/local")].joined(separator: "; sleep 0.12; ") + "; sleep 0.12; printf 'PWD_DONE'; IFS= read -r l; exit 0"], directory: "/tmp")
++    let oscRunning = await wait({ if case .running = osc.state { return true }; return false }); precondition(oscRunning, "OSC 7 fixture did not start")
++    osc.setKnownDirectory("/nope"); precondition(osc.knownDirectory != "/nope", "setKnownDirectory applied outside idle")
++    let oscDone = await wait({ osc.renderedText().contains("PWD_DONE") }); precondition(oscDone, "OSC 7 fixture did not finish")
++    try? await Task.sleep(nanoseconds: 250_000_000)
++    precondition(oscDirectories == [nil, "/var", "/tmp", "/usr/local", "/usr/share", "/usr/local"], "OSC 7 must publish exactly once per distinct directory: \(oscDirectories)")
++    osc.sendRaw(Data("\n".utf8)); let oscExited = await wait({ if case .exited(0) = osc.state { return true }; return false }); precondition(oscExited, "OSC 7 fixture exit not delivered"); oscSink.cancel()
+     print("Terminal VT host smoke passed")
+   }
+ }
+--- a/scripts/terminal-vt-core-swift-smoke.swift	
++++ b/scripts/terminal-vt-core-swift-smoke.swift	
+@@ -2,4 +2,4 @@
+ import StudioVTCoreC
+ enum GeometrySmoke { static let check: Void = { let g1=TerminalGeometry(backingScale:1); let g2=TerminalGeometry(backingScale:2); precondition(g1.cellPixelSize.width.rounded()==g1.cellPixelSize.width && g2.cellPixelSize.height.rounded()==g2.cellPixelSize.height); precondition(g1.contentInset.left==16 && g1.contentInset.top==12); let gp=g1.origin(for:3,row:2); precondition(g1.cell(at:gp).column==3 && g1.cell(at:gp).row==2) }() }
+ @main struct Smoke { static func main() { let core=TerminalVTCore(columns:20,rows:4); precondition(core.setTheme(.dark)); precondition(core.snapshot()!.background==VTColor(rgb:0x252A2E)); core.feed(Data("\u{1b}[38;2;1;2;3mA".utf8)); let before=core.snapshot()!; precondition(core.setTheme(.light)); let frame=core.snapshot()!; precondition(frame.background==VTColor(rgb:0xF7F8FA)); precondition(frame.cells[0].text==before.cells[0].text && frame.cells[0].foreground==before.cells[0].foreground); precondition(TerminalTheme.dark.palette.count==256 && TerminalTheme.dark.palette[16]==VTColor(0,0,0) && TerminalTheme.dark.palette[231]==VTColor(255,255,255) && TerminalTheme.dark.palette[232]==VTColor(8,8,8) && TerminalTheme.dark.palette[255]==VTColor(238,238,238)); core.feed(Data("\u{1b}[6n".utf8)); let reply=core.takeQueryResponses(); precondition(reply.first==0x1b && reply.last==0x52); let key=core.encodeKey(key:GHOSTTY_KEY_C,modifiers:GhosttyMods(GHOSTTY_MODS_CTRL),action:GHOSTTY_KEY_ACTION_PRESS,text:""); precondition(key==Data([3])); laneBCounters(); print("TerminalVTCore Swift real smoke passed") }
+-  static func laneBCounters() { let core=TerminalVTCore(columns:20,rows:4); let s0=core.snapshotCountForTesting(); _=core.snapshot(); _=core.snapshot(); precondition(core.snapshotCountForTesting()==s0+2, "B1: snapshot counter must count every core snapshot") } }
++  static func laneBCounters() { let core=TerminalVTCore(columns:20,rows:4); let s0=core.snapshotCountForTesting(); _=core.snapshot(); _=core.snapshot(); precondition(core.snapshotCountForTesting()==s0+2, "B1: snapshot counter must count every core snapshot"); let p0=core.pwdReadCountForTesting(); core.feed(Data("\u{1b}]7;file://host/tmp/x\u{07}".utf8)); precondition(core.pwdReadCountForTesting()==p0, "B2: feeding must not read the pwd"); precondition(core.pwd()=="file://host/tmp/x" && core.pwdReadCountForTesting()==p0+1, "B2: pwd must return the raw OSC 7 string and count one read") } }

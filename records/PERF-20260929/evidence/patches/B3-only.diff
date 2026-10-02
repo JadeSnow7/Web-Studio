@@ -1,0 +1,231 @@
+--- a/Web Studio/TerminalVTBackend.swift	
++++ b/Web Studio/TerminalVTBackend.swift	
+@@ -46,6 +46,9 @@
+     private var pwdStale = false
+     private var lastPwd = ""
+     private let publishDeferred = Atomic<Bool>(false)
++    private let mouseTracking = Atomic<Bool>(false)
++    private let themeLock = NSLock()
++    private var appliedTheme: TerminalTheme?
+     public var hasUndrainedFrame: (() -> Bool)?
+     public var onStart: ((Bool, String?) -> Void)?
+     public var onExit: ((TerminalPTYTransport.Exit) -> Void)?
+@@ -78,6 +81,7 @@
+           return
+         }
+         _ = core.resize(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
++        refreshModeMirror()
+         transport.start(
+           executable: executable, argv: argv, environment: environment, directory: directory,
+           columns: columns, rows: rows, widthPixels: columns * cellWidthPixels, heightPixels: rows * cellHeightPixels)
+@@ -88,7 +92,7 @@
+       key: GhosttyKey, modifiers: GhosttyMods, action: GhosttyKeyAction, text: String, unshiftedCodepoint: UInt32 = 0
+     ) {
+       queue.async { [self] in
+-        if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint) {
++        if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint), !data.isEmpty {
+           _ = transport.write(data)
+           core.scrollToBottom()
+           scheduleFrame()
+@@ -97,7 +101,7 @@
+     }
+     @discardableResult public func sendRaw(_ data: Data) -> Bool {
+       let accepted = transport.write(data)
+-      if accepted { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
++      if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
+       return accepted
+     }
+     public func resize(
+@@ -108,6 +112,7 @@
+         _ = core.resize(
+           columns: columns, rows: rows, cellWidthPixels: cellWidthPixels,
+           cellHeightPixels: cellHeightPixels)
++        refreshModeMirror()
+         transport.resize(
+           columns: columns, rows: rows, widthPixels: columns * cellWidthPixels,
+           heightPixels: rows * cellHeightPixels)
+@@ -115,9 +120,11 @@
+       }
+     }
+     public func setTheme(_ theme: TerminalTheme) -> Bool {
+-      withQueue {
++      themeLock.lock(); let unchanged = appliedTheme == theme; themeLock.unlock()
++      if unchanged { return true }
++      return withQueue {
+         let result = core.setTheme(theme)
+-        if result { scheduleFrame() }
++        if result { themeLock.lock(); appliedTheme = theme; themeLock.unlock(); scheduleFrame() }
+         return result
+       }
+     }
+@@ -139,11 +146,21 @@
+     public func selectLine(column: Int, row: Int) -> Bool { withQueue { let r = core.selectLine(column: column, row: row); if r { scheduleFrame() }; return r } }
+     public func clearSelection() -> Bool { withQueue { let r = core.clearSelection(); if r { scheduleFrame() }; return r } }
+     public func selectAll() -> Bool { withQueue { let r = core.selectAll(); if r { scheduleFrame() }; return r } }
++    // Fire-and-forget variants for callers that ignore the result (the Session). The serial queue orders them before any later synchronous read such as selectedText() or snapshot().
++    public func selectDragAsync(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { queue.async { [self] in if core.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) { scheduleFrame() } } }
++    public func selectionBeginAsync(column: Int, row: Int, clickCount: Int = 1) { queue.async { [self] in if core.selectionBegin(column: column, row: row, clickCount: clickCount) { scheduleFrame() } } }
++    public func selectionUpdateAsync(column: Int, row: Int) { queue.async { [self] in if core.selectionUpdate(column: column, row: row) { scheduleFrame() } } }
++    public func selectionEndAsync() { queue.async { [self] in if core.selectionEnd() { scheduleFrame() } } }
++    public func selectWordAsync(column: Int, row: Int) { queue.async { [self] in if core.selectWord(column: column, row: row) { scheduleFrame() } } }
++    public func selectLineAsync(column: Int, row: Int) { queue.async { [self] in if core.selectLine(column: column, row: row) { scheduleFrame() } } }
++    public func clearSelectionAsync() { queue.async { [self] in if core.clearSelection() { scheduleFrame() } } }
++    public func selectAllAsync() { queue.async { [self] in if core.selectAll() { scheduleFrame() } } }
+     public func selectedText() -> String? { withQueue { core.selectedText() } }
+     public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { withQueue { let r = core.paste(text, allowUnsafe: allowUnsafe); let reply = core.takeQueryResponses(); guard r, !reply.isEmpty else { return false }; let accepted = transport.write(reply); if accepted { core.scrollToBottom(); scheduleFrame() }; return accepted } }
+     public func focus(_ focused: Bool) { queue.async { [self] in if let data = core.focus(focused) { _ = transport.write(data) } } }
+     public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) { queue.async { [self] in if let data = core.mouse(action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry) { _ = transport.write(data) } } }
+-    public func mouseReporting() -> Bool { withQueue { core.mouseReporting() } }
++    /// Lock-free mirror refreshed on the PTY queue after every feed/resize; equals core.mouseReporting() whenever the queue is quiescent.
++    public func mouseReporting() -> Bool { mouseTracking.load(ordering: .acquiring) }
+     public func pwd() -> String? { withQueue { core.pwd() } }
+     public func currentPID() -> pid_t? { transport.currentPID() }
+     public var coreForTesting: TerminalVTCore { core }
+@@ -161,11 +178,13 @@
+       inOutput = true
+       core.feed(data)
+       pwdStale = true
++      refreshModeMirror()
+       let reply = core.takeQueryResponses()
+       if !reply.isEmpty { _ = transport.write(reply) }
+       inOutput = false
+       scheduleFrame()
+     }
++    private func refreshModeMirror() { mouseTracking.store(core.mouseReporting(), ordering: .releasing) }
+     private func scheduleFrame() {
+       guard visible, !framePending else { return }
+       framePending = true
+--- a/Web Studio/TerminalVTSession.swift	
++++ b/Web Studio/TerminalVTSession.swift	
+@@ -107,16 +107,17 @@
+     func scroll(toOffset offset: UInt64) { backend.scroll(toOffset: offset) }
+     func scroll(rows: Int) { backend.scroll(rows: rows) }
+     func scrollToBottom() { backend.scrollToBottom() }
+-    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { _ = backend.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
+-    func selectWord(column: Int, row: Int) { _ = backend.selectWord(column: column, row: row) }
+-    func selectLine(column: Int, row: Int) { _ = backend.selectLine(column: column, row: row) }
+-    func selectAll() { _ = backend.selectAll() }
+-    func clearSelection() { _ = backend.clearSelection() }
++    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { backend.selectDragAsync(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
++    func selectWord(column: Int, row: Int) { backend.selectWordAsync(column: column, row: row) }
++    func selectLine(column: Int, row: Int) { backend.selectLineAsync(column: column, row: row) }
++    func selectAll() { backend.selectAllAsync() }
++    func clearSelection() { backend.clearSelectionAsync() }
+     func selectedText() -> String? { backend.selectedText() }
+     @discardableResult func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { backend.paste(text, allowUnsafe: allowUnsafe) }
+-    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBegin(column: column, row: row, clickCount: clickCount) }
+-    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdate(column: column, row: row) }
+-    @discardableResult func selectionEnd() -> Bool { backend.selectionEnd() }
++    // Queued on the PTY queue: every caller discards the result, so these no longer block the main thread; the value only reports that the request was queued.
++    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBeginAsync(column: column, row: row, clickCount: clickCount); return true }
++    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdateAsync(column: column, row: row); return true }
++    @discardableResult func selectionEnd() -> Bool { backend.selectionEndAsync(); return true }
+     func focus(_ focused: Bool) { backend.focus(focused) }
+     func mouseReporting() -> Bool { backend.mouseReporting() }
+     func sendMouse(action: Int, button: Int, modifiers: UInt32, point: CGPoint, geometry: VTMouseGeometry) { backend.mouse(action: action, button: button, modifiers: modifiers, xPixels: point.x, yPixels: point.y, geometry: geometry) }
+--- a/scripts/terminal-vt-backend-smoke.swift	
++++ b/scripts/terminal-vt-backend-smoke.swift	
+@@ -1,5 +1,6 @@
+ #if WEB_STUDIO_VT
+ import Foundation
++import StudioVTCoreC
+ 
+ private final class Recorder {
+   let condition = NSCondition()
+@@ -47,6 +48,7 @@
+   }
+   func hasOutput(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return output.range(of: Data(text.utf8)) != nil }
+   func hasFrame(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return frames.contains { $0.visibleData.range(of: Data(text.utf8)) != nil } }
++  func count(of text: String) -> Int { lock.lock(); defer { lock.unlock() }; return String(decoding: output, as: UTF8.self).components(separatedBy: text).count - 1 }
+   var frameCount: Int { lock.lock(); defer { lock.unlock() }; return frames.count }
+   var lastFrame: VTFrame? { lock.lock(); defer { lock.unlock() }; return frames.last }
+   var hasExited: Bool { lock.lock(); defer { lock.unlock() }; return exited }
+@@ -71,9 +73,67 @@
+     await hiddenOutputTakesNoSnapshots()
+     await undrainedFrameDefersSnapshots()
+     await directoryNotifiedOncePerChange()
++    await mouseMirrorMatchesCore()
++    await selectionAsyncThenSyncRead()
++    await unchangedThemeIsNoOp()
++    await emptyKeyOutputDoesNotScrollOrSchedule()
+     print("TerminalVTBackend lane B smoke passed")
+   }
+ 
++  // B3(a): the lock-free mouseReporting() mirror equals core.mouseReporting() at every quiescent point while tracking modes are toggled by the child.
++  static func mouseMirrorMatchesCore() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_M; while IFS= read -r l; do case \"$l\" in on) printf '\u{1b}[?1000h';; off) printf '\u{1b}[?1000l';; any) printf '\u{1b}[?1003h';; anyoff) printf '\u{1b}[?1003l';; esac; printf 'ACK_%s;' \"$l\"; done"); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_M") }); barrier(backend); precondition(!backend.mouseReporting() && !core.mouseReporting(), "B3: tracking must start disabled")
++    for (line, expected) in [("on", true), ("off", false), ("any", true), ("anyoff", false), ("on", true)] {
++      precondition(backend.sendRaw(Data("\(line)\n".utf8))); let acks = recorder.count(of: "ACK_\(line);"); precondition(eventually { recorder.count(of: "ACK_\(line);") > acks }, "B3: no ack for \(line)"); barrier(backend)
++      precondition(core.mouseReporting() == expected, "B3: fixture did not toggle mouse tracking for \(line)"); precondition(backend.mouseReporting() == expected, "B3: mouseReporting mirror differs from the core after \(line)")
++    }
++    precondition(backend.sendRaw(Data("done\n".utf8))); await backend.closeAndWait()
++  }
++
++  // B3(b): asynchronous selection requests are ordered before a later synchronous selectedText(), without any barrier in between.
++  static func selectionAsyncThenSyncRead() async {
++    let (backend, recorder) = launch("stty -echo; printf SELECT_ME_TEXT; IFS= read -r l; exit 0")
++    precondition(eventually { recorder.hasFrame("SELECT_ME_TEXT") })
++    backend.selectionBeginAsync(column: 0, row: 0, clickCount: 1); backend.selectionUpdateAsync(column: 14, row: 0); backend.selectionEndAsync(); let dragged = backend.selectedText(); precondition(dragged == "SELECT_ME_TEXT", "B3: begin/update/end async selection, got \(String(describing: dragged))")
++    precondition(backend.selectionBegin(column: 0, row: 0, clickCount: 1) && backend.selectionUpdate(column: 14, row: 0) && backend.selectionEnd() && backend.selectedText() == dragged, "B3: async begin/update/end differs from the synchronous gesture")
++    backend.selectDragAsync(startColumn: 0, startRow: 0, endColumn: 5, endRow: 0, behavior: 0); precondition(backend.selectedText() == "SELECT", "B3: async drag selection")
++    backend.selectLineAsync(column: 2, row: 0); precondition(backend.selectedText() == "SELECT_ME_TEXT", "B3: async line selection")
++    backend.selectWordAsync(column: 2, row: 0); let word = backend.selectedText(); precondition(word != nil && !word!.isEmpty); precondition(backend.selectWord(column: 2, row: 0)); precondition(backend.selectedText() == word, "B3: async word selection differs from the synchronous one")
++    backend.selectAllAsync(); precondition(backend.selectedText()?.contains("SELECT_ME_TEXT") == true, "B3: async select all")
++    backend.clearSelectionAsync(); let cleared = backend.selectedText(); precondition(cleared == nil || cleared == "", "B3: async clear selection")
++    let frames = recorder.frameCount; backend.selectionBeginAsync(column: 0, row: 0, clickCount: 1); backend.selectionUpdateAsync(column: 5, row: 0); precondition(eventually { recorder.frameCount > frames && recorder.lastFrame?.cells.prefix(4).allSatisfy { $0.selected } == true }, "B3: async selection did not schedule a frame with selected cells")
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }); await backend.closeAndWait()
++  }
++
++  // B3(c): re-applying the current theme is a no-op (no frame, no generation bump) while a changed theme still reschedules a frame.
++  static func unchangedThemeIsNoOp() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_T; IFS= read -r l; exit 0"); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_T") }); settle()
++    precondition(backend.setTheme(.light)); precondition(eventually { recorder.lastFrame?.background == VTColor(rgb: 0xF7F8FA) }, "B3: a changed theme must reschedule a frame"); settle()
++    let generation = backend.snapshot()!.generation, frames = recorder.frameCount, snapshots = core.snapshotCountForTesting()
++    for _ in 0..<5 { precondition(backend.setTheme(.light), "B3: unchanged theme must still report success") }; settle(); barrier(backend)
++    precondition(recorder.frameCount == frames && core.snapshotCountForTesting() == snapshots, "B3: unchanged theme scheduled a frame"); precondition(backend.snapshot()!.generation == generation, "B3: unchanged theme bumped the generation")
++    precondition(backend.setTheme(.dark)); precondition(eventually { recorder.lastFrame?.background == VTColor(rgb: 0x252A2E) }, "B3: switching back must reschedule a frame"); precondition(backend.snapshot()!.generation == generation + 1)
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }); await backend.closeAndWait()
++  }
++
++  // B3(d): key events whose encoded bytes are empty (modifier-only, release) neither scroll to bottom nor schedule a frame; non-empty output still does.
++  static func emptyKeyOutputDoesNotScrollOrSchedule() async {
++    let (backend, recorder) = launch("stty -echo; i=0; while [ $i -lt 100 ]; do echo LINE_$i; i=$((i+1)); done; printf READY_K; while IFS= read -r l; do :; done"); let core = backend.coreForTesting
++    let shift = GhosttyMods(GHOSTTY_MODS_SHIFT)
++    precondition(core.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: shift, action: GHOSTTY_KEY_ACTION_PRESS, text: "") == Data() && core.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: "") == Data() && core.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: "") == Data(), "B3: fixture keys no longer encode to empty output")
++    precondition(eventually { recorder.hasFrame("READY_K") }); settle(); backend.scroll(rows: -10); settle(); barrier(backend)
++    let before = backend.snapshot()!.scrollbar; precondition(before.offset + before.length < before.total, "B3: fixture did not scroll back")
++    let frames = recorder.frameCount, snapshots = core.snapshotCountForTesting()
++    backend.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: shift, action: GHOSTTY_KEY_ACTION_PRESS, text: ""); backend.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: ""); backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: ""); precondition(backend.sendRaw(Data()))
++    settle(); barrier(backend)
++    precondition(recorder.frameCount == frames && core.snapshotCountForTesting() == snapshots, "B3: empty key output scheduled a frame"); precondition(backend.snapshot()!.scrollbar.offset == before.offset, "B3: empty key output scrolled to bottom")
++    backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a"); precondition(eventually { recorder.frameCount > frames }, "B3: non-empty key output must still schedule a frame")
++    let bottom = backend.snapshot()!.scrollbar; precondition(bottom.offset + bottom.length == bottom.total, "B3: non-empty key output must still scroll to bottom")
++    await backend.closeAndWait()
++  }
++
+   // B2: the cwd is read only after new input and reported once per distinct raw OSC 7 value (never for repeats); nothing here touches the main thread.
+   static func directoryNotifiedOncePerChange() async {
+     func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
+--- a/scripts/terminal-vt-host-smoke.swift	
++++ b/scripts/terminal-vt-host-smoke.swift	
+@@ -151,6 +151,18 @@
+     try? await Task.sleep(nanoseconds: 250_000_000)
+     precondition(oscDirectories == [nil, "/var", "/tmp", "/usr/local", "/usr/share", "/usr/local"], "OSC 7 must publish exactly once per distinct directory: \(oscDirectories)")
+     osc.sendRaw(Data("\n".utf8)); let oscExited = await wait({ if case .exited(0) = osc.state { return true }; return false }); precondition(oscExited, "OSC 7 fixture exit not delivered"); oscSink.cancel()
++    // Lane B (B3): the Session's selection wrappers no longer block on the PTY queue yet stay ordered before selectedText(); mouseReporting() is a mirror of the core; an unchanged theme is a no-op.
++    let sel = TerminalSession(resourceID: UUID())
++    sel.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", "printf 'SELECT_ME_TEXT'; printf '\u{1b}[?1000h'; printf MOUSE_ON; IFS= read -r l; printf '\u{1b}[?1000l'; printf MOUSE_OFF; IFS= read -r l; exit 0"], directory: "/tmp")
++    let selReady = await wait({ sel.renderedText().contains("MOUSE_ON") }); precondition(selReady, "selection fixture did not start"); precondition(sel.mouseReporting(), "mouseReporting mirror did not follow ?1000h")
++    sel.selectionBegin(column: 0, row: 0, clickCount: 1); sel.selectionUpdate(column: 14, row: 0); sel.selectionEnd(); precondition(sel.selectedText() == "SELECT_ME_TEXT", "async begin/update/end selection was not ordered before selectedText()")
++    sel.selectDrag(startColumn: 0, startRow: 0, endColumn: 5, endRow: 0); precondition(sel.selectedText() == "SELECT", "async drag selection")
++    sel.selectLine(column: 3, row: 0); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async line selection")
++    sel.selectWord(column: 1, row: 0); precondition(sel.selectedText()?.isEmpty == false, "async word selection")
++    sel.selectAll(); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async select all"); sel.clearSelection(); let selCleared = sel.selectedText(); precondition(selCleared == nil || selCleared == "", "async clear selection")
++    precondition(sel.setTheme(.light) && sel.setTheme(.light) && sel.setTheme(.dark) && sel.setTheme(.dark), "setTheme must report success for repeated and changed themes")
++    sel.sendRaw(Data("\n".utf8)); let selOff = await wait({ sel.renderedText().contains("MOUSE_OFF") }); precondition(selOff, "mouse-off marker missing"); precondition(!sel.mouseReporting(), "mouseReporting mirror did not follow ?1000l")
++    sel.sendRaw(Data("\n".utf8)); let selExited = await wait({ if case .exited(0) = sel.state { return true }; return false }); precondition(selExited, "selection fixture exit not delivered")
+     print("Terminal VT host smoke passed")
+   }
+ }

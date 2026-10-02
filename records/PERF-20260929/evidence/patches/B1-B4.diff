@@ -1,0 +1,610 @@
+diff --git a/Web Studio/TerminalVTBackend.swift b/Web Studio/TerminalVTBackend.swift
+index c0ac130..2b6e058 100644
+--- a/Web Studio/TerminalVTBackend.swift	
++++ b/Web Studio/TerminalVTBackend.swift	
+@@ -1,6 +1,7 @@
+ #if WEB_STUDIO_VT
+   import Foundation
+   import StudioVTCoreC
++  import Synchronization
+ 
+   public protocol TerminalBackend: AnyObject {
+     func start(
+@@ -42,12 +43,25 @@
+     private var started = false
+     private var closed = false
+     private var inOutput = false
+-    private var lastFrame: VTFrame?
++    private var pwdStale = false
++    private var lastPwd = ""
++    private struct ResizeRequest: Equatable { let columns, rows, cellWidthPixels, cellHeightPixels: Int }
++    private static let resizeInterval = DispatchTimeInterval.milliseconds(24)
++    private var appliedResize: ResizeRequest?
++    private var pendingResize: ResizeRequest?
++    private var lastResizeApply: DispatchTime?
++    private var resizeTimer: DispatchSourceTimer?
++    private let publishDeferred = Atomic<Bool>(false)
++    private let mouseTracking = Atomic<Bool>(false)
++    private let themeLock = NSLock()
++    private var appliedTheme: TerminalTheme?
++    public var hasUndrainedFrame: (() -> Bool)?
+     public var onStart: ((Bool, String?) -> Void)?
+     public var onExit: ((TerminalPTYTransport.Exit) -> Void)?
+     public var onError: ((String) -> Void)?
+     public var onOutput: ((Data) -> Void)?
+     public var onFrame: ((VTFrame) -> Void)?
++    public var onDirectory: ((String) -> Void)?
+ 
+     public init(columns: Int, rows: Int) {
+       core = TerminalVTCore(columns: columns, rows: rows)
+@@ -73,6 +87,8 @@
+           return
+         }
+         _ = core.resize(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
++        appliedResize = ResizeRequest(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
++        refreshModeMirror()
+         transport.start(
+           executable: executable, argv: argv, environment: environment, directory: directory,
+           columns: columns, rows: rows, widthPixels: columns * cellWidthPixels, heightPixels: rows * cellHeightPixels)
+@@ -83,7 +99,7 @@
+       key: GhosttyKey, modifiers: GhosttyMods, action: GhosttyKeyAction, text: String, unshiftedCodepoint: UInt32 = 0
+     ) {
+       queue.async { [self] in
+-        if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint) {
++        if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint), !data.isEmpty {
+           _ = transport.write(data)
+           core.scrollToBottom()
+           scheduleFrame()
+@@ -92,7 +108,7 @@
+     }
+     @discardableResult public func sendRaw(_ data: Data) -> Bool {
+       let accepted = transport.write(data)
+-      if accepted { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
++      if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
+       return accepted
+     }
+     public func resize(
+@@ -100,19 +116,48 @@
+     ) {
+       queue.async { [self] in
+         guard !closed else { return }
+-        _ = core.resize(
+-          columns: columns, rows: rows, cellWidthPixels: cellWidthPixels,
+-          cellHeightPixels: cellHeightPixels)
+-        transport.resize(
+-          columns: columns, rows: rows, widthPixels: columns * cellWidthPixels,
+-          heightPixels: rows * cellHeightPixels)
+-        scheduleFrame()
++        let request = ResizeRequest(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
++        if resizeTimer != nil { pendingResize = request; return }
++        guard request != appliedResize else { return }
++        if let last = lastResizeApply, DispatchTime.now() < last + Self.resizeInterval {
++          pendingResize = request
++          let timer = DispatchSource.makeTimerSource(queue: queue)
++          timer.setEventHandler { [weak self] in self?.flushResize() }
++          resizeTimer = timer
++          timer.schedule(deadline: last + Self.resizeInterval)
++          timer.resume()
++          return
++        }
++        applyResize(request)
+       }
+     }
++    /// Trailing edge of a resize burst: applies the latest pending size unless it already equals the applied one.
++    private func flushResize() {
++      resizeTimer?.cancel()
++      resizeTimer = nil
++      guard !closed, let request = pendingResize else { return }
++      pendingResize = nil
++      if request != appliedResize { applyResize(request) }
++    }
++    /// The core reflow and the TIOCSWINSZ ioctl always go out together, in this order, for the same size.
++    private func applyResize(_ request: ResizeRequest) {
++      _ = core.resize(
++        columns: request.columns, rows: request.rows, cellWidthPixels: request.cellWidthPixels,
++        cellHeightPixels: request.cellHeightPixels)
++      refreshModeMirror()
++      transport.resize(
++        columns: request.columns, rows: request.rows, widthPixels: request.columns * request.cellWidthPixels,
++        heightPixels: request.rows * request.cellHeightPixels)
++      appliedResize = request
++      lastResizeApply = DispatchTime.now()
++      scheduleFrame()
++    }
+     public func setTheme(_ theme: TerminalTheme) -> Bool {
+-      withQueue {
++      themeLock.lock(); let unchanged = appliedTheme == theme; themeLock.unlock()
++      if unchanged { return true }
++      return withQueue {
+         let result = core.setTheme(theme)
+-        if result { scheduleFrame() }
++        if result { themeLock.lock(); appliedTheme = theme; themeLock.unlock(); scheduleFrame() }
+         return result
+       }
+     }
+@@ -134,13 +179,24 @@
+     public func selectLine(column: Int, row: Int) -> Bool { withQueue { let r = core.selectLine(column: column, row: row); if r { scheduleFrame() }; return r } }
+     public func clearSelection() -> Bool { withQueue { let r = core.clearSelection(); if r { scheduleFrame() }; return r } }
+     public func selectAll() -> Bool { withQueue { let r = core.selectAll(); if r { scheduleFrame() }; return r } }
++    // Fire-and-forget variants for callers that ignore the result (the Session). The serial queue orders them before any later synchronous read such as selectedText() or snapshot().
++    public func selectDragAsync(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { queue.async { [self] in if core.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) { scheduleFrame() } } }
++    public func selectionBeginAsync(column: Int, row: Int, clickCount: Int = 1) { queue.async { [self] in if core.selectionBegin(column: column, row: row, clickCount: clickCount) { scheduleFrame() } } }
++    public func selectionUpdateAsync(column: Int, row: Int) { queue.async { [self] in if core.selectionUpdate(column: column, row: row) { scheduleFrame() } } }
++    public func selectionEndAsync() { queue.async { [self] in if core.selectionEnd() { scheduleFrame() } } }
++    public func selectWordAsync(column: Int, row: Int) { queue.async { [self] in if core.selectWord(column: column, row: row) { scheduleFrame() } } }
++    public func selectLineAsync(column: Int, row: Int) { queue.async { [self] in if core.selectLine(column: column, row: row) { scheduleFrame() } } }
++    public func clearSelectionAsync() { queue.async { [self] in if core.clearSelection() { scheduleFrame() } } }
++    public func selectAllAsync() { queue.async { [self] in if core.selectAll() { scheduleFrame() } } }
+     public func selectedText() -> String? { withQueue { core.selectedText() } }
+     public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { withQueue { let r = core.paste(text, allowUnsafe: allowUnsafe); let reply = core.takeQueryResponses(); guard r, !reply.isEmpty else { return false }; let accepted = transport.write(reply); if accepted { core.scrollToBottom(); scheduleFrame() }; return accepted } }
+     public func focus(_ focused: Bool) { queue.async { [self] in if let data = core.focus(focused) { _ = transport.write(data) } } }
+     public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) { queue.async { [self] in if let data = core.mouse(action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry) { _ = transport.write(data) } } }
+-    public func mouseReporting() -> Bool { withQueue { core.mouseReporting() } }
++    /// Lock-free mirror refreshed on the PTY queue after every feed/resize; equals core.mouseReporting() whenever the queue is quiescent.
++    public func mouseReporting() -> Bool { mouseTracking.load(ordering: .acquiring) }
+     public func pwd() -> String? { withQueue { core.pwd() } }
+     public func currentPID() -> pid_t? { transport.currentPID() }
++    public var coreForTesting: TerminalVTCore { core }
+     public func closeAndWait() async { await transport.closeAndWait() }
+ 
+     private func withQueue<T>(_ body: () -> T) -> T {
+@@ -154,13 +210,16 @@
+       onOutput?(data)
+       inOutput = true
+       core.feed(data)
++      pwdStale = true
++      refreshModeMirror()
+       let reply = core.takeQueryResponses()
+       if !reply.isEmpty { _ = transport.write(reply) }
+       inOutput = false
+       scheduleFrame()
+     }
++    private func refreshModeMirror() { mouseTracking.store(core.mouseReporting(), ordering: .releasing) }
+     private func scheduleFrame() {
+-      guard !framePending else { return }
++      guard visible, !framePending else { return }
+       framePending = true
+       if frameTimer == nil {
+         let timer = DispatchSource.makeTimerSource(queue: queue)
+@@ -172,14 +231,41 @@
+         frameTimer?.schedule(deadline: .now() + .milliseconds(16))
+       }
+     }
+-    private func publishFrame() {
++    /// Frame consumers call this after taking a frame so a publish skipped while it was still undrained is re-armed.
++    public func frameDrained() {
++      guard publishDeferred.load(ordering: .sequentiallyConsistent) else { return }
++      queue.async { [self] in if publishDeferred.exchange(false, ordering: .sequentiallyConsistent) { scheduleFrame() } }
++    }
++    private func publishFrame(force: Bool = false) {
+       framePending = false
++      guard visible else { return }
++      if !force, let undrained = hasUndrainedFrame {
++        publishDeferred.store(true, ordering: .sequentiallyConsistent)
++        if undrained() { return }
++        publishDeferred.store(false, ordering: .sequentiallyConsistent)
++      }
+       guard let frame = core.snapshot() else { return }
+-      lastFrame = frame
+-      if visible { onFrame?(frame) }
++      onFrame?(frame)
++      notifyDirectory()
++    }
++    /// Reads the cwd only after new input, and reports it only when the raw OSC 7 string actually changed.
++    private func notifyDirectory() {
++      guard pwdStale, let notify = onDirectory else { return }
++      pwdStale = false
++      guard let raw = core.pwd(), raw != lastPwd else { return }
++      lastPwd = raw
++      notify(raw)
+     }
+     private func finish(_ result: TerminalPTYTransport.Exit) {
+-      publishFrame()
++      resizeTimer?.cancel()
++      resizeTimer = nil
++      if let request = pendingResize {
++        // The child is gone (no ioctl needed) but the last requested size must still reach the core before the final frame.
++        pendingResize = nil
++        _ = core.resize(columns: request.columns, rows: request.rows, cellWidthPixels: request.cellWidthPixels, cellHeightPixels: request.cellHeightPixels)
++        appliedResize = request
++      }
++      publishFrame(force: true)
+       closed = true
+       frameTimer?.cancel()
+       frameTimer = nil
+diff --git a/Web Studio/TerminalVTCore.swift b/Web Studio/TerminalVTCore.swift
+index 7babbac..5961b94 100644
+--- a/Web Studio/TerminalVTCore.swift	
++++ b/Web Studio/TerminalVTCore.swift	
+@@ -62,6 +62,7 @@
+     private var handle: OpaquePointer?
+     private let replies = ReplyBuffer()
+     private var generation: UInt64 = 0
++    private var snapshotCount = 0, pwdReadCount = 0, resizeCount = 0
+     private static let replyCallback: StudioVTReplyFn = { bytes, len, userdata in
+       guard let userdata, let bytes else { return }
+       let buffer = Unmanaged<ReplyBuffer>.fromOpaque(userdata).takeUnretainedValue()
+@@ -151,6 +152,7 @@
+       lock.lock()
+       defer { lock.unlock() }
+       guard handle != nil else { return false }
++      resizeCount += 1
+       return studio_vt_resize(
+         handle, UInt16(clamping: max(1, columns)), UInt16(clamping: max(1, rows)),
+         UInt32(clamping: max(1, cellWidthPixels)), UInt32(clamping: max(1, cellHeightPixels)))
+@@ -160,6 +162,7 @@
+       lock.lock()
+       defer { lock.unlock() }
+       guard handle != nil else { return nil }
++      snapshotCount += 1
+       var raw = StudioVTSnapshot()
+       raw.size = MemoryLayout<StudioVTSnapshot>.size
+       guard studio_vt_snapshot(handle, &raw) == GHOSTTY_SUCCESS else { return nil }
+@@ -196,6 +199,9 @@
+         cursorColor: raw.colors.cursor_has_value ? VTColor(raw.colors.cursor) : nil, cursor: cursor,
+         scrollbar: bar, snapshotTruncated: raw.viewport_text_truncated)
+     }
++    public func snapshotCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return snapshotCount }
++    public func pwdReadCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return pwdReadCount }
++    public func resizeCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return resizeCount }
+     public func scroll(rows: Int) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_delta(handle, Int(rows)) }
+     public func scroll(toOffset offset: UInt64) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_to(handle, Int(offset)) }
+     public func scrollToBottom() { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_bottom(handle) }
+@@ -218,6 +224,6 @@
+     public func focus(_ focused: Bool) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_focus(handle, focused, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
+     public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; let result = studio_vt_mouse(handle, Int32(action), Int32(button), modifiers, xPixels, yPixels, UInt32(clamping: geometry.screenWidth), UInt32(clamping: geometry.screenHeight), UInt32(clamping: geometry.cellWidth), UInt32(clamping: geometry.cellHeight), UInt32(clamping: geometry.paddingTop), UInt32(clamping: geometry.paddingBottom), UInt32(clamping: geometry.paddingLeft), UInt32(clamping: geometry.paddingRight), &p, &n); guard result == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
+     public func mouseReporting() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_mouse_reporting(handle) }
+-    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
++    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; pwdReadCount += 1; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
+   }
+ #endif
+diff --git a/Web Studio/TerminalVTSession.swift b/Web Studio/TerminalVTSession.swift
+index 72c0064..a13d6b5 100644
+--- a/Web Studio/TerminalVTSession.swift	
++++ b/Web Studio/TerminalVTSession.swift	
+@@ -12,6 +12,12 @@ private final class VTFrameMailbox: @unchecked Sendable {
+     func hasValue() -> Bool { lock.lock(); defer { lock.unlock() }; return latest != nil }
+ }
+ 
++private final class VTDirectoryMailbox: @unchecked Sendable {
++    private let lock = NSLock(); private var latest: String?; private var scheduled = false
++    func offer(_ value: String) -> Bool { lock.lock(); defer { lock.unlock() }; latest = value; if scheduled { return false }; scheduled = true; return true }
++    func take() -> String? { lock.lock(); defer { lock.unlock() }; let value = latest; latest = nil; scheduled = false; return value }
++}
++
+ @MainActor
+ final class TerminalSession: NSObject, ObservableObject {
+     enum State: Equatable { case idle, starting, running, exited(Int32?), failed(String), interrupted }
+@@ -25,6 +31,8 @@ final class TerminalSession: NSObject, ObservableObject {
+     private var closeRequested = false
+     private var frame: VTFrame?
+     private let frameMailbox = VTFrameMailbox()
++    private let directoryMailbox = VTDirectoryMailbox()
++    private var lastRawDirectory: String?
+     var onEncodedKeyForTesting: ((GhosttyKey, GhosttyMods, GhosttyKeyAction, String) -> Void)?
+ 
+     init(resourceID: UUID, frame: CGRect = .zero) {
+@@ -37,6 +45,8 @@ final class TerminalSession: NSObject, ObservableObject {
+         backend.onFrame = { [weak self] frame in guard let self, self.frameMailbox.offer(frame) else { return }; Task { @MainActor in self.drainFrames() } }
+         backend.onError = { [weak self] message in Task { @MainActor in self?.failed(message) } }
+         backend.onExit = { [weak self] exit in Task { @MainActor in self?.exited(exit.code) } }
++        backend.hasUndrainedFrame = { [frameMailbox] in frameMailbox.hasValue() }
++        backend.onDirectory = { [weak self] raw in guard let self, self.directoryMailbox.offer(raw) else { return }; Task { @MainActor in self.applyDirectory() } }
+     }
+     func setKnownDirectory(_ directory: String) { if state == .idle { knownDirectory = directory } }
+     func retainSecurityScope(_ url: URL) { if url.startAccessingSecurityScopedResource() { securityScopedURL = url } }
+@@ -65,7 +75,7 @@ final class TerminalSession: NSObject, ObservableObject {
+     }
+     private func started(_ ok: Bool, _ message: String?) { guard state == .starting else { return }; if ok { state = closeRequested ? .interrupted : .running } else { failed(message ?? "Unable to start terminal") } }
+     private func failed(_ message: String) { state = .failed(message) }
+-    private func exited(_ code: Int32?) { drainFrames(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
++    private func exited(_ code: Int32?) { drainFrames(); applyDirectory(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
+     private func normalizedDirectory(_ value: String) -> String? {
+         guard !value.isEmpty, value.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
+         if !value.lowercased().hasPrefix("file://") && !value.hasPrefix("/") { return nil }
+@@ -73,7 +83,8 @@ final class TerminalSession: NSObject, ObservableObject {
+         guard url.isFileURL, url.path.hasPrefix("/"), url.path.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
+         return url.standardizedFileURL.path
+     }
+-    private func drainFrames() { if let latest = frameMailbox.take() { frame = latest; if let pwd = backend.pwd(), let directory = normalizedDirectory(pwd) { knownDirectory = directory }; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
++    private func applyDirectory() { guard let raw = directoryMailbox.take(), raw != lastRawDirectory else { return }; lastRawDirectory = raw; if let directory = normalizedDirectory(raw), directory != knownDirectory { knownDirectory = directory } }
++    private func drainFrames() { if let latest = frameMailbox.take() { backend.frameDrained(); frame = latest; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
+     func reportRenderError(_ message: String) { if state == .running { state = .failed(message) } }
+     func sendRaw(_ data: Data) { _ = backend.sendRaw(data) }
+     func send(data: Data) { sendRaw(data) }
+@@ -96,16 +107,17 @@ final class TerminalSession: NSObject, ObservableObject {
+     func scroll(toOffset offset: UInt64) { backend.scroll(toOffset: offset) }
+     func scroll(rows: Int) { backend.scroll(rows: rows) }
+     func scrollToBottom() { backend.scrollToBottom() }
+-    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { _ = backend.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
+-    func selectWord(column: Int, row: Int) { _ = backend.selectWord(column: column, row: row) }
+-    func selectLine(column: Int, row: Int) { _ = backend.selectLine(column: column, row: row) }
+-    func selectAll() { _ = backend.selectAll() }
+-    func clearSelection() { _ = backend.clearSelection() }
++    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { backend.selectDragAsync(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
++    func selectWord(column: Int, row: Int) { backend.selectWordAsync(column: column, row: row) }
++    func selectLine(column: Int, row: Int) { backend.selectLineAsync(column: column, row: row) }
++    func selectAll() { backend.selectAllAsync() }
++    func clearSelection() { backend.clearSelectionAsync() }
+     func selectedText() -> String? { backend.selectedText() }
+     @discardableResult func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { backend.paste(text, allowUnsafe: allowUnsafe) }
+-    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBegin(column: column, row: row, clickCount: clickCount) }
+-    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdate(column: column, row: row) }
+-    @discardableResult func selectionEnd() -> Bool { backend.selectionEnd() }
++    // Queued on the PTY queue: every caller discards the result, so these no longer block the main thread; the value only reports that the request was queued.
++    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBeginAsync(column: column, row: row, clickCount: clickCount); return true }
++    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdateAsync(column: column, row: row); return true }
++    @discardableResult func selectionEnd() -> Bool { backend.selectionEndAsync(); return true }
+     func focus(_ focused: Bool) { backend.focus(focused) }
+     func mouseReporting() -> Bool { backend.mouseReporting() }
+     func sendMouse(action: Int, button: Int, modifiers: UInt32, point: CGPoint, geometry: VTMouseGeometry) { backend.mouse(action: action, button: button, modifiers: modifiers, xPixels: point.x, yPixels: point.y, geometry: geometry) }
+diff --git a/scripts/terminal-vt-backend-smoke.swift b/scripts/terminal-vt-backend-smoke.swift
+index d0ef85c..810ed23 100644
+--- a/scripts/terminal-vt-backend-smoke.swift
++++ b/scripts/terminal-vt-backend-smoke.swift
+@@ -1,5 +1,6 @@
+ #if WEB_STUDIO_VT
+ import Foundation
++import StudioVTCoreC
+ 
+ private final class Recorder {
+   let condition = NSCondition()
+@@ -28,6 +29,196 @@ private final class Recorder {
+     precondition(interactive.snapshot()?.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil); interactive.setVisible(true); _ = interactive.snapshot(); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("HIDDEN_MARK".utf8)) != nil } }))
+     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+     precondition(interactive.sendRaw(Data("EXIT7\n".utf8))); precondition(recorder.wait({ $0.exitCode == 7 })); recorder.condition.lock(); let callbacks = recorder.callbacks; recorder.condition.unlock(); precondition(callbacks.first == "start" && callbacks.last == "exit7"); precondition(interactive.snapshot()?.visibleData.range(of: Data("EXIT_FINAL".utf8)) != nil); await interactive.closeAndWait(); print("TerminalVTBackend interactive smoke passed")
++    await LaneBSmoke.run()
++  }
++}
++
++// Lane B (backend/session/core performance) assertions. Every child is a `sh -c` script driven line by line through the PTY so output happens exactly when a test asks for it.
++private final class LaneFlag: @unchecked Sendable {
++  private let lock = NSLock(); private var stored = false
++  var value: Bool { get { lock.lock(); defer { lock.unlock() }; return stored } set { lock.lock(); stored = newValue; lock.unlock() } }
++}
++private final class LaneRecorder: @unchecked Sendable {
++  private let lock = NSLock()
++  private var output = Data(), frames = [VTFrame](), exitCode: Int32?, exited = false, finalFrameHadMarkerBeforeExit: String?
++  func attach(to backend: GhosttyVTBackend) {
++    backend.onOutput = { [self] data in lock.lock(); output.append(data); lock.unlock() }
++    backend.onFrame = { [self] frame in lock.lock(); frames.append(frame); lock.unlock() }
++    backend.onExit = { [self] result in lock.lock(); exitCode = result.code; exited = true; finalFrameHadMarkerBeforeExit = frames.last.map { String(decoding: $0.visibleData, as: UTF8.self) }; lock.unlock() }
++  }
++  func hasOutput(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return output.range(of: Data(text.utf8)) != nil }
++  func hasFrame(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return frames.contains { $0.visibleData.range(of: Data(text.utf8)) != nil } }
++  func count(of text: String) -> Int { lock.lock(); defer { lock.unlock() }; return String(decoding: output, as: UTF8.self).components(separatedBy: text).count - 1 }
++  var frameCount: Int { lock.lock(); defer { lock.unlock() }; return frames.count }
++  var lastFrame: VTFrame? { lock.lock(); defer { lock.unlock() }; return frames.last }
++  var hasExited: Bool { lock.lock(); defer { lock.unlock() }; return exited }
++  var exitStatus: Int32? { lock.lock(); defer { lock.unlock() }; return exitCode }
++  var lastFrameTextAtExit: String? { lock.lock(); defer { lock.unlock() }; return finalFrameHadMarkerBeforeExit }
++}
++private final class LaneDirectories: @unchecked Sendable {
++  private let lock = NSLock(); private var list = [String]()
++  func attach(to backend: GhosttyVTBackend) { backend.onDirectory = { [self] raw in lock.lock(); list.append(raw); lock.unlock() } }
++  var values: [String] { lock.lock(); defer { lock.unlock() }; return list }
++}
++private enum LaneBSmoke {
++  static func eventually(_ timeout: TimeInterval = 4, _ predicate: () -> Bool) -> Bool { let deadline = Date(timeIntervalSinceNow: timeout); while Date() < deadline { if predicate() { return true }; usleep(5_000) }; return predicate() }
++  static func settle(_ milliseconds: Int = 120) { usleep(UInt32(milliseconds * 1_000)) }
++  static func barrier(_ backend: GhosttyVTBackend) { backend.queue.sync {} }
++  static func launch(_ script: String, columns: Int = 80, rows: Int = 24, configure: (GhosttyVTBackend) -> Void = { _ in }) -> (GhosttyVTBackend, LaneRecorder) {
++    let backend = GhosttyVTBackend(columns: columns, rows: rows); let recorder = LaneRecorder(); recorder.attach(to: backend); configure(backend)
++    backend.start(executable: "/bin/sh", argv: ["/bin/sh", "-c", script], environment: ["PATH": "/usr/bin:/bin"], directory: nil, columns: columns, rows: rows)
++    return (backend, recorder)
++  }
++  static func run() async {
++    await hiddenOutputTakesNoSnapshots()
++    await undrainedFrameDefersSnapshots()
++    await directoryNotifiedOncePerChange()
++    await mouseMirrorMatchesCore()
++    await selectionAsyncThenSyncRead()
++    await unchangedThemeIsNoOp()
++    await emptyKeyOutputDoesNotScrollOrSchedule()
++    await resizeDedupesAndCoalesces()
++    await pendingResizeSurvivesExitWithoutDangling()
++    print("TerminalVTBackend lane B smoke passed")
++  }
++
++  // B4: identical resizes are no-ops, a burst is applied as the first request plus one trailing apply, and core and child (TIOCSWINSZ) always end on the same final size.
++  static func resizeDedupesAndCoalesces() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_R; while IFS= read -r l; do printf 'SZ=%s;' \"$(stty size)\"; done"); let core = backend.coreForTesting
++    func childSees(_ expected: String) -> Bool { let seen = recorder.count(of: "SZ=\(expected);"); _ = backend.sendRaw(Data("?\n".utf8)); return eventually { recorder.count(of: "SZ=\(expected);") > seen } }
++    precondition(eventually { recorder.hasFrame("READY_R") }); settle(); barrier(backend)
++    let base = core.resizeCountForTesting(), frames = recorder.frameCount
++    for _ in 0..<20 { backend.resize(columns: 80, rows: 24, cellWidthPixels: 8, cellHeightPixels: 16) }; backend.resize(columns: 80, rows: 24); settle(); barrier(backend)
++    precondition(core.resizeCountForTesting() == base && recorder.frameCount == frames, "B4: a resize identical to the applied size must be a no-op"); precondition(childSees("24 80"))
++    backend.resize(columns: 100, rows: 30, cellWidthPixels: 8, cellHeightPixels: 16); precondition(eventually { recorder.lastFrame?.columns == 100 && recorder.lastFrame?.rows == 30 }, "B4: a changed size must produce a frame")
++    for _ in 0..<20 { backend.resize(columns: 100, rows: 30, cellWidthPixels: 8, cellHeightPixels: 16) }; settle(); barrier(backend)
++    precondition(core.resizeCountForTesting() == base + 1, "B4: repeated identical resizes were applied again"); precondition(childSees("30 100"))
++    backend.resize(columns: 100, rows: 30, cellWidthPixels: 9, cellHeightPixels: 16); settle(); barrier(backend); precondition(core.resizeCountForTesting() == base + 2, "B4: a changed cell pixel size is a different request")
++    settle(60); let burstBase = core.resizeCountForTesting()
++    for i in 0..<100 { backend.resize(columns: 60 + i, rows: 20 + i % 11, cellWidthPixels: 8, cellHeightPixels: 16) }
++    precondition(eventually { recorder.lastFrame?.columns == 159 && recorder.lastFrame?.rows == 20 }, "B4: the final requested size was never applied"); settle(); barrier(backend)
++    let applied = core.resizeCountForTesting() - burstBase; print("B4 burst: 100 resize requests -> \(applied) core.resize applications")
++    precondition(applied >= 1 && applied <= 10, "B4: burst was not coalesced (\(applied) applications)"); precondition(backend.snapshot()!.columns == 159 && backend.snapshot()!.rows == 20); precondition(childSees("20 159"), "B4: child window size differs from the final requested size")
++    settle(60); let tailBase = core.resizeCountForTesting()
++    backend.resize(columns: 120, rows: 33, cellWidthPixels: 8, cellHeightPixels: 16); backend.resize(columns: 121, rows: 33, cellWidthPixels: 8, cellHeightPixels: 16); backend.resize(columns: 120, rows: 33, cellWidthPixels: 8, cellHeightPixels: 16); settle(150); barrier(backend)
++    let tailApplied = core.resizeCountForTesting() - tailBase; precondition(tailApplied >= 1 && tailApplied <= 3, "B4: expected the first request and at most a trailing apply, got \(tailApplied)"); precondition(backend.snapshot()!.columns == 120 && backend.snapshot()!.rows == 33); precondition(childSees("33 120"))
++    await backend.closeAndWait()
++  }
++
++  // B4: a resize still pending when the child exits is applied to the core (never dropped, never applied after close) and nothing dangles afterwards.
++  // The transport runs a ~350 ms kill escalation between the leader's exit and onExit, so requests are issued at offsets straddling that deadline: early ones are accepted and must reach the core, late ones arrive after close and must be ignored.
++  static func pendingResizeSurvivesExitWithoutDangling() async {
++    for round in 0..<8 {
++      let (backend, recorder) = launch("stty -echo; printf READY_X; IFS= read -r l; exit 5"); let core = backend.coreForTesting
++      precondition(eventually { recorder.hasFrame("READY_X") }); settle(60)
++      precondition(backend.sendRaw(Data("go\n".utf8))); precondition(eventually { backend.currentPID() == nil }, "B4: leader exit not observed"); usleep(UInt32((300 + round * 8) * 1_000))
++      backend.resize(columns: 90, rows: 28); backend.resize(columns: 91, rows: 29); backend.resize(columns: 92, rows: 30); barrier(backend); let acceptedBeforeClose = !recorder.hasExited
++      precondition(eventually { recorder.hasExited }, "B4: exit not delivered"); precondition(recorder.exitStatus == 5); settle(150); barrier(backend)
++      let applied = core.resizeCountForTesting(), size = backend.snapshot()!
++      precondition(acceptedBeforeClose ? (size.columns == 92 && size.rows == 30) : (size.columns == 80 && size.rows == 24), "B4: round \(round) accepted=\(acceptedBeforeClose) ended at \(size.columns)x\(size.rows)")
++      backend.resize(columns: 70, rows: 20); settle(80); barrier(backend); precondition(core.resizeCountForTesting() == applied && backend.snapshot()!.columns == size.columns, "B4: a resize was applied after the child exited")
++      await backend.closeAndWait()
++    }
++  }
++
++  // B3(a): the lock-free mouseReporting() mirror equals core.mouseReporting() at every quiescent point while tracking modes are toggled by the child.
++  static func mouseMirrorMatchesCore() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_M; while IFS= read -r l; do case \"$l\" in on) printf '\u{1b}[?1000h';; off) printf '\u{1b}[?1000l';; any) printf '\u{1b}[?1003h';; anyoff) printf '\u{1b}[?1003l';; esac; printf 'ACK_%s;' \"$l\"; done"); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_M") }); barrier(backend); precondition(!backend.mouseReporting() && !core.mouseReporting(), "B3: tracking must start disabled")
++    for (line, expected) in [("on", true), ("off", false), ("any", true), ("anyoff", false), ("on", true)] {
++      precondition(backend.sendRaw(Data("\(line)\n".utf8))); let acks = recorder.count(of: "ACK_\(line);"); precondition(eventually { recorder.count(of: "ACK_\(line);") > acks }, "B3: no ack for \(line)"); barrier(backend)
++      precondition(core.mouseReporting() == expected, "B3: fixture did not toggle mouse tracking for \(line)"); precondition(backend.mouseReporting() == expected, "B3: mouseReporting mirror differs from the core after \(line)")
++    }
++    precondition(backend.sendRaw(Data("done\n".utf8))); await backend.closeAndWait()
++  }
++
++  // B3(b): asynchronous selection requests are ordered before a later synchronous selectedText(), without any barrier in between.
++  static func selectionAsyncThenSyncRead() async {
++    let (backend, recorder) = launch("stty -echo; printf SELECT_ME_TEXT; IFS= read -r l; exit 0")
++    precondition(eventually { recorder.hasFrame("SELECT_ME_TEXT") })
++    backend.selectionBeginAsync(column: 0, row: 0, clickCount: 1); backend.selectionUpdateAsync(column: 14, row: 0); backend.selectionEndAsync(); let dragged = backend.selectedText(); precondition(dragged == "SELECT_ME_TEXT", "B3: begin/update/end async selection, got \(String(describing: dragged))")
++    precondition(backend.selectionBegin(column: 0, row: 0, clickCount: 1) && backend.selectionUpdate(column: 14, row: 0) && backend.selectionEnd() && backend.selectedText() == dragged, "B3: async begin/update/end differs from the synchronous gesture")
++    backend.selectDragAsync(startColumn: 0, startRow: 0, endColumn: 5, endRow: 0, behavior: 0); precondition(backend.selectedText() == "SELECT", "B3: async drag selection")
++    backend.selectLineAsync(column: 2, row: 0); precondition(backend.selectedText() == "SELECT_ME_TEXT", "B3: async line selection")
++    backend.selectWordAsync(column: 2, row: 0); let word = backend.selectedText(); precondition(word != nil && !word!.isEmpty); precondition(backend.selectWord(column: 2, row: 0)); precondition(backend.selectedText() == word, "B3: async word selection differs from the synchronous one")
++    backend.selectAllAsync(); precondition(backend.selectedText()?.contains("SELECT_ME_TEXT") == true, "B3: async select all")
++    backend.clearSelectionAsync(); let cleared = backend.selectedText(); precondition(cleared == nil || cleared == "", "B3: async clear selection")
++    let frames = recorder.frameCount; backend.selectionBeginAsync(column: 0, row: 0, clickCount: 1); backend.selectionUpdateAsync(column: 5, row: 0); precondition(eventually { recorder.frameCount > frames && recorder.lastFrame?.cells.prefix(4).allSatisfy { $0.selected } == true }, "B3: async selection did not schedule a frame with selected cells")
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }); await backend.closeAndWait()
++  }
++
++  // B3(c): re-applying the current theme is a no-op (no frame, no generation bump) while a changed theme still reschedules a frame.
++  static func unchangedThemeIsNoOp() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_T; IFS= read -r l; exit 0"); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_T") }); settle()
++    precondition(backend.setTheme(.light)); precondition(eventually { recorder.lastFrame?.background == VTColor(rgb: 0xF7F8FA) }, "B3: a changed theme must reschedule a frame"); settle()
++    let generation = backend.snapshot()!.generation, frames = recorder.frameCount, snapshots = core.snapshotCountForTesting()
++    for _ in 0..<5 { precondition(backend.setTheme(.light), "B3: unchanged theme must still report success") }; settle(); barrier(backend)
++    precondition(recorder.frameCount == frames && core.snapshotCountForTesting() == snapshots, "B3: unchanged theme scheduled a frame"); precondition(backend.snapshot()!.generation == generation, "B3: unchanged theme bumped the generation")
++    precondition(backend.setTheme(.dark)); precondition(eventually { recorder.lastFrame?.background == VTColor(rgb: 0x252A2E) }, "B3: switching back must reschedule a frame"); precondition(backend.snapshot()!.generation == generation + 1)
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }); await backend.closeAndWait()
++  }
++
++  // B3(d): key events whose encoded bytes are empty (modifier-only, release) neither scroll to bottom nor schedule a frame; non-empty output still does.
++  static func emptyKeyOutputDoesNotScrollOrSchedule() async {
++    let (backend, recorder) = launch("stty -echo; i=0; while [ $i -lt 100 ]; do echo LINE_$i; i=$((i+1)); done; printf READY_K; while IFS= read -r l; do :; done"); let core = backend.coreForTesting
++    let shift = GhosttyMods(GHOSTTY_MODS_SHIFT)
++    precondition(core.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: shift, action: GHOSTTY_KEY_ACTION_PRESS, text: "") == Data() && core.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: "") == Data() && core.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: "") == Data(), "B3: fixture keys no longer encode to empty output")
++    precondition(eventually { recorder.hasFrame("READY_K") }); settle(); backend.scroll(rows: -10); settle(); barrier(backend)
++    let before = backend.snapshot()!.scrollbar; precondition(before.offset + before.length < before.total, "B3: fixture did not scroll back")
++    let frames = recorder.frameCount, snapshots = core.snapshotCountForTesting()
++    backend.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: shift, action: GHOSTTY_KEY_ACTION_PRESS, text: ""); backend.encodeKey(key: GHOSTTY_KEY_SHIFT_LEFT, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: ""); backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_RELEASE, text: ""); precondition(backend.sendRaw(Data()))
++    settle(); barrier(backend)
++    precondition(recorder.frameCount == frames && core.snapshotCountForTesting() == snapshots, "B3: empty key output scheduled a frame"); precondition(backend.snapshot()!.scrollbar.offset == before.offset, "B3: empty key output scrolled to bottom")
++    backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a"); precondition(eventually { recorder.frameCount > frames }, "B3: non-empty key output must still schedule a frame")
++    let bottom = backend.snapshot()!.scrollbar; precondition(bottom.offset + bottom.length == bottom.total, "B3: non-empty key output must still scroll to bottom")
++    await backend.closeAndWait()
++  }
++
++  // B2: the cwd is read only after new input and reported once per distinct raw OSC 7 value (never for repeats); nothing here touches the main thread.
++  static func directoryNotifiedOncePerChange() async {
++    func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
++    let directories = LaneDirectories()
++    let script = [osc7("/tmp/x"), osc7("/tmp/x"), osc7("/tmp/y"), osc7("/tmp/y"), osc7("/tmp/x")].joined(separator: "; sleep 0.12; ") + "; sleep 0.12; printf PWD_DONE; IFS= read -r l; exit 0"
++    let (backend, recorder) = launch(script, configure: { directories.attach(to: $0) }); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("PWD_DONE") }, "B2: script did not finish"); settle(150); barrier(backend)
++    precondition(directories.values == ["file://host/tmp/x", "file://host/tmp/y", "file://host/tmp/x"], "B2: expected exactly one notification per directory change, got \(directories.values)")
++    let reads = core.pwdReadCountForTesting(); precondition(reads >= 3 && reads <= recorder.frameCount, "B2: pwd read \(reads) times for \(recorder.frameCount) frames")
++    let frames = recorder.frameCount; for _ in 0..<3 { backend.scrollToBottom(); settle(60) }; barrier(backend)
++    precondition(recorder.frameCount > frames, "B2: scroll frames were not published"); precondition(core.pwdReadCountForTesting() == reads, "B2: pwd was re-read without new input"); precondition(directories.values.count == 3, "B2: unchanged directory was notified again")
++    precondition(backend.sendRaw(Data("\n".utf8))); precondition(eventually { recorder.hasExited }, "B2: exit not delivered"); await backend.closeAndWait()
++  }
++
++  // B1: a hidden terminal never snapshots and never calls onFrame, the synchronous snapshot stays live, and unhiding always yields a fresh frame.
++  static func hiddenOutputTakesNoSnapshots() async {
++    let (backend, recorder) = launch("stty -echo; printf READY_H; IFS= read -r l; printf HID_A; IFS= read -r l; printf HID_B; IFS= read -r l; exit 0"); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_H") }, "B1: ready frame missing")
++    backend.setVisible(false); settle(); barrier(backend)
++    let snapshots = core.snapshotCountForTesting(), frames = recorder.frameCount
++    precondition(backend.sendRaw(Data("1\n".utf8))); precondition(eventually { recorder.hasOutput("HID_A") }); precondition(backend.sendRaw(Data("2\n".utf8))); precondition(eventually { recorder.hasOutput("HID_B") }); settle(); barrier(backend)
++    precondition(core.snapshotCountForTesting() == snapshots, "B1: hidden output produced a snapshot"); precondition(recorder.frameCount == frames, "B1: hidden output delivered a frame")
++    precondition(backend.snapshot()?.visibleData.range(of: Data("HID_AHID_B".utf8)) != nil, "B1: synchronous snapshot is not live while hidden"); precondition(core.snapshotCountForTesting() == snapshots + 1, "B1: only the synchronous snapshot may run while hidden")
++    backend.setVisible(true); precondition(eventually { recorder.hasFrame("HID_AHID_B") }, "B1: no fresh frame after unhide"); precondition(recorder.frameCount > frames)
++    backend.setVisible(false); settle(); barrier(backend); let hiddenExitFrames = recorder.frameCount
++    precondition(backend.sendRaw(Data("3\n".utf8))); precondition(eventually { recorder.hasExited }, "B1: hidden child exit not delivered"); settle(); precondition(recorder.frameCount == hiddenExitFrames, "B1: hidden exit delivered a frame"); precondition(backend.snapshot()?.visibleData.range(of: Data("HID_AHID_B".utf8)) != nil)
++    await backend.closeAndWait()
++  }
++
++  // B1: while the consumer still holds an undrained frame no new snapshot is produced; after it drains the latest state is published once; finish() bypasses the gate.
++  static func undrainedFrameDefersSnapshots() async {
++    let held = LaneFlag()
++    let (backend, recorder) = launch("stty -echo; printf READY_G; IFS= read -r l; printf GATE_A; IFS= read -r l; printf GATE_B; IFS= read -r l; printf GATE_C; IFS= read -r l; printf GATE_FIN; exit 4", configure: { $0.hasUndrainedFrame = { held.value } }); let core = backend.coreForTesting
++    precondition(eventually { recorder.hasFrame("READY_G") }, "B1: gate ready frame missing"); settle(); barrier(backend)
++    held.value = true; let snapshots = core.snapshotCountForTesting(), frames = recorder.frameCount
++    precondition(backend.sendRaw(Data("1\n".utf8))); precondition(eventually { recorder.hasOutput("GATE_A") }); precondition(backend.sendRaw(Data("2\n".utf8))); precondition(eventually { recorder.hasOutput("GATE_B") }); settle(); barrier(backend)
++    precondition(core.snapshotCountForTesting() == snapshots && recorder.frameCount == frames, "B1: snapshot produced while a frame was undrained")
++    held.value = false; backend.frameDrained(); precondition(eventually { recorder.hasFrame("GATE_AGATE_B") }, "B1: latest state not published after the frame was drained"); settle(); barrier(backend)
++    precondition(core.snapshotCountForTesting() == snapshots + 1 && recorder.frameCount == frames + 1, "B1: expected exactly one snapshot after the drain")
++    for _ in 0..<5 { backend.frameDrained() }; settle(60); barrier(backend); precondition(core.snapshotCountForTesting() == snapshots + 1, "B1: frameDrained without a deferred publish must be a no-op")
++    held.value = true; precondition(backend.sendRaw(Data("3\n".utf8))); precondition(eventually { recorder.hasOutput("GATE_C") }); settle(); barrier(backend); precondition(!recorder.hasFrame("GATE_C"), "B1: deferred publish leaked a frame")
++    precondition(backend.sendRaw(Data("4\n".utf8))); precondition(eventually { recorder.hasExited }, "B1: exit not delivered"); precondition(recorder.exitStatus == 4)
++    precondition(recorder.lastFrameTextAtExit?.contains("GATE_FIN") == true, "B1: finish() did not publish the final frame before onExit while a frame was undrained")
++    await backend.closeAndWait()
+   }
+ }
+ #endif
+diff --git a/scripts/terminal-vt-core-swift-smoke.swift b/scripts/terminal-vt-core-swift-smoke.swift
+index a9e81b9..683fb16 100644
+--- a/scripts/terminal-vt-core-swift-smoke.swift
++++ b/scripts/terminal-vt-core-swift-smoke.swift
+@@ -1,4 +1,5 @@
+ import Foundation
+ import StudioVTCoreC
+ enum GeometrySmoke { static let check: Void = { let g1=TerminalGeometry(backingScale:1); let g2=TerminalGeometry(backingScale:2); precondition(g1.cellPixelSize.width.rounded()==g1.cellPixelSize.width && g2.cellPixelSize.height.rounded()==g2.cellPixelSize.height); precondition(g1.contentInset.left==16 && g1.contentInset.top==12); let gp=g1.origin(for:3,row:2); precondition(g1.cell(at:gp).column==3 && g1.cell(at:gp).row==2) }() }
+-@main struct Smoke { static func main() { let core=TerminalVTCore(columns:20,rows:4); precondition(core.setTheme(.dark)); precondition(core.snapshot()!.background==VTColor(rgb:0x252A2E)); core.feed(Data("\u{1b}[38;2;1;2;3mA".utf8)); let before=core.snapshot()!; precondition(core.setTheme(.light)); let frame=core.snapshot()!; precondition(frame.background==VTColor(rgb:0xF7F8FA)); precondition(frame.cells[0].text==before.cells[0].text && frame.cells[0].foreground==before.cells[0].foreground); precondition(TerminalTheme.dark.palette.count==256 && TerminalTheme.dark.palette[16]==VTColor(0,0,0) && TerminalTheme.dark.palette[231]==VTColor(255,255,255) && TerminalTheme.dark.palette[232]==VTColor(8,8,8) && TerminalTheme.dark.palette[255]==VTColor(238,238,238)); core.feed(Data("\u{1b}[6n".utf8)); let reply=core.takeQueryResponses(); precondition(reply.first==0x1b && reply.last==0x52); let key=core.encodeKey(key:GHOSTTY_KEY_C,modifiers:GhosttyMods(GHOSTTY_MODS_CTRL),action:GHOSTTY_KEY_ACTION_PRESS,text:""); precondition(key==Data([3])); print("TerminalVTCore Swift real smoke passed") } }
++@main struct Smoke { static func main() { let core=TerminalVTCore(columns:20,rows:4); precondition(core.setTheme(.dark)); precondition(core.snapshot()!.background==VTColor(rgb:0x252A2E)); core.feed(Data("\u{1b}[38;2;1;2;3mA".utf8)); let before=core.snapshot()!; precondition(core.setTheme(.light)); let frame=core.snapshot()!; precondition(frame.background==VTColor(rgb:0xF7F8FA)); precondition(frame.cells[0].text==before.cells[0].text && frame.cells[0].foreground==before.cells[0].foreground); precondition(TerminalTheme.dark.palette.count==256 && TerminalTheme.dark.palette[16]==VTColor(0,0,0) && TerminalTheme.dark.palette[231]==VTColor(255,255,255) && TerminalTheme.dark.palette[232]==VTColor(8,8,8) && TerminalTheme.dark.palette[255]==VTColor(238,238,238)); core.feed(Data("\u{1b}[6n".utf8)); let reply=core.takeQueryResponses(); precondition(reply.first==0x1b && reply.last==0x52); let key=core.encodeKey(key:GHOSTTY_KEY_C,modifiers:GhosttyMods(GHOSTTY_MODS_CTRL),action:GHOSTTY_KEY_ACTION_PRESS,text:""); precondition(key==Data([3])); laneBCounters(); print("TerminalVTCore Swift real smoke passed") }
++  static func laneBCounters() { let core=TerminalVTCore(columns:20,rows:4); let s0=core.snapshotCountForTesting(); _=core.snapshot(); _=core.snapshot(); precondition(core.snapshotCountForTesting()==s0+2, "B1: snapshot counter must count every core snapshot"); let p0=core.pwdReadCountForTesting(); core.feed(Data("\u{1b}]7;file://host/tmp/x\u{07}".utf8)); precondition(core.pwdReadCountForTesting()==p0, "B2: feeding must not read the pwd"); precondition(core.pwd()=="file://host/tmp/x" && core.pwdReadCountForTesting()==p0+1, "B2: pwd must return the raw OSC 7 string and count one read"); let r0=core.resizeCountForTesting(); core.resize(columns:30,rows:5); core.resize(columns:30,rows:5); precondition(core.resizeCountForTesting()==r0+2 && core.snapshot()!.columns==30, "B4: resize counter must count every core.resize") } }
+diff --git a/scripts/terminal-vt-host-smoke.swift b/scripts/terminal-vt-host-smoke.swift
+index bd34c28..ba890e8 100644
+--- a/scripts/terminal-vt-host-smoke.swift
++++ b/scripts/terminal-vt-host-smoke.swift
+@@ -1,5 +1,6 @@
+ #if WEB_STUDIO_VT
+ import AppKit
++import Combine
+ import Foundation
+ import StudioVTCoreC
+ 
+@@ -139,6 +140,39 @@ struct TerminalVTHostSmoke {
+     ime.insertText("文", replacementRange: NSRange(location: 0, length: 1)); precondition(!ime.hasMarkedText())
+     ime.unmarkText(); precondition(ime.selectedRange().location == NSNotFound)
+     await interactive.closeAndWait()
++    // Lane B (B2): OSC 7 reaches knownDirectory once per distinct directory; repeats and the unchanged start directory publish nothing, and setKnownDirectory only works while idle.
++    let osc = TerminalSession(resourceID: UUID()); var oscDirectories: [String?] = []; let oscSink = osc.$knownDirectory.sink { oscDirectories.append($0) }
++    osc.setKnownDirectory("/var"); precondition(osc.knownDirectory == "/var", "idle setKnownDirectory did not apply")
++    func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
++    osc.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", [osc7("/tmp"), osc7("/usr/local"), osc7("/usr/local"), osc7("/usr/share"), osc7("/usr/local")].joined(separator: "; sleep 0.12; ") + "; sleep 0.12; printf 'PWD_DONE'; IFS= read -r l; exit 0"], directory: "/tmp")
++    let oscRunning = await wait({ if case .running = osc.state { return true }; return false }); precondition(oscRunning, "OSC 7 fixture did not start")
++    osc.setKnownDirectory("/nope"); precondition(osc.knownDirectory != "/nope", "setKnownDirectory applied outside idle")
++    let oscDone = await wait({ osc.renderedText().contains("PWD_DONE") }); precondition(oscDone, "OSC 7 fixture did not finish")
++    try? await Task.sleep(nanoseconds: 250_000_000)
++    precondition(oscDirectories == [nil, "/var", "/tmp", "/usr/local", "/usr/share", "/usr/local"], "OSC 7 must publish exactly once per distinct directory: \(oscDirectories)")
++    osc.sendRaw(Data("\n".utf8)); let oscExited = await wait({ if case .exited(0) = osc.state { return true }; return false }); precondition(oscExited, "OSC 7 fixture exit not delivered"); oscSink.cancel()
++    // Lane B (B3): the Session's selection wrappers no longer block on the PTY queue yet stay ordered before selectedText(); mouseReporting() is a mirror of the core; an unchanged theme is a no-op.
++    let sel = TerminalSession(resourceID: UUID())
++    sel.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", "printf 'SELECT_ME_TEXT'; printf '\u{1b}[?1000h'; printf MOUSE_ON; IFS= read -r l; printf '\u{1b}[?1000l'; printf MOUSE_OFF; IFS= read -r l; exit 0"], directory: "/tmp")
++    let selReady = await wait({ sel.renderedText().contains("MOUSE_ON") }); precondition(selReady, "selection fixture did not start"); precondition(sel.mouseReporting(), "mouseReporting mirror did not follow ?1000h")
++    sel.selectionBegin(column: 0, row: 0, clickCount: 1); sel.selectionUpdate(column: 14, row: 0); sel.selectionEnd(); precondition(sel.selectedText() == "SELECT_ME_TEXT", "async begin/update/end selection was not ordered before selectedText()")
++    sel.selectDrag(startColumn: 0, startRow: 0, endColumn: 5, endRow: 0); precondition(sel.selectedText() == "SELECT", "async drag selection")
++    sel.selectLine(column: 3, row: 0); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async line selection")
++    sel.selectWord(column: 1, row: 0); precondition(sel.selectedText()?.isEmpty == false, "async word selection")
++    sel.selectAll(); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async select all"); sel.clearSelection(); let selCleared = sel.selectedText(); precondition(selCleared == nil || selCleared == "", "async clear selection")
++    precondition(sel.setTheme(.light) && sel.setTheme(.light) && sel.setTheme(.dark) && sel.setTheme(.dark), "setTheme must report success for repeated and changed themes")
++    sel.sendRaw(Data("\n".utf8)); let selOff = await wait({ sel.renderedText().contains("MOUSE_OFF") }); precondition(selOff, "mouse-off marker missing"); precondition(!sel.mouseReporting(), "mouseReporting mirror did not follow ?1000l")
++    sel.sendRaw(Data("\n".utf8)); let selExited = await wait({ if case .exited(0) = sel.state { return true }; return false }); precondition(selExited, "selection fixture exit not delivered")
++    // Lane B (B4): a burst of Session.resize calls coalesces, repeating the final size is a no-op, and the child's TIOCGWINSZ reports the final size.
++    let rz = TerminalSession(resourceID: UUID())
++    rz.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", "stty -echo; printf READY_RZ; while IFS= read -r l; do printf 'SZ=%s;' \"$(stty size)\"; done"], directory: "/tmp")
++    let rzReady = await wait({ rz.renderedText().contains("READY_RZ") }); precondition(rzReady, "resize fixture did not start")
++    let rzGeometry = rz.terminalView.geometry
++    for i in 0..<100 { rz.resize(columns: 60 + i, rows: 20 + i % 11, geometry: rzGeometry) }
++    for _ in 0..<20 { rz.resize(columns: 159, rows: 20, geometry: rzGeometry) }
++    let rzApplied = await wait({ rz.currentFrameForTesting().map { $0.columns == 159 && $0.rows == 20 } == true }); precondition(rzApplied, "final coalesced resize was not applied to the core")
++    rz.sendRaw(Data("?\n".utf8)); let rzSize = await wait({ rz.renderedText().contains("SZ=20 159;") }); precondition(rzSize, "child window size differs from the final requested size")
++    await rz.closeAndWait()
+     print("Terminal VT host smoke passed")
+   }
+ }

@@ -1,5 +1,7 @@
 # Web Studio implementation and acceptance
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../STATUS.md)。
+
 Final verification date: 2026-09-12. Source implementation and documentation are delivered in the existing dirty worktree. The six-feature product is not fully accepted: interactive terminals are blocked by retained App Sandbox, final UI execution is blocked by macOS authentication, and real SSH/API connections lack configuration. Build, model tests and actual runtime evidence are separate claims.
 
 ## Baseline and scope

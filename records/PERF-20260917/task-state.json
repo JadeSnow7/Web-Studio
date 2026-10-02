@@ -1,0 +1,1250 @@
+{
+  "schema_version": "1.3",
+  "spec": {
+    "version": "SPEC-1",
+    "authority": "state.spec",
+    "source_ids": [
+      "SRC-001"
+    ],
+    "goal_ref": "discovery.expected_outcome",
+    "scope_ref": "discovery.scope",
+    "constraints": [
+      "保留已有修改和历史原始记录",
+      "默认 GhosttyKit 后端不切换",
+      "性能与压力采集同主机串行",
+      "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+      "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+      "源码实现由 coder，主线程审查"
+    ],
+    "exceptions": [
+      "GUI、计数器或环境不可用时记录 undetermined",
+      "无可重复收益停止该候选；不按结果方向排除样本"
+    ],
+    "conditions": [
+      {
+        "id": "SC-W0",
+        "metric_ids": [
+          "MET-001"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/SCENARIOS.json"
+        ]
+      },
+      {
+        "id": "SC-W1",
+        "metric_ids": [
+          "MET-002"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/W1-RESULTS.md"
+        ]
+      },
+      {
+        "id": "SC-W2",
+        "metric_ids": [
+          "MET-003"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/W2-RESULTS.md"
+        ]
+      },
+      {
+        "id": "SC-W3",
+        "metric_ids": [
+          "MET-004"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/W3-RESULTS.md"
+        ]
+      },
+      {
+        "id": "SC-W4",
+        "metric_ids": [
+          "MET-005"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/W4-RESULTS.md"
+        ]
+      },
+      {
+        "id": "SC-W5",
+        "metric_ids": [
+          "MET-006"
+        ],
+        "deliverables": [
+          "records/PERF-20260917/W5-RESULTS.md"
+        ]
+      }
+    ],
+    "contracts": [
+      "PERFORMANCE-PLAN.md"
+    ],
+    "open_items": []
+  },
+  "task": {
+    "id": "PERF-20260917",
+    "title": "Web Studio 全应用性能优化与效果记录",
+    "mode": "new",
+    "status": "in_progress",
+    "source_ids": [
+      "SRC-001"
+    ],
+    "checkpoint": "W0 tooling and W1 offscreen evidence collected; full App matrix blocked by unbounded GUI observation"
+  },
+  "discovery": {
+    "status": "ready",
+    "user": "Web Studio 用户",
+    "scenario": "默认产品与 VT 的启动、Web、终端、Agent 和生命周期",
+    "problem": "已测终端字体热点与全应用测量缺口",
+    "expected_outcome": "受控实验确认收益，正确性通过后采用可回退优化，保留未测和失败",
+    "scope": "PERFORMANCE-PLAN.md W0-W5，首先 W0/W1，后续按证据推进",
+    "acceptable_result": "重复数据和 GUI 支持采用；缺失门槛如实保留未判定"
+  },
+  "sources": [
+    {
+      "id": "SRC-001",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-17:execute-performance-plan-with-veriflow",
+      "summary": "使用 veriflow skill 进行实验和效果收集记录，开始执行性能优化计划",
+      "adoption": "accepted"
+    }
+  ],
+  "main_tasks": [
+    {
+      "id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "全应用测量基线",
+      "scope": [
+        "PERFORMANCE-PLAN.md W0"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "in_progress",
+      "metric_ids": [
+        "MET-001"
+      ],
+      "implementation_task_ids": [
+        "IT-001"
+      ]
+    },
+    {
+      "id": "MT-002",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "帧内字体复用验证",
+      "scope": [
+        "PERFORMANCE-PLAN.md W1"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "blocked",
+      "metric_ids": [
+        "MET-002"
+      ],
+      "implementation_task_ids": [
+        "IT-002"
+      ]
+    },
+    {
+      "id": "MT-003",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "Web 状态传播与截图",
+      "scope": [
+        "PERFORMANCE-PLAN.md W2"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [
+        "MT-001"
+      ],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "defined",
+      "metric_ids": [
+        "MET-003"
+      ],
+      "implementation_task_ids": [
+        "IT-003"
+      ]
+    },
+    {
+      "id": "MT-004",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "终端后台重复工作",
+      "scope": [
+        "PERFORMANCE-PLAN.md W3"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [
+        "MT-001"
+      ],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "defined",
+      "metric_ids": [
+        "MET-004"
+      ],
+      "implementation_task_ids": [
+        "IT-004"
+      ]
+    },
+    {
+      "id": "MT-005",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "启动规模释放",
+      "scope": [
+        "PERFORMANCE-PLAN.md W4"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [
+        "MT-001"
+      ],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "defined",
+      "metric_ids": [
+        "MET-005"
+      ],
+      "implementation_task_ids": [
+        "IT-005"
+      ]
+    },
+    {
+      "id": "MT-006",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "Agent 预览长对话",
+      "scope": [
+        "PERFORMANCE-PLAN.md W5"
+      ],
+      "non_goals": [
+        "默认后端迁移"
+      ],
+      "dependencies": [
+        "MT-001"
+      ],
+      "assumptions": [
+        "仅测量证实后优化"
+      ],
+      "status": "defined",
+      "metric_ids": [
+        "MET-006"
+      ],
+      "implementation_task_ids": [
+        "IT-006"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "MET-001",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "全应用测量基线：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W0 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [
+        "EVD-013",
+        "EVD-034"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-002",
+      "main_task_id": "MT-002",
+      "kind": "mandatory_gate",
+      "name": "帧内字体复用验证：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W1 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [
+        "EVD-013",
+        "EVD-035"
+      ],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-003",
+      "main_task_id": "MT-003",
+      "kind": "mandatory_gate",
+      "name": "Web 状态传播与截图：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W2 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-004",
+      "main_task_id": "MT-004",
+      "kind": "mandatory_gate",
+      "name": "终端后台重复工作：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W3 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-005",
+      "main_task_id": "MT-005",
+      "kind": "mandatory_gate",
+      "name": "启动规模释放：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W4 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    },
+    {
+      "id": "MET-006",
+      "main_task_id": "MT-006",
+      "kind": "mandatory_gate",
+      "name": "Agent 预览长对话：协议、原始数据与分项结论",
+      "baseline": "历史证据见计划；本轮冻结实际源码，未采集指标为 null",
+      "target": "满足 PERFORMANCE-PLAN.md W5 完成条件；不缺项冒充完成",
+      "method": "record_execution.py 绑定实际命令与源码，主线程检查原始记录和对应 GUI/性能证据",
+      "environment_data": "Release arm64 coverage/sanitizer off；固定 fixture；诊断与基线分离",
+      "evidence_ids": [],
+      "status": "undetermined",
+      "verification": "manual"
+    }
+  ],
+  "implementation_tasks": [
+    {
+      "id": "IT-001",
+      "main_task_id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "全应用测量基线",
+      "file_scope": [
+        "records/PERF-20260917/SCENARIOS.json",
+        "scripts/app-performance-baseline.py",
+        "scripts/test-app-performance-baseline.py",
+        "records/PERF-20260917/SCENARIOS.json"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-001"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-013"
+      ],
+      "owner": "main-thread",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-002",
+      "main_task_id": "MT-002",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "帧内字体复用验证",
+      "file_scope": [
+        "Web Studio/TerminalMetalRenderer.swift",
+        "records/PERF-20260917/W1-RESULTS.md"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-002"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-013"
+      ],
+      "owner": "coder",
+      "status": "implemented"
+    },
+    {
+      "id": "IT-003",
+      "main_task_id": "MT-003",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "Web 状态传播与截图",
+      "file_scope": [
+        "Web Studio/WebRuntime.swift",
+        "Web Studio/ResourceModel.swift",
+        "Web Studio/ContentView.swift",
+        "Web Studio/StudioDesign.swift",
+        "records/PERF-20260917/W2-RESULTS.md"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [
+        "IT-001"
+      ],
+      "acceptance": [
+        "MET-003"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "coder",
+      "status": "planned"
+    },
+    {
+      "id": "IT-004",
+      "main_task_id": "MT-004",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "终端后台重复工作",
+      "file_scope": [
+        "Web Studio/TerminalVTBackend.swift",
+        "Web Studio/TerminalVTSession.swift",
+        "Web Studio/TerminalVTCore.swift",
+        "records/PERF-20260917/W3-RESULTS.md"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [
+        "IT-001"
+      ],
+      "acceptance": [
+        "MET-004"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "coder",
+      "status": "planned"
+    },
+    {
+      "id": "IT-005",
+      "main_task_id": "MT-005",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "启动规模释放",
+      "file_scope": [
+        "records/PERF-20260917/W4-RESULTS.md"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [
+        "IT-001"
+      ],
+      "acceptance": [
+        "MET-005"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "coder",
+      "status": "planned"
+    },
+    {
+      "id": "IT-006",
+      "main_task_id": "MT-006",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "Agent 预览长对话",
+      "file_scope": [
+        "Web Studio/AgentController.swift",
+        "Web Studio/AgentViews.swift",
+        "Web Studio/AgentService.swift",
+        "Web Studio/CodexProcessRunner.swift",
+        "records/PERF-20260917/W5-RESULTS.md"
+      ],
+      "interface_constraints": [
+        "保留已有修改和历史原始记录",
+        "默认 GhosttyKit 后端不切换",
+        "性能与压力采集同主机串行",
+        "W1 仅帧内四 traits 字体复用，隔离实验通过前不采用",
+        "缺测为 null，不以 CPU 或 DSR 冒充显示延迟",
+        "源码实现由 coder，主线程审查"
+      ],
+      "dependencies": [
+        "IT-001"
+      ],
+      "acceptance": [
+        "MET-006"
+      ],
+      "support_reason": "",
+      "evidence_ids": [],
+      "owner": "coder",
+      "status": "planned"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-001",
+      "path": "records/PERF-20260917/evidence/candidate-build.execution.json",
+      "kind": "execution",
+      "result": "undetermined",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:35:41.875265Z",
+      "sha256": "3ce7edcea1fd026a32625f7544763914006ca708cf980ebeee90f10f070c3799",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-002",
+      "path": "records/PERF-20260917/evidence/candidate-diagnostic-build.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:07:39.681518Z",
+      "sha256": "da6d9b355a8d0031eaf250b909684af58680bc22854f907ea2ae423c5ff4dce4",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-003",
+      "path": "records/PERF-20260917/evidence/candidate-metal-smoke.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:20:35.770472Z",
+      "sha256": "bef33f9384aa6f09a7a7c250d2adf3a8e6eb94f6417369c2f7414be0f3b0c86c",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-004",
+      "path": "records/PERF-20260917/evidence/candidate-pixels.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:46:00.380062Z",
+      "sha256": "c501c368f74a09a0d0bed1b849b7c399c7cda4bdd227dfed739d29902f6519ec",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-005",
+      "path": "records/PERF-20260917/evidence/control-build-v2.execution.json",
+      "kind": "execution",
+      "result": "undetermined",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:34:50.464440Z",
+      "sha256": "490b01bc1edba4521fb796341490f9615371bd88218378efee4a93c5ec19b94b",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-006",
+      "path": "records/PERF-20260917/evidence/control-build.execution.json",
+      "kind": "execution",
+      "result": "failed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:33:47.017616Z",
+      "sha256": "d179bed606170eb36030355bfd435c7e96c26f744d76fdff547e41e8ef824306",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-007",
+      "path": "records/PERF-20260917/evidence/control-diagnostic-build.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:06:51.963354Z",
+      "sha256": "5f68ddd5aef7391130db8fe818afe57595850ecbd53c65f1dcaee6f00d38e073",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-008",
+      "path": "records/PERF-20260917/evidence/control-pixels-v2.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:45:27.323605Z",
+      "sha256": "480d3f8c50f071f2c6b181593cb0b330564d066524924c881f10e57a680d942d",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-009",
+      "path": "records/PERF-20260917/evidence/control-pixels.execution.json",
+      "kind": "execution",
+      "result": "undetermined",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:32:48.442238Z",
+      "sha256": "950792430a24736794aaeb7a87116eacd34b08a95e5c798872cee77213302b76",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-010",
+      "path": "records/PERF-20260917/evidence/default-build.execution.json",
+      "kind": "execution",
+      "result": "undetermined",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:47:47.432303Z",
+      "sha256": "f793a8f990cf3f9756cbb3578450fe3af91978374c76b0e9b18bf57f06a99caf",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-011",
+      "path": "records/PERF-20260917/evidence/default-clean-build.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:16:57.916737Z",
+      "sha256": "ad4a9c9a3410f05bfa2a8c0f58f5550459abe1733d3be3e4e2891ed290077936",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-012",
+      "path": "records/PERF-20260917/evidence/default-pilot.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:18:29.307240Z",
+      "sha256": "e7d907b805b05417315710d370d20bcf9951a6bd5bd1a4ecdf6d6d7dded9c520",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-013",
+      "path": "records/PERF-20260917/evidence/final-scoped-review.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001",
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:23:39.403864Z",
+      "sha256": "3190e83e17d9115681322e5433806d6533176d2f3bcf0eda08f740289e0859f1",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "New user-authorized local test package adds repository artifacts after the recorded global revision. Historical execution/report bytes are unchanged; candidate executable identity reverified in evidence/local-test1. No historical record rebound."
+    },
+    {
+      "id": "EVD-014",
+      "path": "records/PERF-20260917/evidence/implementation-gate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:30:42.068326Z",
+      "sha256": "b46191c325919bf2ff42dac43d86b5d984bf81691f59480174997b45973265ee",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-015",
+      "path": "records/PERF-20260917/evidence/offscreen-1-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:09:43.347283Z",
+      "sha256": "80e4aaa4281f7ab9b3ed921c7f863851c46a2587a879d423ec23aa897e31227a",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-016",
+      "path": "records/PERF-20260917/evidence/offscreen-1-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:09:23.500961Z",
+      "sha256": "6216c0706b8a0f312aa03f43b62684ab7501cdb56d1dd2317c4ecc8bfb6696cf",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-017",
+      "path": "records/PERF-20260917/evidence/offscreen-2-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:09:56.032432Z",
+      "sha256": "b9d61e4726aa7f30a28c64fbf12c0a5d29ce38afb963a30e80b990ede5b73c9b",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-018",
+      "path": "records/PERF-20260917/evidence/offscreen-2-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:10:43.922611Z",
+      "sha256": "aa9098849903e2fb13b03f22512d4c3c0218e73dddc81a72a90373f556ae93c2",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-019",
+      "path": "records/PERF-20260917/evidence/offscreen-3-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:11:49.935068Z",
+      "sha256": "ff8d8a3666d87da09deca3a16f9894f54dc7597447a2c72fab1d269a4eab9ad4",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-020",
+      "path": "records/PERF-20260917/evidence/offscreen-3-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:11:34.647026Z",
+      "sha256": "f5802185568991f428deb353841178651062a249a7d86a0483c69821270fedc2",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-021",
+      "path": "records/PERF-20260917/evidence/offscreen-4-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:12:05.923975Z",
+      "sha256": "e960e66ae124b03899e861c0fb07b8cae5d705e9e40d390c6c89f777d76c61ac",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-022",
+      "path": "records/PERF-20260917/evidence/offscreen-4-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:12:58.313030Z",
+      "sha256": "0b21480b9f4baaa378840dee90fcd11a28d364924681fa8890e2affc2d8a5940",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-023",
+      "path": "records/PERF-20260917/evidence/offscreen-5-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:14:09.853678Z",
+      "sha256": "750c20827b4496e5b81f141581e0b9fc96131b0f5480ff77898940179d645129",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-024",
+      "path": "records/PERF-20260917/evidence/offscreen-5-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:13:51.846305Z",
+      "sha256": "3ad68e92429fba918af57ba46d6cd5cb0b1a665ba79ae68de897820b03353218",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-025",
+      "path": "records/PERF-20260917/evidence/offscreen-6-candidate.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:14:27.398226Z",
+      "sha256": "f05518f5d6237931563f7369a527bfaf8f466fcf274fed21f0553b61775bbaf0",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-026",
+      "path": "records/PERF-20260917/evidence/offscreen-6-control.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:15:12.748267Z",
+      "sha256": "0b03a834da1366294edae93c01590642615321cb9f5ac611f865a1e899c1d7f7",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-027",
+      "path": "records/PERF-20260917/evidence/pixel-comparison.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:46:53.965570Z",
+      "sha256": "8f5fbc1712b63662aaeac68acd3cf39c4908605df18d4f92c586f4bea72e8968",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-028",
+      "path": "records/PERF-20260917/evidence/process-pilot-batch.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:18:56.502527Z",
+      "sha256": "b2f1e5bef82628c40a9ab9052ab988775ce10718b3a3fd812fe65d6112f2d7e7",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-029",
+      "path": "records/PERF-20260917/evidence/test-app-cleanup.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:19:57.920981Z",
+      "sha256": "fad06758ebff21dd701805b81e6b6be8aeae0f7cfe39355210e140bc867eeace",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-030",
+      "path": "records/PERF-20260917/evidence/vt-control-pilot.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:18:55.851186Z",
+      "sha256": "8b486d58ad43addd31d2ff9297741f73ff910438016ae598a16baa167a5dcf46",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-031",
+      "path": "records/PERF-20260917/evidence/w0-tests-final.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:06:18.659853Z",
+      "sha256": "1e39f60e0a1960ad6f8bfde90bc6407bf32ff6a02a3d090ad5675d5b179a54d4",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-032",
+      "path": "records/PERF-20260917/evidence/w0-tests.execution.json",
+      "kind": "execution",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T18:49:00.163826Z",
+      "sha256": "88a2578d0c29632edf8de6b15db512284dad230b779e3af73ef846e87160c754",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-033",
+      "path": "records/PERF-20260917/evidence/w1-mixed-matrix.execution.json",
+      "kind": "execution",
+      "result": "failed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T19:00:19.566345Z",
+      "sha256": "d05a71618fef5ba8c13793c79f7b97cf26256bc407bd621a194d382d225063c2",
+      "scope": "Exact recorded command only; partial evidence, not full W0/W1 acceptance.",
+      "stale_reason": "Historical whole-repository revision differs after tooling/report changes; raw output preserved. Final scoped review separately rechecks unchanged inputs, data arithmetic, binary identity and current source; this old receipt is not rebound."
+    },
+    {
+      "id": "EVD-034",
+      "path": "records/PERF-20260917/W0-RESULTS.md",
+      "kind": "manual",
+      "result": "passed",
+      "supports": [
+        "MET-001"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:25:00.007619+00:00",
+      "sha256": "30b9d7e27db339aec2a3409effe4930a16322553900484c1ca2b3968b27d5691",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:661cf9bce9e5fa9663795dc3b4a5670735e3d61dca5ff9351cf450597fa51af9:spec:c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec",
+      "scope": "Main-thread report audit: measured partial results and explicit unmet acceptance conditions; not whole work-package completion.",
+      "spec_version": "SPEC-1",
+      "spec_sha256": "c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec",
+      "stale_reason": "New user-authorized local test package adds repository artifacts after the recorded global revision. Historical execution/report bytes are unchanged; candidate executable identity reverified in evidence/local-test1. No historical record rebound."
+    },
+    {
+      "id": "EVD-035",
+      "path": "records/PERF-20260917/W1-RESULTS.md",
+      "kind": "manual",
+      "result": "passed",
+      "supports": [
+        "MET-002"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-17T03:25:00.007778+00:00",
+      "sha256": "5e1d5898184642215ba0200e9af21b6e7c23b85f5578061960d14e0da0507b02",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:661cf9bce9e5fa9663795dc3b4a5670735e3d61dca5ff9351cf450597fa51af9:spec:c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec",
+      "scope": "Main-thread report audit: measured partial results and explicit unmet acceptance conditions; not whole work-package completion.",
+      "spec_version": "SPEC-1",
+      "spec_sha256": "c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec",
+      "stale_reason": "New user-authorized local test package adds repository artifacts after the recorded global revision. Historical execution/report bytes are unchanged; candidate executable identity reverified in evidence/local-test1. No historical record rebound."
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-001",
+      "purpose": "Add bounded process sampler and meaningful identity/counter tests",
+      "paths": [
+        "scripts/app-performance-baseline.py",
+        "scripts/test-app-performance-baseline.py"
+      ],
+      "implementation_task_ids": [
+        "IT-001"
+      ],
+      "source_ids": [
+        "SRC-001"
+      ],
+      "status": "reviewed",
+      "review": {
+        "status": "passed",
+        "reviewer": "main-thread",
+        "note": "Reviewed actual coder source; repaired ps precision, identity/endpoints, missing identity and numeric anomalies; final tests and live PID pilots passed."
+      },
+      "evidence_ids": [
+        "EVD-013"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:661cf9bce9e5fa9663795dc3b4a5670735e3d61dca5ff9351cf450597fa51af9:spec:c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec"
+    },
+    {
+      "id": "CHG-002",
+      "purpose": "Freeze baseline and Veriflow tool copy; record protocols, isolated candidate, raw repeated evidence, failed GUI batch and incomplete adoption",
+      "paths": [
+        "records/PERF-20260917"
+      ],
+      "implementation_task_ids": [
+        "IT-001",
+        "IT-002"
+      ],
+      "source_ids": [
+        "SRC-001"
+      ],
+      "status": "reviewed",
+      "review": {
+        "status": "passed",
+        "reviewer": "main-thread",
+        "note": "Documentation self-review and independent review of coder candidate diff; historical files unchanged; full acceptance explicitly undetermined."
+      },
+      "evidence_ids": [
+        "EVD-013",
+        "EVD-035"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:661cf9bce9e5fa9663795dc3b4a5670735e3d61dca5ff9351cf450597fa51af9:spec:c5f0a81cd8c2a66ebdf74a2936be9fda8b96305f745a6d33e7405b36d27b9aec"
+    }
+  ],
+  "overall_acceptance": {
+    "metric_ids": [
+      "MET-001",
+      "MET-002",
+      "MET-003",
+      "MET-004",
+      "MET-005",
+      "MET-006"
+    ],
+    "evidence_ids": [
+      "EVD-013"
+    ],
+    "status": "undetermined"
+  },
+  "baseline": {
+    "git_ref": "ced7edc25bd6ab6434712ce4da0b4bd16afad499",
+    "worktree_status": "dirty_dependency_confirmed",
+    "ownership": "既有 scripts 测量工具、PERFORMANCE-PLAN.md 与历史 output 证据纳入只读输入；其余保持原样。源文件当前无未提交变化。清单 evidence/initial-files.json。",
+    "foreign_paths": [
+      "default.profraw",
+      "scripts/__pycache__"
+    ],
+    "prepared_at": "2026-09-16T18:29:25.718099+00:00",
+    "external_inputs": [
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/control/Web Studio/StudioVTCore.c",
+        "sha256": "f7a04f604b4b03bd3cd091ba3e0681692672c15693843067b208757655b2e65d",
+        "identity": "control:Web Studio/StudioVTCore.c",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/control/Web Studio/TerminalMetalRenderer.swift",
+        "sha256": "44f7702330e5b4f5dde3ec817ed4f79017c3733afa09aaa3225c57a7cfe44c0d",
+        "identity": "control:Web Studio/TerminalMetalRenderer.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/control/Web Studio/TerminalVTCore.swift",
+        "sha256": "658b9943adc031408ef33600602ec232d392b2dedab9229d7a2e9e1e83d05e98",
+        "identity": "control:Web Studio/TerminalVTCore.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/control/Web Studio/TerminalVisuals.swift",
+        "sha256": "6525810892d4590791109501606ff3aecf77b82914064122431a856d39d39ece",
+        "identity": "control:Web Studio/TerminalVisuals.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/control/Web Studio.xcodeproj/project.pbxproj",
+        "sha256": "78d138c15d2f1b659b82c448b57cabab466736c26e70a937cffe627bc803aa8e",
+        "identity": "control:Web Studio.xcodeproj/project.pbxproj",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/candidate/Web Studio/StudioVTCore.c",
+        "sha256": "f7a04f604b4b03bd3cd091ba3e0681692672c15693843067b208757655b2e65d",
+        "identity": "candidate:Web Studio/StudioVTCore.c",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/candidate/Web Studio/TerminalMetalRenderer.swift",
+        "sha256": "ee006eb4878dc2b562e6a15e731954923ec3d6a3fa3e7076ed1aece26d303578",
+        "identity": "candidate:Web Studio/TerminalMetalRenderer.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/candidate/Web Studio/TerminalVTCore.swift",
+        "sha256": "658b9943adc031408ef33600602ec232d392b2dedab9229d7a2e9e1e83d05e98",
+        "identity": "candidate:Web Studio/TerminalVTCore.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/candidate/Web Studio/TerminalVisuals.swift",
+        "sha256": "6525810892d4590791109501606ff3aecf77b82914064122431a856d39d39ece",
+        "identity": "candidate:Web Studio/TerminalVisuals.swift",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      },
+      {
+        "path": "/private/tmp/web-studio-perf-w1-20260917/candidate/Web Studio.xcodeproj/project.pbxproj",
+        "sha256": "78d138c15d2f1b659b82c448b57cabab466736c26e70a937cffe627bc803aa8e",
+        "identity": "candidate:Web Studio.xcodeproj/project.pbxproj",
+        "reproduction": "Extract evidence/source-baseline.tar.gz; candidate only applies recorded font-frame-cache.patch"
+      }
+    ]
+  },
+  "binding": {
+    "receipt_paths": []
+  },
+  "authorization": {
+    "commit": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "push": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "merge": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "deploy": {
+      "status": "not_authorized",
+      "source_id": null
+    }
+  },
+  "delivery": {
+    "local_validation": "not_started",
+    "remote_ci": "not_started",
+    "remote_ci_revision": null
+  },
+  "actions": [],
+  "decisions": [],
+  "hypotheses": [
+    {
+      "id": "HYP-001",
+      "mechanism": "单 render 内复用至多四种 traits 字体减少重复字体解析",
+      "budget": "先复核单因素补丁，再六组交替配对；关键收益跨会话复验",
+      "exit_condition": "正确性失败或可重复退化则撤回；证据不足继续调查，不切默认后端"
+    }
+  ],
+  "recovery_strategy": {
+    "trigger": "候选无收益、退化或生命周期错误",
+    "steps": [
+      "隔离实验不影响默认构建",
+      "采用后仅回退经审查的候选 diff"
+    ],
+    "owner": "main-thread"
+  },
+  "observed_cost": {
+    "tokens": null,
+    "usd": null,
+    "note": "Not available; no estimated cost or elapsed time benefit."
+  },
+  "record_validation": {
+    "status": "historical_pass",
+    "evidence_path": "records/PERF-20260917/evidence/record-gate-final-v2.execution.json",
+    "warning_count": 2,
+    "not_product_acceptance": true,
+    "note": "Previous checkpoint only; local test packaging tracked separately as L1 and does not satisfy full optimization acceptance."
+  },
+  "local_test_delivery": {
+    "status": "delivered",
+    "channel": "local-test",
+    "release": "2026.09.17-test1",
+    "authorization": "User explicitly selected 本机测试包 after unmet release standards were disclosed",
+    "zip": "output/test-releases/2026.09.17-test1/Web-Studio-VT-2026.09.17-test1-arm64.zip",
+    "zip_sha256": "cdfb139b29cbf0cc8906e9afa32e4d5bbdfcbdef4a4eb17ec593469d225c3db7",
+    "executable_sha256": "672331d9098511121b8979155a564f60203a66595c69699bfe49adb1b691321f",
+    "evidence": "records/PERF-20260917/evidence/local-test1/verification-result.json",
+    "process_smoke": "passed",
+    "gui_acceptance": "undetermined",
+    "production_adoption": false,
+    "workflow_depth": "L1 bounded unchanged-binary packaging",
+    "completed_at": "2026-09-17T03:37:04.734646+00:00"
+  }
+}

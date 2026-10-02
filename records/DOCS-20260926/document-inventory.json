@@ -1,0 +1,486 @@
+[
+  {
+    "path": "DESIGN.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "DOCUMENTATION.md",
+    "classification": "新增的当前文档索引"
+  },
+  {
+    "path": "PERFORMANCE-PLAN.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "README.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "STATUS.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "THIRD-PARTY-NOTICES.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "UX-CONTRACT.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "Vendor/GhosttyVT/README.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/adaptive-toolbar/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/address-toolbar-acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/codex-cli/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/frosted-glass/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/ghostty-integration-acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/imagegen/terminal-theme-20260916/prompts.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/interaction-research-20260917/B-WORKSPACE-PLAN.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/interaction-research-20260917/EVIDENCE.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/interaction-research-20260917/REPORT.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/motion/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/seamless-toolbar/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/six-features-acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/ssh-passwordless-2026-09-13.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/start-chat/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/terminal-automation-2026-09-13.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/terminal-vt-migration/ACCEPTANCE.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/terminal-vt-migration/GUI-20260916.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "output/terminal-vt-migration/HISTORY.md",
+    "classification": "追加型历史记录（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/M2-CURRENT-RESULTS.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/terminal-vt-migration/MANUAL-ACCEPTANCE.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/terminal-vt-migration/SKILL-OBSERVATIONS.md",
+    "classification": "追加型历史记录（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/STATUS.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/m2-followup-skill-additional.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/m2-resume-results.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-alignment-20260916/REPORT.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-baseline/rejected-login-pid/README.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/CHECKPOINT-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/CLEAN-IDLE-RESULTS.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/CLEAN-OUTPUT-RESULTS.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/CONCURRENT-PROTOCOL-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/CONCURRENT-RESULTS-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/HISTORY-INTERACTION-RESULTS-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/MEMORY-SNAPSHOT-RESULTS-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/MIXED-DIAGNOSTIC.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/PROTOCOL.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/REPORT.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/RESULTS-20260917.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/UNICODE-DIAGNOSTIC-PROTOCOL.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/UNICODE-DIAGNOSTIC-RESULTS.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/pilot-findings.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/session-interruptions.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/source-paths.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-normalization/README.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/evidence/performance-normalized-20260916/RESULTS.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/terminal-vt-migration/handoffs/performance-tooling.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "output/terminal-vt-migration/handoffs/resume-plan.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "output/terminal-vt-migration/task-summary.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "output/terminal-vt-migration/work-log.md",
+    "classification": "追加型历史记录（保留）"
+  },
+  {
+    "path": "output/test-releases/2026.09.17-test1/Web Studio VT Test 2026.09.17/README.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/test-releases/2026.09.17-test1/Web Studio VT Test 2026.09.17/THIRD-PARTY-NOTICES.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "output/transparent-toolbar/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/uniform-frost/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "output/ux-consistency/acceptance.md",
+    "classification": "历史调研、设计或验收（已标时点）"
+  },
+  {
+    "path": "records/PERF-20260917/W0-RESULTS.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "records/PERF-20260917/W1-RESULTS.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/W1-RESULTS.draft.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/SKILL.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/agents/claude-code/veriflow-coder.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/agents/claude-code/veriflow-reviewer.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/assets/templates/handoff.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/assets/templates/task-summary.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/assets/templates/work-log.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/assets/templates/writing-handoff.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/claude-code.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/delegation-and-handoffs.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/design.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/examples.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/metrics-and-evidence.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/records.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/workflow.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/veriflow-snapshot/references/writing.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/w0-source-review.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/w1-offscreen-protocol.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/evidence/w1-protocol.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/PERF-20260917/handoffs/w0-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/PERF-20260917/handoffs/w1-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/PERF-20260917/task-summary.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/PERF-20260917/work-log.md",
+    "classification": "追加型历史记录（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/ACCEPTANCE.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/ARCHITECTURE.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/B1-RESULTS.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/P0-FLOWS.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/SPEC.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/evidence/p0-first-review.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/evidence/p0-premium-review.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/evidence/p0-repair-review.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/evidence/p0-review-checklist.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/evidence/preparation-SPEC.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P0-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P1-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-close-preparation.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-core-review-blockers.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-native-close-decisions.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-repository-final-guards.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-repository.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-runtime.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-save-integration.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P2-ui-integration.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-coder.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-compact-terminal.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-copy-service.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-navigation-ui.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-question-and-copy.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-question-core.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P3-question-ui.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/handoffs/P4-native-ui-tests.md",
+    "classification": "历史派发（已补当前导航）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/inputs/B-Plan-v1.md",
+    "classification": "冻结合同、输入、证据或包内文档（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/review-fixes/ACCEPTANCE.md",
+    "classification": "核对后保留，按原范围使用"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/review-fixes/task-summary.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/review-fixes/work-log.md",
+    "classification": "追加型历史记录（保留）"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/task-summary.md",
+    "classification": "已同步的当前入口"
+  },
+  {
+    "path": "records/WORKSPACE-B1-20260917/work-log.md",
+    "classification": "追加型历史记录（保留）"
+  }
+]

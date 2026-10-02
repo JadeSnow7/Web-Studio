@@ -1,0 +1,553 @@
+{
+  "schema_version": "1.3",
+  "spec": {
+    "version": "REVIEW-FIX-SPEC-1",
+    "authority": "state.spec",
+    "source_ids": [
+      "SRC-001"
+    ],
+    "goal_ref": "discovery.expected_outcome",
+    "scope_ref": "discovery.scope",
+    "constraints": [
+      "保留所有既有未提交改动及历史证据",
+      "一空间一窗口；终端与问答所有权不变",
+      "仅单空间归档完成后兜底，不在窗口关闭和退出期间创建空间",
+      "另一窗口持有的空间新建按钮保留仅定位行为",
+      "原始损坏或未知schema配置不自动覆盖",
+      "先测试基准后产品实现；源码单coder写入"
+    ],
+    "exceptions": [],
+    "conditions": [
+      {
+        "id": "SC-F1",
+        "metric_ids": [
+          "MET-F1"
+        ],
+        "deliverables": [
+          "Web Studio/ContentView.swift",
+          "Web Studio/WindowCoordinator.swift",
+          "Web Studio/WorkspaceRegistry.swift"
+        ]
+      },
+      {
+        "id": "SC-F2",
+        "metric_ids": [
+          "MET-F2"
+        ],
+        "deliverables": [
+          "Web Studio/ContentView.swift",
+          "Web Studio/WindowCoordinator.swift",
+          "Web Studio/WorkspaceRegistry.swift"
+        ]
+      },
+      {
+        "id": "SC-F3",
+        "metric_ids": [
+          "MET-F3"
+        ],
+        "deliverables": [
+          "Web Studio/ContentView.swift",
+          "Web Studio/WindowCoordinator.swift",
+          "Web Studio/WorkspaceRegistry.swift"
+        ]
+      },
+      {
+        "id": "SC-UI",
+        "metric_ids": [
+          "MET-UI"
+        ],
+        "deliverables": [
+          "records/WORKSPACE-B1-20260917/review-fixes/task-summary.md"
+        ]
+      }
+    ],
+    "contracts": [],
+    "open_items": []
+  },
+  "task": {
+    "id": "B1-REVIEW-FIX-20260919",
+    "title": "修复工作空间审查中的三个问题",
+    "mode": "resume",
+    "status": "verified",
+    "source_ids": [
+      "SRC-001"
+    ]
+  },
+  "discovery": {
+    "status": "ready",
+    "user": "Web Studio 用户",
+    "scenario": "跨窗口归档、未加载空间资源创建、损坏配置恢复",
+    "problem": "三个审查问题待复现和修复",
+    "expected_outcome": "归档后宿主窗口可用、创建操作等待加载、启动配置错误可见且可定位重扫",
+    "scope": "F1/F2/F3 产品代码、测试、对应文档与证据",
+    "acceptable_result": "同一修复前基准复验通过，受影响回归及原生三条流程分别记录"
+  },
+  "sources": [
+    {
+      "id": "SRC-001",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-19-review-plan-start",
+      "summary": "用户接受三项修复计划并要求开始修复",
+      "adoption": "accepted"
+    }
+  ],
+  "main_tasks": [
+    {
+      "id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "goal": "归档后宿主窗口可用、创建操作等待加载、启动配置错误可见且可定位重扫",
+      "scope": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "non_goals": [
+        "提交发布",
+        "完整B1产品验收",
+        "终端渲染性能改动"
+      ],
+      "dependencies": [],
+      "assumptions": [
+        "沿用现有内部类型与配置格式"
+      ],
+      "status": "verified",
+      "metric_ids": [
+        "MET-F1",
+        "MET-F2",
+        "MET-F3",
+        "MET-UI"
+      ],
+      "implementation_task_ids": [
+        "IT-001",
+        "IT-DOC"
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "id": "MET-F1",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "A归档B唯一命名空间后B能新建资源且A不切换；剩余空间、保存失败、整窗关闭边界正确",
+      "baseline": "静态审查发现；待执行修复前复现",
+      "target": "A归档B唯一命名空间后B能新建资源且A不切换；剩余空间、保存失败、整窗关闭边界正确",
+      "method": "固定Swift测试基准与受影响回归",
+      "environment_data": "macOS arm64；临时配置根与测试Provider；禁止接触用户配置",
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI"
+      ],
+      "status": "passed",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-F2",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "延迟加载成功后单次创建；失败/过期/阻止不误建；另一窗口仍仅定位",
+      "baseline": "静态审查发现；待执行修复前复现",
+      "target": "延迟加载成功后单次创建；失败/过期/阻止不误建；另一窗口仍仅定位",
+      "method": "固定Swift测试基准与受影响回归",
+      "environment_data": "macOS arm64；临时配置根与测试Provider；禁止接触用户配置",
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI"
+      ],
+      "status": "passed",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-F3",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "损坏和高版本配置错误可见，标识和路径可定位；重新扫描刷新；原文件不变",
+      "baseline": "静态审查发现；待执行修复前复现",
+      "target": "损坏和高版本配置错误可见，标识和路径可定位；重新扫描刷新；原文件不变",
+      "method": "固定Swift测试基准与受影响回归",
+      "environment_data": "macOS arm64；临时配置根与测试Provider；禁止接触用户配置",
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI"
+      ],
+      "status": "passed",
+      "verification": "execution"
+    },
+    {
+      "id": "MET-UI",
+      "main_task_id": "MT-001",
+      "kind": "mandatory_gate",
+      "name": "隔离配置目录下三条真实界面流程符合F1/F2/F3",
+      "baseline": "静态审查发现；待执行修复前复现",
+      "target": "隔离配置目录下三条真实界面流程符合F1/F2/F3",
+      "method": "原生界面自动化或人工等价走查，记录截图和操作",
+      "environment_data": "macOS arm64；临时配置根与测试Provider；禁止接触用户配置",
+      "evidence_ids": [
+        "EVD-UI"
+      ],
+      "status": "passed",
+      "verification": "manual"
+    }
+  ],
+  "implementation_tasks": [
+    {
+      "id": "IT-001",
+      "main_task_id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "先补复现测试并停等主审；再串行实现三项修复并复验",
+      "file_scope": [
+        "Web Studio/ContentView.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web StudioTests/WorkspaceReviewFixTests.swift",
+        "Web StudioTests/WorkspaceIntegrationTests.swift",
+        "Web StudioTests/WorkspaceNavigationTests.swift",
+        "Web StudioTests/WorkspaceRestorationTests.swift",
+        "Web StudioUITests/Web_StudioUITests.swift",
+        "Web Studio/WorkspaceRepository.swift"
+      ],
+      "interface_constraints": [
+        "保留所有既有未提交改动及历史证据",
+        "一空间一窗口；终端与问答所有权不变",
+        "仅单空间归档完成后兜底，不在窗口关闭和退出期间创建空间",
+        "另一窗口持有的空间新建按钮保留仅定位行为",
+        "原始损坏或未知schema配置不自动覆盖",
+        "先测试基准后产品实现；源码单coder写入"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-F1",
+        "MET-F2",
+        "MET-F3",
+        "MET-UI"
+      ],
+      "support_reason": "",
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI",
+        "EVD-INTEGRITY",
+        "EVD-AUDIT"
+      ],
+      "owner": "coder:workspace_fixes",
+      "status": "verified"
+    },
+    {
+      "id": "IT-DOC",
+      "main_task_id": "MT-001",
+      "source_ids": [
+        "SRC-001"
+      ],
+      "scope": "同步UI行为契约、维护本轮记录与证据",
+      "file_scope": [
+        "UX-CONTRACT.md",
+        "records/WORKSPACE-B1-20260917/review-fixes/task-summary.md"
+      ],
+      "interface_constraints": [
+        "保留历史验收边界"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-F1",
+        "MET-F2",
+        "MET-F3"
+      ],
+      "support_reason": "本轮交付文档同步",
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI",
+        "EVD-INTEGRITY",
+        "EVD-AUDIT"
+      ],
+      "owner": "main-thread",
+      "status": "verified"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-REG",
+      "path": "records/WORKSPACE-B1-20260917/review-fixes/evidence/main-final-regression-v2.json",
+      "kind": "execution",
+      "supports": [
+        "MET-F1",
+        "MET-F2",
+        "MET-F3"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-19T15:01:24.487297+00:00",
+      "sha256": "e36bc061702589c2f43aac801b37b0617e6b4ead2f005fdbb91938f293a6bf68",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "spec_version": "REVIEW-FIX-SPEC-1",
+      "spec_sha256": "87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283"
+    },
+    {
+      "id": "EVD-UI",
+      "path": "records/WORKSPACE-B1-20260917/review-fixes/evidence/native-final.json",
+      "kind": "manual",
+      "supports": [
+        "MET-UI",
+        "MET-F1",
+        "MET-F2",
+        "MET-F3"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-19T15:01:24.487297+00:00",
+      "sha256": "85e2a909f691c215641b60515fa78daf6bd23d682cbb7ef014ed03be69f139ac",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "spec_version": "REVIEW-FIX-SPEC-1",
+      "spec_sha256": "87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283"
+    },
+    {
+      "id": "EVD-INTEGRITY",
+      "path": "records/WORKSPACE-B1-20260917/review-fixes/evidence/final-integrity.json",
+      "kind": "manual",
+      "supports": [
+        "MET-F1",
+        "MET-F2",
+        "MET-F3"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-19T15:01:24.487297+00:00",
+      "sha256": "c0f591bc766679e0e06b8c72fc86f5b16ae691a83932c43873f1701cedd5658f",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "spec_version": "REVIEW-FIX-SPEC-1",
+      "spec_sha256": "87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283"
+    },
+    {
+      "id": "EVD-AUDIT",
+      "path": "records/WORKSPACE-B1-20260917/review-fixes/evidence/ui-audit.json",
+      "kind": "manual",
+      "supports": [
+        "MET-UI"
+      ],
+      "status": "current",
+      "result": "passed",
+      "observed_at": "2026-09-19T15:01:24.487297+00:00",
+      "sha256": "08434f69dc01bf5f8702195935da365c5a477909e4888b7e6edd82fd8cb12259",
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "spec_version": "REVIEW-FIX-SPEC-1",
+      "spec_sha256": "87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283"
+    }
+  ],
+  "changes": [
+    {
+      "id": "CHG-001",
+      "implementation_task_ids": [
+        "IT-001"
+      ],
+      "paths": [
+        "Web Studio/ContentView.swift",
+        "Web Studio/WindowCoordinator.swift",
+        "Web Studio/WorkspaceRegistry.swift",
+        "Web Studio/WorkspaceRepository.swift",
+        "Web StudioTests/WorkspaceReviewFixTests.swift"
+      ],
+      "evidence_ids": [
+        "EVD-REG",
+        "EVD-UI"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "status": "reviewed"
+    },
+    {
+      "id": "CHG-DOC",
+      "implementation_task_ids": [
+        "IT-DOC"
+      ],
+      "paths": [
+        "UX-CONTRACT.md",
+        "records/WORKSPACE-B1-20260917/review-fixes/task-summary.md"
+      ],
+      "evidence_ids": [
+        "EVD-AUDIT",
+        "EVD-UI"
+      ],
+      "revision": "patch:ced7edc25bd6ab6434712ce4da0b4bd16afad499:7d65bef8609b4719d72c7c592af30cef1f1ea7635142fa34439475b2bf9740a3:spec:87a7b606ffe5d3ecc7bd998452cdb46bb0ba62b950d0bc441925cedd02442283",
+      "status": "reviewed"
+    }
+  ],
+  "overall_acceptance": {
+    "metric_ids": [
+      "MET-F1",
+      "MET-F2",
+      "MET-F3",
+      "MET-UI"
+    ],
+    "evidence_ids": [
+      "EVD-REG",
+      "EVD-UI"
+    ],
+    "status": "passed"
+  },
+  "baseline": {
+    "git_ref": "ced7edc25bd6ab6434712ce4da0b4bd16afad499",
+    "worktree_status": "dirty_dependency_confirmed",
+    "ownership": "用户授权在已审查未提交工作基础上修复F1-F3；coder仅在所列路径增量修改；主线程维护记录和文档",
+    "foreign_paths": [
+      "DESIGN.md",
+      "README.md",
+      "Web Studio/AgentController.swift",
+      "Web Studio/AgentService.swift",
+      "Web Studio/AgentViews.swift",
+      "Web Studio/ProviderSettings.swift",
+      "Web Studio/ResourceModel.swift",
+      "Web Studio/StartPageView.swift",
+      "Web Studio/StudioDesign.swift",
+      "Web Studio/WebRuntime.swift",
+      "Web Studio/Web_StudioApp.swift",
+      "Web Studio/WindowLifecycle.swift",
+      "Web Studio/WorkspaceSplitView.swift",
+      "Web StudioTests/AgentControllerTests.swift",
+      "Web StudioTests/ResourceReadTests.swift",
+      "Web StudioTests/Web_StudioTests.swift",
+      "Web StudioUITests/Web_StudioUITestsLaunchTests.swift",
+      "output/terminal-vt-migration/ACCEPTANCE.md",
+      "output/terminal-vt-migration/M2-CURRENT-RESULTS.md",
+      "output/terminal-vt-migration/MANUAL-ACCEPTANCE.md",
+      "output/terminal-vt-migration/SKILL-OBSERVATIONS.md",
+      "output/terminal-vt-migration/STATUS.md",
+      "output/terminal-vt-migration/evidence/m2-resume-results.md",
+      "output/terminal-vt-migration/task-state.json",
+      "output/terminal-vt-migration/task-summary.md",
+      "output/terminal-vt-migration/work-log.md",
+      "premium-ui.json",
+      ".playwright-mcp/",
+      "PERFORMANCE-PLAN.md",
+      "Web Studio/WorkspaceConfiguration.swift",
+      "Web Studio/WorkspaceSaveController.swift",
+      "Web Studio/WorkspaceSession.swift",
+      "Web StudioTests/WorkspaceClosePreparationTests.swift",
+      "Web StudioTests/WorkspaceCompactTests.swift",
+      "Web StudioTests/WorkspaceCopyTests.swift",
+      "Web StudioTests/WorkspaceLaunchOptionsTests.swift",
+      "Web StudioTests/WorkspaceModelTests.swift",
+      "Web StudioTests/WorkspaceOwnershipTests.swift",
+      "Web StudioTests/WorkspacePersistenceTests.swift",
+      "Web StudioTests/WorkspaceQuestionTests.swift",
+      "Web StudioTests/WorkspaceResourceLifecycleTests.swift",
+      "Web StudioTests/WorkspaceSaveControllerTests.swift",
+      "Web StudioTests/WorkspaceTerminalActionsTests.swift",
+      "default.profraw",
+      "output/interaction-research-20260917/",
+      "output/terminal-vt-migration/evidence/m2-followup-address.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-appearance-restored.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-before.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-cancel-processes.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-cancel.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-confirm.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-dialog.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-close-result.json",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-dark-single.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-dark-single.png",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-single.png",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-split.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-exact-light-split.png",
+      "output/terminal-vt-migration/evidence/m2-followup-final-appearance.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-final-cleanup.json",
+      "output/terminal-vt-migration/evidence/m2-followup-final-safe-scene.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-focus-return.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-font-grid-main-v2.json",
+      "output/terminal-vt-migration/evidence/m2-followup-font-grid-main.json",
+      "output/terminal-vt-migration/evidence/m2-followup-gui-results.json",
+      "output/terminal-vt-migration/evidence/m2-followup-hidden-processes.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-initial-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-followup-initial.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-palette.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-pending-files.json",
+      "output/terminal-vt-migration/evidence/m2-followup-probe-tests.json",
+      "output/terminal-vt-migration/evidence/m2-followup-record-review-v2.json",
+      "output/terminal-vt-migration/evidence/m2-followup-record-review.json",
+      "output/terminal-vt-migration/evidence/m2-followup-regression-impact.json",
+      "output/terminal-vt-migration/evidence/m2-followup-resource-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-resource-restored.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-followup-skill-additional.md",
+      "output/terminal-vt-migration/evidence/m2-followup-user-receipts.json",
+      "output/terminal-vt-migration/evidence/m2-followup-version-check.json",
+      "output/terminal-vt-migration/evidence/m2-followup-voiceover-pending.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-output-done.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-ready.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-legacy-scroll-up.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-geometry.json",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-hidden.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-output-done.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-output-done.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-ready.ax.txt",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-ready.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-scroll-up.png",
+      "output/terminal-vt-migration/evidence/m2-normalized-vt-trace-end.ax.txt",
+      "output/terminal-vt-migration/evidence/performance-alignment-20260916/",
+      "output/terminal-vt-migration/evidence/performance-investigation-20260916/",
+      "output/terminal-vt-migration/evidence/performance-normalized-20260916/",
+      "output/test-releases/",
+      "scripts/__pycache__/",
+      "scripts/app-performance-baseline.py",
+      "scripts/terminal-font-frame-equivalence.swift",
+      "scripts/terminal-m2-concurrent-test.py",
+      "scripts/terminal-m2-concurrent.py",
+      "scripts/terminal-m2-investigate-test.py",
+      "scripts/terminal-m2-investigate.py",
+      "scripts/terminal-m2-matrix-test.py",
+      "scripts/terminal-m2-matrix.py",
+      "scripts/terminal-m2-memory-test.py",
+      "scripts/terminal-m2-memory.py",
+      "scripts/terminal-m2-profile-test.py",
+      "scripts/terminal-m2-profile.py",
+      "scripts/terminal-performance-probe-build.sh",
+      "scripts/terminal-performance-probe-prepare.sh",
+      "scripts/terminal-performance-probe-scenarios-test.sh",
+      "scripts/terminal-performance-probe-scenarios.sh",
+      "scripts/terminal-performance-probe-test.sh",
+      "scripts/terminal-performance-probe.swift",
+      "scripts/terminal-unicode-diagnostic.swift",
+      "scripts/test-app-performance-baseline.py",
+      "scripts/test-terminal-font-frame-equivalence.sh",
+      "scripts/test-terminal-unicode-diagnostic.sh"
+    ],
+    "prepared_at": "2026-09-19T14:25:01.371751+00:00"
+  },
+  "binding": {
+    "receipt_paths": []
+  },
+  "authorization": {
+    "commit": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "push": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "merge": {
+      "status": "not_authorized",
+      "source_id": null
+    },
+    "deploy": {
+      "status": "not_authorized",
+      "source_id": null
+    }
+  },
+  "delivery": {
+    "local_validation": "passed",
+    "remote_ci": "not_started",
+    "remote_ci_revision": null
+  },
+  "actions": [],
+  "decisions": [],
+  "hypotheses": [],
+  "recovery_strategy": {
+    "trigger": "增量修复导致回归",
+    "steps": [
+      "对照本轮源码快照只调整本轮修改，保留已有工作"
+    ],
+    "owner": "main-thread"
+  }
+}

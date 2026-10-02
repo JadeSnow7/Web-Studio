@@ -1,0 +1,19 @@
+--- a/Web Studio/TerminalVTView.swift
++++ b/Web Studio/TerminalVTView.swift
+@@ -295,7 +295,6 @@
+         }
+         if session?.encode(event: event, action: event.isARepeat ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS) == true {
+             forwardedKeys[event.keyCode] = event
+-            session?.scrollToBottom()
+             return
+         }
+         pendingNativeEvent = event
+@@ -331,7 +330,7 @@
+         let wasMarked = hasMarkedText()
+         marked = NSAttributedString()
+         markedSelection = NSRange(location: 0, length: 0); markedField.isHidden = true
+-        if let native, !wasMarked, value.utf16.count == 1, session?.encode(event: native, action: native.isARepeat ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS, textOverride: value, forceText: true) == true { forwardedKeys[native.keyCode] = native; session?.scrollToBottom() }
++        if let native, !wasMarked, value.utf16.count == 1, session?.encode(event: native, action: native.isARepeat ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS, textOverride: value, forceText: true) == true { forwardedKeys[native.keyCode] = native }
+         else { session?.sendRaw(Data(value.utf8)) }
+     }
+     func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {

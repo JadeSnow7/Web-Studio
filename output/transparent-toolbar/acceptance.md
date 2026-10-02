@@ -1,5 +1,7 @@
 # Transparent toolbar — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 The native window titlebar is transparent with no separator. Window backing is clear/non-opaque; workspace, sidebar and Agent backgrounds do not extend into the toolbar safe area. Native toolbar items, capsule styles, standard window controls and toolbar placement are unchanged. Window delegate/lifecycle logic is unchanged.
 
 - Build passed: `/private/tmp/web-studio-transparent-build.log`.

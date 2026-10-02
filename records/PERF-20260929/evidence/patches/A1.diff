@@ -1,0 +1,492 @@
+--- a/Web Studio/ResourceModel.swift
++++ b/Web Studio/ResourceModel.swift
+@@ -203,10 +203,10 @@
+             guard let self, let session, self.terminalSessions[resourceID] === session else { return }
+             self.recordTerminalState(resourceID: resourceID, state: newState)
+         }
+-        terminalDirectoryChanges[resourceID] = existing.kind == .localTerminal ? session.$knownDirectory.sink { [weak self, weak session] directory in
++        terminalDirectoryChanges[resourceID] = existing.kind == .localTerminal ? session.$knownDirectory.removeDuplicates().sink { [weak self, weak session] directory in
+             guard let self, let session, self.terminalSessions[resourceID] === session,
+                   let directory, var record = self.records[resourceID] else { return }
+-            record.location = .localTerminal(directory: directory); self.records[resourceID] = record
++            record.location = .localTerminal(directory: directory); self.writeIfChanged(record)
+         } : nil
+         if launchTerminalProcesses {
+             switch existing.location {
+@@ -238,7 +238,7 @@
+         guard let existing = records[resourceID] else { return }
+         guard let mapping = Self.terminalStateMapping(kind: existing.kind, state: state) else { return }
+         var record = existing; record.lifecycle = mapping.lifecycle; record.errorMessage = mapping.errorMessage
+-        records[resourceID] = record
++        writeIfChanged(record)
+     }
+     func registerLocalTerminal(groupID: UUID, directory: String, directoryURL: URL? = nil) -> UUID {
+         guard !shuttingDown else { return order.first ?? UUID() }
+@@ -250,9 +250,9 @@
+             guard let self, let session, self.terminalSessions[id] === session else { return }
+             self.recordTerminalState(resourceID: id, state: state)
+         }
+-        terminalDirectoryChanges[id] = session.$knownDirectory.sink { [weak self, weak session] directory in
++        terminalDirectoryChanges[id] = session.$knownDirectory.removeDuplicates().sink { [weak self, weak session] directory in
+             guard let self, let session, self.terminalSessions[id] === session, let directory, var record = self.records[id] else { return }
+-            record.location = .localTerminal(directory: directory); self.records[id] = record
++            record.location = .localTerminal(directory: directory); self.writeIfChanged(record)
+         }
+         if let directoryURL { session.retainSecurityScope(directoryURL) }
+         if launchTerminalProcesses { session.startLocal(directory: directory) }; return id
+@@ -282,7 +282,9 @@
+         guard var record=records[resourceID], record.kind == .web else { return }; record.location = .web(url)
+         if let title, !title.isEmpty { record.title=title }; records[resourceID]=record
+     }
+-    func updateTitle(resourceID: UUID, title: String) { records[resourceID]?.title = title }
++    func updateTitle(resourceID: UUID, title: String) { guard let current = records[resourceID], current.title != title else { return }; records[resourceID]?.title = title }
++    /// `@Published` publishes on every assignment, equal or not; an unchanged record must not invalidate observers.
++    private func writeIfChanged(_ record: ResourceRecord) { guard let current = records[record.id], current != record else { return }; records[record.id] = record }
+     private func closeSession(_ session: TerminalSession, resourceID: UUID) -> Task<Void, Never> {
+         if let existing = closingTasks[resourceID] { return existing }
+         session.close()
+@@ -349,7 +351,7 @@
+             if var record = self.records[resourceID] {
+                 record.lifecycle = state.failure == nil ? (state.isLoading ? .starting : .running) : .failed
+                 record.errorMessage = state.failure?.message
+-                self.records[resourceID] = record
++                self.writeIfChanged(record)
+             }
+             self.onStateChange?(resourceID,state)
+         }; runtimes[resourceID]=runtime; return runtime
+--- a/Web Studio/WebRuntime.swift
++++ b/Web Studio/WebRuntime.swift
+@@ -50,6 +50,13 @@
+         }
+     }
+ 
++    /// `@Published` emits objectWillChange before `didSet` on every assignment, equal or not.
++    /// Route writes through here so an unchanged state never republishes.
++    func mutateState(_ change: (inout WebNavigationState) -> Void) {
++        var next = state; change(&next)
++        if next != state { state = next }
++    }
++
+     /// A small, transient rendering of the current page used only behind the native
+     /// toolbar. It is deliberately kept on the runtime so a view switch cannot attach
+     /// an older tab's image to the active shell.
+@@ -103,7 +110,7 @@
+             .sink { [weak self] value in
+                 MainActor.assumeIsolated {
+                     guard let self else { return }
+-                    self.state.url = value
++                    self.mutateState { $0.url = value }
+                     self.acceptObservedURL(value, committed: false)
+                 }
+             }
+@@ -112,21 +119,21 @@
+             .sink { [weak self] value in
+                 MainActor.assumeIsolated {
+                     let clean = value?.trimmingCharacters(in: .whitespacesAndNewlines)
+-                    self?.state.pageTitle = (clean?.isEmpty ?? true) ? nil : clean
++                    self?.mutateState { $0.pageTitle = (clean?.isEmpty ?? true) ? nil : clean }
+                 }
+             }
+             .store(in: &observers)
+         webView.publisher(for: \.isLoading)
+-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.isLoading = value } }
++            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.isLoading = value } } }
+             .store(in: &observers)
+         webView.publisher(for: \.estimatedProgress)
+-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.progress = value } }
++            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.progress = value } } }
+             .store(in: &observers)
+         webView.publisher(for: \.canGoBack)
+-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.canGoBack = value } }
++            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.canGoBack = value } } }
+             .store(in: &observers)
+         webView.publisher(for: \.canGoForward)
+-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.canGoForward = value } }
++            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.canGoForward = value } } }
+             .store(in: &observers)
+     }
+ 
+@@ -138,22 +145,22 @@
+         navigationGeneration += 1
+         chromeSnapshot = nil
+         requestedURL = url
+-        state.failure = nil
++        mutateState { $0.failure = nil }
+         webView.load(URLRequest(url: url))
+     }
+ 
+     func goBack() {
+-        state.failure = nil
++        mutateState { $0.failure = nil }
+         webView.goBack()
+     }
+ 
+     func goForward() {
+-        state.failure = nil
++        mutateState { $0.failure = nil }
+         webView.goForward()
+     }
+ 
+     func reload() {
+-        state.failure = nil
++        mutateState { $0.failure = nil }
+         if webView.url == nil, let requestedURL {
+             webView.load(URLRequest(url: requestedURL))
+         } else {
+@@ -269,7 +276,7 @@
+         guard committed || (!webView.isLoading && state.failure == nil) else { return }
+         requestedURL = url
+         navigationGeneration += 1
+-        state.failure = nil
++        mutateState { $0.failure = nil }
+         onCommit?(url)
+     }
+ 
+@@ -343,7 +350,7 @@
+ 
+     nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+         MainActor.assumeIsolated {
+-            state.failure = nil
++            mutateState { $0.failure = nil }
+             acceptObservedURL(webView.url, committed: true)
+         }
+     }
+@@ -373,17 +380,17 @@
+     nonisolated func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+         MainActor.assumeIsolated {
+             chromeSnapshot = nil
+-            state.failure = WebNavigationFailure(
++            mutateState { $0.failure = WebNavigationFailure(
+                 url: requestedURL,
+                 message: "网页无响应，已关闭。"
+-            )
++            ) }
+         }
+     }
+ 
+     private func record(_ error: Error) {
+         chromeSnapshot = nil
+         guard let failure = Self.failure(for: error, url: requestedURL) else { return }
+-        state.failure = failure
++        mutateState { $0.failure = failure }
+     }
+ }
+ 
+--- a/Web Studio/ContentView.swift
++++ b/Web Studio/ContentView.swift
+@@ -529,8 +529,8 @@
+       if let title = state.pageTitle {
+         owner.resourceStore.updateTitle(resourceID: id, title: title)
+       }
+-      self.webStates[id] = state
+-      if self.session === owner, self.selectedTabID == id { self.activeWebState = state }
++      if self.webStates[id] != state { self.webStates[id] = state }
++      if self.session === owner, self.selectedTabID == id, self.activeWebState != state { self.activeWebState = state }
+     }
+     // WorkspaceSession waits for Agent cleanup before shutting down its store.
+     store.onShutdown = { [weak owner] in owner?.agentController.shutdown() }
+@@ -1554,7 +1554,8 @@
+ 
+   func refreshActiveWebState() {
+     let id = selectedTabID
+-    activeWebState = webStates[id] ?? activeWebRuntime?.state ?? WebNavigationState()
++    let next = webStates[id] ?? activeWebRuntime?.state ?? WebNavigationState()
++    if activeWebState != next { activeWebState = next }
+     if !addressIsEditing { addressText = addressValue(for: id) }
+   }
+ 
+@@ -1613,9 +1614,9 @@
+   /// Mirrors the live page title onto the tab, and the selected tab's state onto the
+   /// toolbar.
+   func recordWebState(tabID: UUID, state: WebNavigationState) {
+-    webStates[tabID] = state
++    if webStates[tabID] != state { webStates[tabID] = state }
+     if let title = state.pageTitle { webRuntimes.updateTitle(resourceID: tabID, title: title) }
+-    if tabID == selectedTabID {
++    if tabID == selectedTabID, activeWebState != state {
+       activeWebState = state
+     }
+   }
+--- /dev/null
++++ b/Web StudioTests/ObservationChurnTests.swift
+@@ -0,0 +1,280 @@
++import Combine
++import Foundation
++import Testing
++@testable import Web_Studio
++
++/// Every `objectWillChange` emission from a store or model re-evaluates the SwiftUI tree that
++/// observes it, so an emission count is the churn measure. Writes that change nothing must not emit;
++/// writes that change something must.
++@MainActor
++struct ObservationChurnTests {
++    private final class Emissions { var count = 0 }
++
++    private func watch(_ publisher: ObservableObjectPublisher) -> (Emissions, AnyCancellable) {
++        let emissions = Emissions()
++        return (emissions, publisher.sink { emissions.count += 1 })
++    }
++
++    private func makeWebStore() throws -> (store: ResourceStore, id: UUID, runtime: WebTabRuntime, url: URL) {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let id = store.registerWeb(groupID: UUID())
++        let runtime = try #require(store.runtime(for: id))
++        let url = try #require(URL(string: "https://example.com/page"))
++        return (store, id, runtime, url)
++    }
++
++    // MARK: Web runtime state -> ResourceStore
++
++    @Test func identicalRuntimeStateWritesPublishNothingAfterTheFirstRealChange() throws {
++        let (store, id, runtime, url) = try makeWebStore()
++        let (storeEmissions, storeWatch) = watch(store.objectWillChange)
++        let (runtimeEmissions, runtimeWatch) = watch(runtime.objectWillChange)
++        defer { withExtendedLifetime((storeWatch, runtimeWatch)) {} }
++
++        func applyState() {
++            runtime.mutateState {
++                $0.url = url; $0.pageTitle = "Example"; $0.isLoading = true
++                $0.progress = 0.25; $0.canGoBack = false; $0.canGoForward = false; $0.failure = nil
++            }
++        }
++        applyState()
++        #expect(runtimeEmissions.count == 1)
++        #expect(storeEmissions.count == 1)
++        #expect(store.records[id]?.lifecycle == .starting)
++
++        storeEmissions.count = 0; runtimeEmissions.count = 0
++        for _ in 0..<100 {
++            applyState()
++            // The per-field style the KVO sinks use, one equal value at a time.
++            runtime.mutateState { $0.progress = 0.25 }
++            runtime.mutateState { $0.pageTitle = "Example" }
++            runtime.mutateState { $0.url = url }
++            runtime.mutateState { $0.failure = nil }
++            runtime.goBack()
++            runtime.goForward()
++        }
++        #expect(runtimeEmissions.count == 0)
++        #expect(storeEmissions.count == 0)
++        #expect(store.records[id]?.lifecycle == .starting)
++    }
++
++    @Test func progressTicksOfALoadingWebResourceDoNotInvalidateTheStore() throws {
++        let (store, id, runtime, _) = try makeWebStore()
++        runtime.mutateState { $0.isLoading = true; $0.progress = 0.01 }
++        let (storeEmissions, storeWatch) = watch(store.objectWillChange)
++        let (runtimeEmissions, runtimeWatch) = watch(runtime.objectWillChange)
++        defer { withExtendedLifetime((storeWatch, runtimeWatch)) {} }
++
++        for tick in 2...101 { runtime.mutateState { $0.progress = Double(tick) / 101 } }
++        // The runtime's own state genuinely changed each tick, so it publishes each one...
++        #expect(runtimeEmissions.count == 100)
++        // ...but the resource record derived from it (starting, no error) never changed.
++        #expect(storeEmissions.count == 0)
++        #expect(store.records[id]?.lifecycle == .starting)
++    }
++
++    @Test func lifecycleAndFailureTransitionsStillPropagateToRecords() throws {
++        let (store, id, runtime, url) = try makeWebStore()
++        let (storeEmissions, storeWatch) = watch(store.objectWillChange)
++        defer { withExtendedLifetime(storeWatch) {} }
++        func expectOneEmission(_ lifecycle: ResourceLifecycle, error: String? = nil, _ comment: Comment) {
++            #expect(storeEmissions.count == 1, comment)
++            #expect(store.records[id]?.lifecycle == lifecycle, comment)
++            #expect(store.records[id]?.errorMessage == error, comment)
++            storeEmissions.count = 0
++        }
++
++        runtime.mutateState { $0.isLoading = true }
++        expectOneEmission(.starting, "idle -> starting")
++        runtime.mutateState { $0.isLoading = false; $0.url = url }
++        expectOneEmission(.running, "starting -> running")
++        let failure = WebNavigationFailure(url: url, message: "offline")
++        runtime.mutateState { $0.failure = failure }
++        expectOneEmission(.failed, error: "offline", "running -> failed")
++        runtime.mutateState { $0.failure = failure }
++        #expect(storeEmissions.count == 0, "the same failure again changes nothing")
++        runtime.mutateState { $0.failure = WebNavigationFailure(url: url, message: "timeout") }
++        expectOneEmission(.failed, error: "timeout", "a different failure message is a real change")
++        runtime.mutateState { $0.failure = nil }
++        expectOneEmission(.running, "failed -> running once the failure clears")
++    }
++
++    // MARK: Titles and the toolbar mirror
++
++    @Test func updateTitleOnlyPublishesWhenTheTitleChanges() throws {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let id = store.registerWeb(groupID: UUID())
++        let (emissions, cancellable) = watch(store.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++        let unchanged = try #require(store.records[id]?.title)
++
++        for _ in 0..<100 { store.updateTitle(resourceID: id, title: unchanged) }
++        #expect(emissions.count == 0)
++
++        store.updateTitle(resourceID: id, title: "Changed")
++        #expect(emissions.count == 1)
++        #expect(store.records[id]?.title == "Changed")
++        for _ in 0..<100 { store.updateTitle(resourceID: id, title: "Changed") }
++        #expect(emissions.count == 1)
++
++        store.updateTitle(resourceID: UUID(), title: "Missing resource")
++        #expect(emissions.count == 1)
++    }
++
++    @Test func modelStaysQuietForRepeatedStateAndTitleOfBackgroundAndActiveTabs() throws {
++        let model = StudioModel(launchTerminalProcesses: false)
++        model.newTab()
++        let background = model.selectedTabID
++        model.newTab()
++        let active = model.selectedTabID
++        let backgroundRuntime = try #require(model.webRuntimes.runtime(for: background))
++        let activeRuntime = try #require(model.webRuntimes.runtime(for: active))
++        let url = try #require(URL(string: "https://example.com/page"))
++        let (emissions, cancellable) = watch(model.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++
++        // Real changes reach the model: lifecycle, title, and the active tab's toolbar mirror.
++        backgroundRuntime.mutateState { $0.url = url; $0.pageTitle = "Background"; $0.isLoading = true }
++        #expect(emissions.count > 0)
++        #expect(model.webRuntimes.records[background]?.title == "Background")
++        #expect(model.webRuntimes.records[background]?.lifecycle == .starting)
++        activeRuntime.mutateState { $0.url = url; $0.pageTitle = "Active"; $0.isLoading = true; $0.progress = 0.5 }
++        #expect(model.webRuntimes.records[active]?.title == "Active")
++        #expect(model.activeWebState.progress == 0.5)
++
++        emissions.count = 0
++        for _ in 0..<100 {
++            backgroundRuntime.mutateState { $0.url = url; $0.pageTitle = "Background"; $0.isLoading = true }
++            activeRuntime.mutateState { $0.url = url; $0.pageTitle = "Active"; $0.isLoading = true; $0.progress = 0.5 }
++        }
++        #expect(emissions.count == 0)
++
++        // Progress of a tab that is not selected only touches the private per-tab mirror.
++        for tick in 1...100 { backgroundRuntime.mutateState { $0.progress = Double(tick) / 101 } }
++        #expect(emissions.count == 0)
++
++        // A real title change is still one publication.
++        backgroundRuntime.mutateState { $0.pageTitle = "Background 2" }
++        #expect(emissions.count == 1)
++        #expect(model.webRuntimes.records[background]?.title == "Background 2")
++    }
++
++    @Test func activeWebStateMirrorPublishesOnlyWhenTheStateChanges() {
++        let model = StudioModel(launchTerminalProcesses: false)
++        model.newTab()
++        let id = model.selectedTabID
++        let state = WebNavigationState(pageTitle: "Example", isLoading: true, progress: 0.5)
++        let (emissions, cancellable) = watch(model.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++
++        model.recordWebState(tabID: id, state: state)
++        #expect(model.activeWebState == state)
++        let afterFirst = emissions.count
++        #expect(afterFirst > 0)
++        for _ in 0..<100 { model.recordWebState(tabID: id, state: state) }
++        #expect(emissions.count == afterFirst)
++
++        var next = state; next.progress = 0.75
++        model.recordWebState(tabID: id, state: next)
++        #expect(model.activeWebState == next)
++        #expect(emissions.count > afterFirst)
++    }
++
++    // MARK: Terminal directory and lifecycle -> ResourceStore
++
++    @Test func repeatedKnownDirectoryDoesNotRewriteTheRecord() throws {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
++        let session = try #require(store.terminalSession(for: id))
++        #expect(session.state == .idle)
++        let (emissions, cancellable) = watch(store.objectWillChange)
++        var sourceValues = 0
++        let sourceWatch = session.$knownDirectory.sink { _ in sourceValues += 1 }
++        defer { withExtendedLifetime((cancellable, sourceWatch)) {} }
++        sourceValues = 0
++
++        for _ in 0..<100 { session.setKnownDirectory("/tmp") }
++        #expect(sourceValues == 100, "the session republishes equal values, as the VT terminal does at frame rate")
++        #expect(emissions.count == 0)
++
++        session.setKnownDirectory("/usr")
++        #expect(emissions.count == 1)
++        #expect(store.records[id]?.location == .localTerminal(directory: "/usr"))
++        for _ in 0..<100 { session.setKnownDirectory("/usr") }
++        #expect(emissions.count == 1)
++
++        session.setKnownDirectory("/tmp")
++        #expect(emissions.count == 2)
++        #expect(store.records[id]?.location == .localTerminal(directory: "/tmp"))
++    }
++
++    @Test func explicitlyStartedTerminalDirectorySinkAlsoDeduplicates() async throws {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let id = store.restoreDescriptor(ResourceRecord(kind: .localTerminal, groupID: UUID(), title: "Terminal",
++            location: .localTerminal(directory: "/tmp"), readCapabilities: [.output]))
++        _ = try #require(await store.startResource(resourceID: id))
++        let session = try #require(store.terminalSession(for: id))
++        let (emissions, cancellable) = watch(store.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++
++        for _ in 0..<100 { session.setKnownDirectory("/tmp") }
++        #expect(emissions.count == 0)
++        session.setKnownDirectory("/usr")
++        #expect(emissions.count == 1)
++        #expect(store.records[id]?.location == .localTerminal(directory: "/usr"))
++        for _ in 0..<100 { session.setKnownDirectory("/usr") }
++        #expect(emissions.count == 1)
++        await store.endResourceSession(resourceID: id)
++    }
++
++    @Test func terminalStateRecordingPublishesOnlyOnRealTransitions() {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
++        #expect(store.records[id]?.lifecycle == .starting)
++        let (emissions, cancellable) = watch(store.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++
++        for _ in 0..<100 { store.recordTerminalState(resourceID: id, state: .starting) }
++        #expect(emissions.count == 0)
++
++        store.recordTerminalState(resourceID: id, state: .running)
++        #expect(emissions.count == 1)
++        #expect(store.records[id]?.lifecycle == .running)
++        for _ in 0..<100 { store.recordTerminalState(resourceID: id, state: .running) }
++        #expect(emissions.count == 1)
++
++        store.recordTerminalState(resourceID: id, state: .failed("boom"))
++        #expect(emissions.count == 2)
++        #expect(store.records[id]?.lifecycle == .failed)
++        #expect(store.records[id]?.errorMessage == "boom")
++        store.recordTerminalState(resourceID: id, state: .exited(0))
++        #expect(emissions.count == 3)
++        #expect(store.records[id]?.lifecycle == .exited)
++        #expect(store.records[id]?.errorMessage == nil)
++        store.recordTerminalState(resourceID: id, state: .idle)
++        #expect(emissions.count == 3, "idle maps to no record change")
++        store.recordTerminalState(resourceID: UUID(), state: .running)
++        #expect(emissions.count == 3)
++    }
++
++    // MARK: Structural and persisted changes keep notifying
++
++    @Test func genuineStructuralAndPersistedChangesStillPublish() throws {
++        let store = ResourceStore(launchTerminalProcesses: false)
++        let (emissions, cancellable) = watch(store.objectWillChange)
++        defer { withExtendedLifetime(cancellable) {} }
++
++        let url = try #require(URL(string: "https://example.com/page"))
++        let id = store.registerWeb(groupID: UUID(), destination: url)
++        #expect(emissions.count == 1)
++        var record = try #require(store.records[id])
++        record.customTitle = "Pinned name"
++        store.update(record)
++        #expect(emissions.count == 2)
++        let webID = store.registerWeb(groupID: UUID())
++        #expect(emissions.count == 3)
++        store.remove(resourceID: webID)
++        #expect(emissions.count == 4)
++        #expect(store.records[id]?.customTitle == "Pinned name")
++    }
++}

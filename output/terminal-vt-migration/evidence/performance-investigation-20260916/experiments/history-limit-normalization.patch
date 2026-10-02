@@ -1,0 +1,18 @@
+diff --git a/Web Studio/StudioVTCore.c b/Web Studio/StudioVTCore.c
+index 47d4823..bcad1cd 100644
+--- a/Web Studio/StudioVTCore.c	
++++ b/Web Studio/StudioVTCore.c	
+@@ -57,6 +57,13 @@ StudioVT *studio_vt_create(uint16_t cols, uint16_t rows, uint32_t cw, uint32_t c
+     studio_vt_free(ctx);
+     return NULL;
+   }
++  size_t max_scrollback_bytes = 64 * 1024 * 1024;
++  size_t max_scrollback_lines = 10000;
++  if (ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_SCROLLBACK_MAX_BYTES, &max_scrollback_bytes) != GHOSTTY_SUCCESS ||
++      ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_SCROLLBACK_MAX_LINES, &max_scrollback_lines) != GHOSTTY_SUCCESS) {
++    studio_vt_free(ctx);
++    return NULL;
++  }
+   ctx->reply = reply;
+   ctx->userdata = userdata;
+   ctx->cell_width_px = cw; ctx->cell_height_px = ch;

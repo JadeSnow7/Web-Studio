@@ -1,0 +1,141 @@
+diff --git a/Web Studio/TerminalVTBackend.swift b/Web Studio/TerminalVTBackend.swift
+index f166726..4e11ce4 100644
+--- a/Web Studio/TerminalVTBackend.swift	
++++ b/Web Studio/TerminalVTBackend.swift	
+@@ -39,6 +39,13 @@
+     private let core: TerminalVTCore
+     private var frameTimer: DispatchSourceTimer?
+     private var framePending = false
++    private static let frameInterval = DispatchTimeInterval.milliseconds(16)
++    /// Quiet time since the last publish after which PTY output publishes immediately.
++    private static let leadingIdle = frameInterval
++    /// Deadline of the currently armed trailing timer; a stale fire (timer re-armed or cancelled by a leading publish) is ignored.
++    private var frameDeadline = DispatchTime.now()
++    /// Time of the last frame actually handed to `onFrame`. PTY output arriving ≥ one interval later publishes immediately (leading edge).
++    private var lastPublish: DispatchTime?
+     private var visible = true
+     private var started = false
+     private var closed = false
+@@ -236,22 +243,34 @@
+       let reply = core.takeQueryResponses()
+       if !reply.isEmpty { writeInteractive(reply) }
+       inOutput = false
+-      scheduleFrame()
++      scheduleFrame(leading: true)
+     }
+     private func refreshModeMirror() { mouseTracking.store(core.mouseReporting(), ordering: .releasing) }
+-    private func scheduleFrame() {
+-      guard visible, !framePending else { return }
++    /// Trailing edge: at most one frame per `frameInterval`. Leading edge (PTY output only): when nothing was published for a full interval, publish now instead of waiting, which also disarms a pending trailing timer. Every publish path keeps `≥ frameInterval` between frames, so the ≤ ~62/s ceiling is unchanged.
++    private func scheduleFrame(leading: Bool = false) {
++      guard visible else { return }
++      if leading, isIdle() { publishFrame(); return }
++      guard !framePending else { return }
+       framePending = true
++      frameDeadline = .now() + Self.frameInterval
+       if frameTimer == nil {
+         let timer = DispatchSource.makeTimerSource(queue: queue)
+-        timer.setEventHandler { [weak self] in self?.publishFrame() }
++        timer.setEventHandler { [weak self] in self?.frameTimerFired() }
+         frameTimer = timer
+-        timer.schedule(deadline: .now() + .milliseconds(16))
++        timer.schedule(deadline: frameDeadline)
+         timer.resume()
+       } else {
+-        frameTimer?.schedule(deadline: .now() + .milliseconds(16))
++        frameTimer?.schedule(deadline: frameDeadline)
+       }
+     }
++    private func isIdle() -> Bool {
++      guard let last = lastPublish else { return true }
++      return DispatchTime.now() >= last + Self.leadingIdle
++    }
++    private func frameTimerFired() {
++      guard framePending, DispatchTime.now() >= frameDeadline else { return }
++      publishFrame()
++    }
+     /// Frame consumers call this after taking a frame so a publish skipped while it was still undrained is re-armed.
+     public func frameDrained() {
+       guard publishDeferred.load(ordering: .sequentiallyConsistent) else { return }
+@@ -266,6 +285,7 @@
+         publishDeferred.store(false, ordering: .sequentiallyConsistent)
+       }
+       guard let frame = core.snapshot() else { return }
++      lastPublish = .now()
+       onFrame?(frame)
+       notifyDirectory()
+     }
+diff --git a/scripts/terminal-vt-backend-smoke.swift b/scripts/terminal-vt-backend-smoke.swift
+index 9d06592..d6399fe 100644
+--- a/scripts/terminal-vt-backend-smoke.swift
++++ b/scripts/terminal-vt-backend-smoke.swift
+@@ -79,6 +79,8 @@ private enum LaneBSmoke {
+   static func run() async {
+     await hiddenOutputTakesNoSnapshots()
+     await undrainedFrameDefersSnapshots()
++    await leadingEdgeFrameDoesNotWaitForTimer()
++    await sustainedOutputStaysRateLimited()
+     await directoryNotifiedOncePerChange()
+     await mouseMirrorMatchesCore()
+     await selectionAsyncThenSyncRead()
+@@ -211,6 +213,60 @@ private enum LaneBSmoke {
+     await backend.closeAndWait()
+   }
+ 
++  private final class LeadProbe: @unchecked Sendable {
++    private let lock = NSLock(); private var outputs = [UInt64](), frames = [(t: UInt64, text: String)]()
++    func attach(to backend: GhosttyVTBackend) {
++      let prevOut = backend.onOutput, prevFrame = backend.onFrame
++      backend.onOutput = { [self] d in let t = clock_gettime_nsec_np(CLOCK_UPTIME_RAW); lock.lock(); outputs.append(t); lock.unlock(); prevOut?(d) }
++      backend.onFrame = { [self] f in let t = clock_gettime_nsec_np(CLOCK_UPTIME_RAW); lock.lock(); frames.append((t, String(decoding: f.visibleData, as: UTF8.self))); lock.unlock(); prevFrame?(f) }
++    }
++    func firstOutput(after t: UInt64) -> UInt64? { lock.lock(); defer { lock.unlock() }; return outputs.first { $0 >= t } }
++    func firstFrame(containing text: String) -> UInt64? { lock.lock(); defer { lock.unlock() }; return frames.first { $0.text.contains(text) }?.t }
++    var frameTimes: [UInt64] { lock.lock(); defer { lock.unlock() }; return frames.map { $0.t } }
++  }
++  private static func nowNS() -> UInt64 { clock_gettime_nsec_np(CLOCK_UPTIME_RAW) }
++
++  // Leading edge: output arriving after >= 16 ms without a publish reaches onFrame in the same PTY-queue turn (no 16 ms timer wait), the key-armed timer then produces no duplicate frame, and finish() still emits the final frame.
++  static func leadingEdgeFrameDoesNotWaitForTimer() async {
++    let probe = LeadProbe()
++    let (backend, recorder) = launch("stty -echo; printf READY_L; while IFS= read -r l; do if [ \"$l\" = q ]; then printf LAST_L; exit 3; fi; printf \"L_$l;\"; done", configure: { probe.attach(to: $0) })
++    precondition(eventually { recorder.hasFrame("READY_L") }, "leading: ready frame missing")
++    var fast = 0, single = 0
++    for i in 1...5 {
++      settle(100); barrier(backend)
++      let before = recorder.frameCount, sentAt = nowNS()
++      precondition(backend.sendRaw(Data("\(i)\n".utf8)))
++      precondition(eventually { probe.firstFrame(containing: "L_\(i);") != nil }, "leading: echo frame \(i) missing")
++      let frameAt = probe.firstFrame(containing: "L_\(i);")!, outAt = probe.firstOutput(after: sentAt)!
++      // Frame minus output arrival: microseconds when published on the leading edge, ~15 ms+ when it waited for the trailing timer.
++      if frameAt >= outAt, frameAt - outAt < 8_000_000 { fast += 1 }
++      settle(80); barrier(backend)
++      if recorder.frameCount == before + 1 { single += 1 }
++    }
++    precondition(fast >= 4, "leading: only \(fast)/5 idle output frames were published without waiting for the trailing timer")
++    precondition(single >= 4, "leading: only \(single)/5 probes produced exactly one frame (stale trailing timer published a duplicate)")
++    settle(100); barrier(backend)
++    precondition(backend.sendRaw(Data("q\n".utf8))); precondition(eventually { recorder.hasExited }, "leading: exit not delivered"); precondition(recorder.exitStatus == 3)
++    precondition(recorder.lastFrameTextAtExit?.contains("LAST_L") == true, "leading: final frame missing at exit")
++    await backend.closeAndWait()
++  }
++
++  // Sustained output must stay rate limited: never two frames closer than ~one interval, and about 60/s at most (leading edge only fires after a quiet interval).
++  static func sustainedOutputStaysRateLimited() async {
++    let probe = LeadProbe()
++    let backend = GhosttyVTBackend(columns: 80, rows: 24); let recorder = LaneRecorder(); recorder.attach(to: backend); probe.attach(to: backend)
++    backend.start(executable: "/usr/bin/yes", argv: ["yes"], environment: ["PATH": "/usr/bin:/bin"], directory: nil, columns: 80, rows: 24)
++    precondition(eventually { recorder.frameCount > 0 }, "rate: no frame from a flooding child")
++    let start = nowNS(); settle(1000); let end = nowNS()
++    let times = probe.frameTimes.filter { $0 >= start && $0 <= end }
++    let seconds = Double(end - start) / 1e9
++    var minGap = Double.infinity; for i in 1..<max(times.count, 1) { minGap = min(minGap, Double(times[i] - times[i - 1]) / 1e6) }
++    precondition(Double(times.count) / seconds <= 64, "rate: \(times.count) frames in \(seconds)s exceeds the ~62/s ceiling")
++    precondition(times.count >= 20, "rate: sustained output starved frames (\(times.count))")
++    precondition(minGap >= 15, "rate: two frames \(minGap) ms apart")
++    await backend.closeAndWait()
++  }
++
+   // B1: while the consumer still holds an undrained frame no new snapshot is produced; after it drains the latest state is published once; finish() bypasses the gate.
+   static func undrainedFrameDefersSnapshots() async {
+     let held = LaneFlag()

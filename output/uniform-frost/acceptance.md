@@ -1,5 +1,7 @@
 # Uniform frost — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 Removed sidebar and Agent tint overlays. Root, floating panels and custom capsules use the same behind-window material and non-emphasized state. Removed mixed adaptive Liquid Glass / thinMaterial layers. Controls retain native bordered capsule styles, opaque readable text, native focus and disabled states; native fields no longer carry redundant material backing.
 
 Final Debug arm64 build passed (build.log), git diff --check passed, strict design audit has zero findings. Reviewed source diff; ContentView and model unchanged during this refinement.

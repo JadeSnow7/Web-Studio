@@ -1,5 +1,7 @@
 # Web Studio terminal theme mockups
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../../STATUS.md)。
+
 Generated with the built-in image_gen tool. Concept images based on the current Web Studio screenshot; terminal commands and output are illustrative, not runtime evidence. No application source was modified.
 
 ## Dark mode prompt

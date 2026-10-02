@@ -1,0 +1,1040 @@
+diff --git a/Web Studio/TerminalMetalRenderer.swift b/Web Studio/TerminalMetalRenderer.swift
+index 92781e0..aea579d 100644
+--- a/Web Studio/TerminalMetalRenderer.swift	
++++ b/Web Studio/TerminalMetalRenderer.swift	
+@@ -42,108 +42,252 @@
+       var page: Int
+       var glyph: Glyph
+     }
++    private typealias GlyphRequest = (key: GlyphKey, text: String, font: NSFont, scale: CGFloat)
++    private struct RasterItem {
++      var key: GlyphKey
++      var image: CGImage
++      var bearing: CGPoint
++      var advance: CGFloat
++      var isColor: Bool
++    }
++    /// Process-wide identity of a rasterized glyph bitmap; independent of any renderer's font ids.
++    private struct RasterKey: Hashable {
++      var font: String
++      var size: UInt64
++      var scale: UInt64
++      var text: String
++    }
++    private typealias Rasterized = (CGImage, CGSize, CGPoint, CGFloat, Bool)
++    /// Thread-safe O(1) LRU: lookup (which refreshes recency), insert and eviction of the least recently used entry are all
++    /// constant time (doubly linked list over a slot array plus a key index).
++    final class GlyphLRU<Key: Hashable, Value> {
++      private struct Node {
++        var key: Key
++        var value: Value
++        var newer: Int32
++        var older: Int32
++      }
++      let capacity: Int
++      private let lock = NSLock()
++      private var nodes: [Node] = []
++      private var slots: [Key: Int32] = [:]
++      private var free: [Int32] = []
++      private var newest: Int32 = -1
++      private var oldest: Int32 = -1
++      init(capacity: Int) { self.capacity = max(1, capacity) }
++      var count: Int {
++        lock.lock()
++        defer { lock.unlock() }
++        return slots.count
++      }
++      private func unlink(_ i: Int32) {
++        let node = nodes[Int(i)]
++        if node.newer >= 0 { nodes[Int(node.newer)].older = node.older } else { newest = node.older }
++        if node.older >= 0 { nodes[Int(node.older)].newer = node.newer } else { oldest = node.newer }
++      }
++      private func linkNewest(_ i: Int32) {
++        nodes[Int(i)].newer = -1
++        nodes[Int(i)].older = newest
++        if newest >= 0 { nodes[Int(newest)].newer = i } else { oldest = i }
++        newest = i
++      }
++      func value(for key: Key) -> Value? {
++        lock.lock()
++        defer { lock.unlock() }
++        guard let i = slots[key] else { return nil }
++        if i != newest {
++          unlink(i)
++          linkNewest(i)
++        }
++        return nodes[Int(i)].value
++      }
++      func insert(_ value: Value, for key: Key) {
++        lock.lock()
++        defer { lock.unlock() }
++        if let i = slots[key] {
++          nodes[Int(i)].value = value
++          if i != newest {
++            unlink(i)
++            linkNewest(i)
++          }
++          return
++        }
++        if slots.count >= capacity, oldest >= 0 {
++          let victim = oldest
++          unlink(victim)
++          slots.removeValue(forKey: nodes[Int(victim)].key)
++          free.append(victim)
++        }
++        let node = Node(key: key, value: value, newer: -1, older: -1)
++        let i: Int32
++        if let reused = free.popLast() {
++          i = reused
++          nodes[Int(i)] = node
++        } else {
++          i = Int32(nodes.count)
++          nodes.append(node)
++        }
++        slots[key] = i
++        linkNewest(i)
++      }
++    }
++    /// One atlas page of a `PreparedAtlas` build: a power-of-two square texture and the glyph placements inside it.
++    private struct PagePlan {
++      var size: Int
++      var placements: [(item: Int, x: Int, y: Int)]
++      var byteCount: Int { size * size * 4 }
++    }
++    /// Shelf packer with a 1-px zero gutter on every side of every glyph (the origin gutter is the (1, 1) start).
++    private struct ShelfCursor {
++      var size: Int
++      var x = 1, y = 1, rowHeight = 0
++      init(size: Int) { self.size = size }
++      mutating func place(width: Int, height: Int) -> (x: Int, y: Int)? {
++        guard width + 2 <= size, height + 2 <= size else { return nil }
++        var px = x, py = y, row = rowHeight
++        if px + width + 1 > size {
++          px = 1
++          py += row + 1
++          row = 0
++        }
++        guard py + height + 1 <= size else { return nil }
++        x = px + width + 1
++        y = py
++        rowHeight = max(row, height)
++        return (px, py)
++      }
++    }
++    /// Append-only glyph atlas. Every texture is written exactly once, before any command buffer can reference it, and is
++    /// never modified afterwards, so in-flight frames keep sampling stable pages while later misses append new ones.
++    /// Table indices are stable for the life of the object; a replacement atlas (compaction) starts a new generation.
+     private final class PreparedAtlas {
+-      private typealias Rasterized = (CGImage, CGSize, CGPoint, CGFloat, Bool)
+-      private static var rasterCache: [String: Rasterized] = [:]
+-      private static var rasterOrder: [String] = []
+-      private static let rasterLock = NSLock()
+-      let size = 2048
+-      let textures: [MTLTexture]
+-      let table: [AtlasEntry]
+-      let index: [GlyphKey: Int32]
++      static let minPageSize = 64
++      static let maxPageSize = 2048
++      private static let rasters = GlyphLRU<RasterKey, Rasterized>(capacity: 1024)
++      private(set) var textures: [MTLTexture] = []
++      private(set) var table: [AtlasEntry] = []
++      private(set) var index: [GlyphKey: Int32] = [:]
++      private(set) var byteCount = 0
++      /// True once pages were appended to an atlas that already had pages. Such an atlas draws its glyphs in cell order
++      /// (page changes split the draw), because its pages no longer reflect one frame's packing order.
++      private(set) var isIncremental = false
+       private let device: MTLDevice
+-      init(
+-        device: MTLDevice, requests: [(key: GlyphKey, text: String, font: NSFont, scale: CGFloat)]
+-      ) throws {
++      init(device: MTLDevice) {
+         self.device = device
+-        let pageSize = 2048
+-        var images: [(key: GlyphKey, image: CGImage, bearing: CGPoint, advance: CGFloat, isColor: Bool)] = []
+-        images.reserveCapacity(requests.count)
++      }
++      /// Rasterizes (or fetches from the shared LRU) the bitmaps of `requests`, skipping glyphs that cannot be rasterized.
++      static func rasterize(_ requests: [GlyphRequest], reusing known: [GlyphKey: RasterItem]) -> [RasterItem] {
++        var items: [RasterItem] = []
++        items.reserveCapacity(requests.count)
+         for request in requests {
+-          let item: Rasterized?
+-          let rasterKey = "\(request.font.fontName)|\(request.font.pointSize)|\(request.scale)|\(request.text)"
+-          Self.rasterLock.lock()
+-          item = Self.rasterCache[rasterKey]
+-          Self.rasterLock.unlock()
+-          let raster = item ?? Self.rasterize(request.text, font: request.font, scale: request.scale)
+-          guard let raster else {
++          if let reused = known[request.key] {
++            items.append(reused)
+             continue
+           }
+-          if item == nil {
+-            Self.rasterLock.lock()
+-            Self.rasterCache[rasterKey] = raster
+-            Self.rasterOrder.removeAll { $0 == rasterKey }
+-            Self.rasterOrder.append(rasterKey)
+-            if Self.rasterOrder.count > 1024 {
+-              let evicted = Self.rasterOrder.removeFirst()
+-              Self.rasterCache.removeValue(forKey: evicted)
+-            }
+-            Self.rasterLock.unlock()
+-          }
+-          images.append((request.key, raster.0, raster.2, raster.3, raster.4))
++          let rasterKey = RasterKey(
++            font: request.font.fontName, size: Double(request.font.pointSize).bitPattern,
++            scale: Double(request.scale).bitPattern, text: request.text)
++          let cached = Self.rasters.value(for: rasterKey)
++          let raster = cached ?? Self.rasterize(request.text, font: request.font, scale: request.scale)
++          guard let raster else { continue }
++          if cached == nil { Self.rasters.insert(raster, for: rasterKey) }
++          items.append(
++            RasterItem(key: request.key, image: raster.0, bearing: raster.2, advance: raster.3, isColor: raster.4))
++        }
++        return items
++      }
++      /// Packed glyph rows should stay in the texel-row range a single 2048 page gives the same glyphs: at 1x the glyph
++      /// quads sit exactly on a bilinear rounding tie in v, so how large the sampled texel rows are decides the last bit
++      /// of some edge pixels (a baseline page whose glyphs start lower down differs from the usual one in those bits).
++      /// A page is therefore only accepted when its packed height stays below this; larger pages hold the same glyphs in
++      /// fewer rows.
++      static let packedHeightBudget = 256
++      /// Splits `items` into pages: each page takes the following items in order and gets the smallest power-of-two size
++      /// (at least `minPageSize`, at most `maxPageSize`) into which they all pack within `packedHeightBudget` rows (the
++      /// largest size takes whatever fits); oversized glyphs are skipped.
++      static func plan(_ items: [RasterItem]) -> [PagePlan] {
++        let placeable = items.indices.filter {
++          items[$0].image.width + 2 <= maxPageSize && items[$0].image.height + 2 <= maxPageSize
+         }
+-        var pagePixels: [[UInt8]] = []
+-        var nextX = 1, nextY = 1, rowHeight = 0
+-        var page = -1
+-        var builtTable: [AtlasEntry] = []
+-        var builtIndex: [GlyphKey: Int32] = [:]
+-        builtTable.reserveCapacity(images.count)
+-        builtIndex.reserveCapacity(images.count)
+-        for item in images {
+-          if page < 0 || !Self.fits(item.image.width, item.image.height, x: nextX, y: nextY, rowHeight: rowHeight) {
+-            pagePixels.append(Array(repeating: 0, count: pageSize * pageSize * 4))
+-            page += 1
+-            nextX = 1
+-            nextY = 1
+-            rowHeight = 0
++        var plans: [PagePlan] = []
++        var start = 0
++        while start < placeable.count {
++          let rest = placeable[start...]
++          var area = 0, widest = 0, tallest = 0
++          for i in rest {
++            let w = items[i].image.width, h = items[i].image.height
++            area += (w + 1) * (h + 1)
++            widest = max(widest, w + 2)
++            tallest = max(tallest, h + 2)
+           }
+-          if item.image.width + 2 > pageSize || item.image.height + 2 > pageSize { continue }
+-          if nextX + item.image.width + 1 > pageSize {
+-            nextX = 1
+-            nextY += rowHeight + 1
+-            rowHeight = 0
++          var size = minPageSize
++          while size < maxPageSize && (size < widest || size < tallest || size * size < area) { size *= 2 }
++          while true {
++            var cursor = ShelfCursor(size: size)
++            var placements: [(item: Int, x: Int, y: Int)] = []
++            for i in rest {
++              guard let spot = cursor.place(width: items[i].image.width, height: items[i].image.height) else { break }
++              placements.append((i, spot.x, spot.y))
++            }
++            let complete = placements.count == rest.count
++            let height = cursor.y + cursor.rowHeight + 1
++            if size == maxPageSize || (complete && height <= packedHeightBudget) {
++              plans.append(PagePlan(size: size, placements: placements))
++              start += placements.count
++              break
++            }
++            size *= 2
+           }
+-          if nextY + item.image.height + 1 > pageSize { continue }
+-          Self.copy(item.image, into: &pagePixels[page], size: pageSize, x: nextX, y: nextY)
+-          builtIndex[item.key] = Int32(builtTable.count)
+-          builtTable.append(
+-            AtlasEntry(
+-              page: page,
+-              glyph: Glyph(
+-                uv: SIMD4(
+-                  Float(nextX) / Float(pageSize), Float(nextY) / Float(pageSize),
+-                  Float(item.image.width) / Float(pageSize), Float(item.image.height) / Float(pageSize)),
+-                size: SIMD2(Float(item.image.width), Float(item.image.height)),
+-                bearing: SIMD2(Float(item.bearing.x), Float(item.bearing.y)),
+-                advance: Float(item.advance), isColor: item.isColor)))
+-          nextX += item.image.width + 1
+-          rowHeight = max(rowHeight, item.image.height)
+         }
+-        var builtTextures: [MTLTexture] = []
+-        builtTextures.reserveCapacity(pagePixels.count)
+-        for pixels in pagePixels {
++        return plans
++      }
++      /// Builds one new texture per planned page and publishes them together with their glyph entries. Nothing is
++      /// published when any allocation fails.
++      func append(_ items: [RasterItem], plan: [PagePlan]) throws {
++        var newTextures: [MTLTexture] = []
++        var newEntries: [(key: GlyphKey, entry: AtlasEntry)] = []
++        newTextures.reserveCapacity(plan.count)
++        for (offset, page) in plan.enumerated() {
++          let size = page.size
++          var pixels = [UInt8](repeating: 0, count: size * size * 4)
++          Self.draw(items, page: page, into: &pixels)
+           let d = MTLTextureDescriptor.texture2DDescriptor(
+-            pixelFormat: .rgba8Unorm, width: pageSize, height: pageSize, mipmapped: false)
++            pixelFormat: .rgba8Unorm, width: size, height: size, mipmapped: false)
+           d.usage = [.shaderRead]
+           guard let texture = device.makeTexture(descriptor: d) else {
+             throw TerminalMetalRenderer.Error.shader("unable to allocate glyph atlas page")
+           }
+           pixels.withUnsafeBytes {
+             texture.replace(
+-              region: MTLRegionMake2D(0, 0, pageSize, pageSize), mipmapLevel: 0,
+-              withBytes: $0.baseAddress!, bytesPerRow: pageSize * 4)
++              region: MTLRegionMake2D(0, 0, size, size), mipmapLevel: 0,
++              withBytes: $0.baseAddress!, bytesPerRow: size * 4)
++          }
++          newTextures.append(texture)
++          for placed in page.placements {
++            let item = items[placed.item]
++            newEntries.append(
++              (
++                item.key,
++                AtlasEntry(
++                  page: textures.count + offset,
++                  glyph: Glyph(
++                    uv: SIMD4(
++                      Float(placed.x) / Float(size), Float(placed.y) / Float(size),
++                      Float(item.image.width) / Float(size), Float(item.image.height) / Float(size)),
++                    size: SIMD2(Float(item.image.width), Float(item.image.height)),
++                    bearing: SIMD2(Float(item.bearing.x), Float(item.bearing.y)),
++                    advance: Float(item.advance), isColor: item.isColor))
++              ))
+           }
+-          builtTextures.append(texture)
+         }
+-        textures = builtTextures
+-        table = builtTable
+-        index = builtIndex
+-      }
+-      private static func fits(_ width: Int, _ height: Int, x: Int, y: Int, rowHeight: Int) -> Bool {
+-        let pageSize = 2048
+-        guard width + 2 <= pageSize, height + 2 <= pageSize else { return false }
+-        if x + width + 1 > pageSize { return y + rowHeight + height + 2 <= pageSize }
+-        return y + height + 1 <= pageSize
++        if !textures.isEmpty && !newTextures.isEmpty { isIncremental = true }
++        textures.append(contentsOf: newTextures)
++        table.reserveCapacity(table.count + newEntries.count)
++        for added in newEntries {
++          index[added.key] = Int32(table.count)
++          table.append(added.entry)
++        }
++        byteCount += plan.reduce(0) { $0 + $1.byteCount }
+       }
+       private static func rasterize(_ text: String, font: NSFont, scale: CGFloat) -> (
+         CGImage, CGSize, CGPoint, CGFloat, Bool
+@@ -185,7 +329,9 @@
+         }
+         return false
+       }
+-      private static func copy(_ image: CGImage, into pixels: inout [UInt8], size: Int, x: Int, y: Int) {
++      /// One bitmap context over the whole new page; each glyph is drawn at its integer placement.
++      private static func draw(_ items: [RasterItem], page: PagePlan, into pixels: inout [UInt8]) {
++        let size = page.size
+         pixels.withUnsafeMutableBytes { raw in
+           guard let base = raw.baseAddress,
+             let c = CGContext(
+@@ -194,9 +340,12 @@
+               bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+           else { return }
+           c.interpolationQuality = .high
+-          c.draw(
+-            image,
+-            in: CGRect(x: x, y: size - y - image.height, width: image.width, height: image.height))
++          for placed in page.placements {
++            let image = items[placed.item].image
++            c.draw(
++              image,
++              in: CGRect(x: placed.x, y: size - placed.y - image.height, width: image.width, height: image.height))
++          }
+         }
+       }
+     }
+@@ -269,20 +418,38 @@
+         return buffer
+       }
+     }
++    /// Consecutive glyph quads (in cell order) that sample the same atlas page: `start`/`count` are vertex indices.
++    private struct GlyphRun {
++      var page: Int32
++      var start: Int32
++      var count: Int32
++    }
+     /// Per-frame vertex arrays kept between frames so steady-state rendering appends into existing capacity.
+     private final class VertexScratch {
+       var background: [Vertex] = []
+       var underlay: [Vertex] = []
+-      var glyphs: [[Vertex]] = []
++      var glyphs: [Vertex] = []
++      var runs: [GlyphRun] = []
+       var decorations: [Vertex] = []
+       var overlay: [Vertex] = []
+     }
+     private static let unitFloats: [Float] = (0...255).map { Float($0) / 255 }
+     private let device: MTLDevice, queue: MTLCommandQueue, pipeline: MTLRenderPipelineState,
+       sampler: MTLSamplerState
++    /// Appending misses mutates the current atlas in place (indices stay valid); only a replacement (compaction) is a new
++    /// generation, and it must invalidate the ASCII table.
+     private var atlas: PreparedAtlas? {
+       didSet { lookup.resetASCII() }
+     }
++    /// Growth bounds: when appending a miss page would exceed either limit, the atlas is compacted (rebuilt once from the
++    /// glyphs of the frame being rendered). 16 pages bound the per-frame glyph draw calls; 64 MiB is four full 2048x2048
++    /// pages, enough for a dense full-screen CJK frame at 2x plus headroom for one round of misses.
++    static let maxAtlasPages = 16
++    static let maxAtlasBytes = 64 << 20
++    /// An atlas that grew by appended pages may split the glyph pass into at most this many draws per frame.
++    static let maxGlyphRuns = 48
++    /// Number of compactions since creation (diagnostics).
++    private(set) var atlasCompactions = 0
+     private let lookup = GlyphLookup()
+     /// Resident fonts by traits (bit 0 bold, bit 1 italic), resolved lazily once with the same construction as before.
+     private var residentFonts: [NSFont?] = [nil, nil, nil, nil]
+@@ -360,8 +527,24 @@
+           frame.cells, gridCount: gridCount, scaleBits: scaleBits, stopAtMiss: true, into: cellGlyphs)
+       {
+         do {
+-          atlas = try PreparedAtlas(
+-            device: device, requests: glyphRequests(frame.cells, scale: scale, scaleBits: scaleBits))
++          try extendAtlas(
++            missing: missingGlyphRequests(frame.cells, scale: scale, scaleBits: scaleBits),
++            all: { self.glyphRequests(frame.cells, scale: scale, scaleBits: scaleBits) })
++          lastError = nil
++        } catch {
++          lastError = error
++          return nil
++        }
++        _ = resolveGlyphs(
++          frame.cells, gridCount: gridCount, scaleBits: scaleBits, stopAtMiss: false, into: cellGlyphs)
++      }
++      // A grown atlas draws in cell order with one draw per page change; too fragmented for this frame means compact.
++      if let grown = atlas, grown.isIncremental,
++        glyphRunCount(gridCount: gridCount, into: cellGlyphs, atlas: grown) > Self.maxGlyphRuns
++      {
++        do {
++          try compactAtlas(
++            requests: glyphRequests(frame.cells, scale: scale, scaleBits: scaleBits), known: [:])
+           lastError = nil
+         } catch {
+           lastError = error
+@@ -403,28 +586,29 @@
+       let pageCount = prepared?.textures.count ?? 0
+       var backgroundVertices: [Vertex] = []
+       var cursorUnderlayVertices: [Vertex] = []
+-      var glyphVertices: [[Vertex]] = []
++      var glyphVertices: [Vertex] = []
++      var glyphRuns: [GlyphRun] = []
+       var decorationVertices: [Vertex] = []
+       var overlayVertices: [Vertex] = []
+       swap(&backgroundVertices, &scratch.background)
+       swap(&cursorUnderlayVertices, &scratch.underlay)
+       swap(&glyphVertices, &scratch.glyphs)
++      swap(&glyphRuns, &scratch.runs)
+       swap(&decorationVertices, &scratch.decorations)
+       swap(&overlayVertices, &scratch.overlay)
+       backgroundVertices.removeAll(keepingCapacity: true)
+       cursorUnderlayVertices.removeAll(keepingCapacity: true)
+       decorationVertices.removeAll(keepingCapacity: true)
+       overlayVertices.removeAll(keepingCapacity: true)
+-      if glyphVertices.count > pageCount { glyphVertices.removeSubrange(pageCount...) }
+-      while glyphVertices.count < pageCount { glyphVertices.append([]) }
+-      for page in 0..<pageCount { glyphVertices[page].removeAll(keepingCapacity: true) }
++      glyphVertices.removeAll(keepingCapacity: true)
++      glyphRuns.removeAll(keepingCapacity: true)
+       // Capacity up front from the cell counts: at most one background quad and one glyph quad per grid cell.
+       backgroundVertices.reserveCapacity(gridCount * 6)
+-      if pageCount == 1 {
+-        var glyphQuads = 0
+-        for i in 0..<gridCount where cellGlyphs[i] >= 0 { glyphQuads += 1 }
+-        glyphVertices[0].reserveCapacity(glyphQuads * 6)
+-      }
++      var glyphQuads = 0
++      for i in 0..<gridCount where cellGlyphs[i] >= 0 { glyphQuads += 1 }
++      glyphVertices.reserveCapacity(glyphQuads * 6)
++      var runPage: Int32 = -1
++      var runStart = 0
+       let unitFloats = Self.unitFloats
+       func col(_ c: VTColor) -> SIMD4<Float> {
+         SIMD4(unitFloats[Int(c.red)], unitFloats[Int(c.green)], unitFloats[Int(c.blue)], 1)
+@@ -495,9 +679,17 @@
+         if !cell.hidden, cellGlyphs[i] >= 0, let atlas = prepared {
+           let item = atlas.table[Int(cellGlyphs[i])]
+           let g = item.glyph
++          if Int32(item.page) != runPage {
++            if runPage >= 0 {
++              glyphRuns.append(
++                GlyphRun(page: runPage, start: Int32(runStart), count: Int32(glyphVertices.count - runStart)))
++            }
++            runPage = Int32(item.page)
++            runStart = glyphVertices.count
++          }
+           quad(
+             x + g.bearing.x, baseline + g.bearing.y, g.size.x, g.size.y, col(fg), g.uv,
+-            g.isColor ? 2 : 1, into: &glyphVertices[item.page])
++            g.isColor ? 2 : 1, into: &glyphVertices)
+         }
+         if cell.hidden { continue }
+         let occupiedWidth = cell.wide.rawValue == 1 ? cw * 2 : cw
+@@ -536,6 +728,10 @@
+           quad(x, iy + Float(ry) * ch + max(1, Float(scale)), occupiedWidth, max(1, Float(scale)), col(fg), SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+         }
+       }
++      if runPage >= 0 {
++        glyphRuns.append(
++          GlyphRun(page: runPage, start: Int32(runStart), count: Int32(glyphVertices.count - runStart)))
++      }
+       if cursorPhaseVisible && frame.cursor.viewportHasValue && frame.cursor.visible {
+         let x = ix + Float(cursorColumn) * cw
+         let y = iy + Float(frame.cursor.y) * ch
+@@ -565,7 +761,17 @@
+       func span(_ count: Int) -> Int { (count * stride + 255) & ~255 }
+       var totalLength = span(backgroundVertices.count) + span(cursorUnderlayVertices.count)
+       totalLength += span(decorationVertices.count) + span(overlayVertices.count)
+-      for page in 0..<pageCount { totalLength += span(glyphVertices[page].count) }
++      // An atlas built in one piece keeps the page-grouped draw order (one draw per page); an atlas that grew by appended
++      // pages draws in cell order, one draw per run of quads that share a page.
++      let groupByPage = glyphRuns.count > 1 && !(prepared?.isIncremental ?? false)
++      var pageVertexCounts: [Int] = []
++      if groupByPage {
++        pageVertexCounts = Array(repeating: 0, count: pageCount)
++        for run in glyphRuns { pageVertexCounts[Int(run.page)] += Int(run.count) }
++        for count in pageVertexCounts { totalLength += span(count) }
++      } else {
++        totalLength += span(glyphVertices.count)
++      }
+       let gpuBuffer =
+         totalLength > 0 ? ring.buffer(slot: claimed, minimumLength: totalLength, device: device) : nil
+       var bufferOffset = 0
+@@ -583,9 +789,35 @@
+       }
+       draw(backgroundVertices, texture: nil)
+       draw(cursorUnderlayVertices, texture: nil)
+-      for page in 0..<pageCount {
+-        guard let atlas = prepared, !glyphVertices[page].isEmpty else { continue }
+-        draw(glyphVertices[page], texture: atlas.textures[page])
++      if let atlas = prepared, let gpuBuffer, !glyphVertices.isEmpty {
++        encoder.setFragmentSamplerState(sampler, index: 0)
++        if !groupByPage {
++          glyphVertices.withUnsafeBytes {
++            gpuBuffer.contents().advanced(by: bufferOffset).copyMemory(
++              from: $0.baseAddress!, byteCount: glyphVertices.count * stride)
++          }
++          encoder.setVertexBuffer(gpuBuffer, offset: bufferOffset, index: 0)
++          for run in glyphRuns {
++            encoder.setFragmentTexture(atlas.textures[Int(run.page)], index: 0)
++            encoder.drawPrimitives(type: .triangle, vertexStart: Int(run.start), vertexCount: Int(run.count))
++          }
++          bufferOffset += span(glyphVertices.count)
++        } else {
++          for page in 0..<pageCount where pageVertexCounts[page] > 0 {
++            var cursor = bufferOffset
++            glyphVertices.withUnsafeBytes { source in
++              for run in glyphRuns where Int(run.page) == page {
++                gpuBuffer.contents().advanced(by: cursor).copyMemory(
++                  from: source.baseAddress!.advanced(by: Int(run.start) * stride), byteCount: Int(run.count) * stride)
++                cursor += Int(run.count) * stride
++              }
++            }
++            encoder.setVertexBuffer(gpuBuffer, offset: bufferOffset, index: 0)
++            encoder.setFragmentTexture(atlas.textures[page], index: 0)
++            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: pageVertexCounts[page])
++            bufferOffset += span(pageVertexCounts[page])
++          }
++        }
+       }
+       draw(decorationVertices, texture: nil)
+       draw(overlayVertices, texture: nil)
+@@ -593,6 +825,7 @@
+       swap(&backgroundVertices, &scratch.background)
+       swap(&cursorUnderlayVertices, &scratch.underlay)
+       swap(&glyphVertices, &scratch.glyphs)
++      swap(&glyphRuns, &scratch.runs)
+       swap(&decorationVertices, &scratch.decorations)
+       swap(&overlayVertices, &scratch.overlay)
+       if let drawable { command.present(drawable) }
+@@ -659,11 +892,88 @@
+       }
+       return complete
+     }
++    /// Miss path only: makes the atlas hold every glyph of `requests`. Missing glyphs go into new immutable pages; when that
++    /// would exceed the page or byte cap the atlas is instead rebuilt once from `requests` (the current frame's glyphs).
++    /// `missing` are the requests the atlas lacks; `all` yields the whole glyph set of the frame and is only evaluated when
++    /// the atlas has to be rebuilt.
++    private func extendAtlas(missing misses: [GlyphRequest], all: () -> [GlyphRequest]) throws {
++      guard let current = atlas else {
++        let fresh = PreparedAtlas(device: device)
++        let items = PreparedAtlas.rasterize(misses, reusing: [:])
++        try fresh.append(items, plan: PreparedAtlas.plan(items))
++        atlas = fresh
++        return
++      }
++      if misses.isEmpty { return }
++      let missItems = PreparedAtlas.rasterize(misses, reusing: [:])
++      let plan = PreparedAtlas.plan(missItems)
++      if plan.isEmpty { return }
++      let newBytes = plan.reduce(0) { $0 + $1.byteCount }
++      if current.textures.count + plan.count <= Self.maxAtlasPages,
++        current.byteCount + newBytes <= Self.maxAtlasBytes
++      {
++        try current.append(missItems, plan: plan)
++        return
++      }
++      var known: [GlyphKey: RasterItem] = [:]
++      for item in missItems { known[item.key] = item }
++      try compactAtlas(requests: all(), known: known)
++    }
++    /// Rebuilds the atlas once from `requests` (the current frame's glyph set), dropping everything else. The replacement
++    /// is a new generation (`didSet` invalidates the ASCII table); the old pages stay alive for frames still in flight.
++    private func compactAtlas(requests: [GlyphRequest], known: [GlyphKey: RasterItem]) throws {
++      let items = PreparedAtlas.rasterize(requests, reusing: known)
++      let compacted = PreparedAtlas(device: device)
++      try compacted.append(items, plan: PreparedAtlas.plan(items))
++      atlas = compacted
++      atlasCompactions += 1
++    }
++    /// Number of draws the glyph pass of the frame would need in cell order (page changes between glyph cells).
++    private func glyphRunCount(
++      gridCount: Int, into cellGlyphs: UnsafeMutablePointer<Int32>, atlas: PreparedAtlas
++    ) -> Int {
++      var runs = 0
++      var page = -1
++      for i in 0..<gridCount where cellGlyphs[i] >= 0 {
++        let p = atlas.table[Int(cellGlyphs[i])].page
++        if p != page {
++          runs += 1
++          page = p
++        }
++      }
++      return runs
++    }
++    /// The renderer's command queue, so tests can enqueue a blocker ahead of frames and keep them in flight.
++    var commandQueueForTesting: MTLCommandQueue { queue }
++    /// Page textures, entry count and byte size of the current atlas generation (diagnostics and tests).
++    struct AtlasDiagnostics {
++      var textures: [MTLTexture]
++      var glyphCount: Int
++      var byteCount: Int
++      var compactions: Int
++    }
++    var atlasDiagnostics: AtlasDiagnostics {
++      AtlasDiagnostics(
++        textures: atlas?.textures ?? [], glyphCount: atlas?.table.count ?? 0, byteCount: atlas?.byteCount ?? 0,
++        compactions: atlasCompactions)
++    }
++    /// Miss path only: the deduplicated requests of visible cell heads the current atlas lacks, in first-appearance order.
++    /// Every needed glyph when there is no atlas yet.
++    private func missingGlyphRequests(_ cells: [VTCell], scale: CGFloat, scaleBits: UInt64) -> [GlyphRequest] {
++      guard let atlas else { return glyphRequests(cells, scale: scale, scaleBits: scaleBits) }
++      var requests: [GlyphRequest] = []
++      var seen = Set<GlyphKey>()
++      for cell in cells where !cell.text.isEmpty && cell.wide.rawValue != 2 && cell.wide.rawValue != 3 {
++        let slot = (cell.bold ? 1 : 0) | (cell.italic ? 2 : 0)
++        let f = resolveResidentFont(slot)
++        let key = GlyphKey(font: lookup.fontIDs[slot], scale: scaleBits, text: cell.text)
++        if atlas.index[key] == nil, seen.insert(key).inserted { requests.append((key, cell.text, f, scale)) }
++      }
++      return requests
++    }
+     /// Miss path only: the deduplicated glyph requests of every visible cell head, in first-appearance order.
+-    private func glyphRequests(_ cells: [VTCell], scale: CGFloat, scaleBits: UInt64) -> [(
+-      key: GlyphKey, text: String, font: NSFont, scale: CGFloat
+-    )] {
+-      var requests: [(key: GlyphKey, text: String, font: NSFont, scale: CGFloat)] = []
++    private func glyphRequests(_ cells: [VTCell], scale: CGFloat, scaleBits: UInt64) -> [GlyphRequest] {
++      var requests: [GlyphRequest] = []
+       var seen = Set<GlyphKey>()
+       for cell in cells where !cell.text.isEmpty && cell.wide.rawValue != 2 && cell.wide.rawValue != 3 {
+         let slot = (cell.bold ? 1 : 0) | (cell.italic ? 2 : 0)
+@@ -677,7 +987,7 @@
+       frame: VTFrame, font: NSFont = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular),
+       scale: CGFloat = 1
+     ) {
+-      var requests: [GlyphKey: (key: GlyphKey, text: String, font: NSFont, scale: CGFloat)] = [:]
++      var requests: [GlyphKey: GlyphRequest] = [:]
+       let id = fontID(for: font)
+       for c in frame.cells where !c.text.isEmpty {
+         let key = GlyphKey(font: id, scale: Double(scale).bitPattern, text: c.text)
+@@ -685,7 +995,8 @@
+       }
+       if atlas == nil || !requests.keys.allSatisfy({ atlas?.index[$0] != nil }) {
+         do {
+-          atlas = try PreparedAtlas(device: device, requests: Array(requests.values))
++          let all = Array(requests.values)
++          try extendAtlas(missing: all.filter { atlas?.index[$0.key] == nil }, all: { all })
+         } catch {
+           lastError = error
+         }
+diff --git a/scripts/terminal-metal-smoke.swift b/scripts/terminal-metal-smoke.swift
+index 775949c..2ca6456 100644
+--- a/scripts/terminal-metal-smoke.swift
++++ b/scripts/terminal-metal-smoke.swift
+@@ -1,5 +1,6 @@
+ import AppKit
+ import CoreText
++import CryptoKit
+ import Foundation
+ import ImageIO
+ import Metal
+@@ -104,6 +105,8 @@ import UniformTypeIdentifiers
+     }
+     try runPreparedAtlasStress(device: device, renderer: renderer)
+     try runCursorPhasePixelCheck(device: device, renderer: renderer)
++    try runGlyphLRUCheck()
++    try runIncrementalAtlasChecks(device: device)
+     print(
+       "TerminalMetalRenderer smoke passed: /private/tmp/web-studio-vt-renderer/dark-1x.png /dark-2x.png /light-1x.png /light-2x.png"
+     )
+@@ -191,6 +194,329 @@ import UniformTypeIdentifiers
+       }
+     }
+   }
++
++  // MARK: Incremental atlas checks
++
++  static func fail(_ code: Int, _ message: String) -> NSError {
++    NSError(domain: "TerminalMetalSmoke", code: code, userInfo: [NSLocalizedDescriptionKey: message])
++  }
++
++  static func readBytes(_ texture: MTLTexture) -> [UInt8] {
++    var bytes = [UInt8](repeating: 0, count: texture.width * texture.height * texture.pixelFormat.bytesPerPixelForSmoke)
++    texture.getBytes(
++      &bytes, bytesPerRow: texture.width * texture.pixelFormat.bytesPerPixelForSmoke,
++      from: MTLRegionMake2D(0, 0, texture.width, texture.height), mipmapLevel: 0)
++    return bytes
++  }
++
++  static func digest(_ bytes: [UInt8]) -> String {
++    SHA256.hash(data: Data(bytes)).map { String(format: "%02x", $0) }.joined()
++  }
++
++  /// Serial reference: a brand-new renderer builds a fresh single-generation atlas for exactly this frame.
++  static func referenceBytes(
++    device: MTLDevice, frame: VTFrame, geometry: TerminalGeometry, width: Int, height: Int
++  ) throws -> [UInt8] {
++    let reference = try TerminalMetalRenderer(device: device)
++    guard let target = makeTexture(device, width: width, height: height),
++      let command = reference.render(frame: frame, geometry: geometry, theme: .dark, target: target)
++    else { throw fail(60, "reference render unavailable") }
++    command.waitUntilCompleted()
++    guard command.status == .completed else { throw fail(61, "reference command incomplete") }
++    return readBytes(target)
++  }
++
++  /// Rows of a scrolling screen: line `j` carries six CJK code points that no other line has, plus ASCII and colour.
++  static func churnText(_ first: Int, rows: Int, reversedAlphabet: Bool = false) -> Data {
++    var text = ""
++    for r in 0..<rows {
++      let j = first + r
++      text += String(format: "%03d:", j % 1000)
++      for k in 0..<6 {
++        text += "\u{1b}[\(31 + (j + k) % 6)m"
++        text.unicodeScalars.append(UnicodeScalar(0x5000 + j * 6 + k)!)
++      }
++      text += "\u{1b}[0m-"
++      let letters = Array("abcdefghijklmnopqrstuvwxyz")
++      for k in 0..<20 { text.append(letters[reversedAlphabet ? 25 - (j + k) % 26 : (j + k) % 26]) }
++      if r + 1 < rows { text += "\r\n" }
++    }
++    return Data(text.utf8)
++  }
++
++  static func frame(columns: Int, rows: Int, _ data: Data) throws -> VTFrame {
++    let core = TerminalVTCore(columns: columns, rows: rows)
++    core.feed(data)
++    guard core.setTheme(.dark), let snapshot = core.snapshot() else { throw fail(62, "frame snapshot unavailable") }
++    return snapshot
++  }
++
++  static func sizeFor(_ frame: VTFrame, _ geometry: TerminalGeometry) -> (Int, Int) {
++    let scale = geometry.backingScale
++    return (
++      Int(32 * scale + ceil(geometry.cellSize.width * CGFloat(frame.columns) * scale)),
++      Int(24 * scale + ceil(geometry.cellSize.height * CGFloat(frame.rows) * scale))
++    )
++  }
++
++  /// Hard ceilings the check enforces regardless of what the renderer's own constants say.
++  static let pageCeiling = 16
++  static let byteCeiling = 64 << 20
++
++  static func runGlyphLRUCheck() throws {
++    let cache = TerminalMetalRenderer.GlyphLRU<Int, Int>(capacity: 4)
++    for i in 0..<4 { cache.insert(i * 10, for: i) }
++    guard cache.value(for: 0) == 0 else { throw fail(70, "LRU lost a resident key") }  // refreshes key 0
++    cache.insert(40, for: 4)  // evicts the least recently used: key 1
++    guard cache.value(for: 1) == nil, cache.value(for: 0) == 0, cache.value(for: 2) == 20, cache.value(for: 3) == 30,
++      cache.value(for: 4) == 40, cache.count == 4
++    else { throw fail(71, "LRU did not evict the least recently used key") }
++    cache.insert(41, for: 4)  // update in place, no growth
++    guard cache.value(for: 4) == 41, cache.count == 4 else { throw fail(72, "LRU update grew or lost the entry") }
++    // Long churn: capacity stays bounded, the newest `capacity` keys are exactly the resident ones, slots are recycled.
++    for i in 100..<20_000 { cache.insert(i, for: i) }
++    guard cache.count == 4, (19_996..<20_000).allSatisfy({ cache.value(for: $0) == $0 }), cache.value(for: 0) == nil else {
++      throw fail(73, "LRU residency wrong after long churn")
++    }
++    print("Glyph LRU check passed")
++  }
++
++  static func runIncrementalAtlasChecks(device: MTLDevice) throws {
++    // SMOKE_ONLY=ascii,runcap,churn,inflight,bytecap restricts the run (used to attribute mutation failures to one check).
++    let only = ProcessInfo.processInfo.environment["SMOKE_ONLY"].map { Set($0.split(separator: ",").map(String.init)) }
++    func selected(_ name: String) -> Bool { only?.contains(name) ?? true }
++    if selected("ascii") { try runASCIITableInvalidation(device: device) }
++    if selected("runcap") { try runRunCapCompaction(device: device) }
++    if selected("churn") {
++      for scale in [CGFloat(1), CGFloat(2)] {
++        try runLongChurn(device: device, scale: scale)
++      }
++    }
++    if selected("inflight") {
++      try runInFlightOverlap(device: device, scale: 1)
++      try runInFlightOverlap(device: device, scale: 2)
++    }
++    if selected("bytecap") { try runByteCapPressure(device: device) }
++  }
++
++  /// Long churn of distinct glyphs: every frame appends a page until the cap forces compaction. Checks the caps, that
++  /// compaction happens, that pages of one generation are never modified or replaced, and that every frame equals a serial
++  /// reference (byte-identical at 1x and 2x).
++  static func runLongChurn(device: MTLDevice, scale: CGFloat) throws {
++    let columns = 60, rows = 12, frames = 72
++    let renderer = try TerminalMetalRenderer(device: device)
++    let geometry = TerminalGeometry(backingScale: scale)
++    var previous: [(texture: MTLTexture, digest: String)] = []
++    var previousCompactions = 0
++    var maxPages = 0
++    for k in 0..<frames {
++      let f = try frame(columns: columns, rows: rows, churnText(k, rows: rows))
++      let (w, h) = sizeFor(f, geometry)
++      guard let target = makeTexture(device, width: w, height: h),
++        let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++      else { throw fail(80, "churn render unavailable at frame \(k)") }
++      command.waitUntilCompleted()
++      guard command.status == .completed else { throw fail(81, "churn command incomplete at frame \(k)") }
++      let expected = try referenceBytes(device: device, frame: f, geometry: geometry, width: w, height: h)
++      guard readBytes(target) == expected else {
++        throw fail(82, "scale \(Int(scale))x churn frame \(k) differs from the serial reference")
++      }
++      let diag = renderer.atlasDiagnostics
++      maxPages = max(maxPages, diag.textures.count)
++      guard diag.textures.count <= pageCeiling, diag.textures.count <= TerminalMetalRenderer.maxAtlasPages,
++        diag.byteCount <= byteCeiling, diag.byteCount <= TerminalMetalRenderer.maxAtlasBytes
++      else { throw fail(83, "atlas exceeded its cap at frame \(k): \(diag.textures.count) pages, \(diag.byteCount) bytes") }
++      if diag.compactions == previousCompactions {
++        guard diag.textures.count >= previous.count else { throw fail(84, "atlas lost pages without compacting at frame \(k)") }
++        for (i, old) in previous.enumerated() {
++          guard diag.textures[i] === old.texture else { throw fail(85, "page \(i) was replaced without compaction at frame \(k)") }
++          guard digest(readBytes(old.texture)) == old.digest else { throw fail(86, "page \(i) was modified after creation at frame \(k)") }
++        }
++      } else {
++        for texture in diag.textures where previous.contains(where: { $0.texture === texture }) {
++          throw fail(87, "compaction reused a page of the previous generation at frame \(k)")
++        }
++      }
++      previous = diag.textures.map { ($0, digest(readBytes($0))) }
++      previousCompactions = diag.compactions
++    }
++    guard maxPages >= 8 else { throw fail(88, "churn never grew the atlas by pages (max \(maxPages))") }
++    guard previousCompactions >= 3 else { throw fail(89, "churn compacted only \(previousCompactions) times") }
++    print("Long churn passed at \(Int(scale))x: \(frames) frames, max \(maxPages) pages, \(previousCompactions) compactions")
++  }
++
++  /// Compaction renumbers atlas indices; a stale ASCII table would then draw the wrong glyphs on that very frame.
++  static func runASCIITableInvalidation(device: MTLDevice) throws {
++    let columns = 60, rows = 12
++    let renderer = try TerminalMetalRenderer(device: device)
++    let geometry = TerminalGeometry(backingScale: 1)
++    func render(_ data: Data, label: String) throws -> Int {
++      let f = try frame(columns: columns, rows: rows, data)
++      let (w, h) = sizeFor(f, geometry)
++      guard let target = makeTexture(device, width: w, height: h),
++        let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++      else { throw fail(90, "ascii check render unavailable: \(label)") }
++      command.waitUntilCompleted()
++      guard command.status == .completed else { throw fail(91, "ascii check command incomplete: \(label)") }
++      let expected = try referenceBytes(device: device, frame: f, geometry: geometry, width: w, height: h)
++      guard readBytes(target) == expected else { throw fail(92, "ascii check frame differs from reference: \(label)") }
++      return renderer.atlasCompactions
++    }
++    // Generation 0 sees the alphabet in ascending order, so ascending indices land in the ASCII table.
++    var compactions = try render(Data(("abcdefghijklmnopqrstuvwxyz\r\n" + String(repeating: "abcdefghij", count: 5)).utf8), label: "seed")
++    let seedCompactions = compactions
++    var k = 0
++    // Every later frame draws the alphabet reversed and adds new glyphs, until the atlas compacts (from this frame's set).
++    while compactions == seedCompactions && k < 60 {
++      var text = "zyxwvutsrqponmlkjihgfedcba\r\n" + String(repeating: "jihgfedcba", count: 5) + "\r\n"
++      for j in 0..<6 { text.unicodeScalars.append(UnicodeScalar(0x6000 + k * 6 + j)!) }
++      compactions = try render(Data(text.utf8), label: "reversed \(k)")
++      k += 1
++    }
++    guard compactions > seedCompactions else { throw fail(93, "ascii check never reached a compaction") }
++    // A pure-ASCII frame now resolves everything through the ASCII table of the new generation.
++    _ = try render(Data(("abcdefghijklmnopqrstuvwxyz\r\nzyxwvutsrqponmlkjihgfedcba").utf8), label: "ascii only after compaction")
++    print("ASCII table invalidation passed after \(k) frames (compactions=\(compactions))")
++  }
++
++  /// A frame that would split the glyph pass into more draws than the run cap forces a compaction back to one page.
++  static func runRunCapCompaction(device: MTLDevice) throws {
++    let columns = 100, rows = 4
++    let renderer = try TerminalMetalRenderer(device: device)
++    let geometry = TerminalGeometry(backingScale: 1)
++    func render(_ data: Data, label: String) throws {
++      let f = try frame(columns: columns, rows: rows, data)
++      let (w, h) = sizeFor(f, geometry)
++      guard let target = makeTexture(device, width: w, height: h),
++        let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++      else { throw fail(100, "run cap render unavailable: \(label)") }
++      command.waitUntilCompleted()
++      guard command.status == .completed else { throw fail(101, "run cap command incomplete: \(label)") }
++      let expected = try referenceBytes(device: device, frame: f, geometry: geometry, width: w, height: h)
++      guard readBytes(target) == expected else { throw fail(102, "run cap frame differs from reference: \(label)") }
++    }
++    try render(Data("abcdefghij".utf8), label: "seed")
++    let before = renderer.atlasCompactions
++    let beforePages = renderer.atlasDiagnostics.textures.count
++    // Alternating ASCII (page 0) and a new CJK glyph (appended page): about 2 * 45 runs per row, far above the cap.
++    var alternating = ""
++    for row in 0..<rows {
++      for i in 0..<45 {
++        alternating += "a"
++        alternating.unicodeScalars.append(UnicodeScalar(0x7000 + row * 45 + i)!)
++      }
++      if row + 1 < rows { alternating += "\r\n" }
++    }
++    try render(Data(alternating.utf8), label: "alternating")
++    let diag = renderer.atlasDiagnostics
++    guard beforePages == 1, renderer.atlasCompactions == before + 1, diag.textures.count <= 2 else {
++      throw fail(103, "fragmented frame did not compact: pages \(beforePages)->\(diag.textures.count), compactions \(before)->\(renderer.atlasCompactions)")
++    }
++    print("Run-cap compaction passed (max \(TerminalMetalRenderer.maxGlyphRuns) draws), pages after: \(diag.textures.count)")
++  }
++
++  /// Three frames are stuck in flight (their command buffers wait behind a blocker on the renderer's own queue) while later
++  /// frames append pages and compaction replaces the atlas: once released, every frame must equal a serially rendered
++  /// reference, so pages of replaced generations were kept alive and never modified.
++  static func runInFlightOverlap(device: MTLDevice, scale: CGFloat) throws {
++    let columns = 120, rows = 30, rounds = 24
++    let renderer = try TerminalMetalRenderer(device: device)
++    let geometry = TerminalGeometry(backingScale: scale)
++    guard let event = device.makeSharedEvent() else { throw fail(114, "shared event unavailable") }
++    var mismatches = 0, frames = 0, stalled = 0, gateRefusals = 0, compactedWhileHeld = 0
++    var next = 0
++    for round in 0..<rounds {
++      // 0-2 serial frames shift the page count so compaction lands on different in-flight slots over the rounds.
++      for _ in 0..<(round % 3) {
++        let f = try frame(columns: columns, rows: rows, churnText(next, rows: rows))
++        next += 2
++        let (w, h) = sizeFor(f, geometry)
++        guard let target = makeTexture(device, width: w, height: h),
++          let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++        else { throw fail(119, "serial shift frame unavailable") }
++        command.waitUntilCompleted()
++      }
++      guard let blocker = renderer.commandQueueForTesting.makeCommandBuffer() else { throw fail(115, "blocker unavailable") }
++      blocker.encodeWaitForEvent(event, value: UInt64(round + 1))
++      blocker.commit()
++      var inflight: [(command: MTLCommandBuffer, target: MTLTexture, frame: VTFrame)] = []
++      for slot in 0..<3 {
++        let f = try frame(columns: columns, rows: rows, churnText(next, rows: rows, reversedAlphabet: (round + slot) % 2 == 1))
++        next += 4  // heavy overlap with the previous frame plus 4 new lines of new glyphs
++        let (w, h) = sizeFor(f, geometry)
++        let compactionsBefore = renderer.atlasCompactions
++        guard let target = makeTexture(device, width: w, height: h),
++          let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++        else { throw fail(110, "in-flight render unavailable (round \(round) slot \(slot))") }
++        if slot > 0 && renderer.atlasCompactions != compactionsBefore { compactedWhileHeld += 1 }
++        inflight.append((command, target, f))
++      }
++      // Give the GPU time to (wrongly) run ahead; a queue that honours the blocker leaves all three unfinished.
++      Thread.sleep(forTimeInterval: 0.02)
++      if inflight.allSatisfy({ $0.command.status != .completed }) { stalled += 1 }
++      // With three permits outstanding a fourth frame must be refused without touching the atlas.
++      let before = renderer.atlasDiagnostics
++      let extra = try frame(columns: columns, rows: rows, churnText(next + 1000, rows: rows))
++      let (ew, eh) = sizeFor(extra, geometry)
++      guard let extraTarget = makeTexture(device, width: ew, height: eh) else { throw fail(116, "extra target unavailable") }
++      if renderer.render(frame: extra, geometry: geometry, theme: .dark, target: extraTarget) == nil { gateRefusals += 1 }
++      let after = renderer.atlasDiagnostics
++      guard after.glyphCount == before.glyphCount, after.textures.count == before.textures.count else {
++        throw fail(117, "a refused frame changed the atlas")
++      }
++      event.signaledValue = UInt64(round + 1)
++      for item in inflight { item.command.waitUntilCompleted() }
++      for item in inflight {
++        guard item.command.status == .completed else { throw fail(111, "in-flight command incomplete") }
++        let (w, h) = sizeFor(item.frame, geometry)
++        let expected = try referenceBytes(device: device, frame: item.frame, geometry: geometry, width: w, height: h)
++        frames += 1
++        if readBytes(item.target) != expected { mismatches += 1 }
++      }
++    }
++    guard stalled == rounds, gateRefusals == rounds else {
++      throw fail(118, "in-flight setup did not hold three frames in flight: stalled \(stalled)/\(rounds), refused \(gateRefusals)/\(rounds)")
++    }
++    guard mismatches == 0 else { throw fail(112, "\(mismatches)/\(frames) in-flight frames differ from the serial reference at \(Int(scale))x") }
++    guard compactedWhileHeld >= 1 else { throw fail(113, "no compaction happened while earlier frames were still in flight") }
++    print("In-flight overlap passed at \(Int(scale))x: \(frames) frames, 0 mismatches, 3 frames held in flight in \(stalled)/\(rounds) rounds, compactions while earlier frames were held=\(compactedWhileHeld)")
++  }
++
++  /// Six full-screen frames of 1,200 new glyphs each at 2x: appended full-size pages hit the byte cap and compact.
++  static func runByteCapPressure(device: MTLDevice) throws {
++    let columns = 240, rows = 20
++    let renderer = try TerminalMetalRenderer(device: device)
++    let geometry = TerminalGeometry(backingScale: 2)
++    var maxBytes = 0
++    for round in 0..<6 {
++      var text = ""
++      for row in 0..<rows {
++        for column in 0..<columns / 2 {
++          text.unicodeScalars.append(UnicodeScalar(UInt32(0x4E00 + round * 0x0800 + row * (columns / 2) + column))!)
++        }
++        if row + 1 < rows { text += "\r\n" }
++      }
++      let f = try frame(columns: columns, rows: rows, Data(text.utf8))
++      let (w, h) = sizeFor(f, geometry)
++      guard let target = makeTexture(device, width: w, height: h),
++        let command = renderer.render(frame: f, geometry: geometry, theme: .dark, target: target)
++      else { throw fail(120, "byte cap render unavailable at round \(round)") }
++      command.waitUntilCompleted()
++      guard command.status == .completed else { throw fail(121, "byte cap command incomplete") }
++      let diag = renderer.atlasDiagnostics
++      maxBytes = max(maxBytes, diag.byteCount)
++      guard diag.byteCount <= byteCeiling, diag.textures.count <= pageCeiling else {
++        throw fail(122, "byte cap exceeded at round \(round): \(diag.byteCount) bytes, \(diag.textures.count) pages")
++      }
++      if round == 5 {
++        let expected = try referenceBytes(device: device, frame: f, geometry: geometry, width: w, height: h)
++        guard readBytes(target) == expected else { throw fail(123, "frame after byte-cap compaction differs from reference") }
++      }
++    }
++    guard renderer.atlasCompactions >= 1 else { throw fail(124, "byte cap pressure never compacted (max \(maxBytes) bytes)") }
++    print("Byte cap pressure passed: max \(maxBytes >> 20) MiB, compactions=\(renderer.atlasCompactions)")
++  }
++
+   static func makeTexture(_ d: MTLDevice, width: Int = 320, height: Int = 160) -> MTLTexture? {
+     let x = MTLTextureDescriptor.texture2DDescriptor(
+       pixelFormat: .bgra8Unorm, width: width, height: height, mipmapped: false)
+@@ -219,3 +545,8 @@ import UniformTypeIdentifiers
+     }
+   }
+ }
++
++extension MTLPixelFormat {
++  /// The formats these smoke tests read back (bgra8Unorm targets and rgba8Unorm pages).
++  var bytesPerPixelForSmoke: Int { 4 }
++}

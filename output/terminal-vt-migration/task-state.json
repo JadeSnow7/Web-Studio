@@ -39,6 +39,20 @@
       "reference": "conversation:prepare-commit-and-push",
       "summary": "在获知M2未完整验收后，用户要求准备提交并推送当前阶段成果；替代此前本轮不提交推送的限制。",
       "adoption": "accepted"
+    },
+    {
+      "id": "SRC-004",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-16-M2-followup",
+      "summary": "归档扩展IME与VoiceOver朗读通过；继续精确图像、剩余VO、生命周期与隔离性能；本轮不提交推送。",
+      "adoption": "accepted"
+    },
+    {
+      "id": "SRC-005",
+      "kind": "user_requirement",
+      "reference": "conversation:2026-09-16-M2-performance-investigation-approved",
+      "summary": "先审查测量并六组配对建立消耗画像，证据支持后做最多两个隔离单因素实验；coder实现工具和源码，主线程独立复验；保留修改，不提交推送。",
+      "adoption": "accepted"
     }
   ],
   "main_tasks": [
@@ -82,7 +96,7 @@
       ],
       "dependencies": [],
       "assumptions": [],
-      "status": "in_progress",
+      "status": "verified",
       "metric_ids": [
         "MET-002"
       ],
@@ -131,7 +145,8 @@
         "MET-004"
       ],
       "implementation_task_ids": [
-        "IT-005"
+        "IT-005",
+        "IT-007"
       ]
     },
     {
@@ -148,7 +163,7 @@
       ],
       "dependencies": [],
       "assumptions": [],
-      "status": "verified",
+      "status": "in_progress",
       "metric_ids": [
         "MET-005"
       ],
@@ -176,14 +191,15 @@
       "main_task_id": "MT-002",
       "kind": "mandatory_gate",
       "name": "精确内容区、亮暗分栏和扩展IME",
-      "baseline": "默认窗口IME已人工通过；精确尺寸与扩展组合输入待验",
+      "baseline": "扩展IME已由用户确认完成；900×560深色双栏已测，亮色/单栏补图进行中",
       "target": "900×560内容区有独立几何、真实PNG；亮暗与双栏内容/选区/光标正确，组合输入无丢字重复或候选漂移",
       "method": "外部AX/CG测量、CUA截图、用户微信输入法回执",
       "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
       "evidence_ids": [
-        "EVD-010"
+        "EVD-011",
+        "EVD-012"
       ],
-      "status": "undetermined",
+      "status": "passed",
       "verification": "manual"
     },
     {
@@ -191,11 +207,14 @@
       "main_task_id": "MT-003",
       "kind": "mandatory_gate",
       "name": "VoiceOver与资源生命周期",
-      "baseline": "历史PTY自动测试及部分隐藏/关闭案例通过",
+      "baseline": "普通VO朗读人工通过；普通焦点、隐藏恢复和关闭生命周期现场通过；VO导航/选区待回执",
       "target": "VoiceOver实际朗读与导航有人工回执；隐藏恢复PID/历史保持；取消保活、确认回收且无关进程存活",
       "method": "人工听读、AX观察、进程树与退出状态独立核对",
       "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
-      "evidence_ids": [],
+      "evidence_ids": [
+        "EVD-011",
+        "EVD-012"
+      ],
       "status": "undetermined",
       "verification": "manual"
     },
@@ -204,11 +223,16 @@
       "main_task_id": "MT-004",
       "kind": "mandatory_gate",
       "name": "可比Release性能基线与预算",
-      "baseline": "旧数据网格/外观不一致，仅探索性",
+      "baseline": "Eight scenes each six pairs; first five default-history policy, last three normalized-history; 24 VT-only diagnostic records; fallback/drawing equivalence and reliable presentation remain limited.",
       "target": "固定窗口/字体/网格/主题/负载/预热/重复次数得到有效CPU/RSS及可用trace；用户确认预算后再判定",
-      "method": "条件快照、进程累计CPU/RSS、分轮生成器、Metal/System trace；无法可靠测得则未判定",
-      "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
-      "evidence_ids": [],
+      "method": "Version-bound libproc/Mach CPU, actual byte/DSR/identity/action checks, independent sampled stacks, heap/VM numeric snapshots and offscreen command-completion diagnostics; budget proposed.",
+      "environment_data": "Local macOS/Xcode27; HEAD ced7edc is repository state, actual App origins and hashes in per-build manifests and final cleanup; original GUI PID21524 separately preserved.",
+      "evidence_ids": [
+        "EVD-017",
+        "EVD-015",
+        "EVD-018",
+        "EVD-019"
+      ],
       "status": "undetermined",
       "verification": "execution"
     },
@@ -217,17 +241,15 @@
       "main_task_id": "MT-005",
       "kind": "mandatory_gate",
       "name": "冻结版本回归和一致性",
-      "baseline": "旧构建/smoke缺少revision token",
+      "baseline": "新增工具与字体/grid复测通过且token一致；record gate仍因历史EVD-014仓库外fixture报错，即使stale也校验其inputs，保留失败不修改skill。",
       "target": "必要回归结果真实通过且执行前后revision相同；文档和待提交范围一致",
       "method": "record_execution --repo --state；主线程读取原始输出和diff",
       "environment_data": "本机macOS / Xcode27，当前2631e14 App，显示缩放和实际二进制逐条留证",
       "evidence_ids": [
-        "EVD-006",
-        "EVD-007",
-        "EVD-008",
-        "EVD-009"
+        "EVD-013",
+        "EVD-016"
       ],
-      "status": "passed",
+      "status": "undetermined",
       "verification": "execution"
     }
   ],
@@ -303,9 +325,12 @@
         "MET-002"
       ],
       "support_reason": "主线程现场验证与证据审查",
-      "evidence_ids": [],
+      "evidence_ids": [
+        "EVD-011",
+        "EVD-012"
+      ],
       "owner": "main-thread",
-      "status": "in_progress"
+      "status": "verified"
     },
     {
       "id": "IT-004",
@@ -374,14 +399,43 @@
       "acceptance": [
         "MET-005"
       ],
-      "support_reason": "主线程独立冻结版本回归与原始记录审查通过；不替代整体M2。",
+      "support_reason": "受影响回归通过；结构校验历史fixture问题未解决，见附加skill观察，不标完整一致性通过。",
       "evidence_ids": [
-        "EVD-006",
-        "EVD-007",
-        "EVD-008",
-        "EVD-009"
+        "EVD-013",
+        "EVD-016"
       ],
       "owner": "main-thread",
+      "status": "in_progress"
+    },
+    {
+      "id": "IT-007",
+      "main_task_id": "MT-004",
+      "source_ids": [
+        "SRC-004"
+      ],
+      "scope": "Ghostty实际surface度量与隔离字体解析诊断",
+      "file_scope": [
+        "scripts/terminal-performance-probe.swift",
+        "scripts/terminal-performance-probe-build.sh",
+        "scripts/terminal-performance-probe-prepare.sh",
+        "scripts/terminal-performance-probe-scenarios.sh",
+        "scripts/terminal-performance-probe-scenarios-test.sh",
+        "scripts/terminal-performance-probe-test.sh",
+        "output/terminal-vt-migration/evidence/performance-alignment-20260916"
+      ],
+      "interface_constraints": [
+        "不修改App源码、生产配置、skill；不操作用户GUI现场"
+      ],
+      "dependencies": [],
+      "acceptance": [
+        "MET-004"
+      ],
+      "support_reason": "主线程独立工具回归与字体/网格复测通过；不替代完整性能验收",
+      "evidence_ids": [
+        "EVD-013",
+        "EVD-017"
+      ],
+      "owner": "coder",
       "status": "verified"
     }
   ],
@@ -398,7 +452,8 @@
       "status": "stale",
       "observed_at": "2026-09-16T06:49:20.416126Z",
       "sha256": "d5f75bc63f11b152a7df234bc43ae2fed38762fd5c9952dcac2297ae966eccec",
-      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence.",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-002",
@@ -412,7 +467,8 @@
       "status": "stale",
       "observed_at": "2026-09-16T06:49:39.299155Z",
       "sha256": "f75c4bda5db2e51cc14d3383ad98a54c846528667c648de2832ae5e637700e6f",
-      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence.",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-003",
@@ -426,7 +482,8 @@
       "status": "stale",
       "observed_at": "2026-09-16T06:53:38.453882Z",
       "sha256": "4f313af59f2b57a96182cd6f0e9d1cdea62c4d69cfb30213b893c7f1ef97795f",
-      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence.",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-004",
@@ -440,7 +497,8 @@
       "status": "stale",
       "observed_at": "2026-09-16T06:52:02.234826Z",
       "sha256": "e1bce437323685a9f2789549eed96a6b9b78a076ad94bbafb17b45b53d460c08",
-      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence.",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-005",
@@ -454,7 +512,8 @@
       "status": "stale",
       "observed_at": "2026-09-16T06:52:27.465565Z",
       "sha256": "dace6c238bdadaef5485180b63b91cbb61ee906eca032108926d978cb4339b17",
-      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence."
+      "note": "Historical successful execution with captured source hashes; missing task revision token. Retained, not eligible as current final-gate evidence.",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-006",
@@ -465,9 +524,11 @@
       "supports": [
         "MET-005"
       ],
-      "status": "current",
+      "status": "stale",
       "observed_at": "2026-09-16T07:45:53.858916Z",
-      "sha256": "d9c86e04adb33214cc38d3516282830d8caacc5089b52d6577ec0ffce1a5c713"
+      "sha256": "d9c86e04adb33214cc38d3516282830d8caacc5089b52d6577ec0ffce1a5c713",
+      "note": "原冻结revision内有效通过，App/既有测试输入未变化，保留适用范围；新增工具与规范文档使任务全局token变化，不能伪造为新token回归。遵用户指令不重复未受影响的App构建/回归。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-007",
@@ -478,9 +539,11 @@
       "supports": [
         "MET-005"
       ],
-      "status": "current",
+      "status": "stale",
       "observed_at": "2026-09-16T07:46:03.050797Z",
-      "sha256": "175fcc02d2af602c728b2390f0be0fadcad6e0b5242fa85c8cc05f88dfff7ae9"
+      "sha256": "175fcc02d2af602c728b2390f0be0fadcad6e0b5242fa85c8cc05f88dfff7ae9",
+      "note": "原冻结revision内有效通过，App/既有测试输入未变化，保留适用范围；新增工具与规范文档使任务全局token变化，不能伪造为新token回归。遵用户指令不重复未受影响的App构建/回归。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-008",
@@ -491,9 +554,11 @@
       "supports": [
         "MET-005"
       ],
-      "status": "current",
+      "status": "stale",
       "observed_at": "2026-09-16T07:46:11.652329Z",
-      "sha256": "a2e408532e18eb0a131c02dd5d6720fe6867296220d3ec994f546663d1cab877"
+      "sha256": "a2e408532e18eb0a131c02dd5d6720fe6867296220d3ec994f546663d1cab877",
+      "note": "原冻结revision内有效通过，App/既有测试输入未变化，保留适用范围；新增工具与规范文档使任务全局token变化，不能伪造为新token回归。遵用户指令不重复未受影响的App构建/回归。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-009",
@@ -504,9 +569,11 @@
       "supports": [
         "MET-005"
       ],
-      "status": "current",
+      "status": "stale",
       "observed_at": "2026-09-16T07:46:53.191766Z",
-      "sha256": "a9f640a7af2a453c226ea6d772c5c859109745d7b889f89ebc046893d565bc8a"
+      "sha256": "a9f640a7af2a453c226ea6d772c5c859109745d7b889f89ebc046893d565bc8a",
+      "note": "原冻结revision内有效通过，App/既有测试输入未变化，保留适用范围；新增工具与规范文档使任务全局token变化，不能伪造为新token回归。遵用户指令不重复未受影响的App构建/回归。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
     },
     {
       "id": "EVD-010",
@@ -517,9 +584,146 @@
       "supports": [
         "MET-002"
       ],
-      "status": "current",
+      "status": "stale",
       "observed_at": "2026-09-16T07:46:53.131022Z",
-      "sha256": "0ce3a33cecfa6e215177102837562c9c8d17c5611c2927cde3f71bfbaec43889"
+      "sha256": "0ce3a33cecfa6e215177102837562c9c8d17c5611c2927cde3f71bfbaec43889",
+      "note": "原冻结revision内有效通过，App/既有测试输入未变化，保留适用范围；新增工具与规范文档使任务全局token变化，不能伪造为新token回归。遵用户指令不重复未受影响的App构建/回归。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-011",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-user-receipts.json",
+      "kind": "manual",
+      "result": "passed",
+      "scope": "用户扩展IME及VoiceOver普通朗读回执",
+      "supports": [
+        "MET-002",
+        "MET-003"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "d7fc48d8e1fcd23a4f380aaa9ea6542faafd45ee90f781363cf817b3ce93d218",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-012",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-gui-results.json",
+      "kind": "manual",
+      "result": "passed",
+      "scope": "精确窗口、普通焦点、资源生命周期；VO剩余未判定",
+      "supports": [
+        "MET-002",
+        "MET-003"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "1e6d91c6ced1c01700d9b4de5d914ca87dc8f0828cc6cca325817b97ea0553a4",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-013",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-probe-tests.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "新增测量工具主线程冻结版本回归",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "6ec3c23276f9bb800aaee307ae8b83ecceb3089e0db54ac91034be5fd16a83a3",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-014",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-font-grid-main.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "主线程真实字体、格距和网格复测",
+      "supports": [
+        "MET-004"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "3a22a7930ae1f23983e66e53614827653c2cae0b686b093be8b84ec52445bcda",
+      "note": "真实测量通过但机械校验不支持仓库外fixture；保留，当前证据改用EVD-017，执行cmp确认仓库内fixture与实际副本完全相同后重测。",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-015",
+      "path": "output/terminal-vt-migration/evidence/performance-normalized-20260916/RESULTS.md",
+      "kind": "manual",
+      "result": "undetermined",
+      "scope": "性能分场景记录与待确认预算，整体未判定",
+      "supports": [
+        "MET-004"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "147291e219bcfd2b608aa466a352a4107b302e65a94e2f60d716193611b82492",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-016",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-regression-impact.json",
+      "kind": "manual",
+      "result": "passed",
+      "scope": "未变化App与旧回归输入影响分析",
+      "supports": [
+        "MET-005"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T08:59:47.711101+00:00",
+      "sha256": "b0122b3a1376735d0055b24783b978a7fb50146af65d749ed46abbe9ec1deb29",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-017",
+      "path": "output/terminal-vt-migration/evidence/m2-followup-font-grid-main-v2.json",
+      "kind": "execution",
+      "result": "passed",
+      "scope": "实际副本配置cmp仓库fixture后主线程真实字体/格距/网格复测",
+      "supports": [
+        "MET-004"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T09:02:07.482594+00:00",
+      "sha256": "970371745c10236fd8c83bbb44619d3146edb486841c70b1635e1a01acf7fd12",
+      "stale_reason": "历史版本证据保留；本轮新增测量工具改变全局revision，未变化的原检查未机械重跑，原结果/输入/hash不刷新。"
+    },
+    {
+      "id": "EVD-018",
+      "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/REPORT.md",
+      "kind": "manual",
+      "result": "passed",
+      "scope": "已完成36轮输出数据和调用栈的主线程范围审查；非M2验收、非实验性能通过",
+      "supports": [
+        "MET-004"
+      ],
+      "status": "stale",
+      "observed_at": "2026-09-16T13:44:37.232402+00:00",
+      "sha256": "a56f11fe843d12fbed57460ece0ce3e60c19eff29b49e25e0efa259970e0f596",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:f67f2de32129f3d2836fa2c7d08fad133561d86e57d21cff364f948211bda400",
+      "stale_reason": "Superseded by 2026-09-17 checkpoint; original runtime records retained. New scope includes history mismatch and completed idle/font experiment."
+    },
+    {
+      "id": "EVD-019",
+      "path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/RESULTS-20260917.md",
+      "kind": "manual",
+      "result": "passed",
+      "scope": "Main-thread review of bounded performance investigation: 96 base windows, 24 diagnostic records, isolated experiment and explicit unmeasured limitations. Not M2 acceptance or optimization adoption.",
+      "supports": [
+        "MET-004"
+      ],
+      "status": "current",
+      "observed_at": "2026-09-16T18:12:31.351461+00:00",
+      "sha256": "71c1c20fbf4779dba41b97617070ca1cb284db5ac54a0963ea68f6ff2ae7b3e7",
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:de31886661f3a90f9664760f36498e98c4cee7656fbd43fb63e38f12aeb9ca94",
+      "revision_binding_note": "Fresh final report review, replacing its own preliminary binding to an earlier diagnostic execution; original failed gate retained."
     }
   ],
   "changes": [
@@ -546,16 +750,53 @@
       "review": {
         "status": "passed",
         "reviewer": "main-thread",
-        "note": "工具diff、文档、原始冻结回归与实际revision已审查；M2整体不通过。"
+        "note": "主线程复核旧阶段交付输入未变、新增工具diff及原始执行证据；新的审查不将旧执行token改写为新token。"
       },
       "evidence_ids": [
-        "EVD-006",
-        "EVD-007",
-        "EVD-008",
-        "EVD-009",
-        "EVD-010"
+        "EVD-013",
+        "EVD-017",
+        "EVD-016"
       ],
-      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54"
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9"
+    },
+    {
+      "id": "CHG-002",
+      "purpose": "新增人工回执、真实GUI与性能证据、隔离测量工具；M2整体仍未判定",
+      "paths": [
+        "scripts/terminal-performance-probe.swift",
+        "scripts/terminal-performance-probe-build.sh",
+        "scripts/terminal-performance-probe-prepare.sh",
+        "scripts/terminal-performance-probe-scenarios.sh",
+        "scripts/terminal-performance-probe-scenarios-test.sh",
+        "scripts/terminal-performance-probe-test.sh",
+        "output/terminal-vt-migration"
+      ],
+      "implementation_task_ids": [
+        "IT-002",
+        "IT-003",
+        "IT-004",
+        "IT-005",
+        "IT-006",
+        "IT-007"
+      ],
+      "source_ids": [
+        "SRC-004"
+      ],
+      "status": "reviewed",
+      "review": {
+        "status": "passed",
+        "reviewer": "main-thread",
+        "note": "自审共享文档；独立审查coder工具，负载重定向缺陷已修正且主线程回归通过。性能未判passed。"
+      },
+      "evidence_ids": [
+        "EVD-011",
+        "EVD-012",
+        "EVD-013",
+        "EVD-017",
+        "EVD-015",
+        "EVD-016"
+      ],
+      "revision": "patch:2631e149787c6cfd8d9b0903c89995e8cde96083:3de8294d1281516f5f82186dc0ad20de0c4ecce9ff7e32cea704cd763f009fa9"
     }
   ],
   "overall_acceptance": {
@@ -567,11 +808,13 @@
       "MET-005"
     ],
     "evidence_ids": [
-      "EVD-006",
-      "EVD-007",
-      "EVD-008",
-      "EVD-009",
-      "EVD-010"
+      "EVD-011",
+      "EVD-012",
+      "EVD-013",
+      "EVD-017",
+      "EVD-015",
+      "EVD-016",
+      "EVD-018"
     ],
     "status": "undetermined"
   },
@@ -584,12 +827,12 @@
   },
   "authorization": {
     "commit": {
-      "status": "authorized",
-      "source_id": "SRC-003"
+      "status": "not_authorized",
+      "source_id": "SRC-004"
     },
     "push": {
-      "status": "authorized",
-      "source_id": "SRC-003"
+      "status": "not_authorized",
+      "source_id": "SRC-004"
     },
     "merge": {
       "status": "not_authorized",
@@ -604,7 +847,7 @@
     "local_validation": "unavailable",
     "remote_ci": "not_started",
     "remote_ci_revision": null,
-    "note": "冻结版本三构建与终端回归已带task revision token通过；完整M2因人工IME/VoiceOver、剩余场景及规范化性能仍未判定。当前GUI与新构建二进制边界分别记录。 阶段快照6f789f4d33e9dd62cf00c438dc8ded752fefc91f已推送并由ls-remote确认；CI未核验，不声明线上CI通过。"
+    "note": "当前HEAD/远端ced7edc；新增工具受影响回归及字体/网格主线程独立通过。窗口与生命周期完成，VO导航/选区、性能预算和缺失trace指标待依赖；本轮未提交推送。 最终record gate仍failed：EVD-014历史外部fixture被全量输入校验阻挡；当前EVD-017有效通过。未改skill或删除历史证据以消除错误。"
   },
   "actions": [
     {
@@ -663,6 +906,16 @@
       "id": "DEC-005",
       "source_id": "SRC-003",
       "decision": "按用户新指令交付当前阶段快照；完整M2仍未判定，未将未验项目改为通过。此次明确提交推送指令优先于skill完整M2验收门禁；保留门禁实际失败回执。默认旧后端、M3与部署边界不变。"
+    },
+    {
+      "id": "DEC-006",
+      "source_id": "SRC-004",
+      "decision": "当前指令覆盖历史交付授权：本轮不提交推送。扩展IME和普通VO朗读人工通过；VO导航/选区与语音输入独立保留未判定。"
+    },
+    {
+      "id": "DEC-007",
+      "source_id": "SRC-004",
+      "decision": "接受已确认的扩展IME与普通VO朗读；性能预算仅proposed，不自动接受。App未变故不重复既有构建回归，新增工具按冻结token验证。"
     }
   ],
   "hypotheses": [],
@@ -673,5 +926,78 @@
       "保留原始证据，修复后重跑受影响检查"
     ],
     "owner": "main-thread"
+  },
+  "performance_investigation": {
+    "status": "completed_with_limits",
+    "source_id": "SRC-005",
+    "protocol_path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/PROTOCOL.md",
+    "tools_owner": "coder:measurement_tools",
+    "shared_documents_owner": "main-thread",
+    "production_change": "none",
+    "performance_acceptance": "undetermined",
+    "budget_status": "proposed",
+    "phase": "investigation_reported",
+    "pilot_findings": [
+      "real VT reset/load DSR and visible last line verified",
+      "libproc CPU ticks corrected with verified mach timebase 125/3",
+      "cross-process CLOCK_MONOTONIC_RAW required"
+    ],
+    "formal_pairs_completed": {
+      "ascii": 6,
+      "chinese": 6,
+      "mixed": 6,
+      "visible_idle": 6,
+      "hidden_idle": 6,
+      "history_scroll": 6,
+      "resize": 6,
+      "concurrent": 6
+    },
+    "optimization_experiments": 1,
+    "trace_status": "valid control/cache 5s sampled call trees; GPU/presentation unavailable",
+    "tool_checks": "Independent bound matrix18, sampler9, concurrent4, memory7; Unicode Release v3 24 records; existing profile11 and experiment checks at recorded versions.",
+    "report_path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/RESULTS-20260917.md",
+    "unpaired_valid_runs": {},
+    "optimization_experiment_status": "isolated_six_pairs_cpu_and_nine_offscreen_pixels_validated_not_adopted",
+    "budget_path": "output/terminal-vt-migration/evidence/performance-investigation-20260916/budget-proposal-v5.json",
+    "next_dependency": "User review of proposed performance limits; targeted adoption regressions and unmeasured lifecycle/presentation metrics remain.",
+    "evidence_paths": [
+      "RESULTS-20260917.md",
+      "history-interaction-results-20260917.json",
+      "concurrent-results-20260917.json",
+      "unicode-diagnostic-results.json",
+      "MEMORY-SNAPSHOT-RESULTS-20260917.md",
+      "final-investigation-cleanup-20260917.json",
+      "experiments/font-mixed-results-v2.json",
+      "experiments/font-pixel-comparison-v2.json"
+    ],
+    "record_gate": {
+      "status": "failed",
+      "record": "output/terminal-vt-migration/evidence/performance-investigation-20260916/final-investigation-record-gate-v2.json",
+      "remaining_errors": [
+        "CHANGE_STALE: CHG-001",
+        "CHANGE_STALE: CHG-002"
+      ],
+      "historical_evidence_preserved": true
+    },
+    "updated_at": "2026-09-16T18:11:01.864868+00:00",
+    "current_facts": [
+      "Eight base scenarios each six alternating pairs: 96 formal App windows.",
+      "Four VT-only Unicode diagnostic fixtures each six rounds; matched bytes/cells and glyph runs verified.",
+      "Independent live heap/footprint snapshots are single-point evidence, not peak or allocation lifecycle.",
+      "Two additional 5-second sustained-I/O call trees support generic repeated font retrieval cost.",
+      "Production renderer unchanged; original GUI alive; seven binary hashes match; owned Apps/helper cleaned."
+    ],
+    "next_dependencies": [
+      "User confirms performance acceptance limits independently of current observed values.",
+      "Before adopting isolated font cache, complete full target scenarios and GUI hidden-restore/resource-pressure regression.",
+      "Allocation lifecycle, exact scheduling/blocking duration and GPU/presentation correlation remain unmeasured."
+    ],
+    "report": "evidence/performance-investigation-20260916/RESULTS-20260917.md",
+    "budget_proposal": "evidence/performance-investigation-20260916/budget-proposal-v5.json",
+    "experiment_adopted": false,
+    "interrupted_batch": "evidence/performance-investigation-20260916/history-interactive-matrix-02/interruption.json",
+    "resume_selection": "Prospectively resume pairs2..6; retain all four valid measurement windows from matrix-02 pair1, including last post-measurement locked cleanup. No outcome-based selection.",
+    "history_interaction_report": "evidence/performance-investigation-20260916/HISTORY-INTERACTION-RESULTS-20260917.md",
+    "concurrent_report": "evidence/performance-investigation-20260916/CONCURRENT-RESULTS-20260917.md"
   }
 }

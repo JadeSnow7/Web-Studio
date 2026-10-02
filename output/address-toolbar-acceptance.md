@@ -1,5 +1,7 @@
 # Address toolbar acceptance — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../STATUS.md)。
+
 The pane header (type icon, resource picker and focus dot) is removed. The native toolbar now contains an editable address capsule followed by a same-workspace tab menu. Sidebar groups and persistent resource runtimes are retained.
 
 Address routing supports HTTP(S), bare hosts, `ssh://user@host:port`, SSH shorthand, `terminal`, `terminal://`, and absolute/home-relative local directory paths. Local/SSH destinations create sibling resources; they do not relabel or replace a running terminal's working directory. Invalid input is retained with an error. Selecting another tab cancels the edit and synchronizes the address.

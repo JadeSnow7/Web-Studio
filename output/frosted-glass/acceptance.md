@@ -1,5 +1,7 @@
 # Frosted glass acceptance — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 Implemented native behind-window frost for the workbench, matching sidebar/Agent scrims, glass capsules and action buttons, glass floating panels, and material field backing. The transparent native toolbar band and traffic lights remain. Embedded WebKit/terminal content is unchanged.
 
 ## Verification

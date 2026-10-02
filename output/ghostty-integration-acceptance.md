@@ -1,5 +1,7 @@
 # Ghostty integration acceptance
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../STATUS.md)。
+
 ## Fixed inputs
 
 - Ghostty: v1.3.1, commit `332b2aefc6e72d363aa93ab6ecfc86eeeeb5ed28`

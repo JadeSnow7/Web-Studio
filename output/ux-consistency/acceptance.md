@@ -1,5 +1,7 @@
 # UX consistency acceptance — 2026-09-12
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 ## Scope
 
 Changed `StudioDesign.swift`, the view layer of `ContentView.swift`, `AgentViews.swift`, `DESIGN.md`, and `UX-CONTRACT.md`. Existing dirty and untracked project work was preserved. The pre-view model definitions in ContentView are byte-for-byte unchanged from the task-start snapshot; resource, provider and terminal runtime source files were not modified.

@@ -1,6 +1,20 @@
 # M2 恢复实测结果
 
-状态：进行中，M2 整体验收未判定。应用源码仍为 2631e14，生产默认旧后端；本轮不提交推送。
+状态：进行中，M2 整体验收未判定。当前HEAD为ced7edc，App源码与2631e14相同；生产默认旧后端，本轮不提交推送。
+
+## 2026-09-16 新增人工回执与现场复验
+
+扩展 IME 已由用户确认完成；VoiceOver 终端普通文本朗读已由用户确认正常，字幕文字据用户报告为 `ASCII abc XYZ 0123`。这两项不再重复询问。当前证据目录没有找到对应 VoiceOver 原始字幕截图，本轮消息未附图片；回执明确区分用户确认、用户报告的截图内容、AX 可访问文本与自动接口测试。语音输入另列未判定，疑似网络问题尚无根因证据。
+
+当前 GUI 是旧 Debug PID 21524，哈希与此前记录一致；冻结 Debug / 新旧 Release 五个二进制文件均匹配旧记录，没有把新构建通过迁移为其 GUI 通过。HEAD 和 origin/main 现场核对均为 `ced7edc25bd6ab6434712ce4da0b4bd16afad499`，本轮不提交推送。
+
+精确 900×560 工具栏下方内容区已补亮色双栏、亮色单栏、深色单栏选区/光标 PNG。独立 AX/CG 实测外框900×600、toolbar40、内容split group高560；横向674点终端布局加左侧226点。截图是工具传输尺寸，不当作原生2×像素采集。实际显示2×；其他实际缩放未判定。外观已恢复原“自动”，见 AX 回执。
+
+资源隐藏/恢复后 PID22208 与历史保持；⌘L、⌘K、Escape、点击返回后收到 `VO_INPUT=[FOCUS_RETURN_0123]`，这是普通键盘/焦点实测，不替代 VoiceOver 导航。专属关闭资源 PID4959、5418、5419、5420 在取消后存活，确认后只读检查均不存在；无关终端 PID22208、81191 存活。此为关闭后轮询结果，不声称测量即时回收延迟。
+
+原始证据：`evidence/m2-followup-*`；逐项结果见 [恢复实测结果](evidence/m2-resume-results.md)。剩余 VoiceOver 导航、返回输入与选区朗读已准备持续读取程序等待用户回执，输入不会作为命令执行。性能实际字体/格距对齐仍进行中，预算未提出，整体 M2 未判定。
+
+以下为上轮恢复检查点的历史记录，不覆盖上面的新增回执。
 
 ## 窗口现场
 
@@ -62,3 +76,17 @@ App源码、生产默认与旧依赖未改动；未执行commit/push/merge/deplo
 ### 有效冻结回归结果
 
 `m2-frozen-regression-v2.json`及三份`m2-frozen-*-build*-v2.json`全部passed，前后token一致：`patch:2631e149787c6cfd8d9b0903c89995e8cde96083:80ff04c868f1a2713ea79cb958beef06f9633e671efe7afb9978fc2da6901c54`。采样工具9项、几何有限值/JSON、host、Metal(1200+1200字形/光标像素)、C/Swift PTY、backend交互与ASan均通过。主线程读取原始stdout/stderr，NSLock异步上下文警告仍存在；构建CoreSimulator版本警告不影响本次macOS BUILD SUCCEEDED。
+
+## 当前轮收尾（以此表覆盖历史待回执）
+
+| 范围 | 判定 | 证据 |
+|---|---|---|
+| 扩展IME、普通VoiceOver朗读 | 人工passed | m2-followup-user-receipts.json；原字幕图缺失不伪造 |
+| 精确尺寸亮暗单栏/亮色双栏、选区光标、外观恢复 | passed | m2-followup-gui-results.json |
+| 普通焦点往返、隐藏恢复、关闭取消/确认及进程对照 | passed | m2-followup-gui-results.json |
+| VO剩余导航/选区，语音输入 | undetermined | 安全现场保留；语音网络根因未验证 |
+| 实际字体、格距、网格对齐 | passed | m2-followup-font-grid-main.json |
+| 性能与预算 | 整体undetermined | performance-normalized-20260916/RESULTS.md；候选预算待确认 |
+| 新工具受影响回归 | passed | m2-followup-probe-tests.json，token前后一致 |
+
+待提交：六个scripts/terminal-performance-probe*及output/terminal-vt-migration下本轮变更；本轮无commit/push。最终现场/清理见m2-followup-final-*。

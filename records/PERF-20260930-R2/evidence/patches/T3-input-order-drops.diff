@@ -1,0 +1,419 @@
+diff --git a/Web Studio/TerminalPTYTransport.swift b/Web Studio/TerminalPTYTransport.swift
+index 688b0bf..ba69b6f 100644
+--- a/Web Studio/TerminalPTYTransport.swift	
++++ b/Web Studio/TerminalPTYTransport.swift	
+@@ -15,6 +15,8 @@ public final class TerminalPTYTransport: @unchecked Sendable {
+   var onError: ((String) -> Void)?
+ 
+   private let inputLimit = 256 * 1024
++  /// Extra headroom above `inputLimit` that only small interactive/control writes (keys, focus/mouse reports, query replies) may use, so a full paste can never make them fail. Still bounded, so back-pressure holds.
++  private let interactiveAllowance = 64 * 1024
+   private let admissionLock = NSLock()
+   private var reservedInput = 0
+   private var acceptingInput = true
+@@ -107,26 +109,50 @@ public final class TerminalPTYTransport: @unchecked Sendable {
+     }
+   }
+ 
++  /// `interactive` writes may exceed the 256 KiB bulk budget by `interactiveAllowance`; bulk writes (paste, raw text) keep the original limit.
++  /// A write issued from the transport queue is appended to the pending output immediately, so it can never be overtaken by a write that another thread enqueued earlier; off-queue writes are appended by a queued block in call order.
+   @discardableResult
+-  func write(_ data: Data) -> Bool {
++  func write(_ data: Data, interactive: Bool = false) -> Bool {
++    let limit = interactive ? inputLimit + interactiveAllowance : inputLimit
+     admissionLock.lock()
+-    guard acceptingInput, data.count <= inputLimit - reservedInput else {
++    guard acceptingInput, data.count <= limit - reservedInput else {
+       admissionLock.unlock()
+       return false
+     }
+     reservedInput += data.count
+     admissionLock.unlock()
+-    queue.async { [self] in
+-      guard !closing, !finished, fd >= 0, leaderPID > 0 else {
+-        releaseAdmission(data.count)
+-        return
++    if DispatchQueue.getSpecific(key: queueKey) != nil {
++      appendAdmittedInput(data)
++      // Drain in a later turn: callers on the queue may be inside a read callback, and a write failure closes the transport.
++      queue.async { [self] in drainWrites() }
++    } else {
++      queue.async { [self] in
++        appendAdmittedInput(data)
++        drainWrites()
+       }
+-      input.append(data)
+-      drainWrites()
+     }
+     return true
+   }
+ 
++  /// Queue only. Takes ownership of `data.count` admitted bytes: they are either appended (and released as they are written or when the pending input is cleared) or released here.
++  private func appendAdmittedInput(_ data: Data) {
++    guard !closing, !finished, fd >= 0, leaderPID > 0 else {
++      releaseAdmission(data.count)
++      return
++    }
++    input.append(data)
++  }
++
++  var isAcceptingInput: Bool {
++    admissionLock.lock(); defer { admissionLock.unlock() }
++    return acceptingInput
++  }
++
++  var reservedInputForTesting: Int {
++    admissionLock.lock(); defer { admissionLock.unlock() }
++    return reservedInput
++  }
++
+   func resize(columns: Int, rows: Int, widthPixels: Int = 0, heightPixels: Int = 0) {
+     queue.async { [self] in
+       guard fd >= 0, !finished else { return }
+diff --git a/Web Studio/TerminalVTBackend.swift b/Web Studio/TerminalVTBackend.swift
+index 2b6e058..f166726 100644
+--- a/Web Studio/TerminalVTBackend.swift	
++++ b/Web Studio/TerminalVTBackend.swift	
+@@ -62,6 +62,10 @@
+     public var onOutput: ((Data) -> Void)?
+     public var onFrame: ((VTFrame) -> Void)?
+     public var onDirectory: ((String) -> Void)?
++    /// Non-fatal: called (on the PTY queue, or the caller's thread for `sendTyped`) when a small interactive write (key, focus/mouse report, query reply, typed text) exceeded even the interactive allowance and was dropped. Not routed through `onError`, which marks the session failed.
++    public var onInputDropped: ((Int) -> Void)?
++    private let droppedInteractive = Atomic<Int>(0)
++    public var droppedInteractiveBytes: Int { droppedInteractive.load(ordering: .relaxed) }
+ 
+     public init(columns: Int, rows: Int) {
+       core = TerminalVTCore(columns: columns, rows: rows)
+@@ -100,7 +104,7 @@
+     ) {
+       queue.async { [self] in
+         if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint), !data.isEmpty {
+-          _ = transport.write(data)
++          writeInteractive(data)
+           core.scrollToBottom()
+           scheduleFrame()
+         }
+@@ -111,6 +115,12 @@
+       if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
+       return accepted
+     }
++    /// Committed keyboard text (IME, multi-character insertText). Same ordering as `sendRaw`, but uses the interactive allowance so it is not lost while a paste holds the bulk admission. Returns whether the bytes were accepted; a refusal is counted and reported like any interactive write. Programmatic sends stay on the bulk `sendRaw`.
++    @discardableResult public func sendTyped(_ data: Data) -> Bool {
++      let accepted = writeInteractive(data)
++      if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
++      return accepted
++    }
+     public func resize(
+       columns: Int, rows: Int, cellWidthPixels: Int = 8, cellHeightPixels: Int = 16
+     ) {
+@@ -190,13 +200,14 @@
+     public func selectAllAsync() { queue.async { [self] in if core.selectAll() { scheduleFrame() } } }
+     public func selectedText() -> String? { withQueue { core.selectedText() } }
+     public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { withQueue { let r = core.paste(text, allowUnsafe: allowUnsafe); let reply = core.takeQueryResponses(); guard r, !reply.isEmpty else { return false }; let accepted = transport.write(reply); if accepted { core.scrollToBottom(); scheduleFrame() }; return accepted } }
+-    public func focus(_ focused: Bool) { queue.async { [self] in if let data = core.focus(focused) { _ = transport.write(data) } } }
+-    public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) { queue.async { [self] in if let data = core.mouse(action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry) { _ = transport.write(data) } } }
++    public func focus(_ focused: Bool) { queue.async { [self] in if let data = core.focus(focused) { writeInteractive(data) } } }
++    public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) { queue.async { [self] in if let data = core.mouse(action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry) { writeInteractive(data) } } }
+     /// Lock-free mirror refreshed on the PTY queue after every feed/resize; equals core.mouseReporting() whenever the queue is quiescent.
+     public func mouseReporting() -> Bool { mouseTracking.load(ordering: .acquiring) }
+     public func pwd() -> String? { withQueue { core.pwd() } }
+     public func currentPID() -> pid_t? { transport.currentPID() }
+     public var coreForTesting: TerminalVTCore { core }
++    public var reservedInputForTesting: Int { transport.reservedInputForTesting }
+     public func closeAndWait() async { await transport.closeAndWait() }
+ 
+     private func withQueue<T>(_ body: () -> T) -> T {
+@@ -204,6 +215,16 @@
+       return queue.sync(execute: body)
+     }
+ 
++    /// Small control/typed writes use the interactive allowance; a refusal while the transport is still open is counted and reported, never swallowed. Safe from any thread (`onInputDropped` runs on the calling thread). `sendRaw` and `paste` are bulk and report acceptance to their caller.
++    @discardableResult private func writeInteractive(_ data: Data) -> Bool {
++      if transport.write(data, interactive: true) { return true }
++      if transport.isAcceptingInput {
++        droppedInteractive.add(data.count, ordering: .relaxed)
++        onInputDropped?(data.count)
++      }
++      return false
++    }
++
+     private func consume(_ data: Data) {
+       guard !closed else { return }
+       guard !inOutput else { return }
+@@ -213,7 +234,7 @@
+       pwdStale = true
+       refreshModeMirror()
+       let reply = core.takeQueryResponses()
+-      if !reply.isEmpty { _ = transport.write(reply) }
++      if !reply.isEmpty { writeInteractive(reply) }
+       inOutput = false
+       scheduleFrame()
+     }
+diff --git a/Web Studio/TerminalVTSession.swift b/Web Studio/TerminalVTSession.swift
+index a13d6b5..ff3416c 100644
+--- a/Web Studio/TerminalVTSession.swift	
++++ b/Web Studio/TerminalVTSession.swift	
+@@ -88,6 +88,8 @@ final class TerminalSession: NSObject, ObservableObject {
+     func reportRenderError(_ message: String) { if state == .running { state = .failed(message) } }
+     func sendRaw(_ data: Data) { _ = backend.sendRaw(data) }
+     func send(data: Data) { sendRaw(data) }
++    /// Committed keyboard text: interactive priority (see GhosttyVTBackend.sendTyped).
++    func sendTyped(_ data: Data) { _ = backend.sendTyped(data) }
+     func resize(columns: Int, rows: Int, geometry: TerminalGeometry) { backend.resize(columns: columns, rows: rows, cellWidthPixels: Int(geometry.cellPixelSize.width), cellHeightPixels: Int(geometry.cellPixelSize.height)) }
+     func resize(cols: Int, rows: Int) { backend.resize(columns: cols, rows: rows, cellWidthPixels: Int(geometryForCurrentView.cellPixelSize.width), cellHeightPixels: Int(geometryForCurrentView.cellPixelSize.height)) }
+     private var geometryForCurrentView: TerminalGeometry { terminalView.geometry }
+diff --git a/Web Studio/TerminalVTView.swift b/Web Studio/TerminalVTView.swift
+index 49529cf..63cfd69 100644
+--- a/Web Studio/TerminalVTView.swift	
++++ b/Web Studio/TerminalVTView.swift	
+@@ -332,7 +332,7 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
+         marked = NSAttributedString()
+         markedSelection = NSRange(location: 0, length: 0); markedField.isHidden = true
+         if let native, !wasMarked, value.utf16.count == 1, session?.encode(event: native, action: native.isARepeat ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS, textOverride: value, forceText: true) == true { forwardedKeys[native.keyCode] = native; session?.scrollToBottom() }
+-        else { session?.sendRaw(Data(value.utf8)) }
++        else { session?.sendTyped(Data(value.utf8)) }
+     }
+     func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {
+         let font = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
+diff --git a/scripts/terminal-vt-backend-smoke.swift b/scripts/terminal-vt-backend-smoke.swift
+index 810ed23..9d06592 100644
+--- a/scripts/terminal-vt-backend-smoke.swift
++++ b/scripts/terminal-vt-backend-smoke.swift
+@@ -30,6 +30,7 @@ private final class Recorder {
+     precondition(interactive.setTheme(.light)); precondition(interactive.currentPID() == pid); interactive.sendRaw(Data("FINAL\n".utf8)); precondition(recorder.wait({ $0.frames.contains { $0.visibleData.range(of: Data("FINAL_MARK".utf8)) != nil } })); precondition(interactive.setTheme(.dark)); precondition(interactive.currentPID() == pid)
+     precondition(interactive.sendRaw(Data("EXIT7\n".utf8))); precondition(recorder.wait({ $0.exitCode == 7 })); recorder.condition.lock(); let callbacks = recorder.callbacks; recorder.condition.unlock(); precondition(callbacks.first == "start" && callbacks.last == "exit7"); precondition(interactive.snapshot()?.visibleData.range(of: Data("EXIT_FINAL".utf8)) != nil); await interactive.closeAndWait(); print("TerminalVTBackend interactive smoke passed")
+     await LaneBSmoke.run()
++    await InputOrderSmoke.run()
+   }
+ }
+ 
+@@ -48,6 +49,7 @@ private final class LaneRecorder: @unchecked Sendable {
+   }
+   func hasOutput(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return output.range(of: Data(text.utf8)) != nil }
+   func hasFrame(_ text: String) -> Bool { lock.lock(); defer { lock.unlock() }; return frames.contains { $0.visibleData.range(of: Data(text.utf8)) != nil } }
++  var outputText: String { lock.lock(); defer { lock.unlock() }; return String(decoding: output, as: UTF8.self) }
+   func count(of text: String) -> Int { lock.lock(); defer { lock.unlock() }; return String(decoding: output, as: UTF8.self).components(separatedBy: text).count - 1 }
+   var frameCount: Int { lock.lock(); defer { lock.unlock() }; return frames.count }
+   var lastFrame: VTFrame? { lock.lock(); defer { lock.unlock() }; return frames.last }
+@@ -55,6 +57,11 @@ private final class LaneRecorder: @unchecked Sendable {
+   var exitStatus: Int32? { lock.lock(); defer { lock.unlock() }; return exitCode }
+   var lastFrameTextAtExit: String? { lock.lock(); defer { lock.unlock() }; return finalFrameHadMarkerBeforeExit }
+ }
++private final class LaneFlagCounter: @unchecked Sendable {
++  private let lock = NSLock(); private var sum = 0
++  func add(_ n: Int) { lock.lock(); sum += n; lock.unlock() }
++  var total: Int { lock.lock(); defer { lock.unlock() }; return sum }
++}
+ private final class LaneDirectories: @unchecked Sendable {
+   private let lock = NSLock(); private var list = [String]()
+   func attach(to backend: GhosttyVTBackend) { backend.onDirectory = { [self] raw in lock.lock(); list.append(raw); lock.unlock() } }
+@@ -221,4 +228,208 @@ private enum LaneBSmoke {
+     await backend.closeAndWait()
+   }
+ }
++// Input-ordering / input-drop assertions (correctness, not performance). Failures are collected instead of trapping so one run reports every broken guarantee.
++private final class InputChecks: @unchecked Sendable {
++  static let shared = InputChecks(); private let lock = NSLock(); private var list = [String]()
++  func fail(_ message: String) { lock.lock(); list.append(message); lock.unlock(); FileHandle.standardError.write(Data("INPUT-CHECK FAILED: \(message)\n".utf8)) }
++  var failures: [String] { lock.lock(); defer { lock.unlock() }; return list }
++}
++private func check(_ condition: Bool, _ message: @autoclosure () -> String) { if !condition { InputChecks.shared.fail(message()) } }
++private enum InputOrderSmoke {
++  static let alphabet = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
++  static func run() async {
++    await keyAndRawKeepProgramOrderUnderBacklog()
++    await keyAndRawKeepProgramOrderWithoutBacklog()
++    await interactiveWritesSurviveFullPasteBudget()
++    await interactiveOverflowIsReportedAndBounded()
++    await admissionIsReleasedOnCloseAndExit()
++    await typedTextKeepsOrderAndSurvivesFullPasteBudget()
++    let failures = InputChecks.shared.failures
++    if failures.isEmpty { print("TerminalVTBackend input ordering/drop smoke passed") } else { print("TerminalVTBackend input ordering/drop smoke FAILED (\(failures.count) checks)"); exit(1) }
++  }
++  static func firstMismatch(_ actual: String, _ expected: String) -> String {
++    let a = Array(actual.utf8), e = Array(expected.utf8); var i = 0
++    while i < min(a.count, e.count), a[i] == e[i] { i += 1 }
++    let lo = max(0, i - 4)
++    return "first mismatch at byte \(i) (actual \(a.count) bytes, expected \(e.count)): actual ...\(String(decoding: a[lo..<min(a.count, i + 8)], as: UTF8.self)) expected ...\(String(decoding: e[lo..<min(e.count, i + 8)], as: UTF8.self))"
++  }
++  /// Sends `count` tokens from the calling (non-queue) thread in program order, mixing encodeKey, sendRaw and paste, and returns the byte string the child must receive.
++  static func sendMixed(_ backend: GhosttyVTBackend, count: Int, stallEvery: Int) -> String {
++    var expected = ""
++    for i in 0..<count {
++      let ch = String(alphabet[i % alphabet.count])
++      if stallEvery > 0, i % stallEvery == 0 { backend.queue.async { usleep(3_000) } }
++      switch i % 6 {
++      case 0, 2, 3: backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: ch, unshiftedCodepoint: 0)
++      case 1, 4: check(backend.sendRaw(Data(ch.utf8)), "sendRaw of one byte was rejected")
++      default: check(backend.paste(ch, allowUnsafe: true), "paste of one byte was rejected")
++      }
++      expected += ch
++    }
++    return expected
++  }
++  static func readback(_ recorder: LaneRecorder, marker: String, expected: String) -> String {
++    _ = LaneBSmoke.eventually(6) { let t = recorder.outputText; guard let r = t.range(of: marker) else { return false }; return t[r.upperBound...].utf8.count >= expected.utf8.count }
++    LaneBSmoke.settle(150)
++    let text = recorder.outputText; guard let r = text.range(of: marker) else { return "" }
++    return String(text[r.upperBound...])
++  }
++  // O1: a key encoded on the queue must reach the child before raw bytes the caller sent after it, even when the queue is backed up.
++  static func keyAndRawKeepProgramOrderUnderBacklog() async {
++    let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_O1; exec cat")
++    check(LaneBSmoke.eventually { recorder.hasOutput("READY_O1") }, "O1: child never became ready")
++    // Deterministic minimal case: the serial queue is busy, then key 'a' followed by raw 'b'.
++    backend.queue.async { usleep(200_000) }
++    backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a", unshiftedCodepoint: 0); check(backend.sendRaw(Data("b".utf8)), "O1: sendRaw rejected")
++    let first = readback(recorder, marker: "READY_O1", expected: "ab")
++    check(first == "ab", "O1: encodeKey('a') then sendRaw('b') on a busy queue reached the child as \"\(first)\" instead of \"ab\"")
++    // Backlog case: queue stalled up front and periodically while 600 mixed tokens are issued.
++    backend.queue.async { usleep(300_000) }
++    let expected = "ab" + sendMixed(backend, count: 600, stallEvery: 25)
++    let actual = readback(recorder, marker: "READY_O1", expected: expected)
++    check(actual == expected, "O1: mixed key/raw/paste stream reordered under backlog: \(firstMismatch(actual, expected))")
++    await backend.closeAndWait()
++  }
++  // O2: same property with no artificial stall (natural races between the caller and the PTY queue).
++  static func keyAndRawKeepProgramOrderWithoutBacklog() async {
++    let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_O2; exec cat")
++    check(LaneBSmoke.eventually { recorder.hasOutput("READY_O2") }, "O2: child never became ready")
++    var expected = ""
++    for _ in 0..<20 { expected += sendMixed(backend, count: 300, stallEvery: 0) }
++    let actual = readback(recorder, marker: "READY_O2", expected: expected)
++    check(actual == expected, "O2: mixed key/raw/paste stream reordered without stall: \(firstMismatch(actual, expected))")
++    await backend.closeAndWait()
++  }
++  // D1: while a full-size paste holds the 256 KiB admission, small interactive writes (key, focus report, mouse report, query reply) must not be silently lost.
++  static func interactiveWritesSurviveFullPasteBudget() async {
++    let dir = NSTemporaryDirectory() + "ws-vt-input-\(getpid())-\(UInt32.random(in: 0...UInt32.max))"; try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true); defer { try? FileManager.default.removeItem(atPath: dir) }
++    let g1 = dir + "/g1", g2 = dir + "/g2"
++    func touch(_ path: String) { FileManager.default.createFile(atPath: path, contents: Data()) }
++    let script = "stty raw -echo; printf 'READY_D1\u{1b}[?1004h\u{1b}[?1000h\u{1b}[?1006h'; while [ ! -e \(g1) ]; do sleep 0.02; done; printf '\u{1b}[6n'; while [ ! -e \(g2) ]; do sleep 0.02; done; exec cat"
++    let (backend, recorder) = LaneBSmoke.launch(script)
++    check(LaneBSmoke.eventually { recorder.hasOutput("READY_D1") }, "D1: child never became ready"); LaneBSmoke.barrier(backend)
++    // The child is not reading, so the kernel PTY buffer fills and the rest stays pending in the transport. Top the admission up one byte at a time until it refuses, so it is exactly full when the interactive writes below are attempted.
++    var bulk = 256 * 1024
++    check(backend.sendRaw(Data(repeating: 0x78, count: bulk)), "D1: a paste exactly the size of the admission budget must be accepted")
++    LaneBSmoke.barrier(backend); LaneBSmoke.settle(150); LaneBSmoke.barrier(backend)
++    while backend.sendRaw(Data([0x78])) { bulk += 1; if bulk > 300 * 1024 { break } }
++    check(bulk <= 300 * 1024, "D1: admission never filled (bulk=\(bulk))"); print("D1: admission filled with \(bulk) pending bulk bytes")
++    backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a", unshiftedCodepoint: 0)
++    backend.focus(true)
++    backend.mouse(action: 0, button: 1, modifiers: 0, xPixels: 4, yPixels: 4, geometry: VTMouseGeometry(screenWidth: 640, screenHeight: 384, cellWidth: 8, cellHeight: 16))
++    LaneBSmoke.barrier(backend)
++    touch(g1); check(LaneBSmoke.eventually { recorder.hasOutput("\u{1b}[6n") }, "D1: child never issued the cursor-position query"); LaneBSmoke.settle(150); LaneBSmoke.barrier(backend)
++    touch(g2)
++    _ = LaneBSmoke.eventually(8) { let t = recorder.outputText; guard let r = t.range(of: "\u{1b}[6n") else { return false }; return t[r.upperBound...].utf8.count >= bulk }
++    _ = LaneBSmoke.eventually(3) { let t = recorder.outputText; guard let r = t.range(of: "\u{1b}[6n") else { return false }; return t[r.upperBound...].contains("\u{1b}[1;") }
++    LaneBSmoke.settle(150)
++    let text = recorder.outputText; let rest = text.range(of: "\u{1b}[6n").map { String(text[$0.upperBound...]) } ?? ""
++    let tail = String(rest.dropFirst(bulk))
++    check(rest.hasPrefix(String(repeating: "x", count: bulk)), "D1: the paste itself was not delivered intact (\(rest.utf8.count) bytes echoed)")
++    check(tail.contains("a"), "D1: key 'a' encoded while the paste budget was full was silently dropped (tail=\(tail.debugDescription))")
++    check(tail.contains("\u{1b}[I"), "D1: focus report was silently dropped (tail=\(tail.debugDescription))")
++    check(tail.contains("\u{1b}[<0;"), "D1: mouse report was silently dropped (tail=\(tail.debugDescription))")
++    check(tail.contains("\u{1b}[1;"), "D1: cursor-position query reply was silently dropped (tail=\(tail.debugDescription))")
++    touch(g2); await backend.closeAndWait()
++  }
++  static func makeGate() -> (path: String, open: () -> Void, cleanup: () -> Void) {
++    let dir = NSTemporaryDirectory() + "ws-vt-gate-\(getpid())-\(UInt32.random(in: 0...UInt32.max))"; try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
++    let path = dir + "/g"; return (path, { FileManager.default.createFile(atPath: path, contents: Data()) }, { try? FileManager.default.removeItem(atPath: dir) })
++  }
++  /// Fills the bulk admission exactly (child not reading) and returns the number of pending bulk bytes.
++  static func fillBulkAdmission(_ backend: GhosttyVTBackend, label: String) -> Int {
++    var bulk = 256 * 1024
++    check(backend.sendRaw(Data(repeating: 0x78, count: bulk)), "\(label): a paste exactly the size of the admission budget must be accepted")
++    LaneBSmoke.barrier(backend); LaneBSmoke.settle(150); LaneBSmoke.barrier(backend)
++    while backend.sendRaw(Data([0x78])) { bulk += 1; if bulk > 300 * 1024 { break } }
++    return bulk
++  }
++  // D2: interactive writes are bounded: beyond the allowance they are counted and reported through onInputDropped (not onError), everything admitted is delivered in order, and the admission counter returns to zero.
++  static func interactiveOverflowIsReportedAndBounded() async {
++    let gate = makeGate(); defer { gate.cleanup() }
++    let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_D2; while [ ! -e \(gate.path) ]; do sleep 0.02; done; exec cat")
++    let reports = LaneFlagCounter(); backend.onInputDropped = { reports.add($0) }
++    var errors = [String](); let errorLock = NSLock(); backend.onError = { errorLock.lock(); errors.append($0); errorLock.unlock() }
++    check(LaneBSmoke.eventually { recorder.hasOutput("READY_D2") }, "D2: child never became ready")
++    let bulk = fillBulkAdmission(backend, label: "D2")
++    let allowance = 64 * 1024, keys = allowance + 4000
++    for _ in 0..<keys { backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "k", unshiftedCodepoint: 0) }
++    LaneBSmoke.barrier(backend)
++    check(backend.droppedInteractiveBytes == 4000 && reports.total == 4000, "D2: expected exactly 4000 dropped interactive bytes reported, got counter=\(backend.droppedInteractiveBytes) callbacks=\(reports.total)")
++    check(backend.reservedInputForTesting == 256 * 1024 + allowance, "D2: admission is not bounded at limit+allowance (reserved=\(backend.reservedInputForTesting))")
++    check(!backend.sendRaw(Data([0x78])), "D2: bulk writes must still be refused while the budget is full")
++    gate.open()
++    let total = bulk + allowance
++    _ = LaneBSmoke.eventually(10) { let t = recorder.outputText; guard let r = t.range(of: "READY_D2") else { return false }; return t[r.upperBound...].utf8.count >= total }
++    LaneBSmoke.settle(150)
++    let text = recorder.outputText; let rest = text.range(of: "READY_D2").map { String(text[$0.upperBound...]) } ?? ""
++    check(rest == String(repeating: "x", count: bulk) + String(repeating: "k", count: allowance), "D2: delivered stream differs from admitted bytes (\(rest.utf8.count) bytes vs \(total))")
++    check(LaneBSmoke.eventually { backend.reservedInputForTesting == 0 }, "D2: reservedInput did not return to 0 after delivery (\(backend.reservedInputForTesting))")
++    errorLock.lock(); check(errors.isEmpty, "D2: an overflow must not be reported through onError: \(errors)"); errorLock.unlock()
++    await backend.closeAndWait()
++  }
++  // D3: reservedInput is released on close and on child exit even with a pending backlog.
++  static func admissionIsReleasedOnCloseAndExit() async {
++    do {
++      let gate = makeGate(); defer { gate.cleanup() }
++      let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_D3; while [ ! -e \(gate.path) ]; do sleep 0.02; done; exec cat")
++      check(LaneBSmoke.eventually { recorder.hasOutput("READY_D3") }, "D3: child never became ready")
++      let bulk = fillBulkAdmission(backend, label: "D3"); check(backend.reservedInputForTesting > 0 && bulk > 0, "D3: nothing pending")
++      backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a", unshiftedCodepoint: 0); LaneBSmoke.barrier(backend)
++      await backend.closeAndWait()
++      check(backend.reservedInputForTesting == 0, "D3: reservedInput not released on close (\(backend.reservedInputForTesting))")
++      check(!backend.sendRaw(Data([0x78])), "D3: writes must be refused after close")
++    }
++    do {
++      let gate = makeGate(); defer { gate.cleanup() }
++      let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_D3B; while [ ! -e \(gate.path) ]; do sleep 0.02; done; exit 3")
++      check(LaneBSmoke.eventually { recorder.hasOutput("READY_D3B") }, "D3: exit child never became ready")
++      _ = fillBulkAdmission(backend, label: "D3b")
++      backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a", unshiftedCodepoint: 0); LaneBSmoke.barrier(backend)
++      gate.open()
++      check(LaneBSmoke.eventually(8) { recorder.hasExited }, "D3: child exit not delivered with pending input")
++      check(LaneBSmoke.eventually { backend.reservedInputForTesting == 0 }, "D3: reservedInput not released on child exit (\(backend.reservedInputForTesting))")
++      await backend.closeAndWait()
++      check(backend.reservedInputForTesting == 0, "D3: reservedInput nonzero after exit+close (\(backend.reservedInputForTesting))")
++    }
++  }
++  /// The entry point TerminalVTView.insertText uses for committed IME / multi-character text.
++  @discardableResult static func typed(_ backend: GhosttyVTBackend, _ data: Data) -> Bool { backend.sendTyped(data) }
++  static func key(_ backend: GhosttyVTBackend, _ text: String) { backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: text, unshiftedCodepoint: 0) }
++  // T1/T2/T3: committed typed text is keyboard input. It stays ordered relative to encoded keys, is not lost while a paste holds the bulk admission, and beyond the allowance is counted and reported.
++  static func typedTextKeepsOrderAndSurvivesFullPasteBudget() async {
++    do {
++      let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_T1; exec cat")
++      check(LaneBSmoke.eventually { recorder.hasOutput("READY_T1") }, "T1: child never became ready")
++      backend.queue.async { usleep(200_000) }
++      key(backend, "a"); check(typed(backend, Data("bc".utf8)), "T1: typed text rejected"); key(backend, "d"); typed(backend, Data("e".utf8))
++      backend.queue.async { usleep(200_000) }
++      for i in 0..<300 { let ch = String(alphabet[i % alphabet.count]); if i % 3 == 0 { key(backend, ch) } else { typed(backend, Data((ch + ch).utf8)) } }
++      var exact = "abcde"; for i in 0..<300 { let ch = String(alphabet[i % alphabet.count]); exact += i % 3 == 0 ? ch : ch + ch }
++      let actual = readback(recorder, marker: "READY_T1", expected: exact)
++      check(actual == exact, "T1: typed text reordered relative to encoded keys: \(firstMismatch(actual, exact))")
++      await backend.closeAndWait()
++    }
++    let gate = makeGate(); defer { gate.cleanup() }
++    let (backend, recorder) = LaneBSmoke.launch("stty raw -echo; printf READY_T2; while [ ! -e \(gate.path) ]; do sleep 0.02; done; exec cat")
++    let reports = LaneFlagCounter(); backend.onInputDropped = { reports.add($0) }
++    check(LaneBSmoke.eventually { recorder.hasOutput("READY_T2") }, "T2: child never became ready")
++    let bulk = fillBulkAdmission(backend, label: "T2")
++    let ime = "中文输入é"
++    check(typed(backend, Data(ime.utf8)), "T2: committed text was refused while a paste held the bulk admission")
++    let allowance = 64 * 1024, used = ime.utf8.count
++    check(typed(backend, Data(repeating: 0x6b, count: allowance - used)), "T2: typed text within the allowance was refused")
++    check(!typed(backend, Data(repeating: 0x7a, count: 100)), "T2: typed text beyond the allowance must report refusal")
++    check(backend.droppedInteractiveBytes == 100 && reports.total == 100, "T2: refusal not counted/reported (counter=\(backend.droppedInteractiveBytes) callbacks=\(reports.total))")
++    check(backend.reservedInputForTesting == 256 * 1024 + allowance, "T2: typed writes are not bounded at limit+allowance (reserved=\(backend.reservedInputForTesting))")
++    gate.open()
++    let total = bulk + allowance
++    _ = LaneBSmoke.eventually(10) { let t = recorder.outputText; guard let r = t.range(of: "READY_T2") else { return false }; return t[r.upperBound...].utf8.count >= total }
++    LaneBSmoke.settle(150)
++    let text = recorder.outputText; let rest = text.range(of: "READY_T2").map { String(text[$0.upperBound...]) } ?? ""
++    check(rest == String(repeating: "x", count: bulk) + ime + String(repeating: "k", count: allowance - used), "T2: delivered stream differs from admitted bytes (\(rest.utf8.count) vs \(total))")
++    check(LaneBSmoke.eventually { backend.reservedInputForTesting == 0 }, "T2: reservedInput did not return to 0 (\(backend.reservedInputForTesting))")
++    await backend.closeAndWait()
++  }
++}
+ #endif

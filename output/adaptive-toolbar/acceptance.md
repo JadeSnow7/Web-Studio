@@ -1,5 +1,7 @@
 # Adaptive page toolbar — 2026-09-13
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 The native toolbar now displays a softened, local snapshot of the focused web page's visible top strip. The effect ends at the content boundary and does not move or cover page content. Existing native toolbar controls and runtime ownership are retained. Blank resources and unavailable snapshots fall back to the existing shell/system surface.
 
 `PageChromeBackdrop` owns presentation and a cancellable 900ms refresh loop. `WebTabRuntime` captures at most 120pt of the visible page, with a 512pt snapshot width. Only an active app/key window can capture; overlapping captures are suppressed. Navigation generations reject stale completions. Reduce Transparency cancels sampling and uses an opaque semantic background. Captures stay in memory and are not sent to an Agent or written to disk.

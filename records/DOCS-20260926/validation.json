@@ -1,0 +1,128 @@
+{
+  "date": "2026-09-26",
+  "changed_existing_markdown": 57,
+  "new_current_documents": 3,
+  "current_document_count": 60,
+  "local_links_checked": 343,
+  "missing_historical_temp_links": [
+    {
+      "file": "output/codex-cli/acceptance.md",
+      "target": "/private/tmp/web-studio-codex-acceptance/unit-tests.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/codex-cli/acceptance.md",
+      "target": "/private/tmp/web-studio-codex-acceptance/ui-tests.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/codex-cli/acceptance.md",
+      "target": "/private/tmp/web-studio-codex-acceptance/default-build.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/codex-cli/acceptance.md",
+      "target": "/private/tmp/web-studio-codex-acceptance/cancel-process-check.json",
+      "historical_temp": true
+    },
+    {
+      "file": "output/codex-cli/acceptance.md",
+      "target": "/private/tmp/web-studio-codex-acceptance/premium-audit.json",
+      "historical_temp": true
+    },
+    {
+      "file": "output/ssh-passwordless-2026-09-13.md",
+      "target": "/private/tmp/web-studio-ssh-auth-0913/baseline.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/ssh-passwordless-2026-09-13.md",
+      "target": "/private/tmp/web-studio-ssh-auth-0913/terminal-tests.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/ssh-passwordless-2026-09-13.md",
+      "target": "/private/tmp/web-studio-ssh-auth-0913/terminal.xcresult",
+      "historical_temp": true
+    },
+    {
+      "file": "output/ssh-passwordless-2026-09-13.md",
+      "target": "/private/tmp/web-studio-ssh-auth-0913/entitlements.plist",
+      "historical_temp": true
+    },
+    {
+      "file": "output/ssh-passwordless-2026-09-13.md",
+      "target": "/private/tmp/web-studio-ssh-auth-0913/source-sha256.txt",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/sandbox-cached.log",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/sandbox-cached.xcresult",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/sandbox-entitlements.plist",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/ui-entitlements.plist",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/ui-process-before.txt",
+      "historical_temp": true
+    },
+    {
+      "file": "output/terminal-automation-2026-09-13.md",
+      "target": "/private/tmp/web-studio-terminal-0913/ui-process-after.json",
+      "historical_temp": true
+    }
+  ],
+  "unexpected_missing_links": [],
+  "protected_files_checked": 1751,
+  "protected_file_changes": [],
+  "non_markdown_baseline_changes": [],
+  "source_binding_count": 57,
+  "source_binding_mismatch": [],
+  "shell_examples_syntax": [
+    {
+      "document": "README.md",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "document": "README.md",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "document": "README.md",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "document": "README.md",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "document": "README.md",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "document": "Vendor/GhosttyVT/README.md",
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ],
+  "runtime_tests": "not run; documentation-only review"
+}

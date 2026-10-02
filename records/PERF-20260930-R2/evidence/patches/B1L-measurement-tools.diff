@@ -1,0 +1,291 @@
+diff --git a/scripts/terminal-vt-echo-latency.swift b/scripts/terminal-vt-echo-latency.swift
+new file mode 100644
+index 0000000..16e7d3e
+--- /dev/null
++++ b/scripts/terminal-vt-echo-latency.swift
+@@ -0,0 +1,215 @@
++#if WEB_STUDIO_VT
++import Darwin
++import Foundation
++import StudioVTCoreC
++
++// Headless measurement harness: real PTY + real GhosttyVTBackend. Latency is key call -> first onFrame carrying the echo
++// (backend-to-onFrame), NOT input-to-photon. Usage: harness <scenario> <out.json> [label=..] [seed=N] [samples=N] [bursts=N] [seconds=N]
++// Scenarios: echo | burst | flood-yes | flood-sgr | idle. Needs FIXTURE_PATH (terminal-vt-echo-fixture).
++
++@inline(__always) func nowNS() -> UInt64 { clock_gettime_nsec_np(CLOCK_UPTIME_RAW) }
++private let timebase: mach_timebase_info_data_t = { var t = mach_timebase_info_data_t(); mach_timebase_info(&t); return t }()
++func sleepUntil(_ ns: UInt64) { let ticks = ns &* UInt64(timebase.denom) / UInt64(timebase.numer); mach_wait_until(ticks) }
++func sleepFor(ms: Double) { sleepUntil(nowNS() + UInt64(ms * 1e6)) }
++
++struct XorShift { var s: UInt64
++  mutating func next() -> UInt64 { s ^= s << 13; s ^= s >> 7; s ^= s << 17; return s }
++  mutating func uniform(_ lo: Double, _ hi: Double) -> Double { lo + (hi - lo) * Double(next() >> 11) / Double(1 << 53) } }
++
++final class Mailbox: @unchecked Sendable {
++  private let lock = NSLock(); private var latest: VTFrame?
++  func offer(_ f: VTFrame) { lock.lock(); latest = f; lock.unlock() }
++  func take() -> VTFrame? { lock.lock(); defer { lock.unlock() }; let v = latest; latest = nil; return v }
++  func hasValue() -> Bool { lock.lock(); defer { lock.unlock() }; return latest != nil }
++}
++
++func markerValue(_ d: Data) -> Int {
++  var last = -1
++  d.withUnsafeBytes { (p: UnsafeRawBufferPointer) in
++    let n = p.count; var i = 0
++    while i < n {
++      if p[i] == 0x45 { var j = i + 1, v = 0, digits = 0
++        while j < n, p[j] >= 48, p[j] <= 57 { v = v * 10 + Int(p[j] - 48); j += 1; digits += 1 }
++        if digits > 0, j < n, p[j] == 0x3b { last = v }
++        i = j
++      } else { i += 1 }
++    }
++  }
++  return last
++}
++
++final class Rig: @unchecked Sendable {
++  let backend = GhosttyVTBackend(columns: 80, rows: 24)
++  let mailbox = Mailbox(); let sem = DispatchSemaphore(value: 0)
++  let cond = NSCondition()
++  var frameLog: [(t: UInt64, k: Int)] = []; var maxK = 0; var sawReady = false; var bytes = 0; var parse = true
++  var stop = false; var exited = false
++  func startConsumer() {
++    let t = Thread { [self] in
++      while true { sem.wait(); cond.lock(); let s = stop; cond.unlock(); if s { return }; if mailbox.take() != nil { backend.frameDrained() } }
++    }
++    t.stackSize = 1 << 20; t.start()
++  }
++  func launch(_ exe: String, _ argv: [String], parse: Bool) {
++    self.parse = parse
++    backend.onFrame = { [self] frame in
++      let t = nowNS()
++      mailbox.offer(frame); sem.signal()
++      var k = -1, ready = false
++      if self.parse { k = markerValue(frame.visibleData); ready = k < 0 && frame.visibleData.range(of: Data("READY".utf8)) != nil }
++      cond.lock(); frameLog.append((t, k)); if k > maxK { maxK = k }; if ready { sawReady = true }; cond.broadcast(); cond.unlock()
++    }
++    backend.onOutput = { [self] d in cond.lock(); bytes += d.count; cond.broadcast(); cond.unlock() }
++    backend.onExit = { [self] _ in cond.lock(); exited = true; cond.broadcast(); cond.unlock() }
++    backend.hasUndrainedFrame = { [mailbox] in mailbox.hasValue() }
++    startConsumer()
++    backend.setVisible(true)
++    backend.start(executable: exe, argv: argv, environment: ["PATH": "/usr/bin:/bin", "TERM": "xterm-256color"], directory: nil, columns: 80, rows: 24)
++  }
++  func wait(_ timeout: Double, _ p: () -> Bool) -> Bool {
++    cond.lock(); defer { cond.unlock() }
++    let deadline = Date(timeIntervalSinceNow: timeout)
++    while !p() { if !cond.wait(until: deadline) { return p() } }
++    return true
++  }
++  func shutdown() async {
++    cond.lock(); stop = true; cond.unlock(); sem.signal()
++    await backend.closeAndWait()
++  }
++}
++
++func pct(_ xs: [Double], _ q: Double) -> Double {
++  if xs.isEmpty { return 0 }
++  let s = xs.sorted(); let pos = q * Double(s.count - 1); let lo = Int(pos.rounded(.down)), hi = Int(pos.rounded(.up))
++  return s[lo] + (s[hi] - s[lo]) * (pos - Double(lo))
++}
++func summary(_ xs: [Double]) -> [String: Any] {
++  ["n": xs.count, "min": xs.min() ?? 0, "p50": pct(xs, 0.5), "p90": pct(xs, 0.9), "p99": pct(xs, 0.99), "max": xs.max() ?? 0, "mean": xs.isEmpty ? 0 : xs.reduce(0, +) / Double(xs.count)]
++}
++
++struct Res { var user = 0.0, sys = 0.0, nvcsw = 0, nivcsw = 0, intWk: UInt64 = 0, idleWk: UInt64 = 0, cycles: UInt64 = 0, instr: UInt64 = 0 }
++func resUsage() -> Res {
++  var ru = rusage(); getrusage(RUSAGE_SELF, &ru)
++  var r = Res()
++  r.user = Double(ru.ru_utime.tv_sec) + Double(ru.ru_utime.tv_usec) / 1e6
++  r.sys = Double(ru.ru_stime.tv_sec) + Double(ru.ru_stime.tv_usec) / 1e6
++  r.nvcsw = ru.ru_nvcsw; r.nivcsw = ru.ru_nivcsw
++  var ri = rusage_info_v4()
++  let rc = withUnsafeMutablePointer(to: &ri) { $0.withMemoryRebound(to: rusage_info_t?.self, capacity: 1) { proc_pid_rusage(getpid(), RUSAGE_INFO_V4, $0) } }
++  if rc == 0 { r.intWk = ri.ri_interrupt_wkups; r.idleWk = ri.ri_pkg_idle_wkups; r.cycles = ri.ri_cycles; r.instr = ri.ri_instructions }
++  return r
++}
++func loadavg() -> [Double] { var l = [Double](repeating: 0, count: 3); getloadavg(&l, 3); return l }
++
++func echoKey(_ backend: GhosttyVTBackend) {
++  backend.encodeKey(key: GHOSTTY_KEY_A, modifiers: GhosttyMods(0), action: GHOSTTY_KEY_ACTION_PRESS, text: "a")
++}
++
++@main struct EchoLatency {
++  static func main() async {
++    var args = Array(CommandLine.arguments.dropFirst())
++    guard args.count >= 2 else { fatalError("usage") }
++    let scenario = args.removeFirst(), out = args.removeFirst()
++    var opt = [String: String]()
++    for a in args { let p = a.split(separator: "=", maxSplits: 1).map(String.init); if p.count == 2 { opt[p[0]] = p[1] } }
++    guard let fixture = ProcessInfo.processInfo.environment["FIXTURE_PATH"] else { fatalError("FIXTURE_PATH") }
++    let seed = UInt64(opt["seed"] ?? "1") ?? 1
++    var result: [String: Any] = ["scenario": scenario, "label": opt["label"] ?? "", "seed": seed, "load_before": loadavg()]
++    let wall0 = nowNS()
++    switch scenario {
++    case "echo": result.merge(await runEcho(fixture, samples: Int(opt["samples"] ?? "220")!, seed: seed)) { $1 }
++    case "burst": result.merge(await runBurst(fixture, bursts: Int(opt["bursts"] ?? "40")!, seed: seed)) { $1 }
++    case "flood-yes": result.merge(await runWindow(exe: "/usr/bin/yes", argv: ["yes"], parse: false, needOutput: true, seconds: Double(opt["seconds"] ?? "5")!, settle: 0.5)) { $1 }
++    case "flood-sgr": result.merge(await runWindow(exe: fixture, argv: [fixture, "sgr"], parse: false, needOutput: true, seconds: Double(opt["seconds"] ?? "5")!, settle: 0.5)) { $1 }
++    case "idle": result.merge(await runWindow(exe: fixture, argv: [fixture, "idle"], parse: true, needOutput: false, seconds: Double(opt["seconds"] ?? "20")!, settle: 1.0)) { $1 }
++    default: fatalError("scenario")
++    }
++    result["wall_s"] = Double(nowNS() - wall0) / 1e9; result["load_after"] = loadavg()
++    let data = try! JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys])
++    try! data.write(to: URL(fileURLWithPath: out))
++    print("\(scenario) done -> \(out)")
++  }
++
++  static func runEcho(_ fixture: String, samples: Int, seed: UInt64) async -> [String: Any] {
++    let rig = Rig(); rig.launch(fixture, [fixture, "echo"], parse: true)
++    precondition(rig.wait(5) { rig.sawReady }, "echo fixture never showed READY")
++    sleepFor(ms: 300)
++    var rng = XorShift(s: seed &* 0x9E3779B97F4A7C15 | 1)
++    var sends = [UInt64](), gaps = [Double](), timeouts = 0
++    let snap0 = rig.backend.coreForTesting.snapshotCountForTesting()
++    for i in 1...samples {
++      let gap = rng.uniform(20, 300); gaps.append(gap); sleepFor(ms: gap)
++      let t0 = nowNS(); sends.append(t0); echoKey(rig.backend)
++      if !rig.wait(2, { rig.maxK >= i }) { timeouts += 1 }
++    }
++    rig.cond.lock(); let log = rig.frameLog; rig.cond.unlock()
++    let lat = latencies(sends: sends, log: log, base: 0)
++    let snaps = rig.backend.coreForTesting.snapshotCountForTesting() - snap0
++    await rig.shutdown()
++    return ["samples": samples, "timeouts": timeouts, "latency_ms": summary(lat.map { $0 ?? .nan }.filter { !$0.isNaN }), "latency_raw_ms": lat.map { $0 ?? -1 }, "gaps_ms": gaps, "frames_total": log.count, "snapshots": snaps]
++  }
++
++  /// Latency of send i (1-based marker i) = time of the first frame whose marker >= i, minus the send time.
++  static func latencies(sends: [UInt64], log: [(t: UInt64, k: Int)], base: Int) -> [Double?] {
++    var out = [Double?](); var idx = 0
++    for (n, t0) in sends.enumerated() {
++      let need = base + n + 1
++      while idx < log.count, !(log[idx].k >= need && log[idx].t >= t0) { idx += 1 }
++      // idx only moves forward: frames before t0 can never satisfy a later send either (log is time ordered)
++      if idx < log.count { out.append(Double(log[idx].t - t0) / 1e6) } else { out.append(nil); idx = 0 }
++    }
++    return out
++  }
++
++  static func runBurst(_ fixture: String, bursts: Int, seed: UInt64) async -> [String: Any] {
++    let rig = Rig(); rig.launch(fixture, [fixture, "echo"], parse: true)
++    precondition(rig.wait(5) { rig.sawReady }, "echo fixture never showed READY")
++    sleepFor(ms: 300)
++    var rng = XorShift(s: seed &* 0xD1B54A32D192ED03 | 1)
++    var sends = [UInt64](), burstStart = [UInt64](), timeouts = 0, sent = 0
++    for _ in 0..<bursts {
++      sleepFor(ms: rng.uniform(150, 400))
++      var next = nowNS(); burstStart.append(next)
++      for _ in 0..<30 {
++        sleepUntil(next); let t0 = nowNS(); sends.append(t0); echoKey(rig.backend); sent += 1
++        next = t0 + UInt64(rng.uniform(8, 12) * 1e6)
++      }
++      if !rig.wait(2, { rig.maxK >= sent }) { timeouts += 1 }
++    }
++    rig.cond.lock(); let log = rig.frameLog; rig.cond.unlock()
++    let lat = latencies(sends: sends, log: log, base: 0).map { $0 ?? .nan }
++    var perBurstFrames = [Double](), perBurstMean = [Double](), perBurstMax = [Double](), firstChar = [Double](), restChars = [Double]()
++    for b in 0..<bursts {
++      let lo = burstStart[b], hi = b + 1 < bursts ? burstStart[b + 1] : UInt64.max
++      perBurstFrames.append(Double(log.filter { $0.t >= lo && $0.t < hi }.count))
++      let l = Array(lat[b * 30..<(b + 1) * 30]); perBurstMean.append(l.reduce(0, +) / 30); perBurstMax.append(l.max()!)
++      firstChar.append(l[0]); restChars.append(contentsOf: l[1...])
++    }
++    await rig.shutdown()
++    return ["bursts": bursts, "timeouts": timeouts, "latency_ms": summary(lat.filter { !$0.isNaN }), "first_char_ms": summary(firstChar), "rest_chars_ms": summary(restChars),
++            "burst_mean_ms": summary(perBurstMean), "burst_max_ms": summary(perBurstMax), "frames_per_burst": summary(perBurstFrames), "frames_per_burst_raw": perBurstFrames, "latency_raw_ms": lat.map { $0.isNaN ? -1 : $0 }]
++  }
++
++  static func runWindow(exe: String, argv: [String], parse: Bool, needOutput: Bool, seconds: Double, settle: Double) async -> [String: Any] {
++    let rig = Rig(); rig.launch(exe, argv, parse: parse)
++    if needOutput { precondition(rig.wait(5) { rig.bytes > 0 }, "no output") } else { precondition(rig.wait(5) { rig.sawReady }, "no READY") }
++    sleepFor(ms: settle * 1000)
++    rig.cond.lock(); let f0 = rig.frameLog.count; let b0 = rig.bytes; rig.cond.unlock()
++    let s0 = rig.backend.coreForTesting.snapshotCountForTesting(); let r0 = resUsage(); let t0 = nowNS()
++    sleepUntil(t0 + UInt64(seconds * 1e9))
++    let t1 = nowNS(); let r1 = resUsage(); let s1 = rig.backend.coreForTesting.snapshotCountForTesting()
++    rig.cond.lock(); let log = Array(rig.frameLog[f0...]); let b1 = rig.bytes; rig.cond.unlock()
++    let dur = Double(t1 - t0) / 1e9
++    let times = log.map { $0.t }.filter { $0 <= t1 }
++    var intervals = [Double](); for i in 1..<max(times.count, 1) { intervals.append(Double(times[i] - times[i - 1]) / 1e6) }
++    await rig.shutdown()
++    let cpu = (r1.user - r0.user) + (r1.sys - r0.sys)
++    return ["window_s": dur, "frames": times.count, "frames_per_s": Double(times.count) / dur, "snapshots": s1 - s0, "snapshots_per_s": Double(s1 - s0) / dur,
++            "bytes": b1 - b0, "MB_per_s": Double(b1 - b0) / dur / 1e6, "frame_interval_ms": summary(intervals),
++            "cpu_s": cpu, "cpu_user_s": r1.user - r0.user, "cpu_sys_s": r1.sys - r0.sys, "cpu_pct_of_core": cpu / dur * 100,
++            "vol_ctx_switches": r1.nvcsw - r0.nvcsw, "invol_ctx_switches": r1.nivcsw - r0.nivcsw,
++            "interrupt_wakeups": r1.intWk &- r0.intWk, "pkg_idle_wakeups": r1.idleWk &- r0.idleWk, "cycles": r1.cycles &- r0.cycles, "instructions": r1.instr &- r0.instr,
++            "wakeups_per_s": Double(r1.intWk &- r0.intWk) / dur]
++  }
++}
++#endif
+diff --git a/scripts/terminal-vt-echo-latency-build.sh b/scripts/terminal-vt-echo-latency-build.sh
+new file mode 100755
+index 0000000..06f8f5b
+--- /dev/null
++++ b/scripts/terminal-vt-echo-latency-build.sh
+@@ -0,0 +1,10 @@
++#!/bin/sh
++# Builds the echo-latency harness (-O) against a given TerminalVTBackend.swift. Usage: terminal-vt-echo-latency-build.sh <backend.swift> <outdir>
++set -eu
++ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
++BACKEND=$1; OUT=$2
++mkdir -p "$OUT/module-cache"
++clang -std=c11 -O2 -DWEB_STUDIO_VT -DGHOSTTY_STATIC -I"$ROOT/Vendor/GhosttyVT/include" -I"$ROOT/Web Studio" -c "$ROOT/Web Studio/StudioPTY.c" -o "$OUT/pty.o"
++clang -std=c11 -O2 -Wall -Wextra -Werror "$ROOT/scripts/terminal-vt-echo-fixture.c" -o "$OUT/fixture"
++clang -std=c11 -O2 -DWEB_STUDIO_VT -DGHOSTTY_STATIC -I"$ROOT/Vendor/GhosttyVT/include" -c "$ROOT/Web Studio/StudioVTCore.c" -o "$OUT/vt.o"
++swiftc -O -DWEB_STUDIO_VT -module-cache-path "$OUT/module-cache" -I"$ROOT/scripts" -Xcc -DWEB_STUDIO_VT -Xcc -I -Xcc "$ROOT/Vendor/GhosttyVT/include" -import-objc-header "$ROOT/Web Studio/Web Studio-Bridging-Header.h" "$ROOT/Web Studio/TerminalPTYTransport.swift" "$ROOT/Web Studio/TerminalVTCore.swift" "$ROOT/Web Studio/TerminalVisuals.swift" "$BACKEND" "$ROOT/scripts/terminal-vt-echo-latency.swift" "$OUT/pty.o" "$OUT/vt.o" "$ROOT/Vendor/GhosttyVT/lib/libghostty-vt.a" -framework AppKit -framework CoreText -framework Security -framework CoreFoundation -framework CoreServices -framework Foundation -o "$OUT/harness"
+diff --git a/scripts/terminal-vt-echo-fixture.c b/scripts/terminal-vt-echo-fixture.c
+new file mode 100644
+index 0000000..29096ba
+--- /dev/null
++++ b/scripts/terminal-vt-echo-fixture.c
+@@ -0,0 +1,48 @@
++// Measurement fixture for terminal-vt-echo-latency.swift. Modes: echo | sgr | idle.
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <termios.h>
++#include <unistd.h>
++
++static void raw_mode(void) {
++  struct termios t;
++  if (tcgetattr(STDIN_FILENO, &t) == 0) { cfmakeraw(&t); tcsetattr(STDIN_FILENO, TCSANOW, &t); }
++}
++
++int main(int argc, char **argv) {
++  const char *mode = argc > 1 ? argv[1] : "echo";
++  raw_mode();
++  if (strcmp(mode, "sgr") == 0) {
++    // Mixed-SGR flood: deterministic pseudo-random 256-colour / bold / underline / reset runs, 80-col lines.
++    enum { CAP = 1 << 16 };
++    static char buf[CAP];
++    size_t used = 0; unsigned s = 12345;
++    while (used < CAP - 400) {
++      for (int col = 0; col < 76;) {
++        s = s * 1103515245u + 12345u;
++        int style = (s >> 16) % 5, run = 3 + (int)((s >> 8) % 9);
++        if (col + run > 76) run = 76 - col;
++        if (style == 0) used += (size_t)snprintf(buf + used, 64, "\033[0m");
++        else if (style == 1) used += (size_t)snprintf(buf + used, 64, "\033[1;38;5;%um", (s >> 4) % 256);
++        else if (style == 2) used += (size_t)snprintf(buf + used, 64, "\033[4;48;5;%u;38;5;%um", (s >> 3) % 256, (s >> 11) % 256);
++        else if (style == 3) used += (size_t)snprintf(buf + used, 64, "\033[38;2;%u;%u;%um", (s >> 2) & 255, (s >> 10) & 255, (s >> 18) & 255);
++        else used += (size_t)snprintf(buf + used, 64, "\033[7m");
++        for (int i = 0; i < run; i++) buf[used++] = (char)('a' + (s >> (i % 16)) % 26);
++        col += run;
++      }
++      used += (size_t)snprintf(buf + used, 16, "\033[0m\r\n");
++    }
++    for (;;) { size_t off = 0; while (off < used) { ssize_t n = write(STDOUT_FILENO, buf + off, used - off); if (n <= 0) return 1; off += (size_t)n; } }
++  }
++  write(STDOUT_FILENO, "READY", 5);
++  if (strcmp(mode, "idle") == 0) { char c; while (read(STDIN_FILENO, &c, 1) > 0) {} return 0; }
++  // echo: every received byte n clears the screen and prints "E<n>;" in one write.
++  unsigned n = 0; char c, out[64];
++  while (read(STDIN_FILENO, &c, 1) == 1) {
++    n++;
++    int len = snprintf(out, sizeof out, "\033[H\033[2JE%u;", n);
++    write(STDOUT_FILENO, out, (size_t)len);
++  }
++  return 0;
++}

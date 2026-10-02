@@ -1,5 +1,7 @@
 # Quiet motion acceptance
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 Date: 2026-09-13.
 
 Scope: the approved restrained motion treatment, including the left task and resource labels. Existing working-tree changes are preserved. The before-change snapshots for the six owned source/design files are in `/private/tmp/web-studio-motion-before`.

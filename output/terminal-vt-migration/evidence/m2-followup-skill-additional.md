@@ -1,0 +1,7 @@
+# 附加流程观察（仅记录）
+
+record_execution接受仓库外fixture并保存哈希，但validate_task当前record gate对仓库外fixture报EXECUTION_INPUT_STALE。首次复测保留；实际修正为记录仓库内候选fixture，并在命令内cmp实际App副本配置后重新执行。未修改skill。
+
+trace TOC包含继承环境变量；后续应先删除environment区块再输出任何摘要。当前已脱敏归档并删除两份原始trace及未过滤临时XML；无法撤回已进入工具输出的密钥值，已告知用户轮换。
+
+复测补充：即使EVD-014标stale，validate_task仍检查历史execution.inputs的仓库内约束，因此v2 record gate仍failed。保留EVD-014原始记录，当前EVD-017正确绑定仓库fixture并通过；不删除历史证据迎合门禁，MET-005整体一致性未判定。

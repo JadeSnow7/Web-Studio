@@ -1,5 +1,7 @@
 # Start page and Agent chat acceptance
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../../STATUS.md)。
+
 Date: 2026-09-13. Scope: implement the approved start-page mockup and simplify the Agent sidebar into a chat surface. This report supersedes the earlier UI-runner limitation only for the checks below.
 
 ## Implemented
