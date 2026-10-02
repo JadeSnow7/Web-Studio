@@ -1,6 +1,6 @@
 # Web Studio
 
-A native macOS workspace built with SwiftUI, AppKit, WebKit, SwiftTerm and the pinned GhosttyKit core. Resources, their visible panes, layout and Agent requests have separate ownership. [DESIGN.md](DESIGN.md) and [UX-CONTRACT.md](UX-CONTRACT.md) describe the product contract; [the acceptance report](output/six-features-acceptance.md) distinguishes implementation from actual verification.
+A native macOS workspace built with SwiftUI, AppKit, WebKit, SwiftTerm and the pinned GhosttyKit core. Resources, their visible panes, layout and Agent requests have separate ownership. [DESIGN.md](DESIGN.md) and [UX-CONTRACT.md](UX-CONTRACT.md) describe the product contract; [current status](STATUS.md) distinguishes implementation from version-bound verification. See [the documentation index](DOCUMENTATION.md) for active references and historical reports. The [source architecture guide](docs/source-guide/README.md) (Chinese) maps source files, ownership and call flows.
 
 ## License
 
@@ -11,16 +11,18 @@ licenses; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and
 
 ## Current implementation
 
-- **Resources:** `ResourceStore` owns stable IDs, ordered records, groups, web runtimes and terminal sessions. Views reference IDs. Groups organize resources and do not isolate logins or permissions. Existing WebKit shared website data storage is retained.
-- **Vertical navigation:** The horizontal tab strip is removed. The sidebar retains groups, new resources, selection, custom names and cross-group movement. ⌘T, ⌘1–⌘9, Control-Tab and ⌘K remain available when the sidebar is hidden.
-- **Control panels:** ⌘L opens Web/SSH destination entry. ⌘K opens defined app commands and resource lookup; it does not execute Shell text. Panels capture their resource/pane target, show validation, and support Return and Escape. An address entered against a terminal creates a related web resource; SSH always creates a separate terminal resource.
+- **Resources:** Each `WorkspaceSession` owns a `ResourceStore` with stable IDs, ordered records, web runtimes and terminal sessions. Views reference IDs. Workspaces isolate in-memory resource and Agent state, not website logins or permissions. Existing WebKit shared website data storage is retained.
+- **Vertical navigation:** The horizontal tab strip is removed. The sidebar lists workspaces and the active workspace’s resources. The toolbar also selects workspaces. Resources remain in their owning workspace. ⌘T, ⌘1–⌘9, Control-Tab and ⌘K remain available when the sidebar is hidden.
+- **Control panels:** ⌘L focuses the persistent Web/SSH/terminal address field. ⌘K opens defined app commands and resource lookup; it does not execute Shell text. Panels capture their resource/pane target, show validation, and support Return and Escape. An address entered against a terminal creates a related web resource; SSH always creates a separate terminal resource.
 - **Web runtime:** Persistent `WKWebView` instances preserve state and history. Navigation, load progress, failures, reload, page titles, source-bound popups and native origin-labelled dialogs are supported. Custom resource titles survive page changes.
 - **Terminal integration:** The direct-download desktop target uses GhosttyKit v1.3.1 (commit `332b2aefc6e72d363aa93ab6ecfc86eeeeb5ed28`) as the single production terminal backend. Ghostty owns the PTY, parser and GPU surface; `TerminalSession` owns resource lifetime and Agent snapshots. SwiftTerm 1.14.0 remains available for deterministic adapter tests and comparison. The desktop target is intentionally unsandboxed; the future browser/App Store product is a separate target boundary and is not part of this build.
 - **Layout:** The single/left-right dual-pane model now preserves resource references, pane IDs and focus, prevents duplicate mounting, and separates pane closure from resource closure. `NSSplitView` supplies the draggable divider; native hosts transfer existing runtime views.
-- **Start page:** Blank resources show Web, local terminal and SSH entry actions, session-pinned destinations and actual recently used resources. Fixed destinations can be added from the start page and remain available after their source resource closes.
-- **Agent chat:** The default sidebar shows a transcript and bottom composer. Resources, exact previews and provider settings open through buttons; each question retains its request details. New Chat clears the session conversation and selection. Explicit resource selection, bounded text previews, immutable requests and the existing Responses API adapter remain in place. Provider settings use endpoint-bound Keychain credentials. Real API acceptance requires user configuration.
+- **Start page:** Blank resources show Web, local terminal and SSH entry actions, workspace-pinned destinations and actual recently used resources. Fixed destinations can be added from the start page and remain available after their source resource closes.
+- **Agent chat:** The default sidebar shows a transcript and bottom composer. Resources, exact previews and provider settings open through buttons; each question retains its request details. New Question creates an independent question while preserving earlier questions and unsent drafts in the loaded workspace. Each workspace allows one provider request at a time, including cancellation cleanup. Explicit resource selection, bounded text previews, immutable requests and the existing Responses API adapter remain in place. Provider settings use endpoint-bound Keychain credentials. Real API acceptance requires user configuration.
 
-The minimum content size remains 900×560. Resource and layout state are kept for the current app session. There is no running-process restoration after quit or default background keepalive.
+The minimum content size remains 900×560. Named workspaces automatically save resource destinations, custom names, pins, layout, focus and panel preferences under Application Support/Web Studio/Workspaces. Temporary workspaces remain in memory until named. Restart restores only the last active saved workspace; other saved workspaces load on demand. Visible web pages load lazily, while terminal and SSH descriptors require explicit Start or Connect. Running processes, page forms and Agent questions are not restored across quit.
+
+Use `--workspace-config-root PATH` when launching an isolated validation build. Saving failures remain visible and offer retry. Workspace, window and app closure prepare all affected saves before cleanup; cancelling preserves the sessions. Archive retains the saved configuration and unloads its runtime; the archived list can restore it. Questions and selected snapshots remain memory-only. Corrupt and unsupported-version configurations appear in diagnostics, reachable from the sidebar and toolbar, with Locate in Finder and Rescan actions. Creating a page or terminal in an unloaded workspace waits for loading; a failed or superseded load never creates it in another workspace. Archiving the last workspace in a window leaves a usable temporary workspace. See [B1 results](records/WORKSPACE-B1-20260917/B1-RESULTS.md) for the exact tested revisions and remaining checks.
 
 The Layout menu exposes Split (⌘⌥\), Focus Other Pane (⌘⌥O), Close Focused Pane (⌘⌥W), Single Pane (⌘⌥1), Swap Panes (⌘⌥⇧S), and divider ratio controls (⌘⌥[, ⌘⌥], ⌘⌥0). ⌘⌥S toggles the sidebar. Closing a pane only changes the layout.
 
@@ -30,7 +32,7 @@ Local terminals start `/bin/zsh` as a login-capable interactive shell in the dir
 
 SSH uses `/usr/bin/ssh`, separately quoted arguments, `StrictHostKeyChecking=ask`, and an app-owned known_hosts file. It forwards a nonempty inherited `SSH_AUTH_SOCK` so an existing agent can authenticate. The app does not read or copy private-key contents or automatically accept unknown hosts. Existing SSH configuration can affect connection behavior, including proxies and authentication. Process startup does not mean authenticated connection success.
 
-⌘W closes an open primary panel first, otherwise the focused resource. A live terminal close offers Cancel before termination. Normal app quit warns about live terminals, then awaits owned session cleanup, including resource-close tasks already in progress. It does not kill unrelated processes by name.
+⌘W closes an open primary panel first, otherwise the focused resource. A live terminal close offers Cancel before termination. Window close and app quit summarize all affected workspaces, terminals and requests, then await owned cleanup, including tasks already being cancelled. It does not kill unrelated processes by name.
 
 The direct-download desktop target runs without App Sandbox so Ghostty can create a controlling TTY. Outbound network access and user-selected files continue to follow the desktop product policy. Web downloads, find-in-page and per-site permission UI are outside this iteration. No signing or notarization result is implied by this configuration.
 
@@ -41,17 +43,17 @@ Closing a window also waits for that window's resource store to shut down, inclu
 For local validation, Provider settings can use the installed Codex CLI (`/opt/homebrew/bin/codex`, or set another executable path). Run `codex login` in Terminal, choose Codex CLI, optionally enter a model override, use Check CLI login, then Save. The app starts one ephemeral read-only `codex exec --json` process in a unique temporary directory, passes only the question and selected bounded snapshots on stdin, and disables tool, browser, MCP, hook and history surfaces. The app does not read or copy CLI tokens. A successful CLI command proves the adapter and CLI path; it is not evidence that GUI acceptance or interactive browser/terminal control is implemented.
 
 1. Open the Agent sidebar and click 资源 to select resources. Resource listing does not send their contents.
-2. Click 预览, then 读取预览. Inspect each snapshot, collection time, source, range, truncation and errors. Reads are limited to 12,000 characters per resource and 48,000 per preview. Remove failed items or read again before sending.
+2. Click 预览, then 重新读取资料. Inspect each snapshot, collection time, source, runtime instance, range, truncation and errors, then click 确认这些资料. Reads are limited to 12,000 characters per resource and 48,000 per preview. Remove failed items or read again before sending.
 3. Open the gear button (设置). Enter a complete HTTPS Responses endpoint and model ID. The default endpoint is `https://api.openai.com/v1/responses`; no model or key is assumed. Enter a key in the secure field to save or replace it. Delete Key removes only the current endpoint's credential. Endpoint/model are ordinary preferences; keys are only in Keychain.
-4. Enter a question and Send. Each request freezes its question, snapshots and provider configuration. Cancel ends the request; Retry keeps the original request context. Switching tabs or closing a resource does not change retained request sources.
+4. Enter a question and Send. Each request freezes its question, snapshots and provider configuration. Cancel ends the request; Retry keeps the original request context. Switching resources or workspaces, or closing a resource, does not change retained request sources.
 
-The client uses nonstreaming [Responses API](https://developers.openai.com/api/reference/cli/resources/responses/methods/create) requests with `store:false`, no tools and no hidden prior history. Resource text is untrusted evidence. Screenshots, automatic Shell execution, file editing and page-control tools are not provided. The visible chat transcript is kept in session memory. Each API call contains only its current question and explicitly selected snapshots; earlier chat messages are not silently included.
+The client uses nonstreaming [Responses API](https://developers.openai.com/api/reference/cli/resources/responses/methods/create) requests with `store:false`, no tools and no hidden prior history. Resource text is untrusted evidence. Screenshots, automatic Shell execution, file editing and page-control tools are not provided. Questions, drafts, transcripts and snapshots are kept only in the loaded workspace and are cleared on workspace close or application exit. Each API call contains only its current question and explicitly selected snapshots; earlier chat messages are not silently included.
 
 Configuration presence is not a successful connection test. Missing credentials, network/service errors and cancellation are shown explicitly. Fake providers exist only in tests.
 
 ## Build and test
 
-Open `Web Studio.xcodeproj` in Xcode and select the `Web Studio` scheme and My Mac. Build GhosttyKit v1.3.1 with Zig 0.15.2 using [scripts/build-ghostty.sh](scripts/build-ghostty.sh), or set `GHOSTTY_KIT_PATH` to a compatible `GhosttyKit.xcframework` directory. SwiftTerm is pinned through SPM; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Open `Web Studio.xcodeproj` in Xcode and select the `Web Studio` scheme and My Mac. Build GhosttyKit v1.3.1 with Zig 0.15.2 using [scripts/build-ghostty.sh](scripts/build-ghostty.sh), or set the Xcode build setting `GHOSTTY_KIT_PATH` to the parent directory containing a compatible `GhosttyKit.xcframework`. SwiftTerm is pinned through SPM; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 ### Rebuilding the pinned Ghostty core
 
@@ -91,19 +93,27 @@ The CLI backend ignores Codex user configuration to prevent MCP, hooks, skills a
 
 For application-only appearance checks, launch with `--appearance-light` or `--appearance-dark`. `--minimum-window` selects 900×560 content at launch. These flags do not change system appearance settings.
 
-Focused model checks, with the signed test host:
+Model test target (including workspace repair tests), with the signed test host. This command excludes `Web StudioUITests`; remove `-only-testing` for a full run in an unlocked GUI session. These are rerun instructions, not a claim of a new execution:
 
 ```sh
 xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' \
   -configuration Debug -destination 'platform=macOS,arch=arm64' \
   -derivedDataPath /private/tmp/web-studio-tests \
   CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= \
-  test -only-testing:'Web StudioTests/Web_StudioTests' -parallel-testing-enabled NO
+  test -only-testing:'Web StudioTests' -parallel-testing-enabled NO
 ```
 
-Model and Agent offline tests explicitly disable terminal process launch or inject test providers. The current Ghostty regression run passed 107 tests with 0 failures and 0 skips; its result and log paths are recorded in the [Ghostty acceptance report](output/ghostty-integration-acceptance.md). Full IME composition, remote SSH, TUI-specific behavior, developer signing/notarization, Intel, and App Store targets remain outside that acceptance. See [start-page and chat acceptance](output/start-chat/acceptance.md) for the separate UI scope.
+Model and Agent offline tests explicitly disable terminal process launch or inject test providers. The historical Ghostty checkpoint passed 107 tests; it is retained in the [Ghostty acceptance report](output/ghostty-integration-acceptance.md). The later B1 checkpoint passed 255 tests, and the September 19 affected repair regression passed 163 tests. These are different scopes, not additive totals. The September 18 full XCTest rerun recorded 12 UI failures; the later targeted repairs did not rerun the full UI suite. See [current evidence and limits](STATUS.md). Full IME composition, remote SSH, TUI-specific behavior, developer signing/notarization, Intel, and App Store targets remain outside that acceptance. See [start-page and chat acceptance](output/start-chat/acceptance.md) for the separate UI scope.
 
 No distribution signing, release publication, or system-setting change is implied by this build. Bundle identifier: `com.huaodong.Web-Studio`.
+
+## Workspace ownership and saved configuration
+
+The current B1 runtime owns each workspace through `WorkspaceSession`. A session has
+independent resources, pane layout, focus, recent/pinned destinations, Agent
+controller and drafts. `WorkspaceRegistry` and `WindowCoordinator` enforce one
+native window host per session and close hidden sessions together. This is
+the runtime ownership boundary. B1 now includes configuration persistence, save-before-close, explicit split selection, descriptor copying, configuration-only search, independent questions, compact content/question switching, and explicit terminal end/restart/directory repair. Model tests, UI automation and native walkthroughs have separate version-bound results. These do not establish full B1 acceptance. See [B1 execution status](records/WORKSPACE-B1-20260917/task-summary.md) for current limits.
 
 ## Pinned GhosttyVT migration boundary
 
