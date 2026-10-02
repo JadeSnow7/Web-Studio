@@ -9,8 +9,18 @@ final class Web_StudioUITests: XCTestCase {
         let app = XCUIApplication()
         let rootArguments = (arguments.first == "--workspace-config-root" && arguments.count > 1)
             ? [] : ["--workspace-config-root", root ?? "/tmp/web-studio-ui-\(UUID().uuidString)"]
-        app.launchArguments = rootArguments + arguments
+        app.launchArguments = [
+            "-ApplePersistenceIgnoreState", "YES",
+            "-NSQuitAlwaysKeepsWindows", "NO"
+        ] + rootArguments + arguments
         app.launch()
+        app.activate()
+        let singleWindow = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "count == 1"),
+            object: app.windows
+        )
+        XCTAssertEqual(XCTWaiter().wait(for: [singleWindow], timeout: 5), .completed)
+        XCTAssertEqual(app.windows.count, 1)
         return app
     }
 
@@ -126,10 +136,11 @@ final class Web_StudioUITests: XCTestCase {
         app.typeKey("t", modifierFlags: .command)
         app.typeKey("t", modifierFlags: .command)
         let before = resources(app).count
+        let mainWindow = app.windows.firstMatch
         XCTAssertEqual(before, 2)
         let resourceIDs = (0..<before).map { resources(app).element(boundBy: $0).identifier }
         app.descendants(matching: .any).matching(identifier: "layout.menu").firstMatch.click()
-        app.menuItems["分屏"].click()
+        mainWindow.menuItems["分屏"].click()
         let pickers = app.descendants(matching: .any).matching(identifier: "split.resourcePicker")
         XCTAssertGreaterThan(pickers.count, 0)
         let existingChoice = app.buttons["split.choose.\(resourceIDs[0].replacingOccurrences(of: "resource.", with: ""))"]
@@ -139,7 +150,7 @@ final class Web_StudioUITests: XCTestCase {
         let splitPages = app.scrollViews.matching(identifier: "start.page")
         XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "count == 2"), object: splitPages)], timeout: 3), .completed)
         app.menuButtons["layout.menu"].click()
-        app.menuItems["关闭聚焦窗格"].click()
+        mainWindow.menuItems["关闭聚焦窗格"].click()
         let remainingPages = app.scrollViews.matching(identifier: "start.page")
         XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "count == 1"), object: remainingPages)], timeout: 3), .completed)
         XCTAssertEqual(resources(app).count, before)

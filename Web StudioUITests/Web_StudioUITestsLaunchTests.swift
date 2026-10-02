@@ -20,8 +20,19 @@ final class Web_StudioUITestsLaunchTests: XCTestCase {
     @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
-        app.launchArguments = ["--workspace-config-root", "/tmp/web-studio-ui-\(UUID().uuidString)"]
+        app.launchArguments = [
+            "-ApplePersistenceIgnoreState", "YES",
+            "-NSQuitAlwaysKeepsWindows", "NO",
+            "--workspace-config-root", "/tmp/web-studio-ui-\(UUID().uuidString)"
+        ]
         app.launch()
+        app.activate()
+        let singleWindow = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "count == 1"),
+            object: app.windows
+        )
+        XCTAssertEqual(XCTWaiter().wait(for: [singleWindow], timeout: 5), .completed)
+        XCTAssertEqual(app.windows.count, 1)
 
         // Insert steps here to perform after app launch but before taking a screenshot,
         // such as logging into a test account or navigating somewhere in the app
