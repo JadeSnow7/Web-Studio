@@ -15,6 +15,8 @@ public final class TerminalPTYTransport: @unchecked Sendable {
   var onError: ((String) -> Void)?
 
   private let inputLimit = 256 * 1024
+  /// Extra headroom above `inputLimit` that only small interactive/control writes (keys, focus/mouse reports, query replies) may use, so a full paste can never make them fail. Still bounded, so back-pressure holds.
+  private let interactiveAllowance = 64 * 1024
   private let admissionLock = NSLock()
   private var reservedInput = 0
   private var acceptingInput = true
@@ -107,24 +109,48 @@ public final class TerminalPTYTransport: @unchecked Sendable {
     }
   }
 
+  /// `interactive` writes may exceed the 256 KiB bulk budget by `interactiveAllowance`; bulk writes (paste, raw text) keep the original limit.
+  /// A write issued from the transport queue is appended to the pending output immediately, so it can never be overtaken by a write that another thread enqueued earlier; off-queue writes are appended by a queued block in call order.
   @discardableResult
-  func write(_ data: Data) -> Bool {
+  func write(_ data: Data, interactive: Bool = false) -> Bool {
+    let limit = interactive ? inputLimit + interactiveAllowance : inputLimit
     admissionLock.lock()
-    guard acceptingInput, data.count <= inputLimit - reservedInput else {
+    guard acceptingInput, data.count <= limit - reservedInput else {
       admissionLock.unlock()
       return false
     }
     reservedInput += data.count
     admissionLock.unlock()
-    queue.async { [self] in
-      guard !closing, !finished, fd >= 0, leaderPID > 0 else {
-        releaseAdmission(data.count)
-        return
+    if DispatchQueue.getSpecific(key: queueKey) != nil {
+      appendAdmittedInput(data)
+      // Drain in a later turn: callers on the queue may be inside a read callback, and a write failure closes the transport.
+      queue.async { [self] in drainWrites() }
+    } else {
+      queue.async { [self] in
+        appendAdmittedInput(data)
+        drainWrites()
       }
-      input.append(data)
-      drainWrites()
     }
     return true
+  }
+
+  /// Queue only. Takes ownership of `data.count` admitted bytes: they are either appended (and released as they are written or when the pending input is cleared) or released here.
+  private func appendAdmittedInput(_ data: Data) {
+    guard !closing, !finished, fd >= 0, leaderPID > 0 else {
+      releaseAdmission(data.count)
+      return
+    }
+    input.append(data)
+  }
+
+  var isAcceptingInput: Bool {
+    admissionLock.lock(); defer { admissionLock.unlock() }
+    return acceptingInput
+  }
+
+  var reservedInputForTesting: Int {
+    admissionLock.lock(); defer { admissionLock.unlock() }
+    return reservedInput
   }
 
   func resize(columns: Int, rows: Int, widthPixels: Int = 0, heightPixels: Int = 0) {

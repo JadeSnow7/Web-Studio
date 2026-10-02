@@ -12,6 +12,12 @@ private final class VTFrameMailbox: @unchecked Sendable {
     func hasValue() -> Bool { lock.lock(); defer { lock.unlock() }; return latest != nil }
 }
 
+private final class VTDirectoryMailbox: @unchecked Sendable {
+    private let lock = NSLock(); private var latest: String?; private var scheduled = false
+    func offer(_ value: String) -> Bool { lock.lock(); defer { lock.unlock() }; latest = value; if scheduled { return false }; scheduled = true; return true }
+    func take() -> String? { lock.lock(); defer { lock.unlock() }; let value = latest; latest = nil; scheduled = false; return value }
+}
+
 @MainActor
 final class TerminalSession: NSObject, ObservableObject {
     enum State: Equatable { case idle, starting, running, exited(Int32?), failed(String), interrupted }
@@ -25,6 +31,8 @@ final class TerminalSession: NSObject, ObservableObject {
     private var closeRequested = false
     private var frame: VTFrame?
     private let frameMailbox = VTFrameMailbox()
+    private let directoryMailbox = VTDirectoryMailbox()
+    private var lastRawDirectory: String?
     var onEncodedKeyForTesting: ((GhosttyKey, GhosttyMods, GhosttyKeyAction, String) -> Void)?
 
     init(resourceID: UUID, frame: CGRect = .zero) {
@@ -37,6 +45,8 @@ final class TerminalSession: NSObject, ObservableObject {
         backend.onFrame = { [weak self] frame in guard let self, self.frameMailbox.offer(frame) else { return }; Task { @MainActor in self.drainFrames() } }
         backend.onError = { [weak self] message in Task { @MainActor in self?.failed(message) } }
         backend.onExit = { [weak self] exit in Task { @MainActor in self?.exited(exit.code) } }
+        backend.hasUndrainedFrame = { [frameMailbox] in frameMailbox.hasValue() }
+        backend.onDirectory = { [weak self] raw in guard let self, self.directoryMailbox.offer(raw) else { return }; Task { @MainActor in self.applyDirectory() } }
     }
     func setKnownDirectory(_ directory: String) { if state == .idle { knownDirectory = directory } }
     func retainSecurityScope(_ url: URL) { if url.startAccessingSecurityScopedResource() { securityScopedURL = url } }
@@ -65,7 +75,7 @@ final class TerminalSession: NSObject, ObservableObject {
     }
     private func started(_ ok: Bool, _ message: String?) { guard state == .starting else { return }; if ok { state = closeRequested ? .interrupted : .running } else { failed(message ?? "Unable to start terminal") } }
     private func failed(_ message: String) { state = .failed(message) }
-    private func exited(_ code: Int32?) { drainFrames(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
+    private func exited(_ code: Int32?) { drainFrames(); applyDirectory(); securityScopedURL?.stopAccessingSecurityScopedResource(); securityScopedURL = nil; if case .failed = state {} else { state = closeRequested ? .interrupted : .exited(code) } }
     private func normalizedDirectory(_ value: String) -> String? {
         guard !value.isEmpty, value.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
         if !value.lowercased().hasPrefix("file://") && !value.hasPrefix("/") { return nil }
@@ -73,10 +83,13 @@ final class TerminalSession: NSObject, ObservableObject {
         guard url.isFileURL, url.path.hasPrefix("/"), url.path.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else { return nil }
         return url.standardizedFileURL.path
     }
-    private func drainFrames() { if let latest = frameMailbox.take() { frame = latest; if let pwd = backend.pwd(), let directory = normalizedDirectory(pwd) { knownDirectory = directory }; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
+    private func applyDirectory() { guard let raw = directoryMailbox.take(), raw != lastRawDirectory else { return }; lastRawDirectory = raw; if let directory = normalizedDirectory(raw), directory != knownDirectory { knownDirectory = directory } }
+    private func drainFrames() { if let latest = frameMailbox.take() { backend.frameDrained(); frame = latest; terminalView.update(frame: latest) }; if frameMailbox.hasValue() { Task { @MainActor in self.drainFrames() } } }
     func reportRenderError(_ message: String) { if state == .running { state = .failed(message) } }
     func sendRaw(_ data: Data) { _ = backend.sendRaw(data) }
     func send(data: Data) { sendRaw(data) }
+    /// Committed keyboard text: interactive priority (see GhosttyVTBackend.sendTyped).
+    func sendTyped(_ data: Data) { _ = backend.sendTyped(data) }
     func resize(columns: Int, rows: Int, geometry: TerminalGeometry) { backend.resize(columns: columns, rows: rows, cellWidthPixels: Int(geometry.cellPixelSize.width), cellHeightPixels: Int(geometry.cellPixelSize.height)) }
     func resize(cols: Int, rows: Int) { backend.resize(columns: cols, rows: rows, cellWidthPixels: Int(geometryForCurrentView.cellPixelSize.width), cellHeightPixels: Int(geometryForCurrentView.cellPixelSize.height)) }
     private var geometryForCurrentView: TerminalGeometry { terminalView.geometry }
@@ -96,16 +109,17 @@ final class TerminalSession: NSObject, ObservableObject {
     func scroll(toOffset offset: UInt64) { backend.scroll(toOffset: offset) }
     func scroll(rows: Int) { backend.scroll(rows: rows) }
     func scrollToBottom() { backend.scrollToBottom() }
-    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { _ = backend.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
-    func selectWord(column: Int, row: Int) { _ = backend.selectWord(column: column, row: row) }
-    func selectLine(column: Int, row: Int) { _ = backend.selectLine(column: column, row: row) }
-    func selectAll() { _ = backend.selectAll() }
-    func clearSelection() { _ = backend.clearSelection() }
+    func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { backend.selectDragAsync(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) }
+    func selectWord(column: Int, row: Int) { backend.selectWordAsync(column: column, row: row) }
+    func selectLine(column: Int, row: Int) { backend.selectLineAsync(column: column, row: row) }
+    func selectAll() { backend.selectAllAsync() }
+    func clearSelection() { backend.clearSelectionAsync() }
     func selectedText() -> String? { backend.selectedText() }
     @discardableResult func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { backend.paste(text, allowUnsafe: allowUnsafe) }
-    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBegin(column: column, row: row, clickCount: clickCount) }
-    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdate(column: column, row: row) }
-    @discardableResult func selectionEnd() -> Bool { backend.selectionEnd() }
+    // Queued on the PTY queue: every caller discards the result, so these no longer block the main thread; the value only reports that the request was queued.
+    @discardableResult func selectionBegin(column: Int, row: Int, clickCount: Int) -> Bool { backend.selectionBeginAsync(column: column, row: row, clickCount: clickCount); return true }
+    @discardableResult func selectionUpdate(column: Int, row: Int) -> Bool { backend.selectionUpdateAsync(column: column, row: row); return true }
+    @discardableResult func selectionEnd() -> Bool { backend.selectionEndAsync(); return true }
     func focus(_ focused: Bool) { backend.focus(focused) }
     func mouseReporting() -> Bool { backend.mouseReporting() }
     func sendMouse(action: Int, button: Int, modifiers: UInt32, point: CGPoint, geometry: VTMouseGeometry) { backend.mouse(action: action, button: button, modifiers: modifiers, xPixels: point.x, yPixels: point.y, geometry: geometry) }

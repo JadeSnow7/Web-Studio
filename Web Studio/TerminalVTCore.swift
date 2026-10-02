@@ -62,6 +62,7 @@
     private var handle: OpaquePointer?
     private let replies = ReplyBuffer()
     private var generation: UInt64 = 0
+    private var snapshotCount = 0, pwdReadCount = 0, resizeCount = 0
     private static let replyCallback: StudioVTReplyFn = { bytes, len, userdata in
       guard let userdata, let bytes else { return }
       let buffer = Unmanaged<ReplyBuffer>.fromOpaque(userdata).takeUnretainedValue()
@@ -151,6 +152,7 @@
       lock.lock()
       defer { lock.unlock() }
       guard handle != nil else { return false }
+      resizeCount += 1
       return studio_vt_resize(
         handle, UInt16(clamping: max(1, columns)), UInt16(clamping: max(1, rows)),
         UInt32(clamping: max(1, cellWidthPixels)), UInt32(clamping: max(1, cellHeightPixels)))
@@ -160,6 +162,7 @@
       lock.lock()
       defer { lock.unlock() }
       guard handle != nil else { return nil }
+      snapshotCount += 1
       var raw = StudioVTSnapshot()
       raw.size = MemoryLayout<StudioVTSnapshot>.size
       guard studio_vt_snapshot(handle, &raw) == GHOSTTY_SUCCESS else { return nil }
@@ -196,6 +199,9 @@
         cursorColor: raw.colors.cursor_has_value ? VTColor(raw.colors.cursor) : nil, cursor: cursor,
         scrollbar: bar, snapshotTruncated: raw.viewport_text_truncated)
     }
+    public func snapshotCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return snapshotCount }
+    public func pwdReadCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return pwdReadCount }
+    public func resizeCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return resizeCount }
     public func scroll(rows: Int) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_delta(handle, Int(rows)) }
     public func scroll(toOffset offset: UInt64) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_to(handle, Int(offset)) }
     public func scrollToBottom() { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_bottom(handle) }
@@ -218,6 +224,6 @@
     public func focus(_ focused: Bool) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_focus(handle, focused, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
     public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; let result = studio_vt_mouse(handle, Int32(action), Int32(button), modifiers, xPixels, yPixels, UInt32(clamping: geometry.screenWidth), UInt32(clamping: geometry.screenHeight), UInt32(clamping: geometry.cellWidth), UInt32(clamping: geometry.cellHeight), UInt32(clamping: geometry.paddingTop), UInt32(clamping: geometry.paddingBottom), UInt32(clamping: geometry.paddingLeft), UInt32(clamping: geometry.paddingRight), &p, &n); guard result == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
     public func mouseReporting() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_mouse_reporting(handle) }
-    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
+    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; pwdReadCount += 1; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
   }
 #endif

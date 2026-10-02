@@ -69,6 +69,10 @@ StudioVT *studio_vt_create(uint16_t cols, uint16_t rows, uint32_t cw, uint32_t c
       ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_WRITE_PTY, ctx->write_callback) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
   GhosttyTerminalModeConfig grapheme = { .mode = GHOSTTY_MODE_GRAPHEME_CLUSTER, .value = true };
   if (ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_MODE_DEFAULT, &grapheme) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
+  // Byte-capped history like the legacy GhosttyKit backend (Ghostty's scrollback-limit default, 10 MB per terminal).
+  // Without it libghostty-vt keeps ~10 KB, i.e. only one or two 353-row pages at 134 columns.
+  size_t scrollback_bytes = 10000000;
+  if (ghostty_terminal_set(ctx->terminal, GHOSTTY_TERMINAL_OPT_SCROLLBACK_MAX_BYTES, &scrollback_bytes) != GHOSTTY_SUCCESS) { studio_vt_free(ctx); return NULL; }
   return ctx;
 }
 

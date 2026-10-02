@@ -60,6 +60,49 @@
       backendVisible && windowFocused && cursorVisible && cursorBlinking && sessionRunning && !reducedMotion && !prefersNonBlinkingTextInsertionIndicator
     }
   }
+  /// First/last selected cell index in `VTFrame.cells` plus the selected count; `.none` when nothing is selected.
+  /// A plain scan of `cell.selected`: no String or array is built, unlike the full accessibility text model.
+  public struct TerminalSelectionSignature: Equatable, Sendable {
+    public let first, last, count: Int
+    public static let none = TerminalSelectionSignature(first: -1, last: -1, count: 0)
+    public init(first: Int, last: Int, count: Int) {
+      self.first = first
+      self.last = last
+      self.count = count
+    }
+    public init(cells: [VTCell]) {
+      var first = -1, last = -1, count = 0, i = 0
+      let n = cells.count
+      // A while loop: unlike for-in over the indices it does not allocate per iteration at -Onone (Debug builds).
+      while i < n {
+        if cells[i].selected {
+          if first < 0 { first = i }
+          last = i
+          count += 1
+        }
+        i += 1
+      }
+      self.init(first: first, last: last, count: count)
+    }
+  }
+  /// Decides when assistive technology is told the terminal changed (`.valueChanged`), from frame metadata only.
+  /// `generation` moves on feed/theme; scrolling only moves the scrollbar, resizing only the grid and selecting
+  /// only the selection, so each of those is part of the fingerprint.
+  public struct TerminalAccessibilityFingerprint: Equatable, Sendable {
+    public let generation: UInt64
+    public let columns, rows: Int
+    public let scrollOffset, scrollLength, scrollTotal: UInt64
+    public let selection: TerminalSelectionSignature
+    public init(frame: VTFrame) {
+      generation = frame.generation
+      columns = frame.columns
+      rows = frame.rows
+      scrollOffset = frame.scrollbar.offset
+      scrollLength = frame.scrollbar.length
+      scrollTotal = frame.scrollbar.total
+      selection = TerminalSelectionSignature(cells: frame.cells)
+    }
+  }
   public struct TerminalGeometry {
     public let cellSize: CGSize
     public let baseline: CGFloat

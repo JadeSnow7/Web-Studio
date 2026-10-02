@@ -95,6 +95,15 @@ int main(void) {
   for (size_t i=0;i<8;i++) studio_vt_feed(history,(const uint8_t*)"x\r\n",3);
   studio_vt_feed(history,(const uint8_t*)"NEW_VISIBLE_TOKEN",17);
   StudioVTSnapshot hs={.size=sizeof(hs)}; assert(studio_vt_snapshot(history,&hs)==GHOSTTY_SUCCESS && !contains(hs.viewport_text,hs.viewport_text_len,"OLD_HISTORY_TOKEN") && contains(hs.viewport_text,hs.viewport_text_len,"NEW_VISIBLE_TOKEN")); studio_vt_snapshot_free(&hs); studio_vt_free(history);
+  // Scrollback is capped by bytes (10 MB, the legacy GhosttyKit default): 12000 lines of 120 ASCII columns at 134 columns
+  // (~1.16 KB/row) keep thousands of rows yet are still pruned. libghostty prunes in ~353-row pages, hence the wide bounds.
+  StudioVT *deep = studio_vt_create(134, 45, 8, 16, NULL, NULL); assert(deep);
+  char deep_line[122]; memset(deep_line, 'a', 120); deep_line[120] = '\r'; deep_line[121] = '\n';
+  for (size_t i=0;i<12000;i++) studio_vt_feed(deep,(const uint8_t*)deep_line,sizeof(deep_line));
+  StudioVTSnapshot ds={.size=sizeof(ds)}; assert(studio_vt_snapshot(deep,&ds)==GHOSTTY_SUCCESS);
+  fprintf(stderr, "scrollback after 12000 lines: total rows=%llu\n", (unsigned long long)ds.scrollbar.total);
+  assert(ds.scrollbar.total >= 7000 && ds.scrollbar.total < 12000);
+  studio_vt_snapshot_free(&ds); studio_vt_free(deep);
   studio_vt_free(vt);
   StudioVT *long_vt = studio_vt_create(400, 2, 8, 16, NULL, NULL); assert(long_vt);
   uint8_t long_text[450]; for (size_t i=0;i<150;i++) { long_text[i*3]='e'; long_text[i*3+1]=0xcc; long_text[i*3+2]=0x81; }

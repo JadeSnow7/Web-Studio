@@ -28,7 +28,6 @@ selection, and resize surfaces. M1 adds the Swift-owned core boundary and
 render snapshot conversion. M2 adds source-level scroll, selection, paste,
 focus, mouse, PWD, and PTY backend adapters. Prior arm64 Debug, core, backend
 and offscreen checks passed for the opt-in target. The Xcode 27 license block is resolved. Final Debug/Release builds and recorded
-M2 checks passed at their documented checkpoints; extended IME scenarios, full accessibility,
-controlled performance and the M3 migration gate remain pending. See
+M2 checks passed at their documented checkpoints. Extended IME and ordinary VoiceOver text reading have version-bound user receipts; full VoiceOver navigation, controlled performance and the M3 migration gate remain incomplete. See
 [the current migration status](../../output/terminal-vt-migration/STATUS.md). The app default
 remains the current production backend.

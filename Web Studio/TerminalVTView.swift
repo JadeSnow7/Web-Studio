@@ -10,11 +10,11 @@ import StudioVTCoreC
 
 @MainActor
 final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
-    weak var session: TerminalSession?
+    weak var session: TerminalSession? { didSet { lastSentResize = nil } }
     private var metalLayer: CAMetalLayer { layer as! CAMetalLayer }
     private var renderer: TerminalMetalRenderer?
     private(set) var rendererError: String?
-    private var terminalFrame: VTFrame?
+    private var terminalFrame: VTFrame? { didSet { axModelCache = nil } }
     var geometry = TerminalGeometry(backingScale: 1)
     private var theme = TerminalTheme.dark
     private var marked = NSAttributedString()
@@ -34,10 +34,15 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
     private var retryBudget = 3
     private var displayCallbackCount = 0
     private var commandInFlight = 0
+    private static let maxCommandsInFlight = 3 // TerminalMetalRenderer's in-flight gate permits
     private var redrawWhenAvailable = false
+    private struct SentResize: Equatable { let cols: Int; let rows: Int; let cellPixelSize: CGSize }
+    private var lastSentResize: SentResize?
+    var onResizeSentForTesting: ((Int, Int, CGSize) -> Void)?
     private var lastAccessibilityGeneration: UInt64?
-    private var lastAccessibilityFingerprint: String?
-    private var lastAccessibilitySelection: NSRange?
+    private var lastAccessibilityFingerprint: TerminalAccessibilityFingerprint?
+    private var lastAccessibilitySelection: TerminalSelectionSignature?
+    private var axModelCache: (key: AXModelKey, model: AXTextModel)?
     private var pendingNativeEvent: NSEvent?
     private var forwardedKeys: [UInt16: NSEvent] = [:]
     private var modifierFlags = NSEvent.ModifierFlags()
@@ -45,6 +50,8 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
     private var accessibilitySettingsObserver: NSObjectProtocol?
     private var cursorTimer: Timer?
     private var cursorTimerGeneration: UInt64 = 0
+    private static let cursorBlinkInterval: TimeInterval = 0.6
+    private var cursorPhaseResetUptime: TimeInterval = 0
     private var cursorPhaseVisible = true
     private var increaseContrast = false
     private var reduceMotion = false
@@ -87,24 +94,23 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
         let resetCursorBlink = terminalFrame?.generation != frame.generation || oldCursor?.x != frame.cursor.x || oldCursor?.y != frame.cursor.y || oldCursor?.visible != frame.cursor.visible || oldCursor?.blinking != frame.cursor.blinking || oldCursor?.visualStyle != frame.cursor.visualStyle
         self.terminalFrame = frame
         retryBudget = 3
-        let axModel = accessibilityModel()
         let bar = frame.scrollbar
-        let axFingerprint = "\(frame.generation)|\(frame.columns)x\(frame.rows)|\(bar.offset):\(bar.length):\(bar.total)|\(axModel.text.utf16.count)|\(axModel.selection.location):\(axModel.selection.length)"
+        let axFingerprint = TerminalAccessibilityFingerprint(frame: frame)
         if lastAccessibilityFingerprint != axFingerprint {
             lastAccessibilityFingerprint = axFingerprint
             lastAccessibilityGeneration = frame.generation
             NSAccessibility.post(element: self, notification: .valueChanged)
         }
-        if lastAccessibilitySelection != axModel.selection { lastAccessibilitySelection = axModel.selection; NSAccessibility.post(element: self, notification: .selectedTextChanged) }
-        if resetCursorBlink { stopCursorBlinkTimer() }
+        if lastAccessibilitySelection != axFingerprint.selection { lastAccessibilitySelection = axFingerprint.selection; NSAccessibility.post(element: self, notification: .selectedTextChanged) }
+        if resetCursorBlink { resetCursorBlinkPhase() }
         updateCursorBlinkTimer()
         let hasHistory = bar.total > bar.length
-        scroller.isEnabled = hasHistory
-        scroller.isHidden = !hasHistory
-        if hasHistory {
-            scroller.knobProportion = min(1, max(0.05, Double(bar.length) / Double(bar.total)))
-            scroller.doubleValue = min(1, max(0, Double(bar.offset) / Double(bar.total - bar.length)))
-        } else { scroller.doubleValue = 0; scroller.knobProportion = 1 }
+        if scroller.isEnabled != hasHistory { scroller.isEnabled = hasHistory }
+        if scroller.isHidden == hasHistory { scroller.isHidden = !hasHistory }
+        let knob = hasHistory ? min(1, max(0.05, Double(bar.length) / Double(bar.total))) : 1
+        let position = hasHistory ? min(1, max(0, Double(bar.offset) / Double(bar.total - bar.length))) : 0
+        if scroller.knobProportion != knob { scroller.knobProportion = knob }
+        if scroller.doubleValue != position { scroller.doubleValue = position }
         needsDisplay = true
     }
     func updateTheme(_ theme: TerminalTheme) {
@@ -167,11 +173,18 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
         super.layout()
         let scale = window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 1
         geometry = TerminalGeometry(backingScale: scale)
-        drawableSize = CGSize(width: bounds.width * scale, height: bounds.height * scale)
+        let drawable = CGSize(width: bounds.width * scale, height: bounds.height * scale)
+        if drawableSize != drawable { drawableSize = drawable }
         updateMarkedFieldFrame()
         scroller.frame = NSRect(x: max(0, bounds.maxX - 14), y: 0, width: 14, height: bounds.height)
         let grid = geometry.gridSize(for: bounds.size)
-        session?.resize(columns: grid.cols, rows: grid.rows, geometry: geometry)
+        // The backend does a reflow, an ioctl, a snapshot and a render per resize: only send what changed since the last request.
+        let request = SentResize(cols: grid.cols, rows: grid.rows, cellPixelSize: geometry.cellPixelSize)
+        if let session, lastSentResize != request {
+            lastSentResize = request
+            session.resize(columns: grid.cols, rows: grid.rows, geometry: geometry)
+            onResizeSentForTesting?(grid.cols, grid.rows, geometry.cellPixelSize)
+        }
         needsDisplay = true
     }
     func draw(in view: MTKView) { renderMetalFrame() }
@@ -181,6 +194,12 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
         if let window { occluded = !window.occlusionState.contains(.visible) }
         guard backendVisible, let frame = terminalFrame, let renderer else {
             displayDebug("callback=\(displayCallbackCount) occluded=\(occluded) frame=\(terminalFrame != nil) drawable=false")
+            return
+        }
+        // Every permit is taken, so render() would refuse anyway: don't first wait (up to 1 s) for a drawable. The next completion redraws.
+        if commandInFlight >= Self.maxCommandsInFlight {
+            redrawWhenAvailable = true
+            displayDebug("callback=\(displayCallbackCount) occluded=false frame=true drawable=skipped busy=\(commandInFlight)")
             return
         }
         guard let drawable = currentDrawable else {
@@ -193,8 +212,7 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
                                                 Task { @MainActor in
                                                     guard let self else { return }
                                                     self.commandInFlight = max(0, self.commandInFlight - 1)
-                                                    let error = completed.error.map { String(describing: $0) } ?? "none"
-                                                    self.displayDebug("command-completed status=\(completed.status.rawValue) error=\(error)")
+                                                    self.displayDebug("command-completed status=\(completed.status.rawValue) error=\(completed.error.map { String(describing: $0) } ?? "none")")
                                                     if self.redrawWhenAvailable {
                                                         self.redrawWhenAvailable = false
                                                         self.needsDisplay = true
@@ -226,16 +244,24 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
         guard cursorTimer == nil else { return }
         cursorTimerGeneration &+= 1
         let generation = cursorTimerGeneration
-        cursorTimer = Timer.scheduledTimer(withTimeInterval: 0.6, repeats: true) { [weak self] _ in
+        cursorTimer = Timer.scheduledTimer(withTimeInterval: Self.cursorBlinkInterval, repeats: true) { [weak self] _ in
+            let firedAt = ProcessInfo.processInfo.systemUptime
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                guard self.cursorTimerGeneration == generation, self.cursorTimer != nil else { return }
+                guard self.cursorTimerGeneration == generation, self.cursorTimer != nil, firedAt >= self.cursorPhaseResetUptime else { return }
                 guard self.shouldBlinkCursor else { self.stopCursorBlinkTimer(); return }
                 self.cursorPhaseVisible.toggle()
                 self.needsDisplay = true
             }
         }
         RunLoop.main.add(cursorTimer!, forMode: .common)
+    }
+    // Cursor moved or output arrived: solid cursor now and the next toggle a full interval away, without tearing the timer down and
+    // re-creating it on every frame of output. A tick that fired before this reset but is still queued is dropped (firedAt guard).
+    private func resetCursorBlinkPhase() {
+        cursorPhaseResetUptime = ProcessInfo.processInfo.systemUptime
+        cursorPhaseVisible = true
+        cursorTimer?.fireDate = Date(timeIntervalSinceNow: Self.cursorBlinkInterval)
     }
     private func stopCursorBlinkTimer() {
         cursorTimerGeneration &+= 1
@@ -246,12 +272,14 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
             if backendVisible { needsDisplay = true }
         }
     }
-    private func displayDebug(_ line: String) {
+    // @autoclosure: Release builds never evaluate the message (call sites build interpolated strings).
+    private func displayDebug(_ line: @autoclosure () -> String) {
 #if DEBUG
         let url = URL(fileURLWithPath: "/private/tmp/web-studio-vt-display-debug.log")
         if displayCallbackCount > 100 { return }
-        if let data = (line + "\n").data(using: .utf8), let handle = try? FileHandle(forWritingTo: url) { handle.seekToEndOfFile(); handle.write(data); try? handle.close() }
-        else { try? (line + "\n").write(to: url, atomically: true, encoding: .utf8) }
+        let text = line() + "\n"
+        if let data = text.data(using: .utf8), let handle = try? FileHandle(forWritingTo: url) { handle.seekToEndOfFile(); handle.write(data); try? handle.close() }
+        else { try? text.write(to: url, atomically: true, encoding: .utf8) }
 #endif
     }
     override func becomeFirstResponder() -> Bool { modifierFlags = NSApp.currentEvent?.modifierFlags ?? []; session?.focus(true); Task { @MainActor [weak self] in self?.updateCursorBlinkTimer() }; return true }
@@ -304,7 +332,7 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
         marked = NSAttributedString()
         markedSelection = NSRange(location: 0, length: 0); markedField.isHidden = true
         if let native, !wasMarked, value.utf16.count == 1, session?.encode(event: native, action: native.isARepeat ? GHOSTTY_KEY_ACTION_REPEAT : GHOSTTY_KEY_ACTION_PRESS, textOverride: value, forceText: true) == true { forwardedKeys[native.keyCode] = native; session?.scrollToBottom() }
-        else { session?.sendRaw(Data(value.utf8)) }
+        else { session?.sendTyped(Data(value.utf8)) }
     }
     func setMarkedText(_ string: Any, selectedRange: NSRange, replacementRange: NSRange) {
         let font = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
@@ -411,8 +439,12 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
     override func accessibilityRole() -> NSAccessibility.Role? { .textArea }
     private struct AXCell { let range: NSRange; let row: Int; let frame: NSRect }
     private struct AXTextModel { let text: String; let cells: [AXCell]; let selection: NSRange; let visible: NSRange }
+    private struct AXModelKey: Equatable { let cellSize: CGSize; let boundsSize: CGSize; let scale: CGFloat }
+    // Built lazily by the first AX getter and reused until the frame, cell size, bounds or scale change (cell frames embed all of them).
     private func accessibilityModel() -> AXTextModel {
         guard let frame = terminalFrame else { let text = session?.renderedText() ?? ""; return AXTextModel(text: text, cells: [], selection: NSRange(location: NSNotFound, length: 0), visible: NSRange(location: 0, length: text.utf16.count)) }
+        let key = AXModelKey(cellSize: geometry.cellSize, boundsSize: bounds.size, scale: geometry.backingScale)
+        if let cache = axModelCache, cache.key == key { return cache.model }
         var text = "", cells: [AXCell] = [], selectedStart: Int?, selectedEnd: Int?, utf16Offset = 0
         text.reserveCapacity(frame.rows * (frame.columns + 1))
         for row in 0..<frame.rows {
@@ -429,7 +461,9 @@ final class TerminalVTView: MTKView, NSTextInputClient, MTKViewDelegate {
             if row + 1 < frame.rows { text += "\n"; utf16Offset += 1 }
         }
         let selection = selectedStart.flatMap { s in selectedEnd.map { NSRange(location: s, length: max(0, $0 - s)) } } ?? NSRange(location: NSNotFound, length: 0)
-        return AXTextModel(text: text, cells: cells, selection: selection, visible: NSRange(location: 0, length: text.utf16.count))
+        let model = AXTextModel(text: text, cells: cells, selection: selection, visible: NSRange(location: 0, length: text.utf16.count))
+        axModelCache = (key, model)
+        return model
     }
     override func accessibilityValue() -> Any? { accessibilityModel().text }
     override func accessibilityNumberOfCharacters() -> Int { accessibilityModel().text.utf16.count }

@@ -1,5 +1,6 @@
 #if WEB_STUDIO_VT
 import AppKit
+import Combine
 import Foundation
 import StudioVTCoreC
 
@@ -139,6 +140,39 @@ struct TerminalVTHostSmoke {
     ime.insertText("文", replacementRange: NSRange(location: 0, length: 1)); precondition(!ime.hasMarkedText())
     ime.unmarkText(); precondition(ime.selectedRange().location == NSNotFound)
     await interactive.closeAndWait()
+    // Lane B (B2): OSC 7 reaches knownDirectory once per distinct directory; repeats and the unchanged start directory publish nothing, and setKnownDirectory only works while idle.
+    let osc = TerminalSession(resourceID: UUID()); var oscDirectories: [String?] = []; let oscSink = osc.$knownDirectory.sink { oscDirectories.append($0) }
+    osc.setKnownDirectory("/var"); precondition(osc.knownDirectory == "/var", "idle setKnownDirectory did not apply")
+    func osc7(_ path: String) -> String { "printf '\u{1b}]7;file://host\(path)\u{07}'" }
+    osc.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", [osc7("/tmp"), osc7("/usr/local"), osc7("/usr/local"), osc7("/usr/share"), osc7("/usr/local")].joined(separator: "; sleep 0.12; ") + "; sleep 0.12; printf 'PWD_DONE'; IFS= read -r l; exit 0"], directory: "/tmp")
+    let oscRunning = await wait({ if case .running = osc.state { return true }; return false }); precondition(oscRunning, "OSC 7 fixture did not start")
+    osc.setKnownDirectory("/nope"); precondition(osc.knownDirectory != "/nope", "setKnownDirectory applied outside idle")
+    let oscDone = await wait({ osc.renderedText().contains("PWD_DONE") }); precondition(oscDone, "OSC 7 fixture did not finish")
+    try? await Task.sleep(nanoseconds: 250_000_000)
+    precondition(oscDirectories == [nil, "/var", "/tmp", "/usr/local", "/usr/share", "/usr/local"], "OSC 7 must publish exactly once per distinct directory: \(oscDirectories)")
+    osc.sendRaw(Data("\n".utf8)); let oscExited = await wait({ if case .exited(0) = osc.state { return true }; return false }); precondition(oscExited, "OSC 7 fixture exit not delivered"); oscSink.cancel()
+    // Lane B (B3): the Session's selection wrappers no longer block on the PTY queue yet stay ordered before selectedText(); mouseReporting() is a mirror of the core; an unchanged theme is a no-op.
+    let sel = TerminalSession(resourceID: UUID())
+    sel.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", "printf 'SELECT_ME_TEXT'; printf '\u{1b}[?1000h'; printf MOUSE_ON; IFS= read -r l; printf '\u{1b}[?1000l'; printf MOUSE_OFF; IFS= read -r l; exit 0"], directory: "/tmp")
+    let selReady = await wait({ sel.renderedText().contains("MOUSE_ON") }); precondition(selReady, "selection fixture did not start"); precondition(sel.mouseReporting(), "mouseReporting mirror did not follow ?1000h")
+    sel.selectionBegin(column: 0, row: 0, clickCount: 1); sel.selectionUpdate(column: 14, row: 0); sel.selectionEnd(); precondition(sel.selectedText() == "SELECT_ME_TEXT", "async begin/update/end selection was not ordered before selectedText()")
+    sel.selectDrag(startColumn: 0, startRow: 0, endColumn: 5, endRow: 0); precondition(sel.selectedText() == "SELECT", "async drag selection")
+    sel.selectLine(column: 3, row: 0); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async line selection")
+    sel.selectWord(column: 1, row: 0); precondition(sel.selectedText()?.isEmpty == false, "async word selection")
+    sel.selectAll(); precondition(sel.selectedText()?.contains("SELECT_ME_TEXT") == true, "async select all"); sel.clearSelection(); let selCleared = sel.selectedText(); precondition(selCleared == nil || selCleared == "", "async clear selection")
+    precondition(sel.setTheme(.light) && sel.setTheme(.light) && sel.setTheme(.dark) && sel.setTheme(.dark), "setTheme must report success for repeated and changed themes")
+    sel.sendRaw(Data("\n".utf8)); let selOff = await wait({ sel.renderedText().contains("MOUSE_OFF") }); precondition(selOff, "mouse-off marker missing"); precondition(!sel.mouseReporting(), "mouseReporting mirror did not follow ?1000l")
+    sel.sendRaw(Data("\n".utf8)); let selExited = await wait({ if case .exited(0) = sel.state { return true }; return false }); precondition(selExited, "selection fixture exit not delivered")
+    // Lane B (B4): a burst of Session.resize calls coalesces, repeating the final size is a no-op, and the child's TIOCGWINSZ reports the final size.
+    let rz = TerminalSession(resourceID: UUID())
+    rz.startForTesting(executable: "/bin/sh", argv: ["sh", "-c", "stty -echo; printf READY_RZ; while IFS= read -r l; do printf 'SZ=%s;' \"$(stty size)\"; done"], directory: "/tmp")
+    let rzReady = await wait({ rz.renderedText().contains("READY_RZ") }); precondition(rzReady, "resize fixture did not start")
+    let rzGeometry = rz.terminalView.geometry
+    for i in 0..<100 { rz.resize(columns: 60 + i, rows: 20 + i % 11, geometry: rzGeometry) }
+    for _ in 0..<20 { rz.resize(columns: 159, rows: 20, geometry: rzGeometry) }
+    let rzApplied = await wait({ rz.currentFrameForTesting().map { $0.columns == 159 && $0.rows == 20 } == true }); precondition(rzApplied, "final coalesced resize was not applied to the core")
+    rz.sendRaw(Data("?\n".utf8)); let rzSize = await wait({ rz.renderedText().contains("SZ=20 159;") }); precondition(rzSize, "child window size differs from the final requested size")
+    await rz.closeAndWait()
     print("Terminal VT host smoke passed")
   }
 }
