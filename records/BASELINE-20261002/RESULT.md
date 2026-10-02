@@ -49,3 +49,8 @@
 - 日志 SHA-256：`8177db5b34102978b0217693cc86114b6dfbd4c257302f857502fa449bed4650`。
 - 仓库外日志副本、实际执行计划、版本、结果 JSON、源文件摘要、敏感扫描及 xcresult 摘要：`~/Backups/phase1-20261002/Web Studio/commit-review-20261002/tests/`。
 - 日志敏感扫描未发现未处理命中；完整暂存报告在提交前另行扫描。
+
+
+## 指定用例复跑计数 — 2026-10-02
+
+`interactiveShellRespondsToCtrlCAndContinues()`，串行 10 次：通过 10 次，失败 0 次，未运行或未能确认执行 0 次。
