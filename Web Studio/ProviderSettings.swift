@@ -29,7 +29,7 @@ final class ProviderSettings: ObservableObject {
     private var checkGeneration = 0
     private let cliChecker: @Sendable (String) async -> (Bool, String?)
 
-    private let credentials: any CredentialStore
+    let credentials: any CredentialStore
     private let defaults: UserDefaults
     private let endpointKey = "agent.provider.endpoint"
     private let modelKey = "agent.provider.model"
@@ -91,7 +91,7 @@ final class ProviderSettings: ObservableObject {
             } catch {
                 guard !Task.isCancelled, generation == self.statusGeneration else { return }
                 status = .error
-                errorMessage = "Unable to check the system credential store."
+                errorMessage = "无法访问系统凭据存储。"
             }
         }
     }
@@ -99,7 +99,7 @@ final class ProviderSettings: ObservableObject {
     @discardableResult func save(key: String?) async -> Bool {
         guard let configuration else {
             status = .notConfigured
-            errorMessage = "Enter a valid HTTPS endpoint and model."
+            errorMessage = "请输入有效的 HTTPS 端点和模型。"
             return false
         }
         isBusy = true; defer { isBusy = false }
@@ -120,7 +120,7 @@ final class ProviderSettings: ObservableObject {
             return true
         } catch {
             status = .error
-            errorMessage = "Could not save provider settings or credential."
+            errorMessage = "无法保存模型服务设置或凭据。"
             return false
         }
     }
@@ -130,7 +130,7 @@ final class ProviderSettings: ObservableObject {
         statusTask?.cancel(); statusGeneration += 1
         guard let endpoint = try? ProviderConfiguration(endpoint: endpointText, model: modelText.isEmpty ? "placeholder" : modelText).endpoint else {
             status = .notConfigured
-            errorMessage = "Enter a valid endpoint before deleting its key."
+            errorMessage = "删除 API 密钥前，请先输入有效端点。"
             return false
         }
         isBusy = true; defer { isBusy = false }
@@ -141,7 +141,7 @@ final class ProviderSettings: ObservableObject {
             return true
         } catch {
             status = .error
-            errorMessage = "Could not delete the provider credential."
+            errorMessage = "无法删除模型服务凭据。"
             return false
         }
     }
@@ -170,7 +170,7 @@ final class ProviderSettings: ObservableObject {
 
     func checkCLILogin() async {
         guard !isBusy else { return }
-        guard ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] == nil else { status = .cliUnavailable; errorMessage = "Codex CLI check requires the local validation build (App Sandbox cannot launch the host CLI)."; return }
+        guard ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] == nil else { status = .cliUnavailable; errorMessage = "Codex CLI 检查需要本地验证构建（App Sandbox 无法启动宿主 CLI）。"; return }
         guard backend == .codexCLI, let path = configuration?.cliPath, FileManager.default.isExecutableFile(atPath: path) else { status = .cliUnavailable; return }
         checkGeneration += 1; let generation = checkGeneration; isBusy = true
         checkTask?.cancel(); let checker = cliChecker; checkTask = Task { [weak self] in

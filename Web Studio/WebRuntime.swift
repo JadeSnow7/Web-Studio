@@ -37,6 +37,17 @@ struct WebNavigationFailure: Equatable {
     let message: String
 }
 
+extension WebNavigationState {
+    /// The part the window-wide toolbar mirror keeps. `progress` is left out: only the tab's own
+    /// progress bar shows it, and that bar observes the runtime directly, so load ticks of the
+    /// selected tab don't re-evaluate every view observing `StudioModel`.
+    var toolbarMirror: WebNavigationState {
+        var mirror = self
+        mirror.progress = 0
+        return mirror
+    }
+}
+
 // MARK: - Per-tab runtime
 
 /// Owns one `WKWebView` for the lifetime of one web tab, so back/forward history and
@@ -48,6 +59,13 @@ struct WebNavigationFailure: Equatable {
             guard state != oldValue else { return }
             onStateChange?(state)
         }
+    }
+
+    /// `@Published` emits objectWillChange before `didSet` on every assignment, equal or not.
+    /// Route writes through here so an unchanged state never republishes.
+    func mutateState(_ change: (inout WebNavigationState) -> Void) {
+        var next = state; change(&next)
+        if next != state { state = next }
     }
 
     /// A small, transient rendering of the current page used only behind the native
@@ -103,7 +121,7 @@ struct WebNavigationFailure: Equatable {
             .sink { [weak self] value in
                 MainActor.assumeIsolated {
                     guard let self else { return }
-                    self.state.url = value
+                    self.mutateState { $0.url = value }
                     self.acceptObservedURL(value, committed: false)
                 }
             }
@@ -112,21 +130,21 @@ struct WebNavigationFailure: Equatable {
             .sink { [weak self] value in
                 MainActor.assumeIsolated {
                     let clean = value?.trimmingCharacters(in: .whitespacesAndNewlines)
-                    self?.state.pageTitle = (clean?.isEmpty ?? true) ? nil : clean
+                    self?.mutateState { $0.pageTitle = (clean?.isEmpty ?? true) ? nil : clean }
                 }
             }
             .store(in: &observers)
         webView.publisher(for: \.isLoading)
-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.isLoading = value } }
+            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.isLoading = value } } }
             .store(in: &observers)
         webView.publisher(for: \.estimatedProgress)
-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.progress = value } }
+            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.progress = value } } }
             .store(in: &observers)
         webView.publisher(for: \.canGoBack)
-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.canGoBack = value } }
+            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.canGoBack = value } } }
             .store(in: &observers)
         webView.publisher(for: \.canGoForward)
-            .sink { [weak self] value in MainActor.assumeIsolated { self?.state.canGoForward = value } }
+            .sink { [weak self] value in MainActor.assumeIsolated { self?.mutateState { $0.canGoForward = value } } }
             .store(in: &observers)
     }
 
@@ -138,22 +156,22 @@ struct WebNavigationFailure: Equatable {
         navigationGeneration += 1
         chromeSnapshot = nil
         requestedURL = url
-        state.failure = nil
+        mutateState { $0.failure = nil }
         webView.load(URLRequest(url: url))
     }
 
     func goBack() {
-        state.failure = nil
+        mutateState { $0.failure = nil }
         webView.goBack()
     }
 
     func goForward() {
-        state.failure = nil
+        mutateState { $0.failure = nil }
         webView.goForward()
     }
 
     func reload() {
-        state.failure = nil
+        mutateState { $0.failure = nil }
         if webView.url == nil, let requestedURL {
             webView.load(URLRequest(url: requestedURL))
         } else {
@@ -217,8 +235,8 @@ struct WebNavigationFailure: Equatable {
         let limit = min(max(0, maxCharacters), 12_000)
         let generation = navigationGeneration
         let url = webView.url ?? requestedURL
-        guard let url else { return .failure(resourceID: resourceID, message: "Page is unavailable.") }
-        guard state.failure == nil else { return .failure(resourceID: resourceID, message: state.failure?.message ?? "Page failed to load.", url: url) }
+        guard let url else { return .failure(resourceID: resourceID, message: "网页不可用。") }
+        guard state.failure == nil else { return .failure(resourceID: resourceID, message: state.failure?.message ?? "网页加载失败。", url: url) }
         let completion = ResourceReadCompletion()
         let result: Result<ResourceReadCompletion.Value, Error> = await withTaskCancellationHandler(operation: {
             await withCheckedContinuation { continuation in
@@ -226,7 +244,7 @@ struct WebNavigationFailure: Equatable {
                 let timeout = Task { [weak self] in
                     try? await Task.sleep(for: .seconds(5))
                     guard !Task.isCancelled else { return }
-                    await MainActor.run { _ = self; completion.resolve(.failure(NSError(domain: "WebStudioRead", code: 1, userInfo: [NSLocalizedDescriptionKey: "Timed out reading page."]))) }
+                    await MainActor.run { _ = self; completion.resolve(.failure(NSError(domain: "WebStudioRead", code: 1, userInfo: [NSLocalizedDescriptionKey: "读取网页超时。"]))) }
                 }
                 Task { @MainActor in
                     do {
@@ -236,7 +254,7 @@ struct WebNavigationFailure: Equatable {
                               let text = object["text"] as? String,
                               let truncated = object["truncated"] as? Bool
                         else {
-                            throw NSError(domain: "WebStudioRead", code: 2, userInfo: [NSLocalizedDescriptionKey: "Page returned an invalid text snapshot."])
+                            throw NSError(domain: "WebStudioRead", code: 2, userInfo: [NSLocalizedDescriptionKey: "网页返回的文本快照无效。"])
                         }
                         timeout.cancel(); completion.resolve(.success(.init(text: text, truncated: truncated)))
                     } catch {
@@ -248,11 +266,11 @@ struct WebNavigationFailure: Equatable {
             Task { @MainActor in completion.resolve(.failure(CancellationError())) }
         })
         guard generation == navigationGeneration, webView.url == url else {
-            return .failure(resourceID: resourceID, message: "Page navigated while it was being read.", url: url)
+            return .failure(resourceID: resourceID, message: "读取期间网页发生导航。", url: url)
         }
         switch result {
         case let .failure(error):
-            let message = error is CancellationError ? "Page read was cancelled." : error.localizedDescription
+            let message = error is CancellationError ? "网页读取已取消。" : error.localizedDescription
             return .failure(resourceID: resourceID, message: message, url: url)
         case let .success(value):
             let text = value.text
@@ -269,7 +287,7 @@ struct WebNavigationFailure: Equatable {
         guard committed || (!webView.isLoading && state.failure == nil) else { return }
         requestedURL = url
         navigationGeneration += 1
-        state.failure = nil
+        mutateState { $0.failure = nil }
         onCommit?(url)
     }
 
@@ -343,7 +361,7 @@ extension WebTabRuntime: WKNavigationDelegate {
 
     nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         MainActor.assumeIsolated {
-            state.failure = nil
+            mutateState { $0.failure = nil }
             acceptObservedURL(webView.url, committed: true)
         }
     }
@@ -373,17 +391,17 @@ extension WebTabRuntime: WKNavigationDelegate {
     nonisolated func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         MainActor.assumeIsolated {
             chromeSnapshot = nil
-            state.failure = WebNavigationFailure(
+            mutateState { $0.failure = WebNavigationFailure(
                 url: requestedURL,
-                message: "The page stopped responding and was closed."
-            )
+                message: "网页无响应，已关闭。"
+            ) }
         }
     }
 
     private func record(_ error: Error) {
         chromeSnapshot = nil
         guard let failure = Self.failure(for: error, url: requestedURL) else { return }
-        state.failure = failure
+        mutateState { $0.failure = failure }
     }
 }
 
@@ -414,7 +432,7 @@ extension WebTabRuntime: WKUIDelegate {
     ) {
         MainActor.assumeIsolated {
             let alert = Self.makeAlert(message: message, origin: frame)
-            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "好")
             present(alert) { _ in completionHandler() }
         }
     }
@@ -427,8 +445,8 @@ extension WebTabRuntime: WKUIDelegate {
     ) {
         MainActor.assumeIsolated {
             let alert = Self.makeAlert(message: message, origin: frame)
-            alert.addButton(withTitle: "OK")
-            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "好")
+            alert.addButton(withTitle: "取消")
             present(alert) { completionHandler($0 == .alertFirstButtonReturn) }
         }
     }
@@ -445,8 +463,8 @@ extension WebTabRuntime: WKUIDelegate {
             let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 22))
             field.stringValue = defaultText ?? ""
             alert.accessoryView = field
-            alert.addButton(withTitle: "OK")
-            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: "好")
+            alert.addButton(withTitle: "取消")
             present(alert) { response in
                 completionHandler(response == .alertFirstButtonReturn ? field.stringValue : nil)
             }
@@ -478,7 +496,7 @@ extension WebTabRuntime: WKUIDelegate {
     private nonisolated static func makeAlert(message: String, origin: WKFrameInfo) -> NSAlert {
         let alert = NSAlert()
         alert.alertStyle = .informational
-        alert.messageText = origin.request.url?.host ?? "This page"
+        alert.messageText = origin.request.url?.host ?? "此网页"
         alert.informativeText = message
         return alert
     }
@@ -525,7 +543,7 @@ struct WebTabView: View {
                 ProgressView(value: runtime.state.progress)
                     .progressViewStyle(.linear)
                     .accessibilityIdentifier("web.progress")
-                    .accessibilityLabel("Loading page")
+                    .accessibilityLabel("正在加载网页")
             }
             if let failure = runtime.state.failure {
                 WebFailureView(failure: failure) { runtime.reload() }
@@ -546,7 +564,7 @@ private struct WebFailureView: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 30))
                 .foregroundStyle(.secondary)
-            Text("This page did not load")
+            Text("此网页未能加载")
                 .font(.title3.weight(.semibold))
             Text(failure.message)
                 .foregroundStyle(.secondary)
@@ -560,7 +578,7 @@ private struct WebFailureView: View {
                     .truncationMode(.middle)
                     .frame(maxWidth: 380)
             }
-            Button("Reload", action: retry)
+            Button("重新加载", action: retry)
                 .buttonStyle(.bordered)
                 .accessibilityIdentifier("web.reload")
         }

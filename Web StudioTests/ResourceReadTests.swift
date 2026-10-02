@@ -24,6 +24,7 @@ struct ResourceReadTests {
     }
     @Test func terminalReadUsesLatestBoundedUnicodeText() async {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let id = model.webRuntimes.registerLocalTerminal(groupID: model.selectedGroupID, directory: "/tmp")
         let session = model.webRuntimes.terminalSession(for: id)
         session?.terminalView.feed(byteArray: Array("前置\n最后你好".utf8)[...])
@@ -35,15 +36,17 @@ struct ResourceReadTests {
 
     @Test func closedResourceReadIsExplicitFailure() async {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let id = model.selectedTabID
         model.webRuntimes.remove(resourceID: id)
         let snapshot = await model.webRuntimes.read(resourceID: id)
         #expect(snapshot.text == nil)
-        #expect(snapshot.errorMessage?.contains("closed") == true)
+        #expect(snapshot.errorMessage?.contains("关闭") == true)
     }
 
     @Test func emptyWebReadReportsUnavailable() async {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let snapshot = await model.webRuntimes.read(resourceID: model.selectedTabID)
         #expect(snapshot.text == nil || snapshot.text == "")
     }
@@ -67,6 +70,7 @@ struct ResourceReadTests {
 
     @Test func sameDocumentPushStateUpdatesRecordWithoutReplacingWebView() async throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let id = model.selectedTabID
         let runtime = model.webRuntimes.runtime(for: id)!
         let base = URL(string: "https://local.web-studio.test/start")!
@@ -90,7 +94,7 @@ struct ResourceReadTests {
         task.cancel()
         let snapshot = await task.value
         #expect(snapshot.text == nil)
-        #expect(snapshot.errorMessage == "Page read was cancelled.")
+        #expect(snapshot.errorMessage == "网页读取已取消。")
     }
 
     @Test func navigationDuringReadIsReportedAsFailure() async throws {
@@ -104,11 +108,12 @@ struct ResourceReadTests {
         runtime.load(URL(string: "about:blank")!)
         let snapshot = await task.value
         #expect(snapshot.text == nil)
-        #expect(snapshot.errorMessage?.contains("navigated") == true)
+        #expect(snapshot.errorMessage?.contains("导航") == true)
     }
 
     @Test func terminalAndSSHMetadataRemainDistinct() async {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let sshID = model.webRuntimes.registerSSH(groupID: model.selectedGroupID, host: "host.example", user: "dev", port: 2222)
         let ssh = model.webRuntimes.terminalSession(for: sshID)!; ssh.setKnownDirectory("/tmp")
         model.renameResource(sshID, title: "Saved SSH")

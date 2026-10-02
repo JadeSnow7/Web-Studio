@@ -247,13 +247,13 @@ struct StudioInlineFeedback: View {
 extension ProviderSettings.Status {
     var studioLabel: String {
         switch self {
-        case .notConfigured: return "Not configured"
-        case .configuredUnverified: return "Configured; connection not verified"
-        case .missingKey: return "Endpoint configured; API key missing"
-        case .cliConfiguredUnverified: return "Codex CLI configured; login not checked"
-        case .cliChecked: return "Codex CLI login checked"
-        case .cliUnavailable: return "Codex CLI unavailable or not logged in"
-        case .error: return "Provider status unavailable"
+        case .notConfigured: return "未配置"
+        case .configuredUnverified: return "已配置，连接未验证"
+        case .missingKey: return "端点已配置，缺少 API 密钥"
+        case .cliConfiguredUnverified: return "Codex CLI 已配置，未检查登录状态"
+        case .cliChecked: return "Codex CLI 登录状态已检查"
+        case .cliUnavailable: return "Codex CLI 不可用或未登录"
+        case .error: return "模型服务状态不可用"
         }
     }
     var studioIsError: Bool { self == .error || self == .cliUnavailable }

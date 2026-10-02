@@ -48,11 +48,47 @@ private func testSnapshot(_ id: UUID, text: String = "snapshot") -> ResourceSnap
 }
 
 struct AgentControllerTests {
+    @Test @MainActor func shutdownWaitsForAlreadyCancelledProviderCleanup() async throws {
+        let store = ResourceStore(launchTerminalProcesses: false)
+        let id = store.registerWeb(groupID: UUID())
+        let provider = ControlledProvider()
+        let controller = AgentController(store: store,
+            service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider),
+            configuration: try ProviderConfiguration(model: "test"),
+            reader: { id, _ in testSnapshot(id) })
+        controller.addResource(id)
+        controller.question = "pending"
+        controller.readPreview()
+        for _ in 0..<1000 { if !controller.isReading { break }; await Task.yield() }
+        #expect(controller.confirmPreview())
+        #expect(controller.canSend)
+        controller.send()
+        for _ in 0..<1000 { if await provider.requestCount() == 1 { break }; await Task.yield() }
+        #expect(await provider.requestCount() == 1)
+        controller.cancel()
+        var started = false
+        var finished = false
+        let closing = Task { @MainActor in
+            started = true
+            await controller.shutdownAndWait()
+            finished = true
+        }
+        for _ in 0..<1000 { if started { break }; await Task.yield() }
+        #expect(started)
+        #expect(!finished)
+        await provider.resolve("late after cancellation")
+        await closing.value
+        #expect(finished)
+        #expect(controller.messages.map(\.role) == [.user])
+        #expect(controller.run?.state == .cancelled)
+        #expect(!controller.canSend)
+    }
+
     @Test @MainActor func newChatClearsTranscriptAndIgnoresLateResponse() async throws {
         let store = ResourceStore(launchTerminalProcesses: false); let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         let provider = ControlledProvider(); let config = try ProviderConfiguration(model: "m")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: config, reader: { id, _ in testSnapshot(id) })
-        controller.addResource(id); controller.question = "old"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); controller.send()
+        controller.addResource(id); controller.question = "old"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); #expect(controller.confirmPreview()); controller.send()
         for _ in 0..<20 { if await provider.requestCount() == 1 { break }; try await Task.sleep(for: .milliseconds(10)) }
         controller.newChat(); await provider.resolve("late"); try await Task.sleep(for: .milliseconds(30))
         #expect(controller.messages.isEmpty); #expect(controller.run == nil); #expect(controller.question.isEmpty)
@@ -70,7 +106,7 @@ struct AgentControllerTests {
         let store = ResourceStore(launchTerminalProcesses: false); let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         let provider = SequentialProvider(); let config = try ProviderConfiguration(model: "m")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: config, reader: { id, _ in testSnapshot(id) })
-        controller.addResource(id); controller.question = "first"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); controller.send(); try await Task.sleep(for: .milliseconds(30))
+        controller.addResource(id); controller.question = "first"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); #expect(controller.confirmPreview()); controller.send(); try await Task.sleep(for: .milliseconds(30))
         controller.question = "second"; controller.send(); try await Task.sleep(for: .milliseconds(30))
         #expect(controller.messages.map(\.text) == ["first", "answer-1", "second", "answer-2"])
         #expect(controller.messages[0].runID == controller.messages[1].runID)
@@ -84,7 +120,7 @@ struct AgentControllerTests {
         let config = try ProviderConfiguration(model: "test-model")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: ControllerProvider(answerText: "ok")), configuration: config)
         controller.addResource(id); controller.question = "What?"; controller.readPreview()
-        try await Task.sleep(for: .milliseconds(50)); #expect(controller.previewSnapshots.count == 1)
+        try await Task.sleep(for: .milliseconds(50)); #expect(controller.previewSnapshots.count == 1); #expect(controller.confirmPreview())
         controller.send(); store.remove(resourceID: id); try await Task.sleep(for: .milliseconds(50)); #expect(controller.run?.state == .completed("ok"))
     }
 
@@ -96,14 +132,14 @@ struct AgentControllerTests {
         let store = ResourceStore(launchTerminalProcesses: false); let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         let provider = ControlledProvider(); let config = try ProviderConfiguration(model: "test-model")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: config, reader: { id, _ in testSnapshot(id) })
-        controller.addResource(id); controller.question = "original"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); controller.send(); try await Task.sleep(for: .milliseconds(20)); controller.removeResource(id); store.remove(resourceID: id); await provider.resolve("answer"); try await Task.sleep(for: .milliseconds(50))
+        controller.addResource(id); controller.question = "original"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); #expect(controller.confirmPreview()); controller.send(); try await Task.sleep(for: .milliseconds(20)); controller.removeResource(id); store.remove(resourceID: id); await provider.resolve("answer"); try await Task.sleep(for: .milliseconds(50))
         #expect(controller.run?.request.question == "original"); #expect(controller.run?.state == .completed("answer")); #expect(controller.run?.request.snapshots.first?.resourceID == id)
     }
 
     @Test @MainActor func cancelIgnoresLateProviderResult() async throws {
         let store = ResourceStore(launchTerminalProcesses: false); let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp"); let provider = ControlledProvider(); let config = try ProviderConfiguration(model: "test-model")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: config, reader: { id, _ in testSnapshot(id) })
-        controller.addResource(id); controller.question = "cancel"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); controller.send()
+        controller.addResource(id); controller.question = "cancel"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); #expect(controller.confirmPreview()); controller.send()
         for _ in 0..<20 { if await provider.requestCount() == 1 { break }; try await Task.sleep(for: .milliseconds(10)) }
         #expect(await provider.requestCount() == 1); controller.cancel(); await provider.resolve(); try await Task.sleep(for: .milliseconds(30)); #expect(controller.run?.state == .cancelled)
     }
@@ -112,7 +148,7 @@ struct AgentControllerTests {
         let store = ResourceStore(launchTerminalProcesses: false); let counter = ReadCounter(); var ids: [UUID] = []
         for _ in 0..<5 { ids.append(store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")) }
         let controller = AgentController(store: store, configuration: try ProviderConfiguration(model: "m"), reader: { id, _ in await counter.add(id); return testSnapshot(id, text: String(repeating: "x", count: 12_000)) })
-        ids.forEach { controller.addResource($0) }; controller.readPreview(); try await Task.sleep(for: .milliseconds(50)); #expect(controller.previewSnapshots.count == 5); #expect(await counter.ids.count == 4); #expect(controller.previewSnapshots.last?.errorMessage?.contains("budget") == true)
+        ids.forEach { controller.addResource($0) }; controller.readPreview(); try await Task.sleep(for: .milliseconds(50)); #expect(controller.previewSnapshots.count == 5); #expect(await counter.ids.count == 4); #expect(controller.previewSnapshots.last?.errorMessage == "预览资料已超过预算。")
     }
 
     @Test @MainActor func retryUsesOriginalRequestAfterDraftChanges() async throws {
@@ -120,8 +156,8 @@ struct AgentControllerTests {
         let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         let provider = RetryProvider(); let original = try ProviderConfiguration(model: "original")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: original, reader: { id, _ in testSnapshot(id) })
-        controller.addResource(id); controller.question = "original"; controller.readPreview(); try await Task.sleep(for: .milliseconds(30)); controller.send(); try await Task.sleep(for: .milliseconds(30))
-        #expect(controller.run?.state == .failed("Provider request failed (HTTP 500)."))
+        controller.addResource(id); controller.question = "original"; controller.readPreview(); try await Task.sleep(for: .milliseconds(30)); #expect(controller.confirmPreview()); controller.send(); try await Task.sleep(for: .milliseconds(30))
+        #expect(controller.run?.state == .failed("模型服务请求失败（HTTP 500）。"))
         controller.question = "changed"; controller.updateConfiguration(try ProviderConfiguration(model: "changed")); controller.removeResource(id); store.remove(resourceID: id); controller.retry();
         for _ in 0..<20 { if await provider.allRequests().count == 2 { break }; try await Task.sleep(for: .milliseconds(10)) }
         let requests = try #require(await provider.allRequests().count == 2 ? await provider.allRequests() : nil); #expect(requests[1] == requests[0]); #expect(controller.question == "changed")
@@ -143,7 +179,7 @@ struct AgentControllerTests {
         let store = ResourceStore(launchTerminalProcesses: false); let id = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         let provider = ControlledProvider(); let pending = PendingReader(); let config = try ProviderConfiguration(model: "m")
         let controller = AgentController(store: store, service: ConfiguredResponsesService(credentials: ControllerCredentials(), provider: provider), configuration: config, reader: { id, _ in await pending.read(testSnapshot(id)) })
-        controller.addResource(id); controller.question = "q"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); await pending.resume(testSnapshot(id)); try await Task.sleep(for: .milliseconds(30)); controller.send()
+        controller.addResource(id); controller.question = "q"; controller.readPreview(); try await Task.sleep(for: .milliseconds(20)); await pending.resume(testSnapshot(id)); try await Task.sleep(for: .milliseconds(30)); #expect(controller.confirmPreview()); controller.send()
         for _ in 0..<20 { if await provider.requestCount() == 1 { break }; try await Task.sleep(for: .milliseconds(10)) }
         controller.readPreview(); try await Task.sleep(for: .milliseconds(10)); controller.cancelReading(); #expect(controller.run?.state == .requesting)
         await pending.resume(testSnapshot(id, text: "late")); await provider.resolve("done"); try await Task.sleep(for: .milliseconds(40)); #expect(controller.run?.state == .completed("done")); #expect(controller.previewSnapshots.isEmpty)

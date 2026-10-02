@@ -20,6 +20,7 @@ final class Web_StudioUITestsLaunchTests: XCTestCase {
     @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["--workspace-config-root", "/tmp/web-studio-ui-\(UUID().uuidString)"]
         app.launch()
 
         // Insert steps here to perform after app launch but before taking a screenshot,

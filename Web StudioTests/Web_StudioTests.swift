@@ -29,16 +29,18 @@ struct Web_StudioTests {
         #expect(StudioModel.normalizedSSH(host: "server.example", user: "", portText: "abc") == nil)
     }
 
-    @Test @MainActor func closingLastTabReturnsToBlankTab() {
+    @Test @MainActor func closingLastTabLeavesAnEmptyWorkspace() {
         let model = StudioModel(launchTerminalProcesses: false)
-        model.setDestination(.ssh(host: "host", user: "", port: 22))
+        model.newTab()
         model.closeSelectedTab()
-        #expect(model.tabs.count == 1)
-        #expect(model.selectedTab?.destination == .blank)
+        #expect(model.tabs.isEmpty)
+        #expect(model.layout.primary.resourceID == nil)
+        #expect(model.selectedTab == nil)
     }
 
     @Test @MainActor func closingInactiveTabPreservesSelection() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let first = model.selectedTabID
         model.newTab()
         let selected = model.selectedTabID
@@ -46,56 +48,61 @@ struct Web_StudioTests {
         #expect(model.selectedTabID == selected)
     }
 
-    @Test @MainActor func taskGroupsKeepSelectionAndMoveActiveTab() {
+    @Test @MainActor func workspacesKeepTheirResourcesAndSelection() throws {
         let model = StudioModel(launchTerminalProcesses: false)
-        let firstGroup = model.selectedGroupID
-        model.addGroup()
-        let secondGroup = model.selectedGroupID
-        let movedTab = model.selectedTabID
-        #expect(model.selectedTab?.groupID == secondGroup)
-        model.move(tabID: movedTab, to: firstGroup)
-        #expect(model.selectedGroupID == firstGroup)
-        #expect(model.selectedTabID == movedTab)
-        #expect(model.visibleTabs.contains { $0.id == movedTab })
-    }
-
-    @Test @MainActor func movingInactiveTabDoesNotChangeCurrentSelection() {
-        let model = StudioModel(launchTerminalProcesses: false)
-        let firstTab = model.selectedTabID
         model.newTab()
-        let activeTab = model.selectedTabID
-        let otherGroup = StudioGroup(name: "Other")
-        model.groups.append(otherGroup)
-        model.move(tabID: firstTab, to: otherGroup.id)
-        #expect(model.selectedTabID == activeTab)
+        let first = model.session.id
+        let firstResource = model.selectedTabID
+        let second = try #require(model.createWorkspace(name: "Other"))
+        #expect(model.tabs.isEmpty)
+        model.newTab()
+        let secondResource = model.selectedTabID
+        model.selectWorkspace(first)
+        #expect(model.selectedTabID == firstResource)
+        #expect(!model.tabs.contains { $0.id == secondResource })
+        model.selectWorkspace(second)
+        #expect(model.selectedTabID == secondResource)
     }
 
-    @Test @MainActor func selectingEmptyGroupCreatesItsBlankTab() {
+    @Test @MainActor func activeResourcesCannotMoveAcrossWorkspaces() throws {
         let model = StudioModel(launchTerminalProcesses: false)
-        let group = StudioGroup(name: "Empty")
-        model.groups.append(group)
-        model.selectGroup(group.id)
-        #expect(model.selectedGroupID == group.id)
-        #expect(model.selectedTab?.groupID == group.id)
-        #expect(model.selectedTab?.destination == .blank)
+        model.newTab()
+        let first = model.session.id
+        let resource = model.selectedTabID
+        let other = try #require(model.createWorkspace(name: "Other"))
+        model.selectWorkspace(first)
+        model.move(tabID: resource, to: other)
+        #expect(model.webRuntimes.records[resource]?.groupID == first)
+        #expect(model.windowCoordinator.loadedSessions[other]?.resourceStore.resources.isEmpty == true)
     }
 
-    @Test @MainActor func workspaceActionsTargetTheirOwningGroup() throws {
+    @Test @MainActor func selectingEmptyWorkspaceKeepsItEmpty() throws {
         let model = StudioModel(launchTerminalProcesses: false)
-        let group = StudioGroup(name: "Inactive")
-        model.groups.append(group)
-        let originalGroup = model.groups[0].id
-        model.newTab(in: group.id)
-        #expect(model.selectedGroupID == group.id)
-        #expect(model.selectedTab?.groupID == group.id)
-        model.newTerminal(in: originalGroup, directory: "/tmp")
-        let terminal = try #require(model.selectedTab)
-        #expect(terminal.groupID == originalGroup)
-        #expect(model.tabs.filter { $0.groupID == group.id }.count == 1)
+        let original = model.session.id
+        let empty = try #require(model.createWorkspace(name: "Empty"))
+        model.selectWorkspace(original)
+        model.selectWorkspace(empty)
+        #expect(model.selectedGroupID == empty)
+        #expect(model.selectedTab == nil)
+        #expect(model.webRuntimes.resources.isEmpty)
+    }
+
+    @Test @MainActor func workspaceActionsTargetTheirOwningWorkspace() throws {
+        let model = StudioModel(launchTerminalProcesses: false)
+        let original = model.session.id
+        let other = try #require(model.createWorkspace(name: "Other"))
+        model.selectWorkspace(original)
+        model.newTab(in: other)
+        #expect(model.selectedGroupID == other)
+        #expect(model.selectedTab?.groupID == other)
+        model.newTerminal(in: original, directory: "/tmp")
+        #expect(model.selectedTab?.groupID == original)
+        #expect(model.windowCoordinator.loadedSessions[other]?.resourceStore.resources.count == 1)
     }
 
     @Test @MainActor func closingActiveTabPrefersAnotherTabInSameGroup() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.newTab()
         let active = model.selectedTabID
         let sameGroupTab = try #require(model.tabs.first { $0.id != active })
@@ -104,7 +111,7 @@ struct Web_StudioTests {
         #expect(model.selectedGroupID == sameGroupTab.groupID)
     }
 
-    @Test func layoutResolverCompactsAndProtectsMainWidth() {
+    @Test func layoutResolverUsesCompactSingleMainArea() {
         let plan = StudioLayoutPlan.resolve(
             windowWidth: 900,
             sidebarWidth: 220,
@@ -112,14 +119,16 @@ struct Web_StudioTests {
             sidebarVisible: true,
             agentsVisible: true
         )
-        #expect(plan.compactSidebar)
-        #expect(plan.sidebarWidth == 96)
-        #expect(900 - plan.sidebarWidth - plan.agentsWidth >= 440)
-        #expect(plan.adaptationMessage != nil)
+        #expect(plan.isCompactMode)
+        #expect(plan.sidebarWidth == 0)
+        #expect(plan.agentsWidth == 0)
+        #expect(!plan.contentVisible)
+        #expect(plan.questionsVisible)
     }
 
     @Test @MainActor func modalOpenersRemainMutuallyExclusive() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.openCommands()
         #expect(model.commandPalettePresented)
         #expect(!model.destinationPresented)
@@ -133,6 +142,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func nonDefaultSSHPortAppearsInTabTitleAndWebPathIsSeparate() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.setDestination(.ssh(host: "server.example", user: "dev", port: 2222))
         #expect(model.selectedTab?.destination.title == "dev@server.example:2222")
         try model.setDestination(.web(#require(URL(string: "https://example.com/docs?q=swift"))))
@@ -161,6 +171,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func addressFieldTracksIdleTabSelectionAndPreservesSourceSession() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let source = model.selectedTabID
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let runtime = model.webRuntimes.existingRuntime(for: source)
@@ -173,6 +184,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func addressFieldAllowsSecondSubmissionWithoutResettingDraft() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.requestAddressFocus()
         model.addressText = "https://example.com/one"
         model.noteAddressEdit()
@@ -187,6 +199,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func webRuntimeIsCreatedOncePerTabAndKeepsItsWebView() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let first = model.webRuntimes.runtime(for: model.selectedTabID)!
         let second = model.webRuntimes.runtime(for: model.selectedTabID)!
@@ -198,6 +211,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func closingAWebTabReleasesItsRuntime() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let webTab = model.selectedTabID
         _ = model.webRuntimes.runtime(for: webTab)
@@ -209,6 +223,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func openingSSHFromWebKeepsWebResourceAndCreatesSibling() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let webTab = model.selectedTabID
         _ = model.webRuntimes.runtime(for: webTab)
@@ -234,6 +249,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func committedNavigationFollowsTheLivePageOnWebTabsOnly() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let webTab = model.selectedTabID
         try model.updateWebDestination(
@@ -253,6 +269,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func popupNavigationOpensASiblingTabInTheSameTask() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let task = model.selectedGroupID
         let opener = model.selectedTabID
         try model.openWebTab(#require(URL(string: "https://example.com/popup")))
@@ -264,6 +281,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func activeWebStateResetsWhenSelectionLeavesTheWebTab() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         _ = model.webRuntimes.runtime(for: model.selectedTabID)
         model.recordWebState(tabID: model.selectedTabID, state: WebNavigationState(isLoading: true, canGoBack: true))
@@ -275,6 +293,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func webCommandsAreInertWithoutAWebRuntime() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         #expect(!model.selectedTabIsWeb)
         model.webGoBack()
         model.webGoForward()
@@ -317,35 +336,38 @@ struct Web_StudioTests {
 
     @Test @MainActor func commandPaletteListsPageCommandsOnlyWhenTheyCanRun() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         var titles: Set<String> { Set(model.availableCommands.map(\.title)) }
 
-        #expect(titles.contains("New Web Page"))
-        #expect(!titles.contains("Back"))
-        #expect(!titles.contains("Reload Page"))
+        #expect(titles.contains("新建网页"))
+        #expect(!titles.contains("后退"))
+        #expect(!titles.contains("重新加载页面"))
 
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
-        #expect(titles.contains("Reload Page"))
-        #expect(!titles.contains("Back"))
+        #expect(titles.contains("重新加载页面"))
+        #expect(!titles.contains("后退"))
 
         model.recordWebState(tabID: model.selectedTabID, state: WebNavigationState(canGoBack: true, canGoForward: true))
-        #expect(titles.contains("Back"))
-        #expect(titles.contains("Forward"))
+        #expect(titles.contains("后退"))
+        #expect(titles.contains("前进"))
 
         model.recordWebState(tabID: model.selectedTabID, state: WebNavigationState(isLoading: true))
-        #expect(titles.contains("Stop Loading"))
-        #expect(!titles.contains("Reload Page"))
+        #expect(titles.contains("停止加载"))
+        #expect(!titles.contains("重新加载页面"))
     }
 
     @Test @MainActor func tabCyclingCommandsAppearOnlyWithMoreThanOneTab() {
         let model = StudioModel(launchTerminalProcesses: false)
-        #expect(!model.availableCommands.contains { $0.title == "Show Next Tab" })
         model.newTab()
-        #expect(model.availableCommands.contains { $0.title == "Show Next Tab" })
-        #expect(model.availableCommands.contains { $0.title == "Show Previous Tab" })
+        #expect(!model.availableCommands.contains { $0.title == "下一个资源" })
+        model.newTab()
+        #expect(model.availableCommands.contains { $0.title == "下一个资源" })
+        #expect(model.availableCommands.contains { $0.title == "上一个资源" })
     }
 
     @Test @MainActor func selectingTabByNumberMatchesSafariNumbering() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let first = model.selectedTabID
         model.newTab()
         let second = model.selectedTabID
@@ -366,6 +388,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func tabCyclingWrapsWithinTheSelectedTask() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let first = model.selectedTabID
         model.newTab()
         let second = model.selectedTabID
@@ -377,7 +400,8 @@ struct Web_StudioTests {
 
     @Test @MainActor func tabTitleFollowsPageTitleAndFallsBackToDestination() throws {
         let model = StudioModel(launchTerminalProcesses: false)
-        #expect(model.selectedTab?.displayTitle == "New Tab")
+        model.newTab()
+        #expect(model.selectedTab?.displayTitle == "空白网页")
 
         try model.setDestination(.web(#require(URL(string: "https://example.com/docs"))))
         #expect(model.selectedTab?.displayTitle == "example.com")
@@ -396,6 +420,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func backgroundTabTitleUpdatesWithoutTouchingTheToolbar() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         try model.setDestination(.web(#require(URL(string: "https://example.com"))))
         let background = model.selectedTabID
         model.newTab()
@@ -422,18 +447,19 @@ struct Web_StudioTests {
         #expect(store.existingRuntime(for: resourceID) == nil)
     }
 
-    @Test @MainActor func closingLastTabCreatesANewResourceID() {
+    @Test @MainActor func closingLastTabDoesNotCreateReplacementResource() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let oldID = model.selectedTabID
         model.closeSelectedTab()
-        #expect(model.tabs.count == 1)
-        #expect(model.selectedTabID != oldID)
+        #expect(model.tabs.isEmpty)
         #expect(model.webRuntimes.records[oldID] == nil)
-        #expect(model.webRuntimes.records[model.selectedTabID]?.kind == .web)
+        #expect(model.layout.primary.resourceID == nil)
     }
 
     @Test @MainActor func closingSelectedTabWithTwoTabsSelectsRemainingResource() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let first = model.selectedTabID
         model.newTab()
         let second = model.selectedTabID
@@ -444,6 +470,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func pruningWebRuntimesDoesNotDeleteNonWebRecords() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.setDestination(.ssh(host: "server.example", user: "dev", port: 22))
         let id = model.selectedTabID
         model.pruneWebRuntimes()
@@ -464,13 +491,15 @@ struct Web_StudioTests {
 
     @Test @MainActor func capturedPaneNewTabReplacesOnlyCapturedPane() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let primary = model.selectedTabID
-        model.split()
+        let secondaryResource = model.webRuntimes.registerWeb(groupID: model.session.id)
+        model.split(resourceID: secondaryResource)
         guard let secondary = model.layout.secondary?.resourceID else { Issue.record("expected split"); return }
         let capturedPane = model.layout.primary.id
         model.openCommands()
         model.focusPane(model.layout.secondary!.id)
-        let command = StudioCommand(title: "New Web Page", shortcut: "⌘T", targetResourceID: primary, action: .newTab(groupID: model.selectedGroupID))
+        let command = StudioCommand(title: "新建网页", shortcut: "⌘T", targetResourceID: primary, action: .newTab(groupID: model.selectedGroupID))
         #expect(model.execute(command))
         #expect(model.layout.primary.resourceID != primary)
         #expect(model.layout.primary.id == capturedPane)
@@ -510,16 +539,84 @@ struct Web_StudioTests {
 
     @Test @MainActor func windowCloseShutsDownWebOnlyStore() async {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         var callbackCount = 0
         model.webRuntimes.onShutdown = { callbackCount += 1 }
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 900, height: 560), styleMask: [.titled], backing: .buffered, defer: true)
         window.isReleasedWhenClosed = false
-        let proxy = WindowDelegateProxy(original: nil, model: model)
+        let proxy = WindowDelegateProxy(original: nil, model: model, confirmClose: { _ in true }, temporaryCloseConfirmation: { _, _ in true })
         window.delegate = proxy
         #expect(proxy.windowShouldClose(window) == false)
         for _ in 0..<20 where !model.webRuntimes.records.isEmpty { try? await Task.sleep(for: .milliseconds(10)) }
         #expect(model.webRuntimes.records.isEmpty)
         #expect(callbackCount == 1)
+        window.delegate = nil
+    }
+
+    @Test @MainActor func windowCloseCancellationPreservesAllWorkspaceState() async {
+        let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
+        let firstID = model.session.id
+        let secondID = try! #require(model.createWorkspace(name: "Hidden"))
+        model.newTab()
+        let firstStore = model.windowCoordinator.loadedSessions[firstID]!.resourceStore
+        let secondStore = model.windowCoordinator.loadedSessions[secondID]!.resourceStore
+        var confirmations = 0
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 560),
+            styleMask: [.titled], backing: .buffered, defer: true)
+        window.isReleasedWhenClosed = false
+        let proxy = WindowDelegateProxy(
+            original: nil, model: model,
+            confirmClose: { _ in
+                confirmations += 1
+                return false
+            })
+        window.delegate = proxy
+        #expect(proxy.windowShouldClose(window) == false)
+        #expect(confirmations == 1)
+        #expect(model.windowCoordinator.loadedSessions.count == 2)
+        #expect(firstStore.records.isEmpty == false)
+        #expect(secondStore.records.isEmpty == false)
+        #expect(!model.windowCoordinator.isClosing)
+        window.delegate = nil
+    }
+
+    @Test @MainActor func windowCloseConfirmsOnceAndCleansHiddenWorkspaces() async {
+        let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
+        let firstID = model.session.id
+        let secondID = try! #require(model.createWorkspace(name: "Hidden"))
+        model.newTab()
+        let firstStore = model.windowCoordinator.loadedSessions[firstID]!.resourceStore
+        let secondStore = model.windowCoordinator.loadedSessions[secondID]!.resourceStore
+        var firstShutdowns = 0
+        var secondShutdowns = 0
+        firstStore.onShutdown = { firstShutdowns += 1 }
+        secondStore.onShutdown = { secondShutdowns += 1 }
+        var confirmations = 0
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 560),
+            styleMask: [.titled], backing: .buffered, defer: true)
+        window.isReleasedWhenClosed = false
+        let proxy = WindowDelegateProxy(
+            original: nil, model: model,
+            confirmClose: { _ in
+                confirmations += 1
+                return true
+            }, temporaryCloseConfirmation: { _, _ in true })
+        window.delegate = proxy
+        #expect(proxy.windowShouldClose(window) == false)
+        #expect(proxy.windowShouldClose(window) == false)
+        for _ in 0..<50 where !model.windowCoordinator.loadedSessions.isEmpty {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(confirmations == 1)
+        #expect(firstShutdowns == 1)
+        #expect(secondShutdowns == 1)
+        #expect(model.windowCoordinator.loadedSessions.isEmpty)
+        #expect(firstStore.records.isEmpty)
+        #expect(secondStore.records.isEmpty)
         window.delegate = nil
     }
 
@@ -554,7 +651,7 @@ struct Web_StudioTests {
         let sshID = store.registerSSH(groupID: UUID(), host: "example.com", user: "dev", port: 22)
         store.recordTerminalState(resourceID: sshID, state: .exited(255))
         #expect(store.records[sshID]?.lifecycle == .interrupted)
-        #expect(store.records[sshID]?.errorMessage?.contains("exit 255") == true)
+        #expect(store.records[sshID]?.errorMessage?.contains("退出码 255") == true)
         let localID = store.registerLocalTerminal(groupID: UUID(), directory: "/tmp")
         store.recordTerminalState(resourceID: localID, state: .exited(255))
         #expect(store.records[localID]?.lifecycle == .exited)
@@ -568,6 +665,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func splitSupportsAllResourceKindsWithoutDuplicateMounts() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let web = model.selectedTabID
         let local = model.webRuntimes.registerLocalTerminal(groupID: model.selectedGroupID, directory: "/tmp")
         let ssh = model.webRuntimes.registerSSH(groupID: model.selectedGroupID, host: "example.com", user: "dev", port: 22)
@@ -582,8 +680,10 @@ struct Web_StudioTests {
 
     @Test @MainActor func layoutRejectsUnknownPaneAndResourceAndPreservesSwapIdentity() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let first = model.selectedTabID
-        model.split()
+        let secondaryResource = model.webRuntimes.registerWeb(groupID: model.session.id)
+        model.split(resourceID: secondaryResource)
         guard let secondary = model.layout.secondary else { Issue.record("expected split"); return }
         let firstPaneID = model.layout.primary.id
         model.focusPane(UUID())
@@ -598,7 +698,9 @@ struct Web_StudioTests {
 
     @Test @MainActor func closePanePreservesResourceAndCloseResourcePrunesLayout() {
         let model = StudioModel(launchTerminalProcesses: false)
-        model.split()
+        model.newTab()
+        let secondaryResource = model.webRuntimes.registerWeb(groupID: model.session.id)
+        model.split(resourceID: secondaryResource)
         guard let secondaryID = model.layout.secondary?.resourceID, let secondaryPane = model.layout.secondary else { Issue.record("expected split"); return }
         model.closePane(secondaryPane.id)
         #expect(model.webRuntimes.records[secondaryID] != nil)
@@ -610,12 +712,15 @@ struct Web_StudioTests {
 
     @Test @MainActor func splitRatioIsClamped() {
         let model = StudioModel(launchTerminalProcesses: false)
-        model.split(); model.setSplitRatio(0.01); #expect(model.layout.splitRatio == 0.2)
+        model.newTab()
+        let secondaryResource = model.webRuntimes.registerWeb(groupID: model.session.id)
+        model.split(resourceID: secondaryResource); model.setSplitRatio(0.01); #expect(model.layout.splitRatio == 0.2)
         model.setSplitRatio(2); #expect(model.layout.splitRatio == 0.8)
     }
 
     @Test @MainActor func splitSupportsWebWebAndTerminalTerminal() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let web2 = model.webRuntimes.registerWeb(groupID: model.selectedGroupID)
         model.split(resourceID: web2); #expect(model.layout.secondary?.resourceID == web2)
         model.returnToSinglePane()
@@ -627,13 +732,14 @@ struct Web_StudioTests {
 
     @Test @MainActor func panelKeepsCapturedPaneWhenSelectionChanges() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let captured = model.selectedTabID
         model.beginAddressEditing()
         model.newTab()
         #expect(model.addressText.isEmpty)
         model.webRuntimes.remove(resourceID: captured)
         model.setDestination(.web(URL(string: "https://example.com")!), targetResourceID: captured)
-        #expect(model.addressError?.contains("closed") == true)
+        #expect(model.addressError?.contains("关闭") == true)
     }
 
     @Test @MainActor func nativeResourceHostReplacesOnlyOwnedView() {
@@ -653,26 +759,29 @@ struct Web_StudioTests {
 
     @Test @MainActor func capturedDestinationRejectsClosedResource() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let captured = model.selectedTabID
         model.beginAddressEditing()
         model.addressText = "https://example.com"
         model.noteAddressEdit()
         model.webRuntimes.remove(resourceID: captured)
         model.submitAddress()
-        #expect(model.addressError?.contains("closed") == true)
+        #expect(model.addressError?.contains("关闭") == true)
     }
 
     @Test @MainActor func closedCapturedPaneRejectsActionWhileResourceSurvives() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let resource = model.selectedTabID
-        model.split()
+        let secondaryResource = model.webRuntimes.registerWeb(groupID: model.session.id)
+        model.split(resourceID: secondaryResource)
         let pane = model.focusedPane.id
         model.beginAddressEditing()
         model.addressText = "https://example.com"
         model.noteAddressEdit()
         model.closePane(pane)
         model.submitAddress()
-        #expect(model.addressError?.contains("pane") == true)
+        #expect(model.addressError?.contains("窗格") == true)
     }
 
     @Test @MainActor func reparentedNativeViewSurvivesOldHostUnmount() {
@@ -687,6 +796,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func blankTabsDoNotConsumeRecentSlots() {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         model.selectResource(model.selectedTabID)
         model.newTab()
         model.newTab()
@@ -695,6 +805,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func explicitWebDestinationAddsRecentResource() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let id = model.selectedTabID
         model.setDestination(.web(try #require(URL(string: "https://example.com"))), targetResourceID: id)
         #expect(model.recentResourceIDs.first == id)
@@ -702,6 +813,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func pinnedWebDestinationSurvivesSourceCloseAndReusesBlank() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let source = model.webRuntimes.registerWeb(groupID: model.selectedGroupID, destination: try #require(URL(string: "https://example.com")))
         model.pinDestination(for: source)
         let entry = try #require(model.pinnedDestinations.first)
@@ -718,6 +830,7 @@ struct Web_StudioTests {
 
     @Test @MainActor func duplicatePinnedDestinationUpdatesLabel() throws {
         let model = StudioModel(launchTerminalProcesses: false)
+        model.newTab()
         let destination = StudioDestination.web(try #require(URL(string: "https://example.com")))
         model.addPinnedDestination(title: "First", destination: destination)
         model.addPinnedDestination(title: "Renamed", destination: destination)
@@ -727,18 +840,16 @@ struct Web_StudioTests {
 
     @Test @MainActor func pinnedTerminalFromSecondaryPaneUsesSourceGroupAndPane() throws {
         let model = StudioModel(launchTerminalProcesses: false)
-        let secondaryGroup = StudioGroup(name: "Secondary")
-        model.groups.append(secondaryGroup)
+        model.newTab()
         let primaryGroupID = model.selectedGroupID
-        let secondary = model.webRuntimes.registerWeb(groupID: secondaryGroup.id)
+        let secondary = model.webRuntimes.registerWeb(groupID: primaryGroupID)
         model.split(resourceID: secondary)
         let sourcePane = try #require(model.layout.secondary?.id)
         let entry = PinnedDestination(title: "Tools", destination: .terminal(directory: "/tmp/tools"))
         model.openPinnedDestination(entry, from: secondary)
         let created = try #require(model.layout.secondary?.resourceID)
         #expect(model.layout.secondary?.id == sourcePane)
-        #expect(model.webRuntimes.records[created]?.groupID == secondaryGroup.id)
-        #expect(primaryGroupID != secondaryGroup.id)
+        #expect(model.webRuntimes.records[created]?.groupID == primaryGroupID)
         #expect(model.webRuntimes.records[created]?.kind == .localTerminal)
     }
 

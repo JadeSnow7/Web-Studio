@@ -64,9 +64,15 @@ private struct NativeWorkspaceSplit: NSViewRepresentable {
         func splitViewDidResizeSubviews(_ notification: Notification) {
             guard !applying, !suppressResizeCallback, splitView.bounds.width > 0, splitView.subviews.count == 2 else { return }
             let ratio = Double(splitView.subviews[0].frame.width / splitView.bounds.width)
-            DispatchQueue.main.async { [weak self] in
-                guard let self, !self.applying else { return }
-                if abs(self.model.layout.splitRatio - ratio) > 0.001 { self.model.setSplitRatio(ratio) }
+            let owner = model.session
+            let primaryID = owner.layout.primary.id
+            let secondaryID = owner.layout.secondary?.id
+            DispatchQueue.main.async { [weak self, weak owner] in
+                guard let self, !self.applying, let owner, !owner.isClosed,
+                      owner.layout.primary.id == primaryID, owner.layout.secondary?.id == secondaryID else { return }
+                if abs(owner.layout.splitRatio - ratio) > 0.001 {
+                    owner.layout.splitRatio = min(max(ratio, 0.2), 0.8)
+                }
             }
         }
         func splitView(_ splitView: NSSplitView, constrainSplitPosition proposedPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat { min(max(proposedPosition, 180), max(180, splitView.bounds.width - 180)) }
@@ -97,6 +103,17 @@ private struct SplitPaneView: View {
     var body: some View {
         Group {
             if let id = pane.resourceID { SplitResourceHost(model: model, resourceID: id).id(pane.id) }
+            else {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("添加资源开始工作").foregroundStyle(.secondary)
+                    HStack {
+                        Button("新建网页") { model.focusPane(pane.id); model.newTab() }
+                        Button("新建终端") { model.focusPane(pane.id); model.newTerminal(directoryURL: nil) }
+                        Button("连接 SSH…") { model.focusPane(pane.id); model.openSSHDestination() }
+                    }
+                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityIdentifier("workspace.empty")
+            }
         }
         // The content itself is the pane. A single pane has no chrome; in a split,
         // the focused pane gets only a quiet edge cue so content remains primary.
@@ -120,9 +137,14 @@ private struct SplitResourceHost: View {
                 case let .web(url):
                     if let url, let runtime = model.webRuntimes.runtime(for: resourceID) { WebTabView(runtime: runtime, url: url) }
                     else { StartPageView(model: model, resourceID: resourceID) }
-                case .localTerminal, .ssh: if let session = model.webRuntimes.terminalSession(for: resourceID) { TerminalSessionView(session: session) } else { Text("Terminal unavailable") }
+                case .localTerminal, .ssh:
+                    if let session = model.webRuntimes.terminalSession(for: resourceID) {
+                        TerminalSessionView(model: model, resourceID: resourceID, session: session)
+                    } else {
+                        TerminalStartPlaceholder(model: model, resourceID: resourceID, record: record)
+                    }
                 }
-            } else { Text("Resource unavailable") }
+            } else { Text("资源不可用") }
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

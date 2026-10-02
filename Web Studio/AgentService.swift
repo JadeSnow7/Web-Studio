@@ -35,7 +35,7 @@ enum AgentServiceError: Error, Equatable, LocalizedError {
     case cancelled, redirectDenied, http(Int), malformedResponse, emptyResponse, refusal(String), incomplete(String)
     case cliExecutableMissing, cliLaunchFailed, cliSandboxUnavailable, cliLoginRequired, cliOutputLimit, cliTimeout, cliFailure(String), cliObservedTool, cliInvalidOutput
     var errorDescription: String? {
-        switch self { case .invalidConfiguration: return "Invalid provider endpoint or model."; case .invalidCredential: return "The provider credential is invalid."; case .missingCredential: return "No API key is configured for this endpoint."; case .keychain: return "The system credential store could not be accessed."; case .cancelled: return "The request was cancelled."; case .redirectDenied: return "Provider redirects are not permitted."; case .http(let code): return "Provider request failed (HTTP \(code))."; case .malformedResponse: return "Provider returned an unreadable response."; case .emptyResponse: return "Provider returned no answer."; case .refusal(let reason): return "Provider refused the request: \(reason)"; case .incomplete(let reason): return "Provider response was incomplete: \(reason)"; case .cliExecutableMissing: return "Codex CLI was not found at the configured path."; case .cliLaunchFailed: return "Codex CLI could not be launched in this app context."; case .cliSandboxUnavailable: return "Codex CLI requires the local validation build; App Sandbox cannot launch the host CLI."; case .cliLoginRequired: return "Codex CLI is not logged in. Run `codex login` in Terminal."; case .cliOutputLimit: return "Codex CLI returned too much output."; case .cliTimeout: return "Codex CLI timed out."; case .cliFailure(let reason): return "Codex CLI failed: \(reason)"; case .cliObservedTool: return "Codex CLI attempted an unsupported tool."; case .cliInvalidOutput: return "Codex CLI returned an unreadable response." }
+        switch self { case .invalidConfiguration: return "模型服务端点或模型无效。"; case .invalidCredential: return "模型服务凭据无效。"; case .missingCredential: return "此端点尚未配置 API 密钥。"; case .keychain: return "无法访问系统凭据存储。"; case .cancelled: return "请求已取消。"; case .redirectDenied: return "不允许模型服务重定向。"; case .http(let code): return "模型服务请求失败（HTTP \(code)）。"; case .malformedResponse: return "模型服务返回了无法读取的响应。"; case .emptyResponse: return "模型服务未返回答案。"; case .refusal(let reason): return "模型服务拒绝了请求：\(reason)"; case .incomplete(let reason): return "模型服务响应未完成：\(reason)"; case .cliExecutableMissing: return "在配置路径中找不到 Codex CLI。"; case .cliLaunchFailed: return "无法在此应用环境中启动 Codex CLI。"; case .cliSandboxUnavailable: return "Codex CLI 需要本地验证构建；App Sandbox 无法启动宿主 CLI。"; case .cliLoginRequired: return "Codex CLI 尚未登录。请在终端中运行 `codex login`。"; case .cliOutputLimit: return "Codex CLI 返回的输出过多。"; case .cliTimeout: return "Codex CLI 请求超时。"; case .cliFailure(let reason): return "Codex CLI 失败：\(reason)"; case .cliObservedTool: return "Codex CLI 尝试使用不受支持的工具。"; case .cliInvalidOutput: return "Codex CLI 返回了无法读取的响应。" }
     }
 }
 
@@ -46,7 +46,8 @@ nonisolated protocol CredentialStore: Sendable {
 }
 
 actor KeychainCredentialStore: CredentialStore {
-    private let service = "com.huaodong.web-studio.provider"
+    private let service: String
+    init(service: String = "com.huaodong.web-studio.provider") { self.service = service }
     private func query(_ endpoint: URL) -> [String: Any] { [kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: service, kSecAttrAccount as String: endpoint.absoluteString] }
     func save(apiKey: String, for endpoint: URL) async throws {
         guard !apiKey.isEmpty,
@@ -83,7 +84,7 @@ final class URLSessionResponsesProvider: NSObject, ResponsesProvider, URLSession
     func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) { completionHandler(nil) }
     private static func parse(_ data: Data) throws -> String {
         guard data.count <= 2 * 1024 * 1024, let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw AgentServiceError.malformedResponse }
-        if let status = root["status"] as? String, status == "incomplete" { throw AgentServiceError.incomplete((root["incomplete_details"] as? [String: Any])?["reason"] as? String ?? "provider stopped early") }
+        if let status = root["status"] as? String, status == "incomplete" { throw AgentServiceError.incomplete((root["incomplete_details"] as? [String: Any])?["reason"] as? String ?? "模型服务提前停止") }
         if let status = root["status"] as? String, status == "failed" { throw AgentServiceError.malformedResponse }
         if let refusal = root["refusal"] as? String { throw AgentServiceError.refusal(refusal) }
         guard root["status"] as? String == "completed", let output = root["output"] as? [[String: Any]] else { throw AgentServiceError.malformedResponse }

@@ -8,7 +8,7 @@ struct StartEntryView: View {
     @FocusState private var destinationFocused: Bool
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("添加固定入口").font(.headline)
+            Text("添加常用入口").font(.headline)
             Text("名称").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
             TextField("名称", text: $title).textFieldStyle(.roundedBorder).accessibilityIdentifier("start-entry.title")
             Text("地址").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
@@ -36,14 +36,9 @@ struct StartPageView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                Text("从这里开始").font(.system(size: 28, weight: .semibold, design: .rounded))
-                    .padding(.horizontal, 26).padding(.vertical, 16)
-                    .background {
-                        RadialGradient(colors: [Color.accentColor.opacity(0.07), .clear], center: .center, startRadius: 0, endRadius: 150)
-                            .frame(width: 300, height: 300)
-                            .allowsHitTesting(false)
-                    }
+            VStack(alignment: .leading, spacing: 24) {
+                Text("添加资源开始工作").font(.headline)
+                    .padding(.horizontal, 20).padding(.vertical, 10)
                     .frame(maxWidth: .infinity, alignment: .center)
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 12) { actions }
@@ -51,11 +46,11 @@ struct StartPageView: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                resourceSection("固定入口") {
+                resourceSection("常用入口") {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 12)], spacing: 12) {
                         ForEach(pinned) { record in resourceCard(record) }
                         Button { model.openStartEntryPanel() } label: {
-                            VStack(spacing: 9) { Image(systemName: "plus").font(.title2); Text("添加入口") }
+                                VStack(spacing: 9) { Image(systemName: "plus").font(.title2); Text("添加常用入口") }
                                 .frame(maxWidth: .infinity, minHeight: 84)
                         }.buttonStyle(.bordered).buttonBorderShape(.roundedRectangle(radius: 12)).studioHoverLift().accessibilityIdentifier("start.add-pin")
                     }
@@ -74,7 +69,7 @@ struct StartPageView: View {
                 }.font(.caption).foregroundStyle(.secondary).frame(maxWidth: .infinity)
             }
             .frame(maxWidth: 650)
-            .padding(.horizontal, 36).padding(.vertical, 70)
+            .padding(.horizontal, 36).padding(.vertical, 24)
             .frame(maxWidth: .infinity)
         }
         .accessibilityIdentifier("start.page")
@@ -125,14 +120,14 @@ struct StartPageView: View {
                 if model.isPinned(record.id) {
                     Button("取消固定") { model.unpinDestination(for: record.id) }
                 } else {
-                    Button("固定入口") { model.pinDestination(for: record.id) }
+                    Button("添加常用入口") { model.pinDestination(for: record.id) }
                 }
             }
     }
 
     private func detail(for record: ResourceRecord) -> String {
         switch record.location {
-        case let .web(url): return url?.absoluteString ?? "New Tab"
+        case let .web(url): return url?.absoluteString ?? "空白网页"
         case let .localTerminal(directory): return directory ?? "本地终端"
         case let .ssh(host, user, port): return "\(user.isEmpty ? "" : user + "@")\(host):\(port)"
         }
