@@ -43,17 +43,31 @@ struct TerminalTests {
 
     @Test func interactiveShellRespondsToCtrlCAndContinues() async {
         let terminal = session()
+        var diagnosticNeeded = false
         terminal.startLocal(directory: "/tmp")
-        #expect(await waitFor({ terminal.state == .running }))
+        let running = await waitFor({ terminal.state == .running })
+        diagnosticNeeded = diagnosticNeeded || !running
+        #expect(running)
         terminal.send(data: Data("stty -echo\nprintf '__READY_%s__\\n' 'PTY'\n".utf8))
-        #expect(await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__READY_PTY__") == true })
+        let ready = await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__READY_PTY__") == true }
+        diagnosticNeeded = diagnosticNeeded || !ready
+        #expect(ready)
         terminal.send(data: Data("i=0; while true; do i=$((i+1)); printf '__TICK_%s__\\n' \"$i\"; sleep 0.05; done\n".utf8))
-        #expect(await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__TICK_3__") == true })
+        let ticking = await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__TICK_3__") == true }
+        diagnosticNeeded = diagnosticNeeded || !ticking
+        #expect(ticking)
         try? await Task.sleep(for: .milliseconds(150))
         terminal.send(data: Data([3]))
         try? await Task.sleep(for: .milliseconds(150))
         terminal.send(data: Data("printf '__AFTER_%s__\\n' 'INT'\n".utf8))
-        #expect(await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__AFTER_INT__") == true })
+        let continued = await waitFor { String(data: terminal.renderedSnapshot(), encoding: .utf8)?.contains("__AFTER_INT__") == true }
+        diagnosticNeeded = diagnosticNeeded || !continued
+        #expect(continued)
+        if diagnosticNeeded {
+            let snapshot = String(data: terminal.renderedSnapshot(), encoding: .utf8) ?? "<snapshot unavailable>"
+            print("Ctrl+C diagnostic snapshot (last 20 lines):")
+            print(snapshot.split(separator: "\n", omittingEmptySubsequences: false).suffix(20).joined(separator: "\n"))
+        }
         terminal.send(data: Data("exit\n".utf8))
         await terminal.closeAndWait()
     }

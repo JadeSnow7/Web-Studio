@@ -54,3 +54,9 @@
 ## 指定用例复跑计数 — 2026-10-02
 
 `interactiveShellRespondsToCtrlCAndContinues()`，串行 10 次：通过 10 次，失败 0 次，未运行或未能确认执行 0 次。
+
+## Ctrl+C 完整套件诊断 — 2026-10-03
+
+五轮连续完整 `Web StudioTests` 在被测 HEAD `82c29eaaee64a3ceb0cf15fa0f32d24fadd6184d` 上执行；执行时工作树仅有本文件的未提交 B1 记录修改。每轮 xcodebuild 退出码均为 `0`，xcresult 均为 283 总数、283 通过、0 失败、0 跳过；`interactiveShellRespondsToCtrlCAndContinues()` 五轮均通过。原始日志和 xcresult 保存在 `/private/tmp/ws-phase2/unit-round-{1..5}.{log,xcresult}`，执行绑定与限制见 `/Users/huaodong/Documents/Codex/2026-10-02/files-pasted-by-the-user-main/work/web-phase2/diagnostic-evidence.json`。
+
+偶发失败未复现，根因未知。测试保留原有两个 150ms 等待和原有等待条件；仅在原等待条件为 false 时输出终端快照最后 20 行。用户于 2026-10-03 接受在根因未知状态下继续。
