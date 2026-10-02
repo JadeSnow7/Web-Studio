@@ -1,5 +1,7 @@
 # 终端自动化测试记录
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../STATUS.md)。 本文所链接的 `/private/tmp` 原始工件在本次核查中已不存在；路径保留供历史追溯，不能作为现可打开的证据。
+
 日期：2026-09-13，Asia/Shanghai。
 
 结论：现有非沙箱本地验证应用通过本次原生界面交互检查；当前源码的默认沙箱构建完成，但 TerminalTests 为 3 通过、3 失败，共 10 个断言失败。两种构建的证据不能混用。
@@ -77,10 +79,10 @@ xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' \
 
 ## SSH 后续验证
 
-用户指定 `ubuntu@106.54.188.236` 后，使用同一非沙箱应用连接。首次 ED25519 指纹与本机 `/Users/huaodong/.ssh/known_hosts` 中该主机的已存记录一致，核对后继续认证。实际进入 password 提示，尚未证明登录成功。
+用户指定 `<user>@<ssh-host>` 后，使用同一非沙箱应用连接。首次 ED25519 指纹与本机 `/Users/huaodong/.ssh/known_hosts` 中该主机的已存记录一致，核对后继续认证。实际进入 password 提示，尚未证明登录成功。
 
-第一次会话随后显示 `Connection closed by 106.54.188.236 port 22`、`Exited (255)`；资源切换正常，未观察到整个 UI 卡死，服务端关闭的具体原因未确定。
+第一次会话随后显示 `Connection closed by <ssh-host> port 22`、`Exited (255)`；资源切换正常，未观察到整个 UI 卡死，服务端关闭的具体原因未确定。
 
-第二次连接由用户自行输入密码，界面显示两次 `Permission denied, please try again.`，随后显示 `ubuntu@106.54.188.236: Permission denied (publickey,password).`、`Exited (255)`。已确认认证失败，不能仅据客户端提示断定密码错误、账户策略或输入传递的具体原因。未自动重试密码。
+第二次连接由用户自行输入密码，界面显示两次 `Permission denied, please try again.`，随后显示 `<user>@<ssh-host>: Permission denied (publickey,password).`、`Exited (255)`。已确认认证失败，不能仅据客户端提示断定密码错误、账户策略或输入传递的具体原因。未自动重试密码。
 
 当前源码 `TerminalSession.startSSH` 显式使用 `-F /dev/null`、`IdentityAgent=none`、`IdentityFile=none`，因此不复用用户 SSH 配置、agent 或默认身份文件。需要与系统 Terminal 的登录方式对照；普通系统 SSH 使用密钥成功不等于此应用的密码认证应当成功。远程命令、远程 Ctrl+C、远程尺寸和正常退出仍未验收。

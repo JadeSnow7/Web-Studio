@@ -15,3 +15,108 @@ target/
 .env
 .env.*
 !.env.example
+.claude/
+.playwright-mcp/
+*.profraw
+__pycache__/
+*.pyc
+.build/
+output/test-releases/
+
+# Phase 1: raw evidence stays local; retain reviewed files explicitly.
+
+# Retain reviewed summaries, patches and manifest: output/interaction-research-20260917/evidence
+/output/interaction-research-20260917/evidence/**
+!/output/interaction-research-20260917/evidence/EVIDENCE-MANIFEST.sha256
+
+# Retain reviewed summaries, patches and manifest: output/terminal-vt-migration/evidence
+/output/terminal-vt-migration/evidence/**
+!/output/terminal-vt-migration/evidence/performance-alignment-20260916/
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/
+!/output/terminal-vt-migration/evidence/performance-normalized-20260916/
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/experiments/
+!/output/terminal-vt-migration/evidence/EVIDENCE-MANIFEST.sha256
+!/output/terminal-vt-migration/evidence/m2-followup-skill-additional.md
+!/output/terminal-vt-migration/evidence/m2-resume-results.md
+!/output/terminal-vt-migration/evidence/performance-alignment-20260916/REPORT.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/CHECKPOINT-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/CLEAN-IDLE-RESULTS.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/CLEAN-OUTPUT-RESULTS.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/CONCURRENT-PROTOCOL-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/CONCURRENT-RESULTS-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/HISTORY-INTERACTION-RESULTS-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/MEMORY-SNAPSHOT-RESULTS-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/MIXED-DIAGNOSTIC.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/PROTOCOL.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/REPORT.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/RESULTS-20260917.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/UNICODE-DIAGNOSTIC-PROTOCOL.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/UNICODE-DIAGNOSTIC-RESULTS.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/experiments/font-frame-cache.patch
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/experiments/history-limit-normalization.patch
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/pilot-findings.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/session-interruptions.md
+!/output/terminal-vt-migration/evidence/performance-investigation-20260916/source-paths.md
+!/output/terminal-vt-migration/evidence/performance-normalized-20260916/RESULTS.md
+
+# Retain reviewed summaries, patches and manifest: records/PERF-20260917/evidence
+/records/PERF-20260917/evidence/**
+!/records/PERF-20260917/evidence/EVIDENCE-MANIFEST.sha256
+!/records/PERF-20260917/evidence/W1-RESULTS.draft.md
+!/records/PERF-20260917/evidence/candidate.diff
+!/records/PERF-20260917/evidence/staged.patch
+!/records/PERF-20260917/evidence/unstaged.patch
+!/records/PERF-20260917/evidence/w0-source-review.md
+!/records/PERF-20260917/evidence/w1-offscreen-protocol.md
+!/records/PERF-20260917/evidence/w1-protocol.md
+
+# Retain reviewed summaries, patches and manifest: records/PERF-20260929/evidence
+/records/PERF-20260929/evidence/**
+!/records/PERF-20260929/evidence/patches/
+!/records/PERF-20260929/evidence/EVIDENCE-MANIFEST.sha256
+!/records/PERF-20260929/evidence/patches/A1.diff
+!/records/PERF-20260929/evidence/patches/B1-B4.diff
+!/records/PERF-20260929/evidence/patches/B2-only.diff
+!/records/PERF-20260929/evidence/patches/B3-only.diff
+!/records/PERF-20260929/evidence/patches/B4-only.diff
+!/records/PERF-20260929/evidence/patches/R1.diff
+!/records/PERF-20260929/evidence/patches/R1R2.diff
+!/records/PERF-20260929/evidence/patches/V1-V4.diff
+!/records/PERF-20260929/evidence/patches/V4d-optional.diff
+
+# Retain reviewed summaries, patches and manifest: records/PERF-20260930-R2/evidence
+/records/PERF-20260930-R2/evidence/**
+!/records/PERF-20260930-R2/evidence/patches/
+!/records/PERF-20260930-R2/evidence/reports/
+!/records/PERF-20260930-R2/evidence/EVIDENCE-MANIFEST.sha256
+!/records/PERF-20260930-R2/evidence/patches/B1L-leading-edge-CANDIDATE-not-applied.diff
+!/records/PERF-20260930-R2/evidence/patches/B1L-measurement-tools.diff
+!/records/PERF-20260930-R2/evidence/patches/R3-incremental-atlas.diff
+!/records/PERF-20260930-R2/evidence/patches/T3-input-order-drops.diff
+!/records/PERF-20260930-R2/evidence/patches/T4-scrollback-10MB.diff
+!/records/PERF-20260930-R2/evidence/patches/T5-progress-mirror.diff
+!/records/PERF-20260930-R2/evidence/reports/B1L-leading-edge-report.md
+!/records/PERF-20260930-R2/evidence/reports/R3-report.md
+!/records/PERF-20260930-R2/evidence/reports/T3-report.md
+!/records/PERF-20260930-R2/evidence/reports/T4-scrollback-report.md
+!/records/PERF-20260930-R2/evidence/reports/T4-scrollback-tables.md
+
+# Retain reviewed summaries, patches and manifest: records/WORKSPACE-B1-20260917/evidence
+/records/WORKSPACE-B1-20260917/evidence/**
+!/records/WORKSPACE-B1-20260917/evidence/EVIDENCE-MANIFEST.sha256
+!/records/WORKSPACE-B1-20260917/evidence/p0-first-review.md
+!/records/WORKSPACE-B1-20260917/evidence/p0-premium-review.md
+!/records/WORKSPACE-B1-20260917/evidence/p0-repair-review.md
+!/records/WORKSPACE-B1-20260917/evidence/p0-review-checklist.md
+!/records/WORKSPACE-B1-20260917/evidence/preparation-SPEC.md
+
+# Retain reviewed summaries, patches and manifest: records/WORKSPACE-B1-20260917/review-fixes/evidence
+/records/WORKSPACE-B1-20260917/review-fixes/evidence/**
+!/records/WORKSPACE-B1-20260917/review-fixes/evidence/EVIDENCE-MANIFEST.sha256
+
+Claude outputs/
+
+# Original documentation audit records are retained locally.
+/records/DOCS-20260926/baseline-sha256.json
+/records/DOCS-20260926/baseline-status.txt
+/records/DOCS-20260926/xctest-history-excerpts.json

@@ -1,8 +1,10 @@
 # SSH 免密登录修复与实机验收
 
+> 文档状态标注（2026-09-26）：本文保留原日期、原版本的设计或验收事实，不表示当前版本已通过相同检查。当前实现、后续修复和验收缺口见 [状态总览](../STATUS.md)。 本文所链接的 `/private/tmp` 原始工件在本次核查中已不存在；路径保留供历史追溯，不能作为现可打开的证据。
+
 日期：2026-09-13，Asia/Shanghai。
 
-结论：修正后的独立非沙箱验证应用已两次免密登录用户指定的 `ubuntu@106.54.188.236`。远程命令、Ctrl+C、正常退出和重连通过。远程运行期间的窗口尺寸同步观察到异常，未通过该项验收。默认 App Sandbox 的既有 PTY 限制未解决。
+结论：修正后的独立非沙箱验证应用已两次免密登录用户指定的 `<user>@<ssh-host>`。远程命令、Ctrl+C、正常退出和重连通过。远程运行期间的窗口尺寸同步观察到异常，未通过该项验收。默认 App Sandbox 的既有 PTY 限制未解决。
 
 ## 修改与审查
 
@@ -38,7 +40,7 @@ xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' \
 ## 真实连接证据
 
 1. 系统 SSH 基线使用 BatchMode=yes、StrictHostKeyChecking=yes，返回 `__WS_SSH_BASELINE__` 和 `ubuntu`，退出码 0；没有输入密码。
-2. 新应用通过地址栏连接 `ssh://ubuntu@106.54.188.236`，直接出现远程 shell。未出现密码提示。
+2. 新应用通过地址栏连接 `ssh://<user>@<ssh-host>`，直接出现远程 shell。未出现密码提示。
 3. 应用内执行 printf 标记、`id -un`、`tty` 和 `stty size`，分别观察到 `__WS_SSH_GUI__`、`ubuntu`、`/dev/pts/1`、`50 100`。
 4. `sleep 30` 被 Ctrl+C 中断，随后输出 `__SSH_AFTER_CTRL_C__`。
 5. 调整窗口后再次读取远程 `stty size`，仍为 `50 100`，因此运行期尺寸更新未通过；`exit` 后应用显示 `Exited (0)`。
