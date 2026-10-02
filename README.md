@@ -103,6 +103,9 @@ xcodebuild -project 'Web Studio.xcodeproj' -scheme 'Web Studio' \
   test -only-testing:'Web StudioTests' -parallel-testing-enabled NO
 ```
 
+Run `./scripts/check.sh` for the build and unit-test check; add `--ui` to append the UI test target.
+The check disables automatic package updates, uses the existing local package cache, and reports Swift Testing counts from each xcresult bundle; a new machine still needs its local package cache.
+
 Model and Agent offline tests explicitly disable terminal process launch or inject test providers. The historical Ghostty checkpoint passed 107 tests; it is retained in the [Ghostty acceptance report](output/ghostty-integration-acceptance.md). The later B1 checkpoint passed 255 tests, and the September 19 affected repair regression passed 163 tests. These are different scopes, not additive totals. The September 18 full XCTest rerun recorded 12 UI failures; the later targeted repairs did not rerun the full UI suite. See [current evidence and limits](STATUS.md). Full IME composition, remote SSH, TUI-specific behavior, developer signing/notarization, Intel, and App Store targets remain outside that acceptance. See [start-page and chat acceptance](output/start-chat/acceptance.md) for the separate UI scope.
 
 No distribution signing, release publication, or system-setting change is implied by this build. Bundle identifier: `com.huaodong.Web-Studio`.
