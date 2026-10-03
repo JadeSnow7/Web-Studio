@@ -21,6 +21,7 @@ struct AgentQuestion: Identifiable, Equatable, Sendable {
   var previewConfirmed: Bool
   var messages: [AgentMessage]
   var runHistory: [UUID: AgentRun]
+  var latestRunID: UUID?
 }
 struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
   let questionID: UUID
@@ -38,23 +39,31 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
   @Published private(set) var currentQuestionID: UUID
   @Published private(set) var activeRequest: ActiveAgentRequest?
   @Published private(set) var isCancellingRequest = false
-  @Published var question = "" { didSet { updateDraft() } }
-  @Published private(set) var selectedResourceIDs: [UUID] = []
-  @Published private(set) var previewSnapshots: [ResourceSnapshot] = []
-  @Published private(set) var run: AgentRun?
-  @Published private(set) var messages: [AgentMessage] = []
-  @Published private(set) var runHistory: [UUID: AgentRun] = [:]
-  @Published private(set) var isReading = false
-  @Published private(set) var previewError: String?
+  private var currentQuestion: AgentQuestion { questions[currentQuestionID]! }
+  var question: String {
+    get { currentQuestion.draft }
+    set {
+      guard !isShutdown else { return }
+      questions[currentQuestionID]!.draft = newValue
+    }
+  }
+  var selectedResourceIDs: [UUID] { currentQuestion.selectedResourceIDs }
+  var previewSnapshots: [ResourceSnapshot] { currentQuestion.snapshots }
+  var run: AgentRun? {
+    currentQuestion.latestRunID.flatMap { currentQuestion.runHistory[$0] }
+  }
+  var messages: [AgentMessage] { currentQuestion.messages }
+  var runHistory: [UUID: AgentRun] { currentQuestion.runHistory }
+  var isReading: Bool { reads[currentQuestionID]?.task != nil }
+  var previewError: String? { previewSnapshots.first(where: { $0.errorMessage != nil })?.errorMessage }
   var isRequesting: Bool { activeRequest != nil || isCancellingRequest }
   private let reader: @Sendable (UUID, Int) async -> ResourceSnapshot
-  private var readTask: Task<Void, Never>?
   private var runTask: Task<Void, Never>?
-  private var readTasks: [UUID: Task<Void, Never>] = [:]
-  private var readGenerations: [UUID: Int] = [:]
-  private var readingQuestions: Set<UUID> = []
-  private var latestRunIDs: [UUID: UUID] = [:]
-  private var readGeneration = 0
+  private struct QuestionRead {
+    let generation: Int
+    var task: Task<Void, Never>?
+  }
+  @Published private var reads: [UUID: QuestionRead] = [:]
   private var requestGeneration = 0
   private var pendingRequestCleanupID: UUID?
   private var retiredTasks: [Task<Void, Never>] = []
@@ -83,11 +92,10 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
       previewSnapshots.map(\.resourceID) == selectedResourceIDs,
       !previewSnapshots.contains(where: { $0.errorMessage != nil }), configuration != nil
     else { return false }
-    return questions[currentQuestionID]?.previewConfirmed == true
+    return currentQuestion.previewConfirmed
   }
   @discardableResult func newQuestion() -> UUID? {
     guard !isShutdown else { return nil }
-    persist()
     let id = UUID()
     questions[id] = AgentQuestion(
       id: id, draft: "", selectedResourceIDs: [], snapshots: [], previewConfirmed: false, messages: [], runHistory: [:])
@@ -96,44 +104,31 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     return id
   }
   func selectQuestion(_ id: UUID) {
-    guard !isShutdown, id != currentQuestionID, let q = questions[id] else { return }
-    persist()
+    guard !isShutdown, id != currentQuestionID, questions[id] != nil else { return }
     currentQuestionID = id
-    load(q)
   }
   func run(for id: UUID) -> AgentRun? { questions.values.compactMap { $0.runHistory[id] }.first }
   func addResource(_ id: UUID) {
     guard !isShutdown, store.records[id] != nil, !selectedResourceIDs.contains(id) else { return }
-    selectedResourceIDs.append(id)
+    questions[currentQuestionID]!.selectedResourceIDs.append(id)
     invalidate()
-    persist()
   }
   func removeResource(_ id: UUID) {
-    selectedResourceIDs.removeAll { $0 == id }
+    questions[currentQuestionID]!.selectedResourceIDs.removeAll { $0 == id }
     invalidate()
-    persist()
   }
 
   func readPreview() {
     guard !isShutdown else { return }
-    persist()
     let questionID = currentQuestionID
-    if let old = readTasks[questionID] {
+    if let old = reads[questionID]?.task {
       retiredTasks.append(old)
       old.cancel()
-      readTasks[questionID] = nil
     }
-    readTask = nil
-    readGeneration += 1
     let ids = selectedResourceIDs
-    let token = (readGenerations[questionID] ?? 0) + 1
-    readGenerations[questionID] = token
-    readingQuestions.insert(questionID)
-    previewSnapshots = []
-    previewError = nil
-    isReading = true
+    let token = (reads[questionID]?.generation ?? 0) + 1
     setSnapshots([], confirmed: false)
-    readTask = Task { [weak self] in
+    let task = Task { [weak self] in
       guard let self else { return }
       var snapshots: [ResourceSnapshot] = []
       var total = 0
@@ -163,21 +158,13 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
       }
       guard !Task.isCancelled else { return }
       await MainActor.run { [weak self] in
-        guard let self, !self.isShutdown, self.readGenerations[questionID] == token, self.questions[questionID] != nil
-        else { return }
-        self.readingQuestions.remove(questionID)
-        self.questions[questionID]?.snapshots = snapshots
-        self.questions[questionID]?.previewConfirmed = false
-        self.readTasks[questionID] = nil
-        if self.currentQuestionID == questionID {
-          self.previewSnapshots = snapshots
-          self.previewError = snapshots.first(where: { $0.errorMessage != nil })?.errorMessage
-          self.isReading = false
-          self.persist()
-        }
+        guard let self, !self.isShutdown, self.reads[questionID]?.generation == token else { return }
+        self.questions[questionID]!.snapshots = snapshots
+        self.questions[questionID]!.previewConfirmed = false
+        self.reads[questionID]!.task = nil
       }
     }
-    readTasks[questionID] = readTask!
+    reads[questionID] = QuestionRead(generation: token, task: task)
   }
   @discardableResult func confirmPreview() -> Bool {
     guard !isShutdown, !isReading, !selectedResourceIDs.isEmpty, previewSnapshots.count == selectedResourceIDs.count,
@@ -185,27 +172,39 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
       !previewSnapshots.contains(where: { $0.errorMessage != nil })
     else { return false }
     setSnapshots(previewSnapshots, confirmed: true)
-    persist()
     return true
   }
   func send() {
-    guard canSend, let config = configuration, let q = questions[currentQuestionID] else { return }
-    persist()
+    guard canSend, let config = configuration else { return }
+    let q = currentQuestion
     let request = AgentRequest(question: q.draft, snapshots: q.snapshots, configuration: config)
     let created = AgentRun(id: UUID(), questionID: q.id, request: request, state: .requesting)
-    activeRequest = ActiveAgentRequest(questionID: q.id, runID: created.id, request: request)
-    latestRunIDs[q.id] = created.id
-    run = created
-    runHistory[created.id] = created
-    messages.append(AgentMessage(runID: created.id, role: .user, text: request.question))
+    questions[q.id]!.latestRunID = created.id
+    questions[q.id]!.runHistory[created.id] = created
+    questions[q.id]!.messages.append(AgentMessage(runID: created.id, role: .user, text: request.question))
     question = ""
-    persist()
+    startRequest(created)
+  }
+  func retry(questionID: UUID? = nil) {
+    guard !isShutdown, activeRequest == nil, pendingRequestCleanupID == nil else { return }
+    let id = questionID ?? currentQuestionID
+    guard let q = questions[id], let runID = q.latestRunID, let prior = q.runHistory[runID], prior.state.retryable
+    else {
+      return
+    }
+    let retried = AgentRun(id: UUID(), questionID: id, request: prior.request, state: .requesting)
+    questions[id]!.runHistory[retried.id] = retried
+    questions[id]!.latestRunID = retried.id
+    startRequest(retried)
+  }
+  private func startRequest(_ created: AgentRun) {
+    activeRequest = ActiveAgentRequest(questionID: created.questionID, runID: created.id, request: created.request)
     requestGeneration += 1
     let token = requestGeneration
     runTask = Task { [weak self, service] in
       do {
         try Task.checkCancellation()
-        let answer = try await service.answer(request: request)
+        let answer = try await service.answer(request: created.request)
         try Task.checkCancellation()
         await MainActor.run {
           self?.finish(created, state: .completed(answer), token: token)
@@ -222,42 +221,6 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
       }
     }
   }
-  func retry(questionID: UUID? = nil) {
-    guard !isShutdown, activeRequest == nil, pendingRequestCleanupID == nil else { return }
-    let id = questionID ?? currentQuestionID
-    guard let runID = latestRunIDs[id], let prior = questions[id]?.runHistory[runID], prior.state.retryable else {
-      return
-    }
-    let retried = AgentRun(id: UUID(), questionID: id, request: prior.request, state: .requesting)
-    questions[id]?.runHistory[retried.id] = retried
-    latestRunIDs[id] = retried.id
-    activeRequest = ActiveAgentRequest(questionID: id, runID: retried.id, request: prior.request)
-    if id == currentQuestionID {
-      run = retried
-      runHistory[retried.id] = retried
-    }
-    requestGeneration += 1
-    let token = requestGeneration
-    runTask = Task { [weak self, service] in
-      do {
-        try Task.checkCancellation()
-        let answer = try await service.answer(request: prior.request)
-        try Task.checkCancellation()
-        await MainActor.run {
-          self?.finish(retried, state: .completed(answer), token: token)
-          self?.releaseRequestSlot(retried.id)
-        }
-      } catch {
-        await MainActor.run {
-          self?.finish(
-            retried,
-            state: (error as? AgentServiceError) == .cancelled
-              ? .cancelled : .failed((error as? LocalizedError)?.errorDescription ?? "Agent 请求失败"), token: token)
-          self?.releaseRequestSlot(retried.id)
-        }
-      }
-    }
-  }
   func cancel(questionID: UUID? = nil) {
     if let questionID { cancelReading(questionID: questionID) } else { cancelReading() }
     guard let active = activeRequest, questionID == nil || active.questionID == questionID else { return }
@@ -270,36 +233,24 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     }
     if var r = questions[active.questionID]?.runHistory[active.runID] {
       r.state = .cancelled
-      questions[active.questionID]?.runHistory[active.runID] = r
-      if active.questionID == currentQuestionID {
-        run = r
-        runHistory[active.runID] = r
-      }
+      questions[active.questionID]!.runHistory[active.runID] = r
     }
     activeRequest = nil
     runTask = nil
   }
   func cancelReading(questionID: UUID? = nil) {
     let id = questionID ?? currentQuestionID
-    readGenerations[id, default: 0] += 1
-    if let task = readTasks[id] {
+    guard questions[id] != nil else { return }
+    let generation = (reads[id]?.generation ?? 0) + 1
+    if let task = reads[id]?.task {
       retiredTasks.append(task)
       task.cancel()
     }
-    readTasks[id] = nil
-    readingQuestions.remove(id)
-    if id == currentQuestionID {
-      readGeneration += 1
-      readTask = nil
-      isReading = false
-    }
+    reads[id] = QuestionRead(generation: generation, task: nil)
   }
   func newChat() {
     cancel()
     cancelAllReads()
-    readingQuestions.removeAll()
-    readGenerations.removeAll()
-    latestRunIDs.removeAll()
     let id = currentQuestionID
     questions = [
       id: AgentQuestion(
@@ -307,7 +258,6 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
         runHistory: [:])
     ]
     questionOrder = [id]
-    load(questions[id]!)
   }
   func shutdown() {
     isShutdown = true
@@ -322,7 +272,7 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     isShutdown = true
     cancel()
     cancelAllReads()
-    let pending = retiredTasks + [readTask, runTask].compactMap { $0 }
+    let pending = retiredTasks + [runTask].compactMap { $0 }
     retiredTasks.removeAll()
     let task = Task { for t in pending { await t.value } }
     shutdownTask = task
@@ -333,23 +283,11 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     guard !isShutdown, requestGeneration == token, activeRequest?.runID == created.id else { return }
     var updated = created
     updated.state = state
-    questions[created.questionID]?.runHistory[created.id] = updated
-    questions[created.questionID]?.messages.append(
-      contentsOf: {
-        if case .completed(let answer) = state {
-          return [AgentMessage(runID: created.id, role: .assistant, text: answer)]
-        }
-        return []
-      }())
-    latestRunIDs[created.questionID] = created.id
-    if created.questionID == currentQuestionID {
-      run = updated
-      runHistory[created.id] = updated
-      if case .completed(let answer) = state {
-        messages.append(AgentMessage(runID: created.id, role: .assistant, text: answer))
-      }
-      persist()
+    questions[created.questionID]!.runHistory[created.id] = updated
+    if case .completed(let answer) = state {
+      questions[created.questionID]!.messages.append(AgentMessage(runID: created.id, role: .assistant, text: answer))
     }
+    questions[created.questionID]!.latestRunID = created.id
     activeRequest = nil
     runTask = nil
   }
@@ -359,54 +297,22 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
       isCancellingRequest = false
     }
   }
-  private func updateDraft() {
-    guard !isShutdown, questions[currentQuestionID]?.draft != question else { return }
-    questions[currentQuestionID]?.draft = question
-  }
-  private func persist() {
-    guard var q = questions[currentQuestionID] else { return }
-    q.draft = question
-    q.selectedResourceIDs = selectedResourceIDs
-    q.snapshots = previewSnapshots
-    q.previewConfirmed = q.previewConfirmed && !previewSnapshots.isEmpty
-    q.messages = messages
-    q.runHistory = runHistory
-    questions[currentQuestionID] = q
-  }
-  private func load(_ q: AgentQuestion) {
-    question = q.draft
-    selectedResourceIDs = q.selectedResourceIDs
-    previewSnapshots = q.snapshots
-    previewError = q.snapshots.first(where: { $0.errorMessage != nil })?.errorMessage
-    messages = q.messages
-    runHistory = q.runHistory
-    run = latestRunIDs[q.id].flatMap { q.runHistory[$0] }
-    isReading = readingQuestions.contains(q.id)
-  }
-  private func setSnapshots(_ s: [ResourceSnapshot], confirmed: Bool) {
-    questions[currentQuestionID]?.snapshots = s
-    questions[currentQuestionID]?.previewConfirmed = confirmed
+  private func setSnapshots(_ snapshots: [ResourceSnapshot], confirmed: Bool) {
+    questions[currentQuestionID]!.snapshots = snapshots
+    questions[currentQuestionID]!.previewConfirmed = confirmed
   }
   private func invalidate() {
     cancelReading()
-    previewSnapshots = []
-    previewError = nil
     setSnapshots([], confirmed: false)
   }
-  private func retireRead() {
-    if let readTask { retiredTasks.append(readTask) }
-    readTask = nil
-  }
   private func cancelAllReads() {
-    let tasks = Array(readTasks.values)
-    tasks.forEach {
-      retiredTasks.append($0)
-      $0.cancel()
+    for read in reads.values {
+      if let task = read.task {
+        retiredTasks.append(task)
+        task.cancel()
+      }
     }
-    readTasks.removeAll()
-    readingQuestions.removeAll()
-    readTask = nil
-    isReading = false
+    reads.removeAll()
   }
 }
 extension AgentRunState {
