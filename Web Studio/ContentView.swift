@@ -134,8 +134,9 @@ struct StudioCommand: Identifiable {
   let targetResourceID: UUID?
   let action: StudioCommandAction
   let subtitle: String?
-  init(title: String, shortcut: String, targetResourceID: UUID? = nil, subtitle: String? = nil, action: StudioCommandAction)
-  {
+  init(
+    title: String, shortcut: String, targetResourceID: UUID? = nil, subtitle: String? = nil, action: StudioCommandAction
+  ) {
     self.title = title
     self.shortcut = shortcut
     self.targetResourceID = targetResourceID
@@ -332,7 +333,9 @@ struct StudioCommand: Identifiable {
     let resourceID: UUID
     let instanceID: UUID?
     init(owner: WorkspaceSession, resourceID: UUID, instanceID: UUID?) {
-      self.owner = owner; self.resourceID = resourceID; self.instanceID = instanceID
+      self.owner = owner
+      self.resourceID = resourceID
+      self.instanceID = instanceID
     }
   }
   var destinationPresented: Bool {
@@ -345,7 +348,12 @@ struct StudioCommand: Identifiable {
   }
   var groupEditorPresented: Bool {
     get { panels.isGroupEditorPresented }
-    set { if !newValue { creatingGroup = false; dismissPanel() } }
+    set {
+      if !newValue {
+        creatingGroup = false
+        dismissPanel()
+      }
+    }
   }
   var resourceEditorPresented: Bool {
     if case .resourceEditor = panels.panel { return true }
@@ -532,7 +540,9 @@ struct StudioCommand: Identifiable {
       }
       if self.webStates[id] != state { self.webStates[id] = state }
       let mirror = state.toolbarMirror
-      if self.session === owner, self.selectedTabID == id, self.activeWebState != mirror { self.activeWebState = mirror }
+      if self.session === owner, self.selectedTabID == id, self.activeWebState != mirror {
+        self.activeWebState = mirror
+      }
     }
     // WorkspaceSession waits for Agent cleanup before shutting down its store.
     store.onShutdown = { [weak owner] in owner?.agentController.shutdown() }
@@ -584,7 +594,10 @@ struct StudioCommand: Identifiable {
       workspaceNotice = "归档未完成，配置仍保持打开。"
       return false
     }
-    if session.id == id { dismissPanel(restoreFocus: false); cancelAddressEditing() }
+    if session.id == id {
+      dismissPanel(restoreFocus: false)
+      cancelAddressEditing()
+    }
     reconcileActiveWorkspace(launch: launch)
     return true
   }
@@ -670,8 +683,14 @@ struct StudioCommand: Identifiable {
       splitPickerPresented = true
       return
     }
-    if let resourceID, layout.primary.resourceID == resourceID { focusPane(layout.primary.id); return }
-    if let resourceID, let secondary = layout.secondary, secondary.resourceID == resourceID { focusPane(secondary.id); return }
+    if let resourceID, layout.primary.resourceID == resourceID {
+      focusPane(layout.primary.id)
+      return
+    }
+    if let resourceID, let secondary = layout.secondary, secondary.resourceID == resourceID {
+      focusPane(secondary.id)
+      return
+    }
     guard layout.secondary == nil, let primary = layout.primary.resourceID else { return }
     guard let resourceID, webRuntimes.records[resourceID] != nil, resourceID != primary else { return }
     let candidate = resourceID
@@ -679,29 +698,52 @@ struct StudioCommand: Identifiable {
     layout.splitRatio = 0.5
   }
   func chooseSplitResource(_ resourceID: UUID) {
-    guard splitPickerWorkspaceID == session.id, !session.isClosed else { splitPickerPresented = false; return }
+    guard splitPickerWorkspaceID == session.id, !session.isClosed else {
+      splitPickerPresented = false
+      return
+    }
     splitPickerPresented = false
     split(resourceID: resourceID)
   }
   func showResource(_ resourceID: UUID, in pane: PaneState) {
     guard !session.isClosed, !windowCoordinator.isClosing, webRuntimes.records[resourceID] != nil else { return }
-    if layout.primary.resourceID == resourceID { focusPane(layout.primary.id); return }
-    if let secondary = layout.secondary, secondary.resourceID == resourceID { focusPane(secondary.id); return }
-    if pane.id == layout.primary.id { layout.primary.resourceID = resourceID }
-    else if var secondary = layout.secondary, secondary.id == pane.id { secondary.resourceID = resourceID; layout.secondary = secondary }
+    if layout.primary.resourceID == resourceID {
+      focusPane(layout.primary.id)
+      return
+    }
+    if let secondary = layout.secondary, secondary.resourceID == resourceID {
+      focusPane(secondary.id)
+      return
+    }
+    if pane.id == layout.primary.id {
+      layout.primary.resourceID = resourceID
+    } else if var secondary = layout.secondary, secondary.id == pane.id {
+      secondary.resourceID = resourceID
+      layout.secondary = secondary
+    }
     focusPane(pane.id)
     refreshActiveWebState()
   }
   func showResourceOnRight(_ resourceID: UUID) {
     guard !session.isClosed, !windowCoordinator.isClosing,
-      layout.primary.resourceID != nil, webRuntimes.records[resourceID] != nil else { return }
-    if layout.primary.resourceID == resourceID { focusPane(layout.primary.id); return }
-    if let secondary = layout.secondary { showResource(resourceID, in: secondary); return }
+      layout.primary.resourceID != nil, webRuntimes.records[resourceID] != nil
+    else { return }
+    if layout.primary.resourceID == resourceID {
+      focusPane(layout.primary.id)
+      return
+    }
+    if let secondary = layout.secondary {
+      showResource(resourceID, in: secondary)
+      return
+    }
     layout.secondary = PaneState(resourceID: resourceID, isFocused: false)
     layout.splitRatio = 0.5
   }
   func splitWithNewWeb() {
-    guard splitPickerWorkspaceID == session.id, !session.isClosed, !windowCoordinator.isClosing else { splitPickerPresented = false; return }
+    guard splitPickerWorkspaceID == session.id, !session.isClosed, !windowCoordinator.isClosing else {
+      splitPickerPresented = false
+      return
+    }
     guard layout.secondary == nil, let primary = layout.primary.resourceID else { return }
     let id = webRuntimes.registerWeb(groupID: session.id)
     layout.secondary = PaneState(resourceID: id, isFocused: false)
@@ -710,7 +752,10 @@ struct StudioCommand: Identifiable {
     _ = primary
   }
   func splitWithNewTerminal() {
-    guard splitPickerWorkspaceID == session.id, !session.isClosed, !windowCoordinator.isClosing else { splitPickerPresented = false; return }
+    guard splitPickerWorkspaceID == session.id, !session.isClosed, !windowCoordinator.isClosing else {
+      splitPickerPresented = false
+      return
+    }
     guard layout.secondary == nil, layout.primary.resourceID != nil else { return }
     let cwd = session.directory ?? FileManager.default.homeDirectoryForCurrentUser.path
     let id = webRuntimes.registerLocalTerminal(groupID: session.id, directory: cwd)
@@ -929,7 +974,8 @@ struct StudioCommand: Identifiable {
     in groupID: UUID, action: @escaping @MainActor (WorkspaceSession) -> Void
   ) {
     guard !session.isClosed, !windowCoordinator.isClosing,
-      groups.contains(where: { $0.id == groupID }) else { return }
+      groups.contains(where: { $0.id == groupID })
+    else { return }
     guard prepareWorkspaceSwitch(to: groupID) else { return }
     if groupID == session.id {
       _ = windowCoordinator.issueWorkspaceLoadToken()
@@ -952,7 +998,8 @@ struct StudioCommand: Identifiable {
           groupID, in: self.windowCoordinator, launchTerminalProcesses: launch)
         guard case .opened(let owner) = result,
           self.windowCoordinator.activeWorkspaceID == groupID,
-          self.windowCoordinator.activeSession === owner else { return }
+          self.windowCoordinator.activeSession === owner
+        else { return }
         self.adoptSession(owner)
         action(owner)
       }
@@ -977,7 +1024,8 @@ struct StudioCommand: Identifiable {
     panel.canChooseFiles = false
     panel.allowsMultipleSelection = false
     if panel.runModal() == .OK, let url = panel.url,
-       !owner.isClosed, session === owner {
+      !owner.isClosed, session === owner
+    {
       let id = owner.resourceStore.registerLocalTerminal(
         groupID: ownerID, directory: url.path, directoryURL: url)
       selectedTabID = id
@@ -994,10 +1042,11 @@ struct StudioCommand: Identifiable {
   @discardableResult
   func endResourceSession(owner: WorkspaceSession, resourceID: UUID, expectedInstanceID: UUID?) async -> Bool {
     guard windowCoordinator.loadedSessions[owner.id] === owner, !owner.isClosed,
-          !windowCoordinator.isClosing, let record = owner.resourceStore.records[resourceID],
-          record.kind != .web, record.groupID == owner.id,
-          record.runtimeInstanceID == expectedInstanceID,
-          !pendingResourceIDs.contains(resourceID) else { return false }
+      !windowCoordinator.isClosing, let record = owner.resourceStore.records[resourceID],
+      record.kind != .web, record.groupID == owner.id,
+      record.runtimeInstanceID == expectedInstanceID,
+      !pendingResourceIDs.contains(resourceID)
+    else { return false }
     pendingResourceIDs.insert(resourceID)
     defer { pendingResourceIDs.remove(resourceID) }
     await owner.resourceStore.endResourceSession(resourceID: resourceID)
@@ -1006,19 +1055,22 @@ struct StudioCommand: Identifiable {
 
   func endResourceSession(resourceID: UUID) async {
     guard let capture = captureTerminalEnd(resourceID: resourceID) else { return }
-    _ = await endResourceSession(owner: capture.owner, resourceID: capture.resourceID, expectedInstanceID: capture.instanceID)
+    _ = await endResourceSession(
+      owner: capture.owner, resourceID: capture.resourceID, expectedInstanceID: capture.instanceID)
   }
 
   func restartResourceSession(resourceID: UUID) async {
     guard let capture = captureTerminalEnd(resourceID: resourceID) else { return }
-    _ = await restartResourceSession(owner: capture.owner, resourceID: resourceID, expectedInstanceID: capture.instanceID)
+    _ = await restartResourceSession(
+      owner: capture.owner, resourceID: resourceID, expectedInstanceID: capture.instanceID)
   }
 
   @discardableResult
   func restartResourceSession(owner: WorkspaceSession, resourceID: UUID, expectedInstanceID: UUID?) async -> Bool {
     guard await endResourceSession(owner: owner, resourceID: resourceID, expectedInstanceID: expectedInstanceID),
-          windowCoordinator.loadedSessions[owner.id] === owner, !owner.isClosed, !windowCoordinator.isClosing,
-          owner.resourceStore.records[resourceID]?.runtimeInstanceID == expectedInstanceID else { return false }
+      windowCoordinator.loadedSessions[owner.id] === owner, !owner.isClosed, !windowCoordinator.isClosing,
+      owner.resourceStore.records[resourceID]?.runtimeInstanceID == expectedInstanceID
+    else { return false }
     return await owner.resourceStore.startResource(resourceID: resourceID) != nil
   }
 
@@ -1027,29 +1079,35 @@ struct StudioCommand: Identifiable {
     let ownerID = owner.id
     let store = owner.resourceStore
     guard let captured = store.records[resourceID], captured.kind == .localTerminal,
-          captured.lifecycle == .failed else { return }
+      captured.lifecycle == .failed
+    else { return }
     let capturedInstance = captured.runtimeInstanceID
     let panel = NSOpenPanel()
     panel.canChooseDirectories = true
     panel.canChooseFiles = false
     panel.allowsMultipleSelection = false
     guard panel.runModal() == .OK, let url = panel.url,
-          !owner.isClosed, !windowCoordinator.isClosing,
-          session.id == ownerID, session === owner,
-          let current = store.records[resourceID], current.kind == .localTerminal,
-          current.lifecycle == .failed, current.runtimeInstanceID == capturedInstance else { return }
+      !owner.isClosed, !windowCoordinator.isClosing,
+      session.id == ownerID, session === owner,
+      let current = store.records[resourceID], current.kind == .localTerminal,
+      current.lifecycle == .failed, current.runtimeInstanceID == capturedInstance
+    else { return }
     Task { @MainActor in
-      _ = await self.repairTerminalDirectory(owner: owner, resourceID: resourceID,
+      _ = await self.repairTerminalDirectory(
+        owner: owner, resourceID: resourceID,
         expectedInstanceID: capturedInstance, directoryURL: url)
     }
   }
 
   @discardableResult
-  func repairTerminalDirectory(owner: WorkspaceSession, resourceID: UUID, expectedInstanceID: UUID?, directoryURL: URL) async -> Bool {
+  func repairTerminalDirectory(owner: WorkspaceSession, resourceID: UUID, expectedInstanceID: UUID?, directoryURL: URL)
+    async -> Bool
+  {
     guard windowCoordinator.loadedSessions[owner.id] === owner, !owner.isClosed, !windowCoordinator.isClosing,
-          let record = owner.resourceStore.records[resourceID], record.kind == .localTerminal,
-          record.groupID == owner.id, record.lifecycle == .failed, record.runtimeInstanceID == expectedInstanceID,
-          !pendingResourceIDs.contains(resourceID) else { return false }
+      let record = owner.resourceStore.records[resourceID], record.kind == .localTerminal,
+      record.groupID == owner.id, record.lifecycle == .failed, record.runtimeInstanceID == expectedInstanceID,
+      !pendingResourceIDs.contains(resourceID)
+    else { return false }
     pendingResourceIDs.insert(resourceID)
     defer { pendingResourceIDs.remove(resourceID) }
     let instance = await owner.resourceStore.startResource(resourceID: resourceID, directoryURL: directoryURL)
@@ -1388,8 +1446,12 @@ struct StudioCommand: Identifiable {
           resourceTitle: resource.customTitle ?? Self.destinationTitle(resource.destination),
           kind: kind, destinationSummary: Self.destinationSummary(resource.destination))
         let kindText = Self.kindTitle(kind).localizedLowercase
-        let matches = needle.isEmpty || [result.workspaceName, result.resourceTitle,
-          kindText, kind.rawValue, result.destinationSummary].joined(separator: " ").localizedLowercase.contains(needle)
+        let matches =
+          needle.isEmpty
+          || [
+            result.workspaceName, result.resourceTitle,
+            kindText, kind.rawValue, result.destinationSummary,
+          ].joined(separator: " ").localizedLowercase.contains(needle)
         if (searchAllWorkspaces || result.workspaceID == currentID) && matches {
           flattened.append(result)
         }
@@ -1398,8 +1460,10 @@ struct StudioCommand: Identifiable {
     // `values` may originate from a dictionary-backed registry. Preserve that stable
     // source order for ties while always placing the current workspace first.
     searchResults = flattened.enumerated().sorted { lhs, rhs in
-      let a = lhs.element, b = rhs.element
-      let aCurrent = a.workspaceID == currentID, bCurrent = b.workspaceID == currentID
+      let a = lhs.element
+      let b = rhs.element
+      let aCurrent = a.workspaceID == currentID
+      let bCurrent = b.workspaceID == currentID
       if aCurrent != bCurrent { return aCurrent }
       let titleOrder = a.resourceTitle.localizedCaseInsensitiveCompare(b.resourceTitle)
       if titleOrder != .orderedSame { return titleOrder == .orderedAscending }
@@ -1411,17 +1475,35 @@ struct StudioCommand: Identifiable {
     }
   }
   private static func kindTitle(_ kind: ResourceKind) -> String {
-    switch kind { case .web: return "网页"; case .localTerminal: return "本地终端"; case .sshTerminal: return "SSH 终端" }
+    switch kind {
+    case .web: return "网页"
+    case .localTerminal: return "本地终端"
+    case .sshTerminal: return "SSH 终端"
+    }
   }
   private static func destinationTitle(_ destination: WorkspaceDestinationConfiguration) -> String {
-    switch destination { case .web(let url): return URL(string: url)?.host ?? "网页"; case .terminal: return "终端"; case .ssh(let host, _, _): return host; case .blank: return "空网页" }
+    switch destination {
+    case .web(let url): return URL(string: url)?.host ?? "网页"
+    case .terminal: return "终端"
+    case .ssh(let host, _, _): return host
+    case .blank: return "空网页"
+    }
   }
   private static func destinationSummary(_ destination: WorkspaceDestinationConfiguration) -> String {
-    switch destination { case .web(let url): return url; case .terminal(let path): return path; case .ssh(let host, let user, let port): return user.isEmpty ? "ssh://\(host):\(port)" : "ssh://\(user)@\(host):\(port)"; case .blank: return "空网页" }
+    switch destination {
+    case .web(let url): return url
+    case .terminal(let path): return path
+    case .ssh(let host, let user, let port):
+      return user.isEmpty ? "ssh://\(host):\(port)" : "ssh://\(user)@\(host):\(port)"
+    case .blank: return "空网页"
+    }
   }
   var paletteCommands: [StudioCommand] {
     let resources = searchResults.map { result in
-      StudioCommand(title: result.resourceTitle, shortcut: "", subtitle: "\(result.workspaceName) · \(Self.kindTitle(result.kind)) · \(result.destinationSummary)", action: .selectWorkspaceResource(workspaceID: result.workspaceID, resourceID: result.resourceID))
+      StudioCommand(
+        title: result.resourceTitle, shortcut: "",
+        subtitle: "\(result.workspaceName) · \(Self.kindTitle(result.kind)) · \(result.destinationSummary)",
+        action: .selectWorkspaceResource(workspaceID: result.workspaceID, resourceID: result.resourceID))
     }
     return resources + availableCommands
   }
@@ -1438,51 +1520,58 @@ struct StudioCommand: Identifiable {
     await openSearchResultAsync(result, token: selectionGeneration)
   }
   private func openSearchResultAsync(_ result: WorkspaceResourceSearchResult, token: Int) async {
-      guard token == selectionGeneration else { return }
-      let registry = self.windowCoordinator.registry
-      let openResult: WorkspaceOpenResult
-      if registry.session(for: result.workspaceID) != nil {
-        openResult = self.windowCoordinator.open(result.workspaceID)
-      } else {
-        openResult = await registry.openSaved(
-          result.workspaceID, in: self.windowCoordinator,
-          launchTerminalProcesses: self.session.resourceStore.launchTerminalProcesses)
-      }
-      guard token == self.selectionGeneration else { return }
-      switch openResult {
-      case .opened(let owner):
-        self.adoptSession(owner)
-        guard owner.resourceStore.records[result.resourceID] != nil else {
-          self.workspaceNotice = "资源已关闭或不可用。"
-          return
-        }
-        self.selectResource(result.resourceID)
-      case .locatedExistingWindow(let workspaceID):
-        guard let owner = registry.session(for: workspaceID),
-          let ownerCoordinator = registry.coordinator(for: workspaceID),
-          ownerCoordinator.canAcceptWorkspace,
-          ownerCoordinator.activeWorkspaceID == workspaceID,
-          owner.resourceStore.records[result.resourceID] != nil else {
-          self.workspaceNotice = "目标窗口或资源不可用。"
-          return
-        }
-        if owner.layout.primary.resourceID == result.resourceID {
-          owner.setFocus(paneID: owner.layout.primary.id)
-        } else if let secondary = owner.layout.secondary,
-          secondary.resourceID == result.resourceID {
-          owner.setFocus(paneID: secondary.id)
-        } else {
-          let pane = owner.layout.primary.isFocused ? owner.layout.primary : (owner.layout.secondary ?? owner.layout.primary)
-          if pane.id == owner.layout.primary.id { owner.layout.primary.resourceID = result.resourceID }
-          else if var secondary = owner.layout.secondary { secondary.resourceID = result.resourceID; owner.layout.secondary = secondary }
-          owner.setFocus(paneID: pane.id)
-        }
-        owner.recordRecentResource(result.resourceID)
-      case .unavailable:
-        self.workspaceNotice = "目标空间或资源不可用。"
+    guard token == selectionGeneration else { return }
+    let registry = self.windowCoordinator.registry
+    let openResult: WorkspaceOpenResult
+    if registry.session(for: result.workspaceID) != nil {
+      openResult = self.windowCoordinator.open(result.workspaceID)
+    } else {
+      openResult = await registry.openSaved(
+        result.workspaceID, in: self.windowCoordinator,
+        launchTerminalProcesses: self.session.resourceStore.launchTerminalProcesses)
+    }
+    guard token == self.selectionGeneration else { return }
+    switch openResult {
+    case .opened(let owner):
+      self.adoptSession(owner)
+      guard owner.resourceStore.records[result.resourceID] != nil else {
+        self.workspaceNotice = "资源已关闭或不可用。"
         return
       }
-      self.dismissPanel(restoreFocus: false)
+      self.selectResource(result.resourceID)
+    case .locatedExistingWindow(let workspaceID):
+      guard let owner = registry.session(for: workspaceID),
+        let ownerCoordinator = registry.coordinator(for: workspaceID),
+        ownerCoordinator.canAcceptWorkspace,
+        ownerCoordinator.activeWorkspaceID == workspaceID,
+        owner.resourceStore.records[result.resourceID] != nil
+      else {
+        self.workspaceNotice = "目标窗口或资源不可用。"
+        return
+      }
+      if owner.layout.primary.resourceID == result.resourceID {
+        owner.setFocus(paneID: owner.layout.primary.id)
+      } else if let secondary = owner.layout.secondary,
+        secondary.resourceID == result.resourceID
+      {
+        owner.setFocus(paneID: secondary.id)
+      } else {
+        let pane =
+          owner.layout.primary.isFocused ? owner.layout.primary : (owner.layout.secondary ?? owner.layout.primary)
+        if pane.id == owner.layout.primary.id {
+          owner.layout.primary.resourceID = result.resourceID
+        } else if var secondary = owner.layout.secondary {
+          secondary.resourceID = result.resourceID
+          owner.layout.secondary = secondary
+        }
+        owner.setFocus(paneID: pane.id)
+      }
+      owner.recordRecentResource(result.resourceID)
+    case .unavailable:
+      self.workspaceNotice = "目标空间或资源不可用。"
+      return
+    }
+    self.dismissPanel(restoreFocus: false)
   }
   func copyResourceToWorkspace(_ resourceID: UUID, targetID: UUID) {
     let sourceID = session.id
@@ -1510,7 +1599,9 @@ struct StudioCommand: Identifiable {
     if creating {
       creatingGroup = false
       groupEditorPresented = false
-      guard let id = createWorkspace(name: clean, isTemporary: false), let target = windowCoordinator.registry.session(for: id) else { return false }
+      guard let id = createWorkspace(name: clean, isTemporary: false),
+        let target = windowCoordinator.registry.session(for: id)
+      else { return false }
       target.directory = directory
       return true
     }
@@ -1667,7 +1758,7 @@ struct StudioCommand: Identifiable {
     }()
     if webStates[target]?.canGoBack ?? capturedRuntime?.state.canGoBack ?? false {
       list.append(
-          StudioCommand(
+        StudioCommand(
           title: "后退", shortcut: "⌘[", targetResourceID: target, action: .back(resourceID: target)
         ))
     }
@@ -1778,8 +1869,10 @@ struct StudioCommand: Identifiable {
       selectedGroupID = record.groupID
       selectResource(id)
     case .selectWorkspaceResource(let workspaceID, let resourceID):
-      openSearchResult(.init(workspaceID: workspaceID, resourceID: resourceID,
-        workspaceName: "", resourceTitle: "", kind: .web, destinationSummary: ""))
+      openSearchResult(
+        .init(
+          workspaceID: workspaceID, resourceID: resourceID,
+          workspaceName: "", resourceTitle: "", kind: .web, destinationSummary: ""))
     case .back(let id): webRuntimes.runtime(for: id)?.goBack()
     case .forward(let id): webRuntimes.runtime(for: id)?.goForward()
     case .reload(let id): webRuntimes.runtime(for: id)?.reload()
@@ -1881,8 +1974,7 @@ struct StudioCommand: Identifiable {
     if pieces.count == 2, Int(pieces[1]) != nil {
       return normalizedSSH(host: String(pieces[0]), user: user, portText: String(pieces[1]))
     }
-    if value.contains(":"), let destination = normalizedSSH(host: value, user: user, portText: "22")
-    {
+    if value.contains(":"), let destination = normalizedSSH(host: value, user: user, portText: "22") {
       return destination
     }
     return normalizedSSH(host: value, user: user, portText: "22")
@@ -2062,7 +2154,7 @@ struct ContentView: View {
         }
         if !plan.isCompactMode, model.questionPanelVisible {
           Divider().frame(width: 6).contentShape(Rectangle()).gesture(resizeAgents)
-        .help("调整问答面板宽度")
+            .help("调整问答面板宽度")
           AgentInspectorView(model: model).id(model.session.id).frame(width: plan.agentsWidth)
         }
       }
@@ -2288,7 +2380,8 @@ private struct StudioAddressField: View {
   var body: some View {
     HStack(spacing: 6) {
       NativeAddressField(model: model)
-        .frame(minWidth: model.isCompactMode ? 120 : 220,
+        .frame(
+          minWidth: model.isCompactMode ? 120 : 220,
           idealWidth: model.isCompactMode ? 150 : 360,
           maxWidth: model.isCompactMode ? 220 : 520)
       if let error = model.addressError {
@@ -2433,8 +2526,11 @@ private struct StudioToolbar: ToolbarContent {
         } else {
           Button("保存空间") { model.retryWorkspaceSave() }
           Button(model.session.archived ? "恢复空间" : "归档空间") {
-            if model.session.archived { model.restoreArchivedWorkspace(model.session.id) }
-            else { model.archiveWorkspace(model.session.id) }
+            if model.session.archived {
+              model.restoreArchivedWorkspace(model.session.id)
+            } else {
+              model.archiveWorkspace(model.session.id)
+            }
           }
         }
         if !model.windowCoordinator.registry.archivedEntries.isEmpty {
@@ -2528,8 +2624,9 @@ private struct StudioToolbar: ToolbarContent {
             }
           }
         } label: {
-          Image(systemName: model.isRescanningWorkspaceDirectory
-            ? "arrow.triangle.2.circlepath" : "exclamationmark.triangle")
+          Image(
+            systemName: model.isRescanningWorkspaceDirectory
+              ? "arrow.triangle.2.circlepath" : "exclamationmark.triangle")
         }
         .help("配置诊断")
         .accessibilityLabel("配置诊断")
@@ -2639,7 +2736,10 @@ private struct TabStrip: View {
       if !model.windowCoordinator.registry.diagnosticEntries.isEmpty || model.isRescanningWorkspaceDirectory {
         HStack(spacing: 6) {
           Image(systemName: "exclamationmark.triangle").foregroundStyle(.orange)
-          Button(model.isRescanningWorkspaceDirectory ? "正在扫描配置…" : "配置诊断（\(model.windowCoordinator.registry.diagnosticEntries.count)）") {
+          Button(
+            model.isRescanningWorkspaceDirectory
+              ? "正在扫描配置…" : "配置诊断（\(model.windowCoordinator.registry.diagnosticEntries.count)）"
+          ) {
             diagnosticsPresented = true
           }
           .buttonStyle(.borderless)
@@ -2681,8 +2781,10 @@ private struct TabStrip: View {
                     HStack(spacing: 5) {
                       Label(group.name, systemImage: "square.stack.3d.up")
                       if let owner = model.windowCoordinator.registry.session(for: group.id) {
-                        Text("\(owner.resourceStore.liveTerminalCount)终端 · \(owner.agentController.isRequesting ? 1 : 0)请求")
-                          .font(.caption2).foregroundStyle(.secondary)
+                        Text(
+                          "\(owner.resourceStore.liveTerminalCount)终端 · \(owner.agentController.isRequesting ? 1 : 0)请求"
+                        )
+                        .font(.caption2).foregroundStyle(.secondary)
                       }
                     }
                   }
@@ -2715,8 +2817,11 @@ private struct TabStrip: View {
                 .accessibilityLabel("在\(group.name)中新建终端")
                 .accessibilityIdentifier("terminals.new.\(group.id.uuidString)")
                 Button {
-                  if collapsedWorkspaceIDs.contains(group.id) { collapsedWorkspaceIDs.remove(group.id) }
-                  else { collapsedWorkspaceIDs.insert(group.id) }
+                  if collapsedWorkspaceIDs.contains(group.id) {
+                    collapsedWorkspaceIDs.remove(group.id)
+                  } else {
+                    collapsedWorkspaceIDs.insert(group.id)
+                  }
                 } label: {
                   Image(systemName: collapsedWorkspaceIDs.contains(group.id) ? "chevron.right" : "chevron.down")
                 }
@@ -2769,8 +2874,8 @@ private struct TabStrip: View {
             .buttonStyle(.plain).foregroundStyle(.secondary)
             .accessibilityIdentifier("archived.\(entry.id.uuidString)")
         }
-    }
-    Spacer()
+      }
+      Spacer()
     }.padding(10)
       .studioShellScrim()
       .popover(isPresented: $diagnosticsPresented) {
@@ -2889,18 +2994,22 @@ private struct ResourceRow: View {
         }
       }
       Button("添加到问答") {
-          model.showQuestionPanel()
+        model.showQuestionPanel()
         model.agentController.addResource(tab.id)
       }
 
     }
-    .confirmationDialog("结束此终端会话？", isPresented: Binding(
-      get: { endCapture != nil }, set: { if !$0 { endCapture = nil } })) {
+    .confirmationDialog(
+      "结束此终端会话？",
+      isPresented: Binding(
+        get: { endCapture != nil }, set: { if !$0 { endCapture = nil } })
+    ) {
       Button("结束会话", role: .destructive) {
         guard let capture = endCapture else { return }
         endCapture = nil
         Task { @MainActor in
-          _ = await model.endResourceSession(owner: capture.owner, resourceID: capture.resourceID,
+          _ = await model.endResourceSession(
+            owner: capture.owner, resourceID: capture.resourceID,
             expectedInstanceID: capture.instanceID)
         }
       }
@@ -2927,7 +3036,9 @@ private struct GroupEditor: View {
       ).textFieldStyle(.roundedBorder)
         .focused($focused)
         .onSubmit {
-          _ = model.commitWorkspaceEditor(name: name, directory: directory.isEmpty ? nil : directory, targetID: targetID, creating: model.creatingGroup)
+          _ = model.commitWorkspaceEditor(
+            name: name, directory: directory.isEmpty ? nil : directory, targetID: targetID,
+            creating: model.creatingGroup)
         }
       StudioFieldLabel(title: "关联目录")
       HStack {
@@ -2962,7 +3073,10 @@ private struct GroupEditor: View {
         }
       }
       HStack {
-        Button("取消") { model.creatingGroup = false; model.groupEditorPresented = false }.studioGlassButton()
+        Button("取消") {
+          model.creatingGroup = false
+          model.groupEditorPresented = false
+        }.studioGlassButton()
         Spacer()
         Button("保存") {
           _ = model.commitWorkspaceEditor(
@@ -2977,7 +3091,10 @@ private struct GroupEditor: View {
       DispatchQueue.main.async { if model.panels.panel == .groupEditor { focused = true } }
     }
     .frame(width: 300)
-    .onExitCommand { model.creatingGroup = false; model.groupEditorPresented = false }
+    .onExitCommand {
+      model.creatingGroup = false
+      model.groupEditorPresented = false
+    }
   }
   private var targetID: UUID? { model.editingGroupID }
   private var targetArchived: Bool {
@@ -3056,7 +3173,8 @@ struct TerminalSessionView: View {
           let capture = model.captureTerminalEnd(resourceID: resourceID)
           Task { @MainActor in
             guard let capture else { return }
-            _ = await model.restartResourceSession(owner: capture.owner, resourceID: capture.resourceID,
+            _ = await model.restartResourceSession(
+              owner: capture.owner, resourceID: capture.resourceID,
               expectedInstanceID: capture.instanceID)
           }
         }
@@ -3068,26 +3186,27 @@ struct TerminalSessionView: View {
           endCapture = model.captureTerminalEnd(resourceID: resourceID)
           confirmEnd = endCapture != nil
         }
-          .buttonStyle(.bordered)
-          .disabled(ending || model.pendingResourceIDs.contains(resourceID))
-          .confirmationDialog("结束此终端会话？", isPresented: $confirmEnd) {
-            Button("结束会话", role: .destructive) {
-              let capture = endCapture
-              endCapture = nil
-              ending = true
-              Task { @MainActor in
-                if let capture {
-                  _ = await model.endResourceSession(owner: capture.owner, resourceID: capture.resourceID,
-                    expectedInstanceID: capture.instanceID)
-                }
-                ending = false
+        .buttonStyle(.bordered)
+        .disabled(ending || model.pendingResourceIDs.contains(resourceID))
+        .confirmationDialog("结束此终端会话？", isPresented: $confirmEnd) {
+          Button("结束会话", role: .destructive) {
+            let capture = endCapture
+            endCapture = nil
+            ending = true
+            Task { @MainActor in
+              if let capture {
+                _ = await model.endResourceSession(
+                  owner: capture.owner, resourceID: capture.resourceID,
+                  expectedInstanceID: capture.instanceID)
               }
+              ending = false
             }
-            Button("取消", role: .cancel) {}
-          } message: {
-            Text("将停止 shell 和其子进程，资源与布局会保留。")
           }
-          .accessibilityIdentifier("resource.end-session.\(resourceID.uuidString)")
+          Button("取消", role: .cancel) {}
+        } message: {
+          Text("将停止 shell 和其子进程，资源与布局会保留。")
+        }
+        .accessibilityIdentifier("resource.end-session.\(resourceID.uuidString)")
       }
       TerminalNativeView(view: session.nativeView)
     }
@@ -3117,10 +3236,14 @@ struct TerminalStartPlaceholder: View {
   var body: some View {
     VStack(spacing: 12) {
       Image(systemName: "terminal").font(.system(size: 30)).foregroundStyle(.secondary)
-      Text(record.lifecycle == .failed ? (record.errorMessage ?? "终端不可用") : (record.kind == .sshTerminal ? "尚未连接" : "终端尚未启动"))
-        .foregroundStyle(record.lifecycle == .failed ? .red : .secondary)
+      Text(
+        record.lifecycle == .failed
+          ? (record.errorMessage ?? "终端不可用") : (record.kind == .sshTerminal ? "尚未连接" : "终端尚未启动")
+      )
+      .foregroundStyle(record.lifecycle == .failed ? .red : .secondary)
       if record.lifecycle == .failed, case .localTerminal(let directory) = record.location,
-         let directory, !directory.isEmpty {
+        let directory, !directory.isEmpty
+      {
         Text("原目录：\(directory)").font(.caption).foregroundStyle(.secondary)
           .lineLimit(2).textSelection(.enabled)
       }
@@ -3134,8 +3257,9 @@ struct TerminalStartPlaceholder: View {
         let store = owner.resourceStore
         Task { @MainActor in
           guard !owner.isClosed, !model.windowCoordinator.isClosing,
-                model.windowCoordinator.loadedSessions[owner.id] === owner,
-                !model.pendingResourceIDs.contains(resourceID), store.records[resourceID] != nil else { return }
+            model.windowCoordinator.loadedSessions[owner.id] === owner,
+            !model.pendingResourceIDs.contains(resourceID), store.records[resourceID] != nil
+          else { return }
           _ = await store.startResource(resourceID: resourceID)
         }
       }
@@ -3406,9 +3530,9 @@ private struct WorkspaceDiagnosticsView: View {
         Button(model.isRescanningWorkspaceDirectory ? "扫描中…" : "重新扫描") {
           model.rescanWorkspaceDirectory()
         }
-          .buttonStyle(.bordered)
-          .disabled(model.isRescanningWorkspaceDirectory)
-          .accessibilityIdentifier("workspace.diagnostics.rescan")
+        .buttonStyle(.bordered)
+        .disabled(model.isRescanningWorkspaceDirectory)
+        .accessibilityIdentifier("workspace.diagnostics.rescan")
       }
       ScrollView {
         VStack(alignment: .leading, spacing: 8) {
@@ -3498,7 +3622,9 @@ private struct CommandPalette: View {
                       .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 1) {
                       Text(item.title).lineLimit(1)
-                      if let subtitle = item.subtitle { Text(subtitle).font(.caption2).foregroundStyle(.secondary).lineLimit(1) }
+                      if let subtitle = item.subtitle {
+                        Text(subtitle).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
+                      }
                     }
                     Spacer(minLength: 8)
                     Text(item.shortcut)

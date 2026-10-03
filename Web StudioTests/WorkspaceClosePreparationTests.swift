@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Web_Studio
 
 @MainActor
@@ -18,7 +19,9 @@ struct WorkspaceClosePreparationTests {
         await withCheckedContinuation { continuation in waiter = continuation }
       }
       let result = try await repository.save(configuration, expectedRevision: expected)
-      guard case let .saved(envelope) = result else { throw WorkspaceRepositoryError.corrupt(configuration.workspaceID) }
+      guard case .saved(let envelope) = result else {
+        throw WorkspaceRepositoryError.corrupt(configuration.workspaceID)
+      }
       return envelope.configuration
     }
     func count() -> Int { calls }
@@ -67,13 +70,18 @@ struct WorkspaceClosePreparationTests {
     let (registry, probe, url) = try makeRegistry()
     defer { try? FileManager.default.removeItem(at: url) }
     await probe.setFail(true)
-    let a = WorkspaceSession(name: "A", isTemporary: false, launchTerminalProcesses: false,
-                             providerSettings: registry.providerSettings)
-    let b = WorkspaceSession(name: "B", isTemporary: false, launchTerminalProcesses: false,
-                             providerSettings: registry.providerSettings)
-    #expect(registry.add(a)); #expect(registry.add(b))
-    let first = WindowCoordinator(registry: registry); let second = WindowCoordinator(registry: registry)
-    _ = first.open(a.id); _ = second.open(b.id)
+    let a = WorkspaceSession(
+      name: "A", isTemporary: false, launchTerminalProcesses: false,
+      providerSettings: registry.providerSettings)
+    let b = WorkspaceSession(
+      name: "B", isTemporary: false, launchTerminalProcesses: false,
+      providerSettings: registry.providerSettings)
+    #expect(registry.add(a))
+    #expect(registry.add(b))
+    let first = WindowCoordinator(registry: registry)
+    let second = WindowCoordinator(registry: registry)
+    _ = first.open(a.id)
+    _ = second.open(b.id)
     var resolverCalls = 0
     let resolver: WorkspaceCloseResolver = { _, _ in
       resolverCalls += 1
@@ -81,7 +89,8 @@ struct WorkspaceClosePreparationTests {
     }
     #expect(await registry.closeAll(resolver: resolver) == false)
     #expect(resolverCalls == 2)
-    #expect(registry.session(for: a.id) === a); #expect(registry.session(for: b.id) === b)
+    #expect(registry.session(for: a.id) === a)
+    #expect(registry.session(for: b.id) === b)
     await probe.setFail(false)
     #expect(await registry.saveController(for: a.id)?.saveNow() == true)
   }
@@ -92,11 +101,14 @@ struct WorkspaceClosePreparationTests {
     await probe.setFail(true)
     let a = registry.create(name: "A", isTemporary: false, launchTerminalProcesses: false)
     let b = registry.create(name: "B", isTemporary: false, launchTerminalProcesses: false)
-    let one = WindowCoordinator(registry: registry); let two = WindowCoordinator(registry: registry)
-    _ = one.open(a.id); _ = two.open(b.id)
+    let one = WindowCoordinator(registry: registry)
+    let two = WindowCoordinator(registry: registry)
+    _ = one.open(a.id)
+    _ = two.open(b.id)
     let resolver: WorkspaceCloseResolver = { _, _ in .cancel }
     #expect(await registry.closeAll(resolver: resolver) == false)
-    #expect(one.loadedSessions.count == 1); #expect(two.loadedSessions.count == 1)
+    #expect(one.loadedSessions.count == 1)
+    #expect(two.loadedSessions.count == 1)
   }
 
   @Test func unownedFailureDoesNotCloseOwnedSession() async throws {
@@ -104,10 +116,12 @@ struct WorkspaceClosePreparationTests {
     defer { try? FileManager.default.removeItem(at: url) }
     let owned = registry.create(name: "owned", isTemporary: false, launchTerminalProcesses: false)
     let unowned = registry.create(name: "unowned", isTemporary: false, launchTerminalProcesses: false)
-    let coordinator = WindowCoordinator(registry: registry); _ = coordinator.open(owned.id)
+    let coordinator = WindowCoordinator(registry: registry)
+    _ = coordinator.open(owned.id)
     await probe.setFail(true)
     #expect(await registry.closeAll(resolver: { _, _ in .cancel }) == false)
-    #expect(registry.session(for: owned.id) === owned); #expect(registry.session(for: unowned.id) === unowned)
+    #expect(registry.session(for: owned.id) === owned)
+    #expect(registry.session(for: unowned.id) === unowned)
   }
 
   @Test func duplicateCloseReturnsSameCleanupOutcome() async throws {
@@ -157,7 +171,8 @@ struct WorkspaceClosePreparationTests {
     #expect(registry.archivedEntries.first { $0.id == target.id }?.name == "latest")
     let repository = WorkspaceRepository(rootURL: url)
     guard let result = try? await repository.load(id: target.id),
-          case let .loaded(envelope) = result else {
+      case .loaded(let envelope) = result
+    else {
       Issue.record("expected archived disk entry")
       return
     }
@@ -180,7 +195,8 @@ struct WorkspaceClosePreparationTests {
     let (registry, probe, url) = try makeRegistry()
     defer { try? FileManager.default.removeItem(at: url) }
     let session = registry.create(name: "A", isTemporary: false, launchTerminalProcesses: false)
-    let owner = WindowCoordinator(registry: registry); _ = owner.open(session.id)
+    let owner = WindowCoordinator(registry: registry)
+    _ = owner.open(session.id)
     await probe.setFail(true)
     #expect(await registry.archive(session.id) == false)
     #expect(session.archived == false)
@@ -195,34 +211,51 @@ struct WorkspaceClosePreparationTests {
     _ = session.resourceStore.registerLocalTerminal(
       groupID: session.id,
       directory: FileManager.default.temporaryDirectory.path)
-    actor Gate { var count = 0; var waiter: CheckedContinuation<Void, Never>?
-      func wait() async { count += 1; await withCheckedContinuation { waiter = $0 } }
-      func release() { waiter?.resume(); waiter = nil }
+    actor Gate {
+      var count = 0
+      var waiter: CheckedContinuation<Void, Never>?
+      func wait() async {
+        count += 1
+        await withCheckedContinuation { waiter = $0 }
+      }
+      func release() {
+        waiter?.resume()
+        waiter = nil
+      }
       func value() -> Int { count }
     }
-    let gate = Gate(); session.resourceStore.closeAndWaitHook = { await gate.wait() }
+    let gate = Gate()
+    session.resourceStore.closeAndWaitHook = { await gate.wait() }
     let first = Task { await registry.close(session.id) }
     while await gate.value() == 0 { await Task.yield() }
     let second = Task { await registry.close(session.id) }
     await Task.yield()
     await gate.release()
-    let firstResult = await first.value; let secondResult = await second.value
-    #expect(firstResult); #expect(secondResult); #expect(await gate.value() == 1)
+    let firstResult = await first.value
+    let secondResult = await second.value
+    #expect(firstResult)
+    #expect(secondResult)
+    #expect(await gate.value() == 1)
   }
 
   @Test func editDuringOtherSaveRemainsDirtyForNextFlush() async throws {
     let (registry, probe, url) = try makeRegistry()
     defer { try? FileManager.default.removeItem(at: url) }
-    let first = UUID(); let second = UUID()
+    let first = UUID()
+    let second = UUID()
     let aID = first.uuidString < second.uuidString ? first : second
     let bID = aID == first ? second : first
-    let a = WorkspaceSession(id: aID, name: "A", isTemporary: false,
-                             launchTerminalProcesses: false, providerSettings: registry.providerSettings)
-    let b = WorkspaceSession(id: bID, name: "B", isTemporary: false,
-                             launchTerminalProcesses: false, providerSettings: registry.providerSettings)
-    #expect(registry.add(a)); #expect(registry.add(b))
+    let a = WorkspaceSession(
+      id: aID, name: "A", isTemporary: false,
+      launchTerminalProcesses: false, providerSettings: registry.providerSettings)
+    let b = WorkspaceSession(
+      id: bID, name: "B", isTemporary: false,
+      launchTerminalProcesses: false, providerSettings: registry.providerSettings)
+    #expect(registry.add(a))
+    #expect(registry.add(b))
     await probe.block(b.id)
-    a.name = "A2"; b.name = "B2"
+    a.name = "A2"
+    b.name = "B2"
     let closeTask = Task { await registry.closeAll(resolver: { _, _ in .cancel }) }
     while !(await probe.isWaiting()) { await Task.yield() }
     a.name = "A3"
@@ -230,7 +263,8 @@ struct WorkspaceClosePreparationTests {
     #expect(await closeTask.value == true)
     let repository = WorkspaceRepository(rootURL: url)
     guard let result = try? await repository.load(id: a.id),
-          case let .loaded(envelope) = result else {
+      case .loaded(let envelope) = result
+    else {
       Issue.record("expected saved A")
       return
     }

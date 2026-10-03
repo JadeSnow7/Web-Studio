@@ -81,7 +81,9 @@ struct WorkspaceSaveControllerTests {
         .init(id: resourceIDs[0], destination: .blank, customTitle: "Blank", order: 0),
         .init(id: resourceIDs[1], destination: .web(url: "https://example.com"), customTitle: nil, order: 1),
         .init(id: resourceIDs[2], destination: .terminal(directory: "/tmp"), customTitle: "Shell", order: 2),
-        .init(id: resourceIDs[3], destination: .ssh(host: "example.com", user: "dev", port: 22), customTitle: "SSH", order: 3)
+        .init(
+          id: resourceIDs[3], destination: .ssh(host: "example.com", user: "dev", port: 22), customTitle: "SSH",
+          order: 3),
       ],
       pinnedDestinations: [
         .init(id: UUID(), title: "Pinned", destination: .blank)
@@ -107,8 +109,9 @@ struct WorkspaceSaveControllerTests {
     let gate = ControlledWriter()
     let temporaryRoot = try root()
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
-    let session = WorkspaceSession(name: "Old", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Old", isTemporary: false,
+      launchTerminalProcesses: false)
     let controller = WorkspaceSaveController(
       session: session, repository: WorkspaceRepository(rootURL: temporaryRoot),
       debounce: .seconds(60),
@@ -136,8 +139,9 @@ struct WorkspaceSaveControllerTests {
     let gate = ControlledWriter()
     let temporaryRoot = try root()
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
-    let session = WorkspaceSession(name: "Old", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Old", isTemporary: false,
+      launchTerminalProcesses: false)
     let controller = WorkspaceSaveController(
       session: session, repository: WorkspaceRepository(rootURL: temporaryRoot),
       debounce: .seconds(60),
@@ -164,8 +168,9 @@ struct WorkspaceSaveControllerTests {
   @Test func propertyChangeAutomaticallyFlushesAfterDebounce() async throws {
     let root = try root()
     defer { try? FileManager.default.removeItem(at: root) }
-    let session = WorkspaceSession(name: "Old", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Old", isTemporary: false,
+      launchTerminalProcesses: false)
     let repository = WorkspaceRepository(rootURL: root)
     let controller = WorkspaceSaveController(
       session: session, repository: repository, debounce: .milliseconds(5))
@@ -178,7 +183,7 @@ struct WorkspaceSaveControllerTests {
       Issue.record("debounced observation did not save")
       return
     }
-    guard case let .loaded(envelope) = try await repository.load(id: session.id) else {
+    guard case .loaded(let envelope) = try await repository.load(id: session.id) else {
       Issue.record("expected saved file")
       return
     }
@@ -188,8 +193,9 @@ struct WorkspaceSaveControllerTests {
   @Test func initialRevisionIsPassedToWriter() async throws {
     let temporaryRoot = try root()
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
-    let session = WorkspaceSession(name: "Old", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Old", isTemporary: false,
+      launchTerminalProcesses: false)
     let initial = session.exportConfiguration(revision: 7)
     let writer = RevisionWriter()
     let controller = WorkspaceSaveController(
@@ -210,8 +216,9 @@ struct WorkspaceSaveControllerTests {
   @Test func runtimeAndTitleChangesDoNotSaveConfiguration() async throws {
     let temporaryRoot = try root()
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
-    let session = WorkspaceSession(name: "Stable", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Stable", isTemporary: false,
+      launchTerminalProcesses: false)
     let id = session.resourceStore.registerWeb(groupID: session.id)
     let initial = session.exportConfiguration(revision: 1)
     let writer = RevisionWriter()
@@ -236,8 +243,9 @@ struct WorkspaceSaveControllerTests {
   @Test func failedSaveDoesNotAutomaticallyRetryAfterNewEdit() async throws {
     let temporaryRoot = try root()
     defer { try? FileManager.default.removeItem(at: temporaryRoot) }
-    let session = WorkspaceSession(name: "Old", isTemporary: false,
-                                   launchTerminalProcesses: false)
+    let session = WorkspaceSession(
+      name: "Old", isTemporary: false,
+      launchTerminalProcesses: false)
     let writer = FailableWriter()
     let controller = WorkspaceSaveController(
       session: session, repository: WorkspaceRepository(rootURL: temporaryRoot),
@@ -250,13 +258,13 @@ struct WorkspaceSaveControllerTests {
       if case .failed = controller.state { break }
       try await Task.sleep(for: .milliseconds(5))
     }
-    guard case let .failed(_, firstMessage) = controller.state else {
+    guard case .failed(_, let firstMessage) = controller.state else {
       Issue.record("expected initial failure")
       return
     }
     session.name = "Second"
     try await Task.sleep(for: .milliseconds(50))
-    guard case let .failed(_, secondMessage) = controller.state else {
+    guard case .failed(_, let secondMessage) = controller.state else {
       Issue.record("failure was cleared or retried automatically")
       return
     }
@@ -264,7 +272,7 @@ struct WorkspaceSaveControllerTests {
     #expect(secondMessage == firstMessage)
     #expect(await controller.retry())
     #expect(await writer.count == 2)
-    guard case let .saved(_, revision) = controller.state else {
+    guard case .saved(_, let revision) = controller.state else {
       Issue.record("expected retry success")
       return
     }
@@ -276,8 +284,10 @@ private actor ControlledWriter {
   var expectedRevisions: [Int?] = []
   var names: [String] = []
   var firstContinuation: CheckedContinuation<Void, Never>?
-  func write(_ configuration: WorkspaceConfiguration,
-             expectedRevision: Int?) async throws -> WorkspaceConfiguration {
+  func write(
+    _ configuration: WorkspaceConfiguration,
+    expectedRevision: Int?
+  ) async throws -> WorkspaceConfiguration {
     expectedRevisions.append(expectedRevision)
     names.append(configuration.name)
     if expectedRevisions.count == 1 {
@@ -299,8 +309,10 @@ private actor ControlledWriter {
 private actor RevisionWriter {
   var expected: [Int?] = []
   var count = 0
-  func write(_ configuration: WorkspaceConfiguration,
-             expectedRevision: Int?) async throws -> WorkspaceConfiguration {
+  func write(
+    _ configuration: WorkspaceConfiguration,
+    expectedRevision: Int?
+  ) async throws -> WorkspaceConfiguration {
     count += 1
     expected.append(expectedRevision)
     var result = configuration
@@ -311,8 +323,10 @@ private actor RevisionWriter {
 
 private actor FailableWriter {
   var count = 0
-  func write(_ configuration: WorkspaceConfiguration,
-             expectedRevision: Int?) async throws -> WorkspaceConfiguration {
+  func write(
+    _ configuration: WorkspaceConfiguration,
+    expectedRevision: Int?
+  ) async throws -> WorkspaceConfiguration {
     count += 1
     if count == 1 {
       throw WorkspaceRepositoryError.injectedFault(.beforeWrite)

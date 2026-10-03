@@ -11,8 +11,7 @@ enum WorkspaceSaveState: Equatable, Sendable {
 
 @MainActor
 final class WorkspaceSaveController: ObservableObject {
-  typealias Writer = @Sendable
-    (WorkspaceConfiguration, Int?) async throws -> WorkspaceConfiguration
+  typealias Writer = @Sendable (WorkspaceConfiguration, Int?) async throws -> WorkspaceConfiguration
   weak var session: WorkspaceSession?
   let repository: WorkspaceRepository
   let debounce: Duration
@@ -38,9 +37,11 @@ final class WorkspaceSaveController: ObservableObject {
   private var sessionObservation: AnyCancellable?
   private var resourceObservation: AnyCancellable?
 
-  init(session: WorkspaceSession, repository: WorkspaceRepository,
-       initialSavedConfiguration: WorkspaceConfiguration? = nil,
-       debounce: Duration = .milliseconds(500), writer: Writer? = nil) {
+  init(
+    session: WorkspaceSession, repository: WorkspaceRepository,
+    initialSavedConfiguration: WorkspaceConfiguration? = nil,
+    debounce: Duration = .milliseconds(500), writer: Writer? = nil
+  ) {
     self.session = session
     self.repository = repository
     self.debounce = debounce
@@ -48,13 +49,14 @@ final class WorkspaceSaveController: ObservableObject {
     self.revision = initialSavedConfiguration?.revision
     self.observedProjection = initialSavedConfiguration.map(Self.projection)
     self.state = .clean(revision: initialSavedConfiguration?.revision)
-    self.writer = writer ?? { configuration, expectedRevision in
-      let result = try await repository.save(configuration, expectedRevision: expectedRevision)
-      guard case let .saved(envelope) = result else {
-        throw WorkspaceRepositoryError.corrupt(configuration.workspaceID)
+    self.writer =
+      writer ?? { configuration, expectedRevision in
+        let result = try await repository.save(configuration, expectedRevision: expectedRevision)
+        guard case .saved(let envelope) = result else {
+          throw WorkspaceRepositoryError.corrupt(configuration.workspaceID)
+        }
+        return envelope.configuration
       }
-      return envelope.configuration
-    }
     sessionObservation = session.objectWillChange.sink { [weak self] _ in
       self?.scheduleObservation()
     }
@@ -64,7 +66,8 @@ final class WorkspaceSaveController: ObservableObject {
   }
 
   private static func projection(_ configuration: WorkspaceConfiguration)
-    -> WorkspaceConfiguration {
+    -> WorkspaceConfiguration
+  {
     var value = configuration
     value.revision = 0
     return value
@@ -87,7 +90,8 @@ final class WorkspaceSaveController: ObservableObject {
     guard observedProjection != current else { return }
     observedProjection = current
     generation += 1
-    state = lastError.map { .failed(generation: generation, message: $0) }
+    state =
+      lastError.map { .failed(generation: generation, message: $0) }
       ?? .dirty(generation: generation)
     scheduleDebounce()
   }
@@ -99,7 +103,8 @@ final class WorkspaceSaveController: ObservableObject {
       guard let self else { return }
       do { try await Task.sleep(for: self.debounce) } catch { return }
       guard !Task.isCancelled, self.generation == expectedGeneration,
-            self.lastError == nil else { return }
+        self.lastError == nil
+      else { return }
       _ = await self.flush()
     }
   }

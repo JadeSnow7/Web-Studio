@@ -65,7 +65,8 @@ actor WorkspaceRepository {
       let value = try decoder.singleValueContainer().decode(String.self)
       if let date = fractional.date(from: value) { return date }
       if let date = standard.date(from: value) { return date }
-      throw DecodingError.dataCorruptedError(in: try decoder.singleValueContainer(), debugDescription: "Invalid ISO8601 date")
+      throw DecodingError.dataCorruptedError(
+        in: try decoder.singleValueContainer(), debugDescription: "Invalid ISO8601 date")
     }
   }
 
@@ -369,16 +370,26 @@ actor WorkspaceRepository {
     case .blank:
       return true
     case .terminal(let directory):
-      return directory.hasPrefix("/") && !directory.isEmpty && !directory.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f })
+      return directory.hasPrefix("/") && !directory.isEmpty
+        && !directory.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f })
     case .web(let raw):
-      guard let url = URL(string: raw), let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme), let host = url.host, !host.isEmpty else { return false }
+      guard let url = URL(string: raw), let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
+        let host = url.host, !host.isEmpty
+      else { return false }
       return !raw.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f })
     case .ssh(let host, let user, let port):
       guard (1...65535).contains(port) else { return false }
       let cleanHost = host.trimmingCharacters(in: .whitespacesAndNewlines)
       let cleanUser = user.trimmingCharacters(in: .whitespacesAndNewlines)
-      let hasControl: (String) -> Bool = { value in value.unicodeScalars.contains { $0.value < 0x20 || $0.value == 0x7f } }
-      guard !cleanHost.isEmpty, !hasControl(host), !hasControl(user), !host.contains(where: { $0.isWhitespace }), !user.contains(where: { $0.isWhitespace }), !cleanHost.contains(where: { $0 == "/" || $0 == "\\" || $0 == "@" }), !cleanUser.contains(where: { $0 == "/" || $0 == "\\" || $0 == "@" }), !cleanHost.hasPrefix("-"), !cleanUser.hasPrefix("-") else { return false }
+      let hasControl: (String) -> Bool = { value in
+        value.unicodeScalars.contains { $0.value < 0x20 || $0.value == 0x7f }
+      }
+      guard !cleanHost.isEmpty, !hasControl(host), !hasControl(user), !host.contains(where: { $0.isWhitespace }),
+        !user.contains(where: { $0.isWhitespace }),
+        !cleanHost.contains(where: { $0 == "/" || $0 == "\\" || $0 == "@" }),
+        !cleanUser.contains(where: { $0 == "/" || $0 == "\\" || $0 == "@" }), !cleanHost.hasPrefix("-"),
+        !cleanUser.hasPrefix("-")
+      else { return false }
       if cleanHost.contains(":") {
         var address = in6_addr()
         return cleanHost.withCString { inet_pton(AF_INET6, $0, &address) == 1 }
@@ -387,9 +398,11 @@ actor WorkspaceRepository {
       if cleanHost.withCString({ inet_pton(AF_INET, $0, &address) == 1 }) { return true }
       let labels = cleanHost.split(separator: ".", omittingEmptySubsequences: false)
       if labels.count == 4 && labels.allSatisfy({ !$0.isEmpty && $0.allSatisfy(\.isNumber) }) { return false }
-      return cleanHost.count <= 253 && !labels.isEmpty && labels.allSatisfy { label in
-        label.count <= 63 && !label.isEmpty && label.first != "-" && label.last != "-" && label.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" }
-      }
+      return cleanHost.count <= 253 && !labels.isEmpty
+        && labels.allSatisfy { label in
+          label.count <= 63 && !label.isEmpty && label.first != "-" && label.last != "-"
+            && label.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" }
+        }
     }
   }
 

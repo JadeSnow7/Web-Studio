@@ -187,8 +187,10 @@ final class WindowCoordinator: ObservableObject {
         return false
       }
       for id in self.loadedSessions.keys.sorted(by: { $0.uuidString < $1.uuidString }) {
-        guard await self.cleanupWorkspace(
-          id, discard: discards.contains(id), recordActivation: false, trackTask: false) else {
+        guard
+          await self.cleanupWorkspace(
+            id, discard: discards.contains(id), recordActivation: false, trackTask: false)
+        else {
           self.isClosing = false
           return false
         }

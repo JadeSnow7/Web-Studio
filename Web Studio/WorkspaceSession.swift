@@ -79,20 +79,25 @@ import Foundation
     for resource in configuration.resources.sorted(by: { $0.order < $1.order }) {
       let record: ResourceRecord
       switch resource.destination {
-      case .blank: record = ResourceRecord(id: resource.id, kind: .web,
+      case .blank:
+        record = ResourceRecord(
+          id: resource.id, kind: .web,
           groupID: id, title: "空白网页", location: .web(nil),
           readCapabilities: [.address, .title, .text],
           customTitle: resource.customTitle)
       case .web(let url):
-        record = ResourceRecord(id: resource.id, kind: .web, groupID: id,
+        record = ResourceRecord(
+          id: resource.id, kind: .web, groupID: id,
           title: URL(string: url)?.host ?? "空白网页", location: .web(URL(string: url)),
           readCapabilities: [.address, .title, .text], customTitle: resource.customTitle)
       case .terminal(let directory):
-        record = ResourceRecord(id: resource.id, kind: .localTerminal, groupID: id,
+        record = ResourceRecord(
+          id: resource.id, kind: .localTerminal, groupID: id,
           title: "终端", location: .localTerminal(directory: directory),
           readCapabilities: [.output], customTitle: resource.customTitle)
       case .ssh(let host, let user, let port):
-        record = ResourceRecord(id: resource.id, kind: .sshTerminal, groupID: id,
+        record = ResourceRecord(
+          id: resource.id, kind: .sshTerminal, groupID: id,
           title: user.isEmpty ? host : user + "@" + host,
           location: .ssh(host: host, user: user, port: port),
           readCapabilities: [.output], customTitle: resource.customTitle)
@@ -159,7 +164,8 @@ import Foundation
       self.providerSettings = providerSettings ?? ProviderSettings(credentials: agentController.service.credentials)
     } else if let providerSettings {
       self.providerSettings = providerSettings
-      self.agentController = AgentController(store: store, service: ConfiguredAgentService(credentials: providerSettings.credentials))
+      self.agentController = AgentController(
+        store: store, service: ConfiguredAgentService(credentials: providerSettings.credentials))
     } else {
       let service = ConfiguredAgentService()
       self.agentController = AgentController(store: store, service: service)
@@ -169,13 +175,16 @@ import Foundation
     self.agentController.updateConfiguration(self.providerSettings.committedConfiguration)
   }
 
-  convenience init(configuration: WorkspaceConfiguration,
-                   launchTerminalProcesses: Bool = false,
-                   providerSettings: ProviderSettings? = nil) {
-    self.init(id: configuration.workspaceID, name: configuration.name,
-              isTemporary: false,
-              launchTerminalProcesses: launchTerminalProcesses,
-              providerSettings: providerSettings)
+  convenience init(
+    configuration: WorkspaceConfiguration,
+    launchTerminalProcesses: Bool = false,
+    providerSettings: ProviderSettings? = nil
+  ) {
+    self.init(
+      id: configuration.workspaceID, name: configuration.name,
+      isTemporary: false,
+      launchTerminalProcesses: launchTerminalProcesses,
+      providerSettings: providerSettings)
     _ = restoreDescriptors(from: configuration)
   }
   func recordRecentResource(_ id: UUID) {

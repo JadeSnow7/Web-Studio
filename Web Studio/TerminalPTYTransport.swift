@@ -70,7 +70,8 @@ public final class TerminalPTYTransport: @unchecked Sendable {
             (directory ?? "").withCString { dir in
               studio_pty_spawn_pixels(
                 exe, ab.baseAddress!, eb.baseAddress!, directory == nil ? nil : dir,
-                UInt16(clamping: columns), UInt16(clamping: rows), UInt32(clamping: widthPixels), UInt32(clamping: heightPixels))
+                UInt16(clamping: columns), UInt16(clamping: rows), UInt32(clamping: widthPixels),
+                UInt32(clamping: heightPixels))
             }
           }
         }
@@ -144,12 +145,14 @@ public final class TerminalPTYTransport: @unchecked Sendable {
   }
 
   var isAcceptingInput: Bool {
-    admissionLock.lock(); defer { admissionLock.unlock() }
+    admissionLock.lock()
+    defer { admissionLock.unlock() }
     return acceptingInput
   }
 
   var reservedInputForTesting: Int {
-    admissionLock.lock(); defer { admissionLock.unlock() }
+    admissionLock.lock()
+    defer { admissionLock.unlock() }
     return reservedInput
   }
 
@@ -206,7 +209,8 @@ public final class TerminalPTYTransport: @unchecked Sendable {
     if fd >= 0 {
       if !nonblockingConfigured {
         refreshCloseGroups()
-        _ = studio_pty_close(fd); fd = -1
+        _ = studio_pty_close(fd)
+        fd = -1
         signalOwnedGroup(SIGTERM)
         armKillTimer()
         beginReaping()
@@ -411,7 +415,10 @@ public final class TerminalPTYTransport: @unchecked Sendable {
   private func observeCloseGroups() {
     guard closing, killEscalationSent, sessionID > 0 else { return }
     guard refreshCloseGroups() else { return }
-    guard !closeGroups.isEmpty else { closeEscalationCompleted = true; return }
+    guard !closeGroups.isEmpty else {
+      closeEscalationCompleted = true
+      return
+    }
     for group in closeGroups {
       let result = studio_pty_group_has_session_members_except(group, sessionID, leaderPID)
       if result < 0, errno != ESRCH, errno != EPERM { return }
@@ -476,7 +483,9 @@ public final class TerminalPTYTransport: @unchecked Sendable {
     let targets = closeGroups.isEmpty ? Array(Set([ownedGroup, leaderPID].filter { $0 > 0 })) : closeGroups
     for group in targets {
       let result = studio_pty_signal_group(group, sessionID, signal)
-      if result != 0 && errno != ESRCH { onError?("PTY group signal failed (group \(group), signal \(signal)): \(String(cString: strerror(errno)))") }
+      if result != 0 && errno != ESRCH {
+        onError?("PTY group signal failed (group \(group), signal \(signal)): \(String(cString: strerror(errno)))")
+      }
     }
   }
 

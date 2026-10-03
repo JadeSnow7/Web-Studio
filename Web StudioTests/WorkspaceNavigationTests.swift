@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Web_Studio
 
 @MainActor
@@ -12,7 +13,8 @@ struct WorkspaceNavigationTests {
   }
 
   @Test func searchFlattensSameNamedResourcesWithCurrentFirstAndStableIDs() async throws {
-    let root = try fixtureRoot(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try fixtureRoot()
+    defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
     let registry = WorkspaceRegistry(repository: repository)
     let model = StudioModel(launchTerminalProcesses: false, registry: registry)
@@ -24,12 +26,16 @@ struct WorkspaceNavigationTests {
       record.customTitle = "同名"
       model.webRuntimes.update(record)
     }
-    let otherID = UUID(), otherResource = UUID()
+    let otherID = UUID()
+    let otherResource = UUID()
     let other = WorkspaceConfiguration(
-      workspaceID: otherID, name: "另一空间", resources: [
+      workspaceID: otherID, name: "另一空间",
+      resources: [
         .init(id: otherResource, destination: .web(url: "https://same.example/other"), customTitle: "同名", order: 0),
-        .init(id: UUID(), destination: .web(url: "https://unrelated.example"), customTitle: "无关", order: 1)
-      ], layout: .init(primary: .init(id: UUID(), resourceID: otherResource, isFocused: true), secondary: nil, splitRatio: 0.5))
+        .init(id: UUID(), destination: .web(url: "https://unrelated.example"), customTitle: "无关", order: 1),
+      ],
+      layout: .init(
+        primary: .init(id: UUID(), resourceID: otherResource, isFocused: true), secondary: nil, splitRatio: 0.5))
     _ = try await repository.save(model.session.exportConfiguration())
     _ = try await repository.save(other)
     await registry.startRestoration()
@@ -77,12 +83,17 @@ struct WorkspaceNavigationTests {
   }
 
   @Test func selectingUnloadedTerminalRestoresIdleDescriptorWithoutFactory() async throws {
-    let root = try fixtureRoot(); defer { try? FileManager.default.removeItem(at: root) }
-    let workspaceID = UUID(), resourceID = UUID()
+    let root = try fixtureRoot()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let workspaceID = UUID()
+    let resourceID = UUID()
     let configuration = WorkspaceConfiguration(
-      workspaceID: workspaceID, name: "终端空间", resources: [
+      workspaceID: workspaceID, name: "终端空间",
+      resources: [
         .init(id: resourceID, destination: .terminal(directory: "/tmp"), customTitle: "远端终端", order: 0)
-      ], layout: .init(primary: .init(id: UUID(), resourceID: resourceID, isFocused: true), secondary: nil, splitRatio: 0.5))
+      ],
+      layout: .init(
+        primary: .init(id: UUID(), resourceID: resourceID, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
     _ = try await repository.save(configuration)
     let registry = WorkspaceRegistry(repository: repository)
