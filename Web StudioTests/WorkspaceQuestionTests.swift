@@ -1,4 +1,6 @@
+import Combine
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import Web_Studio
@@ -21,6 +23,213 @@ private actor QuestionProvider: ResponsesProvider {
 
 @MainActor
 struct WorkspaceQuestionTests {
+
+  @Test(arguments: [true, false])
+  func closedControllerRejectsDirectDraftEdits(waitForShutdown: Bool) async {
+    let controller = AgentController(store: ResourceStore(launchTerminalProcesses: false))
+    let id = controller.currentQuestionID
+    controller.question = "draft before shutdown"
+    #expect(controller.questions[id]?.draft == "draft before shutdown")
+    if waitForShutdown {
+      await controller.shutdownAndWait()
+    } else {
+      controller.shutdown()
+    }
+    controller.question = "edit after shutdown"
+    #expect(controller.question == "draft before shutdown")
+    #expect(controller.questions[id]?.draft == "draft before shutdown")
+  }
+
+  @Test func newChatAfterShutdownClearsQuestionStateWithoutReopeningController() async throws {
+    let store = ResourceStore(launchTerminalProcesses: false)
+    let resource = store.registerWeb(groupID: UUID())
+    let provider = QuestionProvider()
+    let controller = AgentController(
+      store: store, service: ConfiguredResponsesService(credentials: TestQuestionCredentials(), provider: provider),
+      configuration: try ProviderConfiguration(model: "test"),
+      reader: { id, _ in questionStateSnapshot(id) })
+    let id = controller.currentQuestionID
+    controller.addResource(resource)
+    controller.question = "sent draft"
+    controller.readPreview()
+    try await waitForQuestionState { !controller.isReading }
+    #expect(controller.confirmPreview())
+    controller.send()
+    for _ in 0..<1000 {
+      if await provider.count() == 1 { break }
+      await Task.yield()
+    }
+    try #require(await provider.count() == 1)
+    await provider.resolve("completed answer")
+    try await waitForQuestionState { controller.run?.state == .completed("completed answer") }
+    controller.question = "unsent draft"
+    #expect(!controller.messages.isEmpty)
+    #expect(!controller.question.isEmpty)
+    #expect(!controller.previewSnapshots.isEmpty)
+    #expect(!controller.runHistory.isEmpty)
+    let populated = try #require(controller.questions[id])
+    #expect(!populated.messages.isEmpty)
+    #expect(!populated.draft.isEmpty)
+    #expect(!populated.snapshots.isEmpty)
+    #expect(!populated.runHistory.isEmpty)
+
+    await controller.shutdownAndWait()
+    controller.newChat()
+    #expect(controller.messages.isEmpty)
+    #expect(controller.question.isEmpty)
+    #expect(controller.previewSnapshots.isEmpty)
+    #expect(controller.runHistory.isEmpty)
+    #expect(controller.run == nil)
+    let cleared = try #require(controller.questions[id])
+    #expect(cleared.messages.isEmpty)
+    #expect(cleared.draft.isEmpty)
+    #expect(cleared.snapshots.isEmpty)
+    #expect(cleared.runHistory.isEmpty)
+    #expect(!cleared.previewConfirmed)
+    #expect(controller.newQuestion() == nil)
+    #expect(!controller.canSend)
+    controller.send()
+    #expect(controller.run == nil)
+    #expect(controller.activeRequest == nil)
+    #expect(controller.questions[id] == cleared)
+  }
+
+  @Test func emptyPreviewCannotBeConfirmed() {
+    let controller = AgentController(store: ResourceStore(launchTerminalProcesses: false))
+    #expect(controller.previewSnapshots.isEmpty)
+    #expect(!controller.confirmPreview())
+    #expect(controller.questions[controller.currentQuestionID]?.previewConfirmed == false)
+  }
+
+  @Test func rereadingConfirmedPreviewClearsSnapshotsAndConfirmationUntilCompletion() async throws {
+    let store = ResourceStore(launchTerminalProcesses: false)
+    let resource = store.registerWeb(groupID: UUID())
+    let gate = QuestionReaderGate()
+    let controller = AgentController(
+      store: store, configuration: try ProviderConfiguration(model: "test"),
+      reader: { id, _ in await gate.read(id, snapshot: questionStateSnapshot(id)) })
+    controller.addResource(resource)
+    controller.question = "draft"
+    controller.readPreview()
+    try await waitForQuestionReader(gate, resource: resource)
+    await gate.release(resource, snapshot: questionStateSnapshot(resource))
+    try await waitForQuestionState { !controller.isReading }
+    #expect(controller.confirmPreview())
+    #expect(controller.canSend)
+
+    controller.readPreview()
+    #expect(controller.isReading)
+    #expect(controller.previewSnapshots.isEmpty)
+    #expect(controller.questions[controller.currentQuestionID]?.snapshots.isEmpty == true)
+    #expect(controller.questions[controller.currentQuestionID]?.previewConfirmed == false)
+    #expect(!controller.canSend)
+    try await waitForQuestionReader(gate, resource: resource)
+    await gate.release(resource, snapshot: questionStateSnapshot(resource, text: "fresh"))
+    try await waitForQuestionState { !controller.isReading }
+    #expect(controller.previewSnapshots.first?.text == "fresh")
+    #expect(controller.questions[controller.currentQuestionID]?.previewConfirmed == false)
+    await controller.shutdownAndWait()
+  }
+
+  @Test(arguments: [true, false])
+  func resourceSelectionChangeInvalidatesConfirmedPreview(adding: Bool) async throws {
+    let store = ResourceStore(launchTerminalProcesses: false)
+    let first = store.registerWeb(groupID: UUID())
+    let second = store.registerWeb(groupID: UUID())
+    let controller = AgentController(
+      store: store, configuration: try ProviderConfiguration(model: "test"),
+      reader: { id, _ in questionStateSnapshot(id) })
+    controller.addResource(first)
+    controller.question = "draft"
+    controller.readPreview()
+    try await waitForQuestionState { !controller.isReading }
+    #expect(controller.confirmPreview())
+    #expect(controller.canSend)
+    if adding {
+      controller.addResource(second)
+      #expect(controller.selectedResourceIDs == [first, second])
+    } else {
+      controller.removeResource(first)
+      #expect(controller.selectedResourceIDs.isEmpty)
+    }
+    #expect(controller.previewSnapshots.isEmpty)
+    #expect(controller.questions[controller.currentQuestionID]?.snapshots.isEmpty == true)
+    #expect(controller.questions[controller.currentQuestionID]?.previewConfirmed == false)
+    #expect(!controller.canSend)
+    await controller.shutdownAndWait()
+  }
+
+  @Test func sendFreezesDraftBeforeClearingProjectedAndStoredDraft() async throws {
+    let store = ResourceStore(launchTerminalProcesses: false)
+    let resource = store.registerWeb(groupID: UUID())
+    let provider = QuestionProvider()
+    let controller = AgentController(
+      store: store, service: ConfiguredResponsesService(credentials: TestQuestionCredentials(), provider: provider),
+      configuration: try ProviderConfiguration(model: "test"),
+      reader: { id, _ in questionStateSnapshot(id) })
+    let id = controller.currentQuestionID
+    controller.addResource(resource)
+    controller.question = "draft before send"
+    controller.readPreview()
+    try await waitForQuestionState { !controller.isReading }
+    #expect(controller.confirmPreview())
+    controller.send()
+    #expect(controller.activeRequest?.request.question == "draft before send")
+    #expect(controller.messages.last?.role == .user)
+    #expect(controller.messages.last?.text == "draft before send")
+    #expect(controller.questions[id]?.messages.last?.text == "draft before send")
+    #expect(controller.question.isEmpty)
+    #expect(controller.questions[id]?.draft.isEmpty == true)
+    for _ in 0..<1000 {
+      if await provider.count() == 1 { break }
+      await Task.yield()
+    }
+    try #require(await provider.count() == 1)
+    #expect(await provider.all().first?.question == "draft before send")
+    await provider.resolve("answer")
+    await controller.shutdownAndWait()
+  }
+
+  @Test func observedObjectDraftBindingPublishesAndWritesQuestionState() {
+    let controller = AgentController(store: ResourceStore(launchTerminalProcesses: false))
+    let observation = QuestionStateObservation()
+    let watch = controller.objectWillChange.sink { observation.didChange = true }
+    defer { withExtendedLifetime(watch) {} }
+    let binding = ObservedObject(wrappedValue: controller).projectedValue.question
+    binding.wrappedValue = "binding draft"
+    #expect(observation.didChange)
+    #expect(binding.wrappedValue == "binding draft")
+    #expect(controller.question == "binding draft")
+    #expect(controller.questions[controller.currentQuestionID]?.draft == "binding draft")
+  }
+
+  @Test func backgroundQuestionReadCompletionPublishesAndKeepsCurrentProjection() async throws {
+    let store = ResourceStore(launchTerminalProcesses: false)
+    let resource = store.registerWeb(groupID: UUID())
+    let gate = QuestionReaderGate()
+    let controller = AgentController(
+      store: store, configuration: try ProviderConfiguration(model: "test"),
+      reader: { id, _ in await gate.read(id, snapshot: questionStateSnapshot(id)) })
+    let first = controller.currentQuestionID
+    controller.addResource(resource)
+    controller.readPreview()
+    try await waitForQuestionReader(gate, resource: resource)
+    let second = try #require(controller.newQuestion())
+    controller.question = "current draft"
+    let observation = QuestionStateObservation()
+    let watch = controller.objectWillChange.sink { observation.didChange = true }
+    defer { withExtendedLifetime(watch) {} }
+    await gate.release(resource, snapshot: questionStateSnapshot(resource, text: "background"))
+    try await waitForQuestionState { controller.questions[first]?.snapshots.first?.text == "background" }
+    #expect(observation.didChange)
+    #expect(controller.currentQuestionID == second)
+    #expect(controller.question == "current draft")
+    #expect(controller.previewSnapshots.isEmpty)
+    #expect(controller.questions[second]?.snapshots.isEmpty == true)
+    controller.selectQuestion(first)
+    #expect(controller.previewSnapshots.first?.text == "background")
+    await controller.shutdownAndWait()
+  }
   @Test func questionOrderAppendsWithoutReorderingOrDeletingOldQuestions() async throws {
     let controller = AgentController(store: ResourceStore(launchTerminalProcesses: false))
     let first = controller.currentQuestionID
@@ -376,4 +585,32 @@ private actor RetryQuestionProvider: ResponsesProvider {
     return "retried"
   }
   func count() -> Int { requests.count }
+}
+
+private func questionStateSnapshot(_ id: UUID, text: String = "fixture") -> ResourceSnapshot {
+  ResourceSnapshot(
+    resourceID: id, collectedAt: Date(), text: text, isTruncated: false, errorMessage: nil, sourceURL: nil,
+    title: "fixture", range: 0..<text.count)
+}
+
+@MainActor
+private final class QuestionStateObservation {
+  var didChange = false
+}
+
+@MainActor
+private func waitForQuestionState(_ ready: () -> Bool) async throws {
+  for _ in 0..<1000 {
+    if ready() { return }
+    await Task.yield()
+  }
+  try #require(ready())
+}
+
+private func waitForQuestionReader(_ gate: QuestionReaderGate, resource: UUID) async throws {
+  for _ in 0..<1000 {
+    if await gate.hasWaiter(resource) { return }
+    await Task.yield()
+  }
+  try #require(await gate.hasWaiter(resource))
 }
