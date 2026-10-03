@@ -1,0 +1,34 @@
+{
+  "thread_title": "查找空间清理方法",
+  "thread_id": "01a100fb-8a7d-7991-90d5-d109c5ac0f99",
+  "source_record": "/Users/huaodong/Documents/Codex/2026-10-03/yan/outputs/external-builds.txt",
+  "matches": {
+    "scripts/build-ghostty-vt.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/build-ghostty.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/check.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/terminal-performance-probe-build.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/terminal-performance-probe-test.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/test-terminal-render-bench.sh": {
+      "matches_other_after": true,
+      "before_matches_branch": true
+    },
+    "scripts/build-artifacts.sh": {
+      "matches_other_generator": true
+    }
+  }
+}

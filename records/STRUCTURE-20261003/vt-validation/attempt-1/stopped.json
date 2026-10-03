@@ -1,0 +1,12 @@
+{
+  "failed_step": "06-vt-visuals",
+  "exit": 1,
+  "later_steps_not_run": [
+    "07-pty-transport",
+    "08-pty-transport-swift",
+    "09-font-equiv",
+    "10-golden-font",
+    "11-unicode-diag"
+  ],
+  "no_fix_retry_or_golden_change": true
+}

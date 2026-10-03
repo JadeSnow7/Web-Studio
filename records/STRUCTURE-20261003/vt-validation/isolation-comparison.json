@@ -1,0 +1,9 @@
+{
+  "head": "a184f45c079e361817fe7cfde4a6eb2e97fd70db",
+  "old_checkout": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout",
+  "new_checkout": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+  "matching_source_test_script_files": 124,
+  "same_TMPDIR": "/private/tmp/structure-20261003-vt-tmp",
+  "foreign_files_unchanged": 7,
+  "intended_variable": "checkout location only; no source/script/golden changes"
+}

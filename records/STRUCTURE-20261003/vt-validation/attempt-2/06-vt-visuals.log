@@ -1,0 +1,12 @@
+MEASURE 134x45 fingerprint (6030 cells, 200 iterations, swiftc -O, one process, not a benchmark):
+MEASURE   new TerminalAccessibilityFingerprint: 5.04 us/frame, mallocs/frame 0.00
+MEASURE   old accessibilityModel()+string fingerprint: 224.63 us/frame, mallocs/frame 22.00
+MEASURE   malloc counter sanity (one 8 KiB array alloc): 1 (expect >= 1); sink=0
+Terminal VT visuals smoke passed
+MEASURE 134x45 fingerprint (6030 cells, 200 iterations, swiftc -O, one process, not a benchmark):
+MEASURE   new TerminalAccessibilityFingerprint: 170.22 us/frame, mallocs/frame 1.00
+MEASURE   old accessibilityModel()+string fingerprint: 1758.67 us/frame, mallocs/frame 6097.00
+MEASURE   malloc counter sanity (one 8 KiB array alloc): 1 (expect >= 1); sink=0
+VIEW AX model: getters equal the reference algorithm across feed/selection/scroll/bounds changes
+VIEW layout: 4 resizes sent for initial + 3 identical + grid change + same-grid change + session detach/attach + rows change; drawableSize and repaint follow bounds
+Terminal VT visuals smoke passed

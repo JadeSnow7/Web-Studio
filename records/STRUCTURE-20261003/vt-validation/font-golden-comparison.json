@@ -1,0 +1,14 @@
+{
+  "matches": 9,
+  "sha256": {
+    "dark-1x-combined.bgra": "03e2c1f9fc2805aabc32e43be4425e01e9e2af2512e64740f459e80d68ffe16b",
+    "dark-1x-extra.bgra": "c599e5cbc4f445bb98ef38f7a08ca70301020a9d9c1d87ce5de35ea9531d695b",
+    "dark-2x-combined.bgra": "b15101038122755a5d8faeba9718fe2bac2961b7e6b6267c8555547069ff1d27",
+    "dark-2x-extra.bgra": "e127d644cb2793b68dcba87033b57c929652dacffdce5ae51cfed39583b872cc",
+    "light-1x-combined.bgra": "290417ad186ec182877c07ef07eafb98d2f4f9d0167659480cbca4efd46e1c82",
+    "light-1x-extra.bgra": "85b5f5945c627678bc927485089b11afa9f644ac1d1fe2414e038456912f8890",
+    "light-2x-combined.bgra": "f17622cc7cae4a8812a3c0f2b946f3c3c180649905ec36ce354307cf35dad093",
+    "light-2x-extra.bgra": "7b92cbb685f9a7edb78470f6903326ee1c4e830140173cdf08876a76fd7d2773",
+    "resize-scroll.bgra": "adea52663ec69ee2834afe38773c94af14f660274e6a8e37d7c92c0cd5d1380e"
+  }
+}

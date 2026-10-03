@@ -1,0 +1,9 @@
+{
+  "all_six_gates_exit_zero": true,
+  "all_step_source_stats_equal": true,
+  "whole_source_stats_equal": true,
+  "final_status_clean": true,
+  "golden_tool_and_input_hashes_unchanged": true,
+  "golden_pass_count": 9,
+  "cause_of_prior_failure_not_proven": true
+}

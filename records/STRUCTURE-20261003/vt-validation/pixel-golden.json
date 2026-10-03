@@ -1,0 +1,34 @@
+{
+  "font_frame_equivalence": {
+    "dark-1x-combined.bgra": "03e2c1f9fc2805aabc32e43be4425e01e9e2af2512e64740f459e80d68ffe16b",
+    "dark-1x-extra.bgra": "c599e5cbc4f445bb98ef38f7a08ca70301020a9d9c1d87ce5de35ea9531d695b",
+    "dark-2x-combined.bgra": "b15101038122755a5d8faeba9718fe2bac2961b7e6b6267c8555547069ff1d27",
+    "dark-2x-extra.bgra": "e127d644cb2793b68dcba87033b57c929652dacffdce5ae51cfed39583b872cc",
+    "light-1x-combined.bgra": "290417ad186ec182877c07ef07eafb98d2f4f9d0167659480cbca4efd46e1c82",
+    "light-1x-extra.bgra": "85b5f5945c627678bc927485089b11afa9f644ac1d1fe2414e038456912f8890",
+    "light-2x-combined.bgra": "f17622cc7cae4a8812a3c0f2b946f3c3c180649905ec36ce354307cf35dad093",
+    "light-2x-extra.bgra": "7b92cbb685f9a7edb78470f6903326ee1c4e830140173cdf08876a76fd7d2773",
+    "resize-scroll.bgra": "adea52663ec69ee2834afe38773c94af14f660274e6a8e37d7c92c0cd5d1380e"
+  },
+  "head": "ced7edc25bd6ab6434712ce4da0b4bd16afad499",
+  "note": "sha256 of raw BGRA target bytes at HEAD. font_frame_equivalence: 9 frames from test-terminal-font-frame-equivalence.sh (identical in two runs); render_bench: 16 hashes from test-terminal-render-bench.sh, identical in all 6 control repetitions and all 24 noise-run processes",
+  "render_bench": {
+    "render_blink_100/pixel_sha256_final": "797e4e8505c22e8c7d266056813421333a28bd73436b5ccae4c7608d1a48657f",
+    "render_blink_100/pixel_sha256_phase_hidden": "797e4e8505c22e8c7d266056813421333a28bd73436b5ccae4c7608d1a48657f",
+    "render_blink_100/pixel_sha256_phase_visible": "20b826c7dbd7589732e1250be5fa7ca4d738ad4a9e2de5742ec98ec7c870f586",
+    "render_churn/pixel_sha256_frame_10": "2e6f4759d6ee355c8ed07c2107911b3229d04dfe3499177838aea53b26d450af",
+    "render_churn/pixel_sha256_frame_20": "696eb467e6c44a5a0b232c1174d4092118a4a837329acce21eebec370a030f83",
+    "render_churn/pixel_sha256_frame_30": "1ee1486b32d1dfdc80dacd1dbbeafdb0cb28967b7b92db82cc8359cb5d154033",
+    "render_churn/pixel_sha256_frame_40": "59a4c4e74623071d83fc45ae2547df84630f663db28bb72becdc8bae122466a0",
+    "render_churn/pixel_sha256_frame_50": "7ec11748bb5159dece0eecbbd2bd274af1d80c64f23d905b7d969a950dcfdcea",
+    "render_churn/pixel_sha256_frame_60": "a675b6e7070a11ddea7c720f608b8050b71876037d196d12c88fd33020006200",
+    "render_churn/pixel_sha256_last": "a675b6e7070a11ddea7c720f608b8050b71876037d196d12c88fd33020006200",
+    "render_cold_first/ASCII120/pixel_sha256": "5cf7956d6aaeee96d39f4892fd9a36a05fc22767ef8f7ba8a2412977f8e93ccc",
+    "render_cold_first/CJK60/pixel_sha256": "a143f7fd66bd68bae22a0d1b75b477f332a3df1646db266cfe058482b30bdf70",
+    "render_cold_first/SGR_MIXED/pixel_sha256": "d0056ffa140f8fef6d31da280e3994ab6399cfb072d904e0a42ba7c866446ecf",
+    "render_hot_100/ASCII120/pixel_sha256": "5cf7956d6aaeee96d39f4892fd9a36a05fc22767ef8f7ba8a2412977f8e93ccc",
+    "render_hot_100/CJK60/pixel_sha256": "a143f7fd66bd68bae22a0d1b75b477f332a3df1646db266cfe058482b30bdf70",
+    "render_hot_100/SGR_MIXED/pixel_sha256": "d0056ffa140f8fef6d31da280e3994ab6399cfb072d904e0a42ba7c866446ecf"
+  },
+  "schema": "pixel-golden.v1"
+}

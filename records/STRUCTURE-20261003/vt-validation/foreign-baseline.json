@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-10-03T17:33:45.084768+08:00",
+  "repo": "/Users/huaodong/workspace/Web Studio",
+  "head": "a184f45c079e361817fe7cfde4a6eb2e97fd70db",
+  "branch": "refactor/structure-20261003",
+  "status_porcelain": " M scripts/build-ghostty-vt.sh\n M scripts/build-ghostty.sh\n M scripts/check.sh\n M scripts/terminal-performance-probe-build.sh\n M scripts/terminal-performance-probe-test.sh\n M scripts/test-terminal-render-bench.sh\n?? scripts/build-artifacts.sh\n",
+  "index_diff": "",
+  "foreign_files": {
+    "scripts/build-ghostty-vt.sh": "909ab23bbd91c2f8f2aee782531de05840b969dc25ffaed0444068908888a8c5",
+    "scripts/build-ghostty.sh": "43dda1fbe6d87a676c95c522392b917d2616702615a4c4bf5d4864531e838e92",
+    "scripts/check.sh": "c8609b7aa1d74688d475af7eafea1f0a2983d6496c701a672e41eb366b5f6a31",
+    "scripts/terminal-performance-probe-build.sh": "2341747454aea05e6790a3a6b26fededc2e489e56a5ba09b0978c44c31d77f9a",
+    "scripts/terminal-performance-probe-test.sh": "cf7e0d77dfec84ae430ac29b8a14d78230aa6344d61883aa209650baa124f903",
+    "scripts/test-terminal-render-bench.sh": "2f52b8ed2fd17971c2fee60b293540f12f6c53d27ee373eea0c521791b6e3ebc",
+    "scripts/build-artifacts.sh": "4e8a0633e5019e4dc475047d855609f47492db883ea7e863b79657c26e691a3e"
+  }
+}

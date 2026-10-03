@@ -1,0 +1,7 @@
+MEASURE 134x45 fingerprint (6030 cells, 200 iterations, swiftc -O, one process, not a benchmark):
+MEASURE   new TerminalAccessibilityFingerprint: 5.72 us/frame, mallocs/frame 0.00
+MEASURE   old accessibilityModel()+string fingerprint: 176.76 us/frame, mallocs/frame 22.00
+MEASURE   malloc counter sanity (one 8 KiB array alloc): 1 (expect >= 1); sink=0
+Terminal VT visuals smoke passed
+error: input file '/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/TerminalMetalRenderer.swift' was modified during the build
+error: input file '/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/TerminalMetalRenderer.swift' was modified during the build
