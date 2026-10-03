@@ -236,6 +236,20 @@ final class Web_StudioUITests: XCTestCase {
     func testMinimumWindowLightAndDarkControls() {
         for appearance in ["--appearance-light", "--appearance-dark"] {
             let app = launch([appearance, "--minimum-window"])
+            var appearancePassed = false
+            addTeardownBlock { @MainActor in
+                guard !appearancePassed else { return }
+                let window = app.windows.firstMatch
+                guard window.exists else {
+                    print("[diagnostic] failure window screenshot unavailable for \(appearance): main window does not exist")
+                    return
+                }
+                let attachment = XCTAttachment(screenshot: window.screenshot())
+                attachment.lifetime = .keepAlways
+                let appearanceLabel = appearance == "--appearance-light" ? "light" : "dark"
+                attachment.name = "failure-window-\(appearanceLabel)"
+                self.add(attachment)
+            }
             XCTAssertTrue(app.textFields["destination.address"].waitForExistence(timeout: 5))
             XCTAssertTrue(app.textFields["destination.address"].isHittable)
             XCTAssertTrue(app.buttons["commands.button"].isHittable)
@@ -255,6 +269,7 @@ final class Web_StudioUITests: XCTestCase {
             attachment.lifetime = .keepAlways
             attachment.name = appearance
             add(attachment)
+            appearancePassed = true
             app.terminate()
         }
     }
@@ -263,6 +278,19 @@ final class Web_StudioUITests: XCTestCase {
     func testSavedWorkspaceConfigurationRestoresAfterRelaunch() {
         let root = "/tmp/web-studio-ui-\(UUID().uuidString)"
         let app = launch(root: root)
+        var currentApp = app
+        var testPassed = false
+        addTeardownBlock { @MainActor in
+            guard !testPassed else { return }
+            let selector = currentApp.menuButtons["workspace.selector"]
+            let label = selector.exists ? selector.label : "<unavailable: workspace.selector does not exist>"
+            let diagnostic = "workspace.selector actual label on failure: \(label)"
+            print(diagnostic)
+            let attachment = XCTAttachment(string: diagnostic)
+            attachment.lifetime = .keepAlways
+            attachment.name = "workspace-selector-label-on-failure"
+            self.add(attachment)
+        }
         XCTAssertTrue(app.textFields["destination.address"].waitForExistence(timeout: 5))
         app.typeKey("t", modifierFlags: .command)
         XCTAssertEqual(resources(app).count, 1)
@@ -278,10 +306,12 @@ final class Web_StudioUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["已保存"].waitForExistence(timeout: 5))
         app.terminate()
         let relaunched = launch(root: root)
+        currentApp = relaunched
         XCTAssertTrue(relaunched.textFields["destination.address"].waitForExistence(timeout: 5))
         XCTAssertEqual(Set((0..<resources(relaunched).count).map { resources(relaunched).element(boundBy: $0).identifier }), savedIDs)
         XCTAssertTrue(relaunched.menuButtons["workspace.selector"].waitForExistence(timeout: 3))
         XCTAssertTrue(relaunched.menuButtons["workspace.selector"].label.contains("B1 UI Workspace"))
+        testPassed = true
     }
 
     @MainActor
