@@ -4,6 +4,7 @@
   import Darwin
   import Foundation
   import SwiftTerm
+  import os
 
   private struct PTYExit: Sendable { let code: Int32? }
 
@@ -365,11 +366,14 @@
           if ok && !self.closeRequested && !self.processFinished {
             self.processStarted = true
             self.state = .running
+            StudioLog.terminal.info("event=terminal_started resource=\(self.resourceID.uuidString, privacy: .public)")
           } else if !ok {
             self.processFinished = true
             self.securityScopedURL?.stopAccessingSecurityScopedResource()
             self.securityScopedURL = nil
             self.state = .failed(error ?? "Unable to start terminal")
+            StudioLog.terminal.error(
+              "event=terminal_start_failed resource=\(self.resourceID.uuidString, privacy: .public)")
             self.resumeWaiters()
           }
         }
@@ -386,6 +390,9 @@
           self.processFinished = true
           self.state =
             self.ioFailureMessage.map(State.failed) ?? (self.closeRequested ? .interrupted : .exited(exit.code))
+          StudioLog.terminal.info(
+            "event=terminal_exited resource=\(self.resourceID.uuidString, privacy: .public) close_requested=\(self.closeRequested, privacy: .public)"
+          )
           self.resumeWaiters()
         }
       }
@@ -394,6 +401,7 @@
           guard let self, self.state == .running || self.state == .starting else { return }
           self.ioFailureMessage = message
           self.state = .failed(message)
+          StudioLog.terminal.error("event=terminal_io_failed resource=\(self.resourceID.uuidString, privacy: .public)")
           self.process.close()
         }
       }
@@ -420,6 +428,8 @@
     func startSSH(host: String, user: String, port: Int, knownHosts: String) {
       guard Self.validToken(host), user.isEmpty || Self.validToken(user), (1...65535).contains(port) else {
         state = .failed("Invalid SSH connection details")
+        StudioLog.terminal.error(
+          "event=terminal_start_rejected resource=\(self.resourceID.uuidString, privacy: .public)")
         return
       }
       let args =
@@ -431,6 +441,7 @@
     }
     private func start(executable: String, argv: [String], directory: String, useGhostty: Bool = true) {
       guard state == .idle else { return }
+      StudioLog.terminal.info("event=terminal_start_requested resource=\(self.resourceID.uuidString, privacy: .public)")
       state = .starting
       processStarted = true
       let home = FileManager.default.homeDirectoryForCurrentUser.path
@@ -465,12 +476,18 @@
           self.processFinished = true
           self.lastGhosttySnapshot = view.renderedText()
           self.state = self.closeRequested ? .interrupted : .exited(code)
+          StudioLog.terminal.info(
+            "event=terminal_exited resource=\(self.resourceID.uuidString, privacy: .public) close_requested=\(self.closeRequested, privacy: .public)"
+          )
           self.resumeWaiters()
         }
         state = .running
+        StudioLog.terminal.info("event=terminal_started resource=\(self.resourceID.uuidString, privacy: .public)")
       } else {
         if useGhostty {
           state = .failed("GhosttyKit could not create the terminal surface.")
+          StudioLog.terminal.error(
+            "event=terminal_start_failed resource=\(self.resourceID.uuidString, privacy: .public)")
           processStarted = false
         } else {
           process.start(
@@ -500,9 +517,11 @@
     }
     func close(interrupted: Bool = false) {
       guard !closeRequested else { return }
+      StudioLog.terminal.info("event=terminal_close_requested resource=\(self.resourceID.uuidString, privacy: .public)")
       closeRequested = true
       if state == .idle {
         state = interrupted ? .interrupted : .exited(nil)
+        StudioLog.terminal.info("event=terminal_closed_idle resource=\(self.resourceID.uuidString, privacy: .public)")
         securityScopedURL?.stopAccessingSecurityScopedResource()
         securityScopedURL = nil
         resumeWaiters()

@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 
 enum AgentRunState: Equatable, Sendable {
   case requesting
@@ -198,6 +199,9 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     startRequest(retried)
   }
   private func startRequest(_ created: AgentRun) {
+    StudioLog.agent.info(
+      "event=request_started question=\(created.questionID.uuidString, privacy: .public) run=\(created.id.uuidString, privacy: .public)"
+    )
     activeRequest = ActiveAgentRequest(questionID: created.questionID, runID: created.id, request: created.request)
     requestGeneration += 1
     let token = requestGeneration
@@ -225,6 +229,9 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
     if let questionID { cancelReading(questionID: questionID) } else { cancelReading() }
     guard let active = activeRequest, questionID == nil || active.questionID == questionID else { return }
     requestGeneration += 1
+    StudioLog.agent.info(
+      "event=request_cancelled question=\(active.questionID.uuidString, privacy: .public) run=\(active.runID.uuidString, privacy: .public)"
+    )
     pendingRequestCleanupID = active.runID
     isCancellingRequest = true
     if let task = runTask {
@@ -281,6 +288,7 @@ struct ActiveAgentRequest: Identifiable, Equatable, Sendable {
 
   private func finish(_ created: AgentRun, state: AgentRunState, token: Int) {
     guard !isShutdown, requestGeneration == token, activeRequest?.runID == created.id else { return }
+    StudioLog.agentState(questionID: created.questionID, runID: created.id, state: state)
     var updated = created
     updated.state = state
     questions[created.questionID]!.runHistory[created.id] = updated

@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import Foundation
+import os
 
 enum WorkspaceSaveFailureChoice: Sendable {
   case retry
@@ -359,11 +360,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         guard let directoryLoader = self.directoryLoader else { return }
         records = try await directoryLoader()
       } catch let error as WorkspaceRepositoryError {
+        StudioLog.workspace.error("event=workspace_directory_load_failed")
         self.globalDiagnostics.append(error)
         self.objectWillChange.send()
         self.didScanDirectory = true
         return
       } catch {
+        StudioLog.workspace.error("event=workspace_directory_load_failed")
         self.restorationErrorDescription = String(describing: error)
         self.objectWillChange.send()
         self.didScanDirectory = true
@@ -377,11 +380,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
             id: entry.workspaceID, name: entry.name, isTemporary: false,
             archived: entry.archived, lastActivatedAt: entry.lastActivatedAt)
         case .diagnostic(let id, let error):
+          StudioLog.workspace.error("event=workspace_configuration_invalid")
           if let id { self.directoryDiagnostics[id] = error }
         }
       }
       self.objectWillChange.send()
       self.didScanDirectory = true
+      StudioLog.workspace.info("event=workspace_directory_loaded")
     }
     restorationTask = task
     await task.value
@@ -440,10 +445,12 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         do {
           return try await loader(id)
         } catch let error as WorkspaceRepositoryError {
+          StudioLog.workspace.error("event=workspace_load_failed workspace=\(id.uuidString, privacy: .public)")
           self.loadErrors[id] = error
           self.objectWillChange.send()
           return nil
         } catch {
+          StudioLog.workspace.error("event=workspace_load_failed workspace=\(id.uuidString, privacy: .public)")
           self.loadErrorMessagesByID[id] = String(describing: error)
           self.objectWillChange.send()
           return nil
@@ -496,6 +503,7 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       releaseSession(id, preservingDirectory: true)
       return .unavailable
     }
+    StudioLog.workspace.info("event=workspace_loaded workspace=\(id.uuidString, privacy: .public)")
     return .opened(loadedSession)
   }
 
@@ -657,10 +665,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         order: (updated.resources.map(\.order).max() ?? -1) + 1))
     do {
       _ = try await repository.save(updated, expectedRevision: target.revision)
+      StudioLog.persistence.info("event=save_succeeded workspace=\(toWorkspaceID.uuidString, privacy: .public)")
     } catch let error as WorkspaceRepositoryError {
+      StudioLog.persistence.error("event=save_failed workspace=\(toWorkspaceID.uuidString, privacy: .public)")
       if case .revisionConflict = error { throw WorkspaceCopyError.conflict }
       throw WorkspaceCopyError.saveFailed(error.localizedDescription)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(toWorkspaceID.uuidString, privacy: .public)")
       throw WorkspaceCopyError.saveFailed(error.localizedDescription)
     }
     return newID
@@ -785,6 +796,7 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     do {
       result = try await repository.save(updated, expectedRevision: configuration.revision)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(id.uuidString, privacy: .public)")
       loadErrorMessagesByID[id] = String(describing: error)
       objectWillChange.send()
       return false
@@ -792,6 +804,7 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     guard case .saved(let envelope) = result else {
       return false
     }
+    StudioLog.persistence.info("event=save_succeeded workspace=\(id.uuidString, privacy: .public)")
     directory[id] = WorkspaceDirectoryEntry(
       id: id, name: envelope.configuration.name,
       isTemporary: false, archived: true,
@@ -813,11 +826,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     do {
       result = try await repository.save(updated, expectedRevision: configuration.revision)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(id.uuidString, privacy: .public)")
       loadErrorMessagesByID[id] = String(describing: error)
       objectWillChange.send()
       return false
     }
     guard case .saved(let envelope) = result else { return false }
+    StudioLog.persistence.info("event=save_succeeded workspace=\(id.uuidString, privacy: .public)")
     directory[id] = WorkspaceDirectoryEntry(
       id: id, name: envelope.configuration.name,
       isTemporary: false, archived: false,

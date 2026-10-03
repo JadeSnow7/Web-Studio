@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 
 @MainActor final class WorkspaceSession: ObservableObject, Identifiable {
   let id: UUID
@@ -207,6 +208,7 @@ import Foundation
       return
     }
     if isClosed { return }
+    StudioLog.workspace.info("event=workspace_close_started workspace=\(self.id.uuidString, privacy: .public)")
     isClosed = true
     let t = Task { @MainActor [agentController, resourceStore] in
       await agentController.shutdownAndWait()
@@ -216,5 +218,6 @@ import Foundation
     closingTask = t
     await t.value
     closingTask = nil
+    StudioLog.workspace.info("event=workspace_closed workspace=\(self.id.uuidString, privacy: .public)")
   }
 }

@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 
 enum WorkspaceSaveState: Equatable, Sendable {
   case clean(revision: Int?)
@@ -134,12 +135,18 @@ final class WorkspaceSaveController: ObservableObject {
       }
       let writeGeneration = generation
       let snapshot = session.exportConfiguration(revision: revision ?? 0)
+      StudioLog.persistence.info(
+        "event=save_started workspace=\(session.id.uuidString, privacy: .public) generation=\(writeGeneration, privacy: .public)"
+      )
       state = .saving(generation: writeGeneration)
       let task = Task { @MainActor [weak self] in
         guard let self else { return }
         defer { self.writeTask = nil }
         do {
           let result = try await self.writer(snapshot, self.revision)
+          StudioLog.persistence.info(
+            "event=save_succeeded workspace=\(session.id.uuidString, privacy: .public) revision=\(result.revision, privacy: .public)"
+          )
           self.revision = result.revision
           self.lastSavedConfiguration = result
           self.lastSavedGeneration = writeGeneration
@@ -155,6 +162,7 @@ final class WorkspaceSaveController: ObservableObject {
             self.state = .dirty(generation: self.generation)
           }
         } catch {
+          StudioLog.persistence.error("event=save_failed workspace=\(session.id.uuidString, privacy: .public)")
           self.lastError = String(describing: error)
           self.state = .failed(generation: writeGeneration, message: self.lastError!)
         }
