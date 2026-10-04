@@ -3,12 +3,14 @@ set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 LOCK="$ROOT/Vendor/GhosttyVT/DEPENDENCY.lock"
+. "$ROOT/scripts/build-artifacts.sh"
+ARTIFACTS=$(build_artifacts_path "$ROOT" ghostty-vt /private/tmp)
 SOURCE_DIR=${GHOSTTY_VT_SOURCE_DIR:-/private/tmp/web-studio-ghostty-vt-source}
 ZIG_DIR=${GHOSTTY_VT_ZIG_DIR:-/private/tmp/zig-aarch64-macos-0.16.0}
 ZIG_BIN="$ZIG_DIR/zig"
-CACHE_DIR=${GHOSTTY_VT_CACHE_DIR:-/private/tmp/web-studio-ghostty-vt-cache}
-GLOBAL_CACHE_DIR=${GHOSTTY_VT_GLOBAL_CACHE_DIR:-/private/tmp/web-studio-ghostty-vt-global-cache}
-BUILD_DIR=${GHOSTTY_VT_BUILD_DIR:-/private/tmp/web-studio-ghostty-vt-prefix}
+CACHE_DIR=${GHOSTTY_VT_CACHE_DIR:-$ARTIFACTS/web-studio-ghostty-vt-cache}
+GLOBAL_CACHE_DIR=${GHOSTTY_VT_GLOBAL_CACHE_DIR:-$ARTIFACTS/web-studio-ghostty-vt-global-cache}
+BUILD_DIR=${GHOSTTY_VT_BUILD_DIR:-$ARTIFACTS/web-studio-ghostty-vt-prefix}
 OUTPUT_DIR=${GHOSTTY_VT_OUTPUT_DIR:-$ROOT/Vendor/GhosttyVT}
 
 lock_value() {
@@ -29,7 +31,7 @@ printf '%s\n' "$COMMIT" | awk 'length($0) == 40 && $0 ~ /^[0-9a-f]+$/ { found = 
 }
 case "$OUTPUT_DIR" in /|/private/tmp|/tmp|"$ROOT") echo "unsafe output directory" >&2; exit 2 ;; esac
 for temporary_path in "$BUILD_DIR" "$CACHE_DIR" "$GLOBAL_CACHE_DIR"; do
-  case "$temporary_path" in /private/tmp/*|/tmp/*) ;; *) echo "build/cache paths must be under /private/tmp or /tmp" >&2; exit 2 ;; esac
+  case "$temporary_path" in /private/tmp/*|/tmp/*|"$ARTIFACTS"/*) ;; *) echo "build/cache paths must be under the configured artifacts root, /private/tmp or /tmp" >&2; exit 2 ;; esac
 done
 
 test -f "$LOCK" || { echo "missing lock: $LOCK" >&2; exit 2; }

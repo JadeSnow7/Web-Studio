@@ -28,7 +28,8 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "$script_dir/.." && pwd)"
 cd "$repo_root" || exit 2
 
-derived_data='/private/tmp/ws-phase2-check'
+. "$script_dir/build-artifacts.sh"
+derived_data=$(build_artifacts_path "$repo_root" xcode-check /private/tmp/ws-phase2-check) || exit $?
 result_root="$(mktemp -d "${TMPDIR:-/private/tmp}/web-studio-check-results.XXXXXX")"
 build_result="$result_root/build.xcresult"
 unit_result="$result_root/unit.xcresult"

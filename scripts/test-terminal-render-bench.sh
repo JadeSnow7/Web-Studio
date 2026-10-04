@@ -27,7 +27,8 @@ case "$OUTPUT" in /private/tmp/*) ;; *) echo "output must be under /private/tmp"
 case "$REPS" in ''|*[!0-9]*) echo "--repetitions must be a positive integer" >&2; exit 64 ;; esac
 [ "$REPS" -ge 1 ] || { echo "--repetitions must be >= 1" >&2; exit 64; }
 [ ! -e "$OUTPUT" ] || { echo "output exists; refusing overwrite" >&2; exit 64; }
-BUILD="${OUTPUT}-build"
+. "$SCRIPT_ROOT/build-artifacts.sh"
+BUILD=$(build_artifacts_path "$SOURCE_ROOT" "render-bench/$(basename "$OUTPUT")-build" "${OUTPUT}-build")
 [ ! -e "$BUILD" ] || { echo "build output exists; refusing overwrite" >&2; exit 64; }
 if [ -n "$NOISE_FLOOR" ]; then [ -f "$NOISE_FLOOR" ] || { echo "noise floor file not found" >&2; exit 64; }; fi
 check_root() {

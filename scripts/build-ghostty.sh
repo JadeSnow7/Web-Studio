@@ -1,12 +1,16 @@
 #!/bin/sh
 set -eu
 
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+. "$ROOT/scripts/build-artifacts.sh"
+ARTIFACTS=$(build_artifacts_path "$ROOT" ghostty /private/tmp)
+
 # Reproducible direct-download build inputs. The source directory is supplied
 # by the release/bootstrap job so this script never follows upstream HEAD.
 SOURCE_DIR=${GHOSTTY_SOURCE_DIR:-/private/tmp/web-studio-ghostty-1.3.1}
 ZIG_BIN=${ZIG_BIN:-/private/tmp/zig-aarch64-macos-0.15.2/zig}
 OUTPUT_DIR=${GHOSTTY_OUTPUT_DIR:-"$PWD/Vendor"}
-CACHE_DIR=${GHOSTTY_ZIG_CACHE_DIR:-/private/tmp/web-studio-ghostty-zig-cache}
+CACHE_DIR=${GHOSTTY_ZIG_CACHE_DIR:-$ARTIFACTS/web-studio-ghostty-zig-cache}
 BUILD_TOOLS=${GHOSTTY_BUILD_TOOLS:-"$PWD/scripts/ghostty-build-tools"}
 
 test -x "$ZIG_BIN" || { echo "missing Zig 0.15.2: $ZIG_BIN" >&2; exit 2; }
@@ -30,7 +34,7 @@ fi
   -Demit-xcframework=true \
   -Demit-macos-app=false \
   -Dxcframework-target=native \
-  --cache-dir "${GHOSTTY_DARWIN_CACHE_DIR:-/private/tmp/web-studio-ghostty-darwin-cache}" \
+  --cache-dir "${GHOSTTY_DARWIN_CACHE_DIR:-$ARTIFACTS/web-studio-ghostty-darwin-cache}" \
   --global-cache-dir "$CACHE_DIR"
 
 XCFRAMEWORK="$SOURCE_DIR/macos/GhosttyKit.xcframework"
