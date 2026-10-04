@@ -50,10 +50,18 @@
   public struct VTMouseGeometry: Sendable {
     public let screenWidth, screenHeight, cellWidth, cellHeight: Int
     public let paddingTop, paddingBottom, paddingLeft, paddingRight: Int
-    public init(screenWidth: Int, screenHeight: Int, cellWidth: Int, cellHeight: Int,
-                paddingTop: Int = 0, paddingBottom: Int = 0, paddingLeft: Int = 0, paddingRight: Int = 0) {
-      self.screenWidth = screenWidth; self.screenHeight = screenHeight; self.cellWidth = cellWidth; self.cellHeight = cellHeight
-      self.paddingTop = paddingTop; self.paddingBottom = paddingBottom; self.paddingLeft = paddingLeft; self.paddingRight = paddingRight
+    public init(
+      screenWidth: Int, screenHeight: Int, cellWidth: Int, cellHeight: Int,
+      paddingTop: Int = 0, paddingBottom: Int = 0, paddingLeft: Int = 0, paddingRight: Int = 0
+    ) {
+      self.screenWidth = screenWidth
+      self.screenHeight = screenHeight
+      self.cellWidth = cellWidth
+      self.cellHeight = cellHeight
+      self.paddingTop = paddingTop
+      self.paddingBottom = paddingBottom
+      self.paddingLeft = paddingLeft
+      self.paddingRight = paddingRight
     }
   }
   public final class TerminalVTCore: @unchecked Sendable {
@@ -199,31 +207,157 @@
         cursorColor: raw.colors.cursor_has_value ? VTColor(raw.colors.cursor) : nil, cursor: cursor,
         scrollbar: bar, snapshotTruncated: raw.viewport_text_truncated)
     }
-    public func snapshotCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return snapshotCount }
-    public func pwdReadCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return pwdReadCount }
-    public func resizeCountForTesting() -> Int { lock.lock(); defer { lock.unlock() }; return resizeCount }
-    public func scroll(rows: Int) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_delta(handle, Int(rows)) }
-    public func scroll(toOffset offset: UInt64) { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_to(handle, Int(offset)) }
-    public func scrollToBottom() { lock.lock(); defer { lock.unlock() }; guard let handle else { return }; studio_vt_scroll_bottom(handle) }
+    public func snapshotCountForTesting() -> Int {
+      lock.lock()
+      defer { lock.unlock() }
+      return snapshotCount
+    }
+    public func pwdReadCountForTesting() -> Int {
+      lock.lock()
+      defer { lock.unlock() }
+      return pwdReadCount
+    }
+    public func resizeCountForTesting() -> Int {
+      lock.lock()
+      defer { lock.unlock() }
+      return resizeCount
+    }
+    public func scroll(rows: Int) {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return }
+      studio_vt_scroll_delta(handle, Int(rows))
+    }
+    public func scroll(toOffset offset: UInt64) {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return }
+      studio_vt_scroll_to(handle, Int(offset))
+    }
+    public func scrollToBottom() {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return }
+      studio_vt_scroll_bottom(handle)
+    }
     @discardableResult public func selectionBegin(column: Int, row: Int, clickCount: Int = 1) -> Bool {
-      lock.lock(); defer { lock.unlock() }; guard let handle else { return false }
-      return studio_vt_selection_begin(handle, UInt16(clamping: column), UInt16(clamping: row), Int32(clickCount)) == GHOSTTY_SUCCESS
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_selection_begin(handle, UInt16(clamping: column), UInt16(clamping: row), Int32(clickCount))
+        == GHOSTTY_SUCCESS
     }
-    @discardableResult public func selectionUpdate(column: Int, row: Int) -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_selection_update(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS }
-    @discardableResult public func selectionEnd() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; let r = studio_vt_selection_end(handle); return r == GHOSTTY_SUCCESS }
-    @discardableResult public func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) -> Bool {
-      lock.lock(); defer { lock.unlock() }; guard let handle else { return false }
-      return studio_vt_select_drag(handle, UInt16(clamping: startColumn), UInt16(clamping: startRow), UInt16(clamping: endColumn), UInt16(clamping: endRow), Int32(behavior)) == GHOSTTY_SUCCESS
+    @discardableResult public func selectionUpdate(column: Int, row: Int) -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_selection_update(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS
     }
-    @discardableResult public func selectWord(column: Int, row: Int) -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_select_word(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS }
-    @discardableResult public func selectLine(column: Int, row: Int) -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_select_line(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS }
-    @discardableResult public func clearSelection() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_clear_selection(handle) == GHOSTTY_SUCCESS }
-    @discardableResult public func selectAll() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_select_all(handle) == GHOSTTY_SUCCESS }
-    public func selectedText() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_selected_text(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
-    @discardableResult public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; var written = false; let result = text.data(using: .utf8)!.withUnsafeBytes { b in studio_vt_paste(handle, b.bindMemory(to: UInt8.self).baseAddress, text.utf8.count, allowUnsafe, &written) }; return result == GHOSTTY_SUCCESS && written }
-    public func focus(_ focused: Bool) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_focus(handle, focused, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
-    public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) -> Data? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; var p: UnsafeMutablePointer<UInt8>?; var n = 0; let result = studio_vt_mouse(handle, Int32(action), Int32(button), modifiers, xPixels, yPixels, UInt32(clamping: geometry.screenWidth), UInt32(clamping: geometry.screenHeight), UInt32(clamping: geometry.cellWidth), UInt32(clamping: geometry.cellHeight), UInt32(clamping: geometry.paddingTop), UInt32(clamping: geometry.paddingBottom), UInt32(clamping: geometry.paddingLeft), UInt32(clamping: geometry.paddingRight), &p, &n); guard result == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return Data(bytes: p, count: n) }
-    public func mouseReporting() -> Bool { lock.lock(); defer { lock.unlock() }; guard let handle else { return false }; return studio_vt_mouse_reporting(handle) }
-    public func pwd() -> String? { lock.lock(); defer { lock.unlock() }; guard let handle else { return nil }; pwdReadCount += 1; var p: UnsafeMutablePointer<UInt8>?; var n = 0; guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }; defer { studio_vt_bytes_free(p) }; return String(decoding: Data(bytes: p, count: n), as: UTF8.self) }
+    @discardableResult public func selectionEnd() -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      let r = studio_vt_selection_end(handle)
+      return r == GHOSTTY_SUCCESS
+    }
+    @discardableResult public func selectDrag(
+      startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0
+    ) -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_select_drag(
+        handle, UInt16(clamping: startColumn), UInt16(clamping: startRow), UInt16(clamping: endColumn),
+        UInt16(clamping: endRow), Int32(behavior)) == GHOSTTY_SUCCESS
+    }
+    @discardableResult public func selectWord(column: Int, row: Int) -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_select_word(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS
+    }
+    @discardableResult public func selectLine(column: Int, row: Int) -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_select_line(handle, UInt16(clamping: column), UInt16(clamping: row)) == GHOSTTY_SUCCESS
+    }
+    @discardableResult public func clearSelection() -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_clear_selection(handle) == GHOSTTY_SUCCESS
+    }
+    @discardableResult public func selectAll() -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_select_all(handle) == GHOSTTY_SUCCESS
+    }
+    public func selectedText() -> String? {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return nil }
+      var p: UnsafeMutablePointer<UInt8>?
+      var n = 0
+      guard studio_vt_selected_text(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }
+      defer { studio_vt_bytes_free(p) }
+      return String(decoding: Data(bytes: p, count: n), as: UTF8.self)
+    }
+    @discardableResult public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      var written = false
+      let result = text.data(using: .utf8)!.withUnsafeBytes { b in
+        studio_vt_paste(handle, b.bindMemory(to: UInt8.self).baseAddress, text.utf8.count, allowUnsafe, &written)
+      }
+      return result == GHOSTTY_SUCCESS && written
+    }
+    public func focus(_ focused: Bool) -> Data? {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return nil }
+      var p: UnsafeMutablePointer<UInt8>?
+      var n = 0
+      guard studio_vt_focus(handle, focused, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }
+      defer { studio_vt_bytes_free(p) }
+      return Data(bytes: p, count: n)
+    }
+    public func mouse(
+      action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry
+    ) -> Data? {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return nil }
+      var p: UnsafeMutablePointer<UInt8>?
+      var n = 0
+      let result = studio_vt_mouse(
+        handle, Int32(action), Int32(button), modifiers, xPixels, yPixels, UInt32(clamping: geometry.screenWidth),
+        UInt32(clamping: geometry.screenHeight), UInt32(clamping: geometry.cellWidth),
+        UInt32(clamping: geometry.cellHeight), UInt32(clamping: geometry.paddingTop),
+        UInt32(clamping: geometry.paddingBottom), UInt32(clamping: geometry.paddingLeft),
+        UInt32(clamping: geometry.paddingRight), &p, &n)
+      guard result == GHOSTTY_SUCCESS, let p else { return nil }
+      defer { studio_vt_bytes_free(p) }
+      return Data(bytes: p, count: n)
+    }
+    public func mouseReporting() -> Bool {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return false }
+      return studio_vt_mouse_reporting(handle)
+    }
+    public func pwd() -> String? {
+      lock.lock()
+      defer { lock.unlock() }
+      guard let handle else { return nil }
+      pwdReadCount += 1
+      var p: UnsafeMutablePointer<UInt8>?
+      var n = 0
+      guard studio_vt_pwd(handle, &p, &n) == GHOSTTY_SUCCESS, let p else { return nil }
+      defer { studio_vt_bytes_free(p) }
+      return String(decoding: Data(bytes: p, count: n), as: UTF8.self)
+    }
   }
 #endif

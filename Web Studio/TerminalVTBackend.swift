@@ -90,8 +90,10 @@
           finish(.init(code: nil, signal: nil))
           return
         }
-        _ = core.resize(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
-        appliedResize = ResizeRequest(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
+        _ = core.resize(
+          columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
+        appliedResize = ResizeRequest(
+          columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
         refreshModeMirror()
         transport.start(
           executable: executable, argv: argv, environment: environment, directory: directory,
@@ -103,7 +105,10 @@
       key: GhosttyKey, modifiers: GhosttyMods, action: GhosttyKeyAction, text: String, unshiftedCodepoint: UInt32 = 0
     ) {
       queue.async { [self] in
-        if let data = core.encodeKey(key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint), !data.isEmpty {
+        if let data = core.encodeKey(
+          key: key, modifiers: modifiers, action: action, text: text, unshiftedCodepoint: unshiftedCodepoint),
+          !data.isEmpty
+        {
           writeInteractive(data)
           core.scrollToBottom()
           scheduleFrame()
@@ -112,13 +117,23 @@
     }
     @discardableResult public func sendRaw(_ data: Data) -> Bool {
       let accepted = transport.write(data)
-      if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
+      if accepted, !data.isEmpty {
+        queue.async { [self] in
+          core.scrollToBottom()
+          scheduleFrame()
+        }
+      }
       return accepted
     }
     /// Committed keyboard text (IME, multi-character insertText). Same ordering as `sendRaw`, but uses the interactive allowance so it is not lost while a paste holds the bulk admission. Returns whether the bytes were accepted; a refusal is counted and reported like any interactive write. Programmatic sends stay on the bulk `sendRaw`.
     @discardableResult public func sendTyped(_ data: Data) -> Bool {
       let accepted = writeInteractive(data)
-      if accepted, !data.isEmpty { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
+      if accepted, !data.isEmpty {
+        queue.async { [self] in
+          core.scrollToBottom()
+          scheduleFrame()
+        }
+      }
       return accepted
     }
     public func resize(
@@ -126,8 +141,12 @@
     ) {
       queue.async { [self] in
         guard !closed else { return }
-        let request = ResizeRequest(columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
-        if resizeTimer != nil { pendingResize = request; return }
+        let request = ResizeRequest(
+          columns: columns, rows: rows, cellWidthPixels: cellWidthPixels, cellHeightPixels: cellHeightPixels)
+        if resizeTimer != nil {
+          pendingResize = request
+          return
+        }
         guard request != appliedResize else { return }
         if let last = lastResizeApply, DispatchTime.now() < last + Self.resizeInterval {
           pendingResize = request
@@ -163,11 +182,18 @@
       scheduleFrame()
     }
     public func setTheme(_ theme: TerminalTheme) -> Bool {
-      themeLock.lock(); let unchanged = appliedTheme == theme; themeLock.unlock()
+      themeLock.lock()
+      let unchanged = appliedTheme == theme
+      themeLock.unlock()
       if unchanged { return true }
       return withQueue {
         let result = core.setTheme(theme)
-        if result { themeLock.lock(); appliedTheme = theme; themeLock.unlock(); scheduleFrame() }
+        if result {
+          themeLock.lock()
+          appliedTheme = theme
+          themeLock.unlock()
+          scheduleFrame()
+        }
         return result
       }
     }
@@ -178,30 +204,136 @@
       }
     }
     public func snapshot() -> VTFrame? { withQueue { core.snapshot() } }
-    public func scroll(rows: Int) { queue.async { [self] in core.scroll(rows: rows); scheduleFrame() } }
-    public func scroll(toOffset offset: UInt64) { queue.async { [self] in core.scroll(toOffset: offset); scheduleFrame() } }
-    public func scrollToBottom() { queue.async { [self] in core.scrollToBottom(); scheduleFrame() } }
-    public func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) -> Bool { withQueue { let r = core.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior); if r { scheduleFrame() }; return r } }
-    public func selectionBegin(column: Int, row: Int, clickCount: Int = 1) -> Bool { withQueue { let r = core.selectionBegin(column: column, row: row, clickCount: clickCount); if r { scheduleFrame() }; return r } }
-    public func selectionUpdate(column: Int, row: Int) -> Bool { withQueue { let r = core.selectionUpdate(column: column, row: row); if r { scheduleFrame() }; return r } }
-    public func selectionEnd() -> Bool { withQueue { let r = core.selectionEnd(); if r { scheduleFrame() }; return r } }
-    public func selectWord(column: Int, row: Int) -> Bool { withQueue { let r = core.selectWord(column: column, row: row); if r { scheduleFrame() }; return r } }
-    public func selectLine(column: Int, row: Int) -> Bool { withQueue { let r = core.selectLine(column: column, row: row); if r { scheduleFrame() }; return r } }
-    public func clearSelection() -> Bool { withQueue { let r = core.clearSelection(); if r { scheduleFrame() }; return r } }
-    public func selectAll() -> Bool { withQueue { let r = core.selectAll(); if r { scheduleFrame() }; return r } }
+    public func scroll(rows: Int) {
+      queue.async { [self] in
+        core.scroll(rows: rows)
+        scheduleFrame()
+      }
+    }
+    public func scroll(toOffset offset: UInt64) {
+      queue.async { [self] in
+        core.scroll(toOffset: offset)
+        scheduleFrame()
+      }
+    }
+    public func scrollToBottom() {
+      queue.async { [self] in
+        core.scrollToBottom()
+        scheduleFrame()
+      }
+    }
+    public func selectDrag(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) -> Bool {
+      withQueue {
+        let r = core.selectDrag(
+          startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior)
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectionBegin(column: Int, row: Int, clickCount: Int = 1) -> Bool {
+      withQueue {
+        let r = core.selectionBegin(column: column, row: row, clickCount: clickCount)
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectionUpdate(column: Int, row: Int) -> Bool {
+      withQueue {
+        let r = core.selectionUpdate(column: column, row: row)
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectionEnd() -> Bool {
+      withQueue {
+        let r = core.selectionEnd()
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectWord(column: Int, row: Int) -> Bool {
+      withQueue {
+        let r = core.selectWord(column: column, row: row)
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectLine(column: Int, row: Int) -> Bool {
+      withQueue {
+        let r = core.selectLine(column: column, row: row)
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func clearSelection() -> Bool {
+      withQueue {
+        let r = core.clearSelection()
+        if r { scheduleFrame() }
+        return r
+      }
+    }
+    public func selectAll() -> Bool {
+      withQueue {
+        let r = core.selectAll()
+        if r { scheduleFrame() }
+        return r
+      }
+    }
     // Fire-and-forget variants for callers that ignore the result (the Session). The serial queue orders them before any later synchronous read such as selectedText() or snapshot().
-    public func selectDragAsync(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) { queue.async { [self] in if core.selectDrag(startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior) { scheduleFrame() } } }
-    public func selectionBeginAsync(column: Int, row: Int, clickCount: Int = 1) { queue.async { [self] in if core.selectionBegin(column: column, row: row, clickCount: clickCount) { scheduleFrame() } } }
-    public func selectionUpdateAsync(column: Int, row: Int) { queue.async { [self] in if core.selectionUpdate(column: column, row: row) { scheduleFrame() } } }
+    public func selectDragAsync(startColumn: Int, startRow: Int, endColumn: Int, endRow: Int, behavior: Int = 0) {
+      queue.async { [self] in
+        if core.selectDrag(
+          startColumn: startColumn, startRow: startRow, endColumn: endColumn, endRow: endRow, behavior: behavior)
+        {
+          scheduleFrame()
+        }
+      }
+    }
+    public func selectionBeginAsync(column: Int, row: Int, clickCount: Int = 1) {
+      queue.async { [self] in
+        if core.selectionBegin(column: column, row: row, clickCount: clickCount) { scheduleFrame() }
+      }
+    }
+    public func selectionUpdateAsync(column: Int, row: Int) {
+      queue.async { [self] in if core.selectionUpdate(column: column, row: row) { scheduleFrame() } }
+    }
     public func selectionEndAsync() { queue.async { [self] in if core.selectionEnd() { scheduleFrame() } } }
-    public func selectWordAsync(column: Int, row: Int) { queue.async { [self] in if core.selectWord(column: column, row: row) { scheduleFrame() } } }
-    public func selectLineAsync(column: Int, row: Int) { queue.async { [self] in if core.selectLine(column: column, row: row) { scheduleFrame() } } }
+    public func selectWordAsync(column: Int, row: Int) {
+      queue.async { [self] in if core.selectWord(column: column, row: row) { scheduleFrame() } }
+    }
+    public func selectLineAsync(column: Int, row: Int) {
+      queue.async { [self] in if core.selectLine(column: column, row: row) { scheduleFrame() } }
+    }
     public func clearSelectionAsync() { queue.async { [self] in if core.clearSelection() { scheduleFrame() } } }
     public func selectAllAsync() { queue.async { [self] in if core.selectAll() { scheduleFrame() } } }
     public func selectedText() -> String? { withQueue { core.selectedText() } }
-    public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool { withQueue { let r = core.paste(text, allowUnsafe: allowUnsafe); let reply = core.takeQueryResponses(); guard r, !reply.isEmpty else { return false }; let accepted = transport.write(reply); if accepted { core.scrollToBottom(); scheduleFrame() }; return accepted } }
-    public func focus(_ focused: Bool) { queue.async { [self] in if let data = core.focus(focused) { writeInteractive(data) } } }
-    public func mouse(action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry) { queue.async { [self] in if let data = core.mouse(action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry) { writeInteractive(data) } } }
+    public func paste(_ text: String, allowUnsafe: Bool = false) -> Bool {
+      withQueue {
+        let r = core.paste(text, allowUnsafe: allowUnsafe)
+        let reply = core.takeQueryResponses()
+        guard r, !reply.isEmpty else { return false }
+        let accepted = transport.write(reply)
+        if accepted {
+          core.scrollToBottom()
+          scheduleFrame()
+        }
+        return accepted
+      }
+    }
+    public func focus(_ focused: Bool) {
+      queue.async { [self] in if let data = core.focus(focused) { writeInteractive(data) } }
+    }
+    public func mouse(
+      action: Int, button: Int, modifiers: UInt32, xPixels: Double, yPixels: Double, geometry: VTMouseGeometry
+    ) {
+      queue.async { [self] in
+        if let data = core.mouse(
+          action: action, button: button, modifiers: modifiers, xPixels: xPixels, yPixels: yPixels, geometry: geometry)
+        {
+          writeInteractive(data)
+        }
+      }
+    }
     /// Lock-free mirror refreshed on the PTY queue after every feed/resize; equals core.mouseReporting() whenever the queue is quiescent.
     public func mouseReporting() -> Bool { mouseTracking.load(ordering: .acquiring) }
     public func pwd() -> String? { withQueue { core.pwd() } }
@@ -255,7 +387,8 @@
     /// Frame consumers call this after taking a frame so a publish skipped while it was still undrained is re-armed.
     public func frameDrained() {
       guard publishDeferred.load(ordering: .sequentiallyConsistent) else { return }
-      queue.async { [self] in if publishDeferred.exchange(false, ordering: .sequentiallyConsistent) { scheduleFrame() } }
+      queue.async { [self] in if publishDeferred.exchange(false, ordering: .sequentiallyConsistent) { scheduleFrame() }
+      }
     }
     private func publishFrame(force: Bool = false) {
       framePending = false
@@ -283,7 +416,9 @@
       if let request = pendingResize {
         // The child is gone (no ioctl needed) but the last requested size must still reach the core before the final frame.
         pendingResize = nil
-        _ = core.resize(columns: request.columns, rows: request.rows, cellWidthPixels: request.cellWidthPixels, cellHeightPixels: request.cellHeightPixels)
+        _ = core.resize(
+          columns: request.columns, rows: request.rows, cellWidthPixels: request.cellWidthPixels,
+          cellHeightPixels: request.cellHeightPixels)
         appliedResize = request
       }
       publishFrame(force: true)

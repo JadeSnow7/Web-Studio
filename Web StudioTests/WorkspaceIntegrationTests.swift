@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Web_Studio
 
 @MainActor
@@ -35,7 +36,8 @@ struct WorkspaceIntegrationTests {
   }
 
   @Test func namedWorkspaceSavesToIsolatedRepository() async throws {
-    let root = FileManager.default.temporaryDirectory.appendingPathComponent("WebStudio-Integration-\(UUID().uuidString)")
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent(
+      "WebStudio-Integration-\(UUID().uuidString)")
     defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
     let registry = WorkspaceRegistry(repository: repository)
@@ -45,7 +47,10 @@ struct WorkspaceIntegrationTests {
     let controller = try #require(registry.saveController(for: model.session.id))
     #expect(await controller.saveNow())
     let loaded = try await repository.load(id: model.session.id)
-    guard case .loaded(let envelope) = loaded else { Issue.record("expected saved configuration"); return }
+    guard case .loaded(let envelope) = loaded else {
+      Issue.record("expected saved configuration")
+      return
+    }
     #expect(envelope.configuration.name == "落盘空间")
   }
 
@@ -76,9 +81,11 @@ struct WorkspaceIntegrationTests {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("WebStudio-Failure-\(UUID().uuidString)")
     defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
-    let registry = WorkspaceRegistry(repository: repository, saveWriter: { configuration, _ in
-      throw WorkspaceRepositoryError.permissionFailure(configuration.workspaceID)
-    })
+    let registry = WorkspaceRegistry(
+      repository: repository,
+      saveWriter: { configuration, _ in
+        throw WorkspaceRepositoryError.permissionFailure(configuration.workspaceID)
+      })
     let model = StudioModel(launchTerminalProcesses: false, registry: registry)
     model.addGroup()
     model.renameSelectedGroup("失败空间")
@@ -106,7 +113,10 @@ struct WorkspaceIntegrationTests {
     #expect(await controller.saveNow())
     #expect(await model.performArchiveWorkspace(archivedID))
     let loaded = try await repository.load(id: archivedID)
-    guard case .loaded(let envelope) = loaded else { Issue.record("expected archived file"); return }
+    guard case .loaded(let envelope) = loaded else {
+      Issue.record("expected archived file")
+      return
+    }
     #expect(envelope.configuration.archived)
     #expect(model.session.id != archivedID)
     #expect(!model.session.isClosed)

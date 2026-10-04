@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Web_Studio
 
 private actor ReviewLoadGate {
@@ -54,7 +55,8 @@ struct WorkspaceReviewFixTests {
   }
 
   @Test func archivingFromAnotherWindowLeavesOwnerWindowUsable() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
     let registry = WorkspaceRegistry(repository: repository)
     let caller = StudioModel(launchTerminalProcesses: false, registry: registry)
@@ -75,7 +77,8 @@ struct WorkspaceReviewFixTests {
   }
 
   @Test func archivingOtherWindowWithRemainingSessionDoesNotCreateFallbackInCaller() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
     let registry = WorkspaceRegistry(repository: repository)
     let caller = StudioModel(launchTerminalProcesses: false, registry: registry)
@@ -111,9 +114,10 @@ struct WorkspaceReviewFixTests {
     let savedID = UUID()
     let saved = configuration(id: savedID, name: "延迟空间")
     let gate = ReviewLoadGate()
-    let entry = WorkspaceRepositoryEntry.entry(.init(
-      workspaceID: savedID, name: saved.name, archived: false, revision: 1,
-      lastActivatedAt: saved.lastActivatedAt))
+    let entry = WorkspaceRepositoryEntry.entry(
+      .init(
+        workspaceID: savedID, name: saved.name, archived: false, revision: 1,
+        lastActivatedAt: saved.lastActivatedAt))
     let registry = WorkspaceRegistry(
       configurationLoader: { id in await gate.load(id) },
       directoryLoader: { [entry] })
@@ -140,9 +144,10 @@ struct WorkspaceReviewFixTests {
     let savedID = UUID()
     let saved = configuration(id: savedID, name: "延迟终端空间")
     let gate = ReviewLoadGate()
-    let entry = WorkspaceRepositoryEntry.entry(.init(
-      workspaceID: savedID, name: saved.name, archived: false, revision: 1,
-      lastActivatedAt: saved.lastActivatedAt))
+    let entry = WorkspaceRepositoryEntry.entry(
+      .init(
+        workspaceID: savedID, name: saved.name, archived: false, revision: 1,
+        lastActivatedAt: saved.lastActivatedAt))
     let registry = WorkspaceRegistry(
       configurationLoader: { id in await gate.load(id) },
       directoryLoader: { [entry] })
@@ -167,14 +172,16 @@ struct WorkspaceReviewFixTests {
   }
 
   @Test func supersededDelayedWorkspaceActionDoesNotCreateInStaleWorkspace() async throws {
-    let firstID = UUID(); let secondID = UUID()
+    let firstID = UUID()
+    let secondID = UUID()
     let first = configuration(id: firstID, name: "先请求")
     let second = configuration(id: secondID, name: "后请求")
     let gate = ReviewLoadGate()
     let entries = [first, second].map {
-      WorkspaceRepositoryEntry.entry(.init(
-        workspaceID: $0.workspaceID, name: $0.name, archived: false, revision: 1,
-        lastActivatedAt: $0.lastActivatedAt))
+      WorkspaceRepositoryEntry.entry(
+        .init(
+          workspaceID: $0.workspaceID, name: $0.name, archived: false, revision: 1,
+          lastActivatedAt: $0.lastActivatedAt))
     }
     let registry = WorkspaceRegistry(
       configurationLoader: { id in await gate.load(id) },
@@ -208,9 +215,10 @@ struct WorkspaceReviewFixTests {
     let savedID = UUID()
     let saved = configuration(id: savedID, name: "同步竞态空间")
     let gate = ReviewLoadGate()
-    let entry = WorkspaceRepositoryEntry.entry(.init(
-      workspaceID: savedID, name: saved.name, archived: false, revision: 1,
-      lastActivatedAt: saved.lastActivatedAt))
+    let entry = WorkspaceRepositoryEntry.entry(
+      .init(
+        workspaceID: savedID, name: saved.name, archived: false, revision: 1,
+        lastActivatedAt: saved.lastActivatedAt))
     let registry = WorkspaceRegistry(
       configurationLoader: { id in await gate.load(id) },
       directoryLoader: { [entry] })
@@ -230,9 +238,10 @@ struct WorkspaceReviewFixTests {
   @Test func failedDelayedWorkspaceActionDoesNotCreateTerminal() async throws {
     let savedID = UUID()
     let saved = configuration(id: savedID, name: "失败空间")
-    let entry = WorkspaceRepositoryEntry.entry(.init(
-      workspaceID: savedID, name: saved.name, archived: false, revision: 1,
-      lastActivatedAt: saved.lastActivatedAt))
+    let entry = WorkspaceRepositoryEntry.entry(
+      .init(
+        workspaceID: savedID, name: saved.name, archived: false, revision: 1,
+        lastActivatedAt: saved.lastActivatedAt))
     let registry = WorkspaceRegistry(
       configurationLoader: { id in throw WorkspaceRepositoryError.corrupt(id) },
       directoryLoader: { [entry] })
@@ -251,9 +260,10 @@ struct WorkspaceReviewFixTests {
     let savedID = UUID()
     let saved = configuration(id: savedID, name: "表单阻止空间")
     let gate = ReviewLoadGate()
-    let entry = WorkspaceRepositoryEntry.entry(.init(
-      workspaceID: savedID, name: saved.name, archived: false, revision: 1,
-      lastActivatedAt: saved.lastActivatedAt))
+    let entry = WorkspaceRepositoryEntry.entry(
+      .init(
+        workspaceID: savedID, name: saved.name, archived: false, revision: 1,
+        lastActivatedAt: saved.lastActivatedAt))
     let registry = WorkspaceRegistry(
       configurationLoader: { id in await gate.load(id) },
       directoryLoader: { [entry] })
@@ -306,16 +316,20 @@ struct WorkspaceReviewFixTests {
       if await gate.waiting() { break }
       await Task.yield()
     }
-    await gate.release([.entry(.init(
-      workspaceID: goodID, name: good.name, archived: false, revision: 1,
-      lastActivatedAt: good.lastActivatedAt))])
+    await gate.release([
+      .entry(
+        .init(
+          workspaceID: goodID, name: good.name, archived: false, revision: 1,
+          lastActivatedAt: good.lastActivatedAt))
+    ])
     await refreshed
     #expect(!registry.diagnostics.contains(.corrupt(badID)))
     #expect(registry.entries.contains { $0.id == goodID })
   }
 
   @Test func rescanLeavesCorruptConfigurationBytesUntouched() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let id = UUID()
     let fileURL = root.appendingPathComponent(id.uuidString + ".json")
     let original = Data("{\"schemaVersion\":99,\"broken\":".utf8)

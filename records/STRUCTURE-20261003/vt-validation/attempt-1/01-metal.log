@@ -1,0 +1,11 @@
+PreparedAtlas stress passed: 1200 + 1200 distinct visible grapheme heads
+Cursor phase pixel check passed
+Glyph LRU check passed
+ASCII table invalidation passed after 16 frames (compactions=1)
+Run-cap compaction passed (max 48 draws), pages after: 1
+Long churn passed at 1x: 72 frames, max 16 pages, 4 compactions
+Long churn passed at 2x: 72 frames, max 16 pages, 4 compactions
+In-flight overlap passed at 1x: 72 frames, 0 mismatches, 3 frames held in flight in 24/24 rounds, compactions while earlier frames were held=8
+In-flight overlap passed at 2x: 72 frames, 0 mismatches, 3 frames held in flight in 24/24 rounds, compactions while earlier frames were held=8
+Byte cap pressure passed: max 64 MiB, compactions=1
+TerminalMetalRenderer smoke passed: /private/tmp/web-studio-vt-renderer/dark-1x.png /dark-2x.png /light-1x.png /light-2x.png

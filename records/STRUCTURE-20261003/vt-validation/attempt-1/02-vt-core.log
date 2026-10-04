@@ -1,0 +1,4 @@
+scrollback after 12000 lines: total rows=8461
+libghostty-vt grapheme cell bytes=129 (input=401)
+studio VT core adapter passed
+TerminalVTCore Swift real smoke passed

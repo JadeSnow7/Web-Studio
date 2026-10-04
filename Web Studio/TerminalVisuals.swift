@@ -57,7 +57,8 @@
       cursorBlinking: Bool, sessionRunning: Bool, reducedMotion: Bool,
       prefersNonBlinkingTextInsertionIndicator: Bool = false
     ) -> Bool {
-      backendVisible && windowFocused && cursorVisible && cursorBlinking && sessionRunning && !reducedMotion && !prefersNonBlinkingTextInsertionIndicator
+      backendVisible && windowFocused && cursorVisible && cursorBlinking && sessionRunning && !reducedMotion
+        && !prefersNonBlinkingTextInsertionIndicator
     }
   }
   /// First/last selected cell index in `VTFrame.cells` plus the selected count; `.none` when nothing is selected.
@@ -71,7 +72,10 @@
       self.count = count
     }
     public init(cells: [VTCell]) {
-      var first = -1, last = -1, count = 0, i = 0
+      var first = -1
+      var last = -1
+      var count = 0
+      var i = 0
       let n = cells.count
       // A while loop: unlike for-in over the indices it does not allocate per iteration at -Onone (Debug builds).
       while i < n {

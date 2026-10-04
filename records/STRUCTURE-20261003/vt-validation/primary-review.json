@@ -1,0 +1,19 @@
+{
+  "head": "a184f45c079e361817fe7cfde4a6eb2e97fd70db",
+  "recheck_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "controlled_environment_equal": true,
+  "only_command_change": "cwd and --source-root change to /private/tmp checkout",
+  "mtime_and_sha256_unchanged": true,
+  "font_pixels_independently_hashed_and_matched": 9,
+  "new_checkout_clean": true,
+  "foreign_files_preserved": 7,
+  "first_failed_attempt_retained": true,
+  "cause": "Environmental inference supported; iCloud metadata causation not directly proven"
+}

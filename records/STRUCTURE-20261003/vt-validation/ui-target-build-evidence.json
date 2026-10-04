@@ -1,0 +1,55 @@
+{
+  "conclusion": "UI target compiled; UI tests not executed",
+  "logs": [
+    {
+      "stage": "B1",
+      "source": "work/web-structure/check-b1.log",
+      "sha256": "25c528ffd4d2a68e9e59908120fc508768f70645eeca4c051bf3eca24432bc92",
+      "excerpts": [
+        {
+          "line": 696,
+          "text": "    Target 'Web StudioUITests' in project 'Web Studio'"
+        },
+        {
+          "line": 793,
+          "text": "SwiftCompile normal arm64 Compiling\\ Web_StudioUITestsLaunchTests.swift /Users/huaodong/workspace/Web\\ Studio/Web\\ StudioUITests/Web_StudioUITestsLaunchTests.swift (in target 'Web StudioUITests' from project 'Web Studio')"
+        },
+        {
+          "line": 795,
+          "text": "SwiftCompile normal arm64 /Users/huaodong/workspace/Web\\ Studio/Web\\ StudioUITests/Web_StudioUITestsLaunchTests.swift (in target 'Web StudioUITests' from project 'Web Studio')"
+        },
+        {
+          "line": 801,
+          "text": "SwiftCompile normal arm64 (in target 'Web StudioUITests' from project 'Web Studio')"
+        },
+        {
+          "line": 805,
+          "text": "SwiftCompile normal arm64 Compiling\\ Web_StudioUITests.swift /Users/huaodong/workspace/Web\\ Studio/Web\\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')"
+        },
+        {
+          "line": 807,
+          "text": "SwiftCompile normal arm64 /Users/huaodong/workspace/Web\\ Studio/Web\\ StudioUITests/Web_StudioUITests.swift (in target 'Web StudioUITests' from project 'Web Studio')"
+        },
+        {
+          "line": 1384,
+          "text": "Ld /tmp/ws-phase2-check/Build/Products/Debug/Web\\ StudioUITests-Runner.app/Contents/PlugIns/Web\\ StudioUITests.xctest/Contents/MacOS/Web\\ StudioUITests normal (in target 'Web StudioUITests' from project 'Web Studio')"
+        }
+      ]
+    },
+    {
+      "stage": "B4",
+      "source": "work/web-structure/b4-logging/attempt2/check.log",
+      "sha256": "c614d1427de1732e405cc6960210ca8ec4d1d8ea12e53af6208b192b51fc94df",
+      "excerpts": [
+        {
+          "line": 712,
+          "text": "    Target 'Web StudioUITests' in project 'Web Studio'"
+        },
+        {
+          "line": 1290,
+          "text": "Ld /tmp/ws-phase2-check/Build/Products/Debug/Web\\ StudioUITests-Runner.app/Contents/PlugIns/Web\\ StudioUITests.xctest/Contents/MacOS/Web\\ StudioUITests normal (in target 'Web StudioUITests' from project 'Web Studio')"
+        }
+      ]
+    }
+  ]
+}

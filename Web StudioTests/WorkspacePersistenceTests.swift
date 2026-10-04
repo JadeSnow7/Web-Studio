@@ -59,11 +59,16 @@ struct WorkspacePersistenceTests {
   @Test func sameSecondActivityRetainsFractionalOrderingAcrossSaveLoadAndList() async throws {
     let root = try makeRoot()
     defer { try? FileManager.default.removeItem(at: root) }
-    let firstID = UUID(); let secondID = UUID()
+    let firstID = UUID()
+    let secondID = UUID()
     let firstDate = Date(timeIntervalSince1970: 1_700_000_000.125)
     let secondDate = Date(timeIntervalSince1970: 1_700_000_000.875)
-    var first = configuration(id: firstID); first.name = "First"; first.lastActivatedAt = firstDate
-    var second = configuration(id: secondID); second.name = "Second"; second.lastActivatedAt = secondDate
+    var first = configuration(id: firstID)
+    first.name = "First"
+    first.lastActivatedAt = firstDate
+    var second = configuration(id: secondID)
+    second.name = "Second"
+    second.lastActivatedAt = secondDate
     let repository = WorkspaceRepository(rootURL: root)
     _ = try await repository.save(first)
     _ = try await repository.save(second)
@@ -77,7 +82,10 @@ struct WorkspacePersistenceTests {
     #expect(secondEnvelope.configuration.lastActivatedAt == secondDate)
     #expect(secondEnvelope.configuration.lastActivatedAt! > firstEnvelope.configuration.lastActivatedAt!)
     let entries = try await repository.list()
-    let listed = entries.compactMap { entry -> WorkspaceDirectoryRecord? in if case .entry(let record) = entry { return record }; return nil }
+    let listed = entries.compactMap { entry -> WorkspaceDirectoryRecord? in
+      if case .entry(let record) = entry { return record }
+      return nil
+    }
     #expect(listed.contains { $0.workspaceID == firstID && $0.lastActivatedAt == firstDate })
     #expect(listed.contains { $0.workspaceID == secondID && $0.lastActivatedAt == secondDate })
   }
@@ -292,18 +300,38 @@ struct WorkspacePersistenceTests {
     defer { try? FileManager.default.removeItem(at: root) }
     let id = UUID()
     var input = configuration(id: id)
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "dev.example.com", user: "alice", port: 2222), customTitle: nil, order: 1))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .terminal(directory: "/path/that/does/not/exist"), customTitle: nil, order: 2))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "2001:db8::1", user: "alice", port: 22), customTitle: nil, order: 3))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .web(url: "ftp://unsupported.example"), customTitle: nil, order: 1))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "bad..host", user: "dev", port: 22), customTitle: nil, order: 3))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "good.example.com", user: "-bad", port: 0), customTitle: nil, order: 4))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "good.example.com", user: "dev", port: 65536), customTitle: nil, order: 5))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "999.1.1.1", user: "dev", port: 22), customTitle: nil, order: 6))
-    input.resources.append(WorkspaceResourceConfiguration(id: UUID(), destination: .ssh(host: "good.example.com\n", user: "dev", port: 22), customTitle: nil, order: 7))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "dev.example.com", user: "alice", port: 2222), customTitle: nil, order: 1))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .terminal(directory: "/path/that/does/not/exist"), customTitle: nil, order: 2))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "2001:db8::1", user: "alice", port: 22), customTitle: nil, order: 3))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .web(url: "ftp://unsupported.example"), customTitle: nil, order: 1))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "bad..host", user: "dev", port: 22), customTitle: nil, order: 3))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "good.example.com", user: "-bad", port: 0), customTitle: nil, order: 4))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "good.example.com", user: "dev", port: 65536), customTitle: nil, order: 5))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "999.1.1.1", user: "dev", port: 22), customTitle: nil, order: 6))
+    input.resources.append(
+      WorkspaceResourceConfiguration(
+        id: UUID(), destination: .ssh(host: "good.example.com\n", user: "dev", port: 22), customTitle: nil, order: 7))
     let pinID = input.pinnedDestinations[0].id
-    input.pinnedDestinations.append(WorkspacePinnedDestination(id: pinID, title: "Duplicate", destination: .web(url: "https://example.com")))
-    input.pinnedDestinations.append(WorkspacePinnedDestination(id: UUID(), title: "Bad", destination: .web(url: "file:///tmp/local")))
+    input.pinnedDestinations.append(
+      WorkspacePinnedDestination(id: pinID, title: "Duplicate", destination: .web(url: "https://example.com")))
+    input.pinnedDestinations.append(
+      WorkspacePinnedDestination(id: UUID(), title: "Bad", destination: .web(url: "file:///tmp/local")))
     let repository = WorkspaceRepository(rootURL: root)
     _ = try await repository.save(input)
     let beforeLoad = try Data(contentsOf: root.appendingPathComponent("\(id.uuidString).json"))
@@ -313,9 +341,15 @@ struct WorkspacePersistenceTests {
     }
     #expect(envelope.configuration.resources.count == 4)
     #expect(envelope.configuration.resources[0].destination == .web(url: "https://example.com"))
-    #expect(envelope.configuration.resources.contains { $0.destination == .ssh(host: "dev.example.com", user: "alice", port: 2222) })
-    #expect(envelope.configuration.resources.contains { $0.destination == .terminal(directory: "/path/that/does/not/exist") })
-    #expect(envelope.configuration.resources.contains { $0.destination == .ssh(host: "2001:db8::1", user: "alice", port: 22) })
+    #expect(
+      envelope.configuration.resources.contains {
+        $0.destination == .ssh(host: "dev.example.com", user: "alice", port: 2222)
+      })
+    #expect(
+      envelope.configuration.resources.contains { $0.destination == .terminal(directory: "/path/that/does/not/exist") })
+    #expect(
+      envelope.configuration.resources.contains { $0.destination == .ssh(host: "2001:db8::1", user: "alice", port: 22) }
+    )
     #expect(envelope.configuration.pinnedDestinations.count == 1)
     #expect(envelope.diagnostics.contains(.invalidResource))
     #expect(envelope.diagnostics.contains(.duplicatePinnedDestination))
@@ -331,10 +365,14 @@ struct WorkspacePersistenceTests {
     _ = try await repository.save(configuration(id: id))
     let primary = root.appendingPathComponent("\(id.uuidString).json")
     let before = try Data(contentsOf: primary)
-    let descriptor = open(root.appendingPathComponent("\(id.uuidString).lock").path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)
+    let descriptor = open(
+      root.appendingPathComponent("\(id.uuidString).lock").path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)
     #expect(descriptor >= 0)
     guard descriptor >= 0 else { return }
-    defer { _ = flock(descriptor, LOCK_UN); _ = close(descriptor) }
+    defer {
+      _ = flock(descriptor, LOCK_UN)
+      _ = close(descriptor)
+    }
     try #require(flock(descriptor, LOCK_EX | LOCK_NB) == 0)
     var changed = configuration(id: id)
     changed.name = "Blocked"

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+
 @testable import Web_Studio
 
 @MainActor
@@ -11,7 +12,11 @@ struct WorkspaceCopyTests {
       if released { return }
       await withCheckedContinuation { waiter = $0 }
     }
-    func release() { released = true; waiter?.resume(); waiter = nil }
+    func release() {
+      released = true
+      waiter?.resume()
+      waiter = nil
+    }
     func isWaiting() -> Bool { waiter != nil }
   }
   private func root() throws -> URL {
@@ -22,12 +27,14 @@ struct WorkspaceCopyTests {
   }
 
   @Test func loadedCopyCreatesIdleResourceAndKeepsSource() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let repository = WorkspaceRepository(rootURL: root)
     let registry = WorkspaceRegistry(repository: repository)
     let source = registry.create(name: "source", isTemporary: true, launchTerminalProcesses: false)
     let target = registry.create(name: "target", isTemporary: true, launchTerminalProcesses: false)
-    let resourceID = source.resourceStore.registerWeb(groupID: source.id, destination: URL(string: "https://example.com"))
+    let resourceID = source.resourceStore.registerWeb(
+      groupID: source.id, destination: URL(string: "https://example.com"))
     let sourceQuestionCount = source.agentController.questions.count
     let copiedID = try await registry.copyResource(
       sourceWorkspaceID: source.id, resourceID: resourceID, toWorkspaceID: target.id)
@@ -39,25 +46,34 @@ struct WorkspaceCopyTests {
   }
 
   @Test func unloadedCopyUsesCASAndDoesNotCreateSession() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
-    let sourceID = UUID(); let targetID = UUID(); let resourceID = UUID()
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let sourceID = UUID()
+    let targetID = UUID()
+    let resourceID = UUID()
     let source = WorkspaceConfiguration(
-      workspaceID: sourceID, name: "source", resources: [.init(
-        id: resourceID, destination: .terminal(directory: "/tmp"), customTitle: "term", order: 0)],
-      layout: .init(primary: .init(id: UUID(), resourceID: resourceID, isFocused: true),
-                    secondary: nil, splitRatio: 0.5))
+      workspaceID: sourceID, name: "source",
+      resources: [
+        .init(
+          id: resourceID, destination: .terminal(directory: "/tmp"), customTitle: "term", order: 0)
+      ],
+      layout: .init(
+        primary: .init(id: UUID(), resourceID: resourceID, isFocused: true),
+        secondary: nil, splitRatio: 0.5))
     let target = WorkspaceConfiguration(
       workspaceID: targetID, name: "target", resources: [],
-      layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true),
-                    secondary: nil, splitRatio: 0.5))
+      layout: .init(
+        primary: .init(id: UUID(), resourceID: nil, isFocused: true),
+        secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
-    _ = try await repository.save(source); _ = try await repository.save(target)
+    _ = try await repository.save(source)
+    _ = try await repository.save(target)
     let registry = WorkspaceRegistry(repository: repository)
     await registry.startRestoration()
     let copied = try await registry.copyResource(
       sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID)
     #expect(registry.liveSessions.isEmpty)
-    guard let result = try? await repository.load(id: targetID), case let .loaded(envelope) = result else {
+    guard let result = try? await repository.load(id: targetID), case .loaded(let envelope) = result else {
       Issue.record("expected target configuration")
       return
     }
@@ -67,7 +83,8 @@ struct WorkspaceCopyTests {
   }
 
   @Test func archivedAndSameWorkspaceCopiesReject() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let registry = WorkspaceRegistry(repository: WorkspaceRepository(rootURL: root))
     let session = registry.create(name: "A", isTemporary: true, launchTerminalProcesses: false)
     let resource = session.resourceStore.registerWeb(groupID: session.id)
@@ -82,33 +99,44 @@ struct WorkspaceCopyTests {
   }
 
   @Test func unloadedCopyCASConflictPreservesExternalTarget() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
-    let sourceID = UUID(); let targetID = UUID(); let resourceID = UUID()
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let sourceID = UUID()
+    let targetID = UUID()
+    let resourceID = UUID()
     let source = WorkspaceConfiguration(
-      workspaceID: sourceID, name: "source", resources: [.init(
-        id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)],
+      workspaceID: sourceID, name: "source",
+      resources: [
+        .init(
+          id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)
+      ],
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let target = WorkspaceConfiguration(
-      workspaceID: targetID, name: "target", layout: .init(
+      workspaceID: targetID, name: "target",
+      layout: .init(
         primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
-    _ = try await repository.save(source); _ = try await repository.save(target)
-    let registry = WorkspaceRegistry(repository: repository, configurationLoader: { id in
-      let result = try await repository.load(id: id)
-      if id == targetID {
-        switch result {
-        case .loaded(let envelope), .recoveredFromBackup(let envelope):
-          var external = envelope.configuration; external.name = "external"
-          _ = try await repository.save(external, expectedRevision: envelope.configuration.revision)
+    _ = try await repository.save(source)
+    _ = try await repository.save(target)
+    let registry = WorkspaceRegistry(
+      repository: repository,
+      configurationLoader: { id in
+        let result = try await repository.load(id: id)
+        if id == targetID {
+          switch result {
+          case .loaded(let envelope), .recoveredFromBackup(let envelope):
+            var external = envelope.configuration
+            external.name = "external"
+            _ = try await repository.save(external, expectedRevision: envelope.configuration.revision)
+          }
         }
-      }
-      return result
-    })
+        return result
+      })
     await registry.startRestoration()
     await #expect(throws: WorkspaceCopyError.conflict) {
       try await registry.copyResource(sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID)
     }
-    guard let result = try? await repository.load(id: targetID), case let .loaded(envelope) = result else {
+    guard let result = try? await repository.load(id: targetID), case .loaded(let envelope) = result else {
       Issue.record("expected external target")
       return
     }
@@ -117,7 +145,8 @@ struct WorkspaceCopyTests {
   }
 
   @Test func loadedTerminalCopyPreservesSourceAndCreatesNoRuntime() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let registry = WorkspaceRegistry(repository: WorkspaceRepository(rootURL: root))
     let source = registry.create(launchTerminalProcesses: false)
     let target = registry.create(launchTerminalProcesses: false)
@@ -138,30 +167,51 @@ struct WorkspaceCopyTests {
   }
 
   @Test func openSavedWaitsForCopyToFinish() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
-    let sourceID = UUID(); let targetID = UUID(); let resourceID = UUID()
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let sourceID = UUID()
+    let targetID = UUID()
+    let resourceID = UUID()
     let source = WorkspaceConfiguration(
-      workspaceID: sourceID, name: "source", resources: [.init(
-        id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)],
+      workspaceID: sourceID, name: "source",
+      resources: [
+        .init(
+          id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)
+      ],
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let target = WorkspaceConfiguration(
-      workspaceID: targetID, name: "target", layout: .init(
+      workspaceID: targetID, name: "target",
+      layout: .init(
         primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
-    _ = try await repository.save(source); _ = try await repository.save(target)
-    actor Gate { var waiter: CheckedContinuation<Void, Never>?; var released = false
-      func wait() async { if released { return }; await withCheckedContinuation { waiter = $0 } }
-      func release() { released = true; waiter?.resume(); waiter = nil }
+    _ = try await repository.save(source)
+    _ = try await repository.save(target)
+    actor Gate {
+      var waiter: CheckedContinuation<Void, Never>?
+      var released = false
+      func wait() async {
+        if released { return }
+        await withCheckedContinuation { waiter = $0 }
+      }
+      func release() {
+        released = true
+        waiter?.resume()
+        waiter = nil
+      }
       func isWaiting() -> Bool { waiter != nil }
     }
     let gate = Gate()
-    let registry = WorkspaceRegistry(repository: repository, configurationLoader: { id in
-      if id == targetID { await gate.wait() }
-      return try await repository.load(id: id)
-    })
+    let registry = WorkspaceRegistry(
+      repository: repository,
+      configurationLoader: { id in
+        if id == targetID { await gate.wait() }
+        return try await repository.load(id: id)
+      })
     await registry.startRestoration()
-    let copyTask = Task { try await registry.copyResource(
-      sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID) }
+    let copyTask = Task {
+      try await registry.copyResource(
+        sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID)
+    }
     while !(await gate.isWaiting()) { await Task.yield() }
     let coordinator = WindowCoordinator(registry: registry)
     let openTask = Task { await registry.openSaved(targetID, in: coordinator, launchTerminalProcesses: false) }
@@ -178,7 +228,8 @@ struct WorkspaceCopyTests {
   }
 
   @Test func invalidResourceDoesNotMutateSource() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let registry = WorkspaceRegistry(repository: WorkspaceRepository(rootURL: root))
     let source = registry.create(launchTerminalProcesses: false)
     let target = registry.create(launchTerminalProcesses: false)
@@ -189,7 +240,8 @@ struct WorkspaceCopyTests {
   }
 
   @Test func searchIncludesLoadedTemporaryWithoutCreatingRuntime() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let registry = WorkspaceRegistry(repository: WorkspaceRepository(rootURL: root))
     let session = registry.create(launchTerminalProcesses: false)
     _ = session.resourceStore.registerWeb(groupID: session.id)
@@ -199,9 +251,11 @@ struct WorkspaceCopyTests {
   }
 
   @Test func explicitOpenSavedPreservesDraft() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
     let id = UUID()
-    let config = WorkspaceConfiguration(workspaceID: id, name: "saved",
+    let config = WorkspaceConfiguration(
+      workspaceID: id, name: "saved",
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
     _ = try await repository.save(config)
@@ -217,26 +271,41 @@ struct WorkspaceCopyTests {
   }
 
   @Test func sourceCloseDuringCopyRejectsAndLeavesTargetUnchanged() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
-    let sourceID = UUID(); let targetID = UUID(); let resourceID = UUID()
-    let sourceConfig = WorkspaceConfiguration(workspaceID: sourceID, name: "source", resources: [.init(
-      id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)],
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let sourceID = UUID()
+    let targetID = UUID()
+    let resourceID = UUID()
+    let sourceConfig = WorkspaceConfiguration(
+      workspaceID: sourceID, name: "source",
+      resources: [
+        .init(
+          id: resourceID, destination: .web(url: "https://example.com"), customTitle: nil, order: 0)
+      ],
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
-    let targetConfig = WorkspaceConfiguration(workspaceID: targetID, name: "target",
+    let targetConfig = WorkspaceConfiguration(
+      workspaceID: targetID, name: "target",
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
-    _ = try await repository.save(sourceConfig); _ = try await repository.save(targetConfig)
+    _ = try await repository.save(sourceConfig)
+    _ = try await repository.save(targetConfig)
     let gate = CopyGate()
-    let registry = WorkspaceRegistry(repository: repository, configurationLoader: { id in
-      if id == targetID { await gate.wait() }
-      return try await repository.load(id: id)
-    })
+    let registry = WorkspaceRegistry(
+      repository: repository,
+      configurationLoader: { id in
+        if id == targetID { await gate.wait() }
+        return try await repository.load(id: id)
+      })
     await registry.startRestoration()
     let sourceCoordinator = WindowCoordinator(registry: registry)
-    guard case .opened = await registry.openSaved(sourceID, in: sourceCoordinator, launchTerminalProcesses: false) else {
-      Issue.record("expected source open"); return
+    guard case .opened = await registry.openSaved(sourceID, in: sourceCoordinator, launchTerminalProcesses: false)
+    else {
+      Issue.record("expected source open")
+      return
     }
-    let copy = Task { try await registry.copyResource(sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID) }
+    let copy = Task {
+      try await registry.copyResource(sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID)
+    }
     while !(await gate.isWaiting()) { await Task.yield() }
     await sourceCoordinator.closeWorkspace(sourceID)
     await gate.release()
@@ -249,29 +318,45 @@ struct WorkspaceCopyTests {
   }
 
   @Test func openSavedCopyWaitPreservesEditedDraft() async throws {
-    let root = try root(); defer { try? FileManager.default.removeItem(at: root) }
-    let sourceID = UUID(); let targetID = UUID(); let resourceID = UUID()
-    let source = WorkspaceConfiguration(workspaceID: sourceID, name: "source", resources: [.init(
-      id: resourceID, destination: .blank, customTitle: nil, order: 0)],
+    let root = try root()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let sourceID = UUID()
+    let targetID = UUID()
+    let resourceID = UUID()
+    let source = WorkspaceConfiguration(
+      workspaceID: sourceID, name: "source",
+      resources: [
+        .init(
+          id: resourceID, destination: .blank, customTitle: nil, order: 0)
+      ],
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
-    let target = WorkspaceConfiguration(workspaceID: targetID, name: "target",
+    let target = WorkspaceConfiguration(
+      workspaceID: targetID, name: "target",
       layout: .init(primary: .init(id: UUID(), resourceID: nil, isFocused: true), secondary: nil, splitRatio: 0.5))
     let repository = WorkspaceRepository(rootURL: root)
-    _ = try await repository.save(source); _ = try await repository.save(target)
+    _ = try await repository.save(source)
+    _ = try await repository.save(target)
     let gate = CopyGate()
-    let registry = WorkspaceRegistry(repository: repository, configurationLoader: { id in
-      if id == targetID { await gate.wait() }
-      return try await repository.load(id: id)
-    })
+    let registry = WorkspaceRegistry(
+      repository: repository,
+      configurationLoader: { id in
+        if id == targetID { await gate.wait() }
+        return try await repository.load(id: id)
+      })
     await registry.startRestoration()
-    let copy = Task { try await registry.copyResource(sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID) }
+    let copy = Task {
+      try await registry.copyResource(sourceWorkspaceID: sourceID, resourceID: resourceID, toWorkspaceID: targetID)
+    }
     while !(await gate.isWaiting()) { await Task.yield() }
     let draft = registry.create(launchTerminalProcesses: false)
     draft.agentController.question = "before"
     var entered = false
     let coordinator = WindowCoordinator(registry: registry)
     #expect(coordinator.open(draft.id) != .unavailable)
-    let open = Task { entered = true; return await registry.openSaved(targetID, in: coordinator, launchTerminalProcesses: false) }
+    let open = Task {
+      entered = true
+      return await registry.openSaved(targetID, in: coordinator, launchTerminalProcesses: false)
+    }
     while !entered { await Task.yield() }
     draft.agentController.question = "after"
     await gate.release()

@@ -9,39 +9,39 @@ import XCTest
 
 final class Web_StudioUITestsLaunchTests: XCTestCase {
 
-    override class var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
-    }
+  override class var runsForEachTargetApplicationUIConfiguration: Bool {
+    true
+  }
 
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-    }
+  override func setUpWithError() throws {
+    continueAfterFailure = false
+  }
 
-    @MainActor
-    func testLaunch() throws {
-        let app = XCUIApplication()
-        app.launchArguments = [
-            "-ApplePersistenceIgnoreState", "YES",
-            "-NSQuitAlwaysKeepsWindows", "NO",
-            "--workspace-config-root", "/tmp/web-studio-ui-\(UUID().uuidString)"
-        ]
-        app.launch()
-        app.activate()
-        let singleWindow = XCTNSPredicateExpectation(
-            predicate: NSPredicate(format: "count == 1"),
-            object: app.windows
-        )
-        XCTAssertEqual(XCTWaiter().wait(for: [singleWindow], timeout: 5), .completed)
-        XCTAssertEqual(app.windows.count, 1)
+  @MainActor
+  func testLaunch() throws {
+    let app = XCUIApplication()
+    app.launchArguments = [
+      "-ApplePersistenceIgnoreState", "YES",
+      "-NSQuitAlwaysKeepsWindows", "NO",
+      "--workspace-config-root", "/tmp/web-studio-ui-\(UUID().uuidString)",
+    ]
+    app.launch()
+    app.activate()
+    let singleWindow = XCTNSPredicateExpectation(
+      predicate: NSPredicate(format: "count == 1"),
+      object: app.windows
+    )
+    XCTAssertEqual(XCTWaiter().wait(for: [singleWindow], timeout: 5), .completed)
+    XCTAssertEqual(app.windows.count, 1)
 
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
-        // XCUIAutomation Documentation
-        // https://developer.apple.com/documentation/xcuiautomation
+    // Insert steps here to perform after app launch but before taking a screenshot,
+    // such as logging into a test account or navigating somewhere in the app
+    // XCUIAutomation Documentation
+    // https://developer.apple.com/documentation/xcuiautomation
 
-        let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Launch Screen"
-        attachment.lifetime = .keepAlways
-        add(attachment)
-    }
+    let attachment = XCTAttachment(screenshot: app.screenshot())
+    attachment.name = "Launch Screen"
+    attachment.lifetime = .keepAlways
+    add(attachment)
+  }
 }

@@ -1,0 +1,1022 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Web Studio.xcodeproj" -scheme "Web Studio VT" -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData -clonedSourcePackagesDirPath /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/SourcePackages -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile -skipPackageUpdates CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= -resultBundlePath /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../evidence/vt-debug-build.xcresult build
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm.git @ 1.14.0
+
+Writing result bundle at path:
+	/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/evidence/vt-debug-build.xcresult
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'Web Studio VT' in project 'Web Studio' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 421a8129d9131cb5a73c1d530571b873
+Build description path: /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/XCBuildData/421a8129d9131cb5a73c1d530571b873.xcbuilddata
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/CompilationCache.noindex
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/CompilationCache.noindex
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    builtin-create-build-directory /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio.xcodeproj
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio-05bbc44994b91f37e3585941f4bbdee6-VFS/all-product-headers.yaml
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibInstallName-normal-arm64.txt (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-non-framework-target-headers.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibPath-normal-arm64.txt (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.hmap (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.hmap
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyStaticMetadataFileList (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyMetadataFileList (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftConstValuesFileList (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.LinkFileList (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.LinkFileList
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+'-std=gnu17' -fmodules -gmodules '-fmodules-cache-path=/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex' -fpascal-strings -O0 -fno-common '-DWEB_STUDIO_VT=1' '-DDEBUG=1' '-DDEBUG=1' -g -iquote '/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Web Studio VT-generated-files.hmap' '-I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Web Studio VT-own-target-headers.hmap' '-I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Web Studio VT-all-target-headers.hmap' -iquote '/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Web Studio VT-project-headers.hmap' -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/include -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web -IStudio -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include '-I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources-normal/arm64' '-I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources/arm64' '-I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources' -F/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug
+
+WriteAuxiliaryFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Entitlements.plist (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    write-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Entitlements.plist
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app
+
+ProcessProductPackaging "" /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent
+
+ProcessProductPackagingDER /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent.der (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /usr/bin/derq query -f xml -i /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent.der --raw
+
+Ld /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib normal (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -L/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/lib -F/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -install_name @rpath/Web\ Studio\ VT.debug.dylib -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib
+
+GenerateAssetSymbols /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Assets.xcassets (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Assets.xcassets --compile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources --output-format human-readable-text --notices --warnings --export-dependency-info /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_dependencies --output-partial-info-plist /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 26.5 --platform macosx --bundle-identifier com.huaodong.Web-Studio-VT --generate-swift-asset-symbols /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources/GeneratedAssetSymbols.h
+/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/thinned (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/thinned
+
+MkDir /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/unthinned (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /bin/mkdir -p /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/unthinned
+
+CompileAssetCatalogVariant thinned /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Assets.xcassets (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Assets.xcassets --compile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist_thinned --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 26.5 --platform macosx
+/* com.apple.actool.compilation-results */
+/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/assetcatalog_generated_info.plist_thinned
+
+
+LinkAssetCatalog /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Assets.xcassets (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-linkAssetCatalog --thinned /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/thinned --thinned-dependencies /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist_thinned --unthinned /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_output/unthinned --unthinned-dependencies /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist_unthinned --output /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources --plist-output /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist
+
+ProcessInfoPlistFile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Info.plist /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-infoPlistUtility /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/empty-Web\ Studio\ VT.plist -producttype com.apple.product-type.application -genpkginfo /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/assetcatalog_generated_info.plist -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Info.plist
+
+SwiftDriver Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -I /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/scripts -F /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/include -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web -Xcc -IStudio -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_float-F0P23T6SKM8Q27TQKMS85VQDK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ptrcheck-CKGY5X7BSWIQK33S1ZLL9F5O3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-CQT7XZYPLZPWSC3YCBWAIOS3G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-EY0P2LARHJUQMG744DEQEF4D4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ptrauth-1FW3O9AJQHPWR1XVQBLULTRVW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-3WYSLQMX8TVBXG6HWX3JCGBRF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/SwiftShims-6PDKR77LV7IDTKYORL64Y50FQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-9003VC9JBIZMQAONARD8DMLS4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-B2CXFTW03ML6I59G81JDNJQ2W.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-33PNJVGXKZE6T8EAYG0LD7ODT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-1IIAHK5XS8GF2HOHW5JUQBJU0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-BS2DPB2FHTWS6TSYA82J3Z86M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-98O5W3VSRKSMDJGGLXYKA9C8D.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/sys_types-44A3AYMQRDB723DZBE52IQJTQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/string_h-BHLVAE3WUP7L6VPFROAWEQXJC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-C3LB600BQTIXMVO4XMWV8ULYD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-DMJ6JNVB9H4HHGB55AI1QKJTD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-37PBRHER857KNZG2TXOYNFV05.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-EYPZP1K3MHBDF4VS18Z85SYLW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/libDER-3AP8V4XFZNKM0ET7XAV42L3MJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/StudioVTCoreC-3NEREJ2MEIDD615XA2HLBVXJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-5RSOLQ2P3X4W9UATKJBSFOA3N.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-WYVXP8NLV1LRTUUXIQ85D21I.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Darwin-MXPQHOBQKZSPELKFO6MOW9K6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/simd-14FU501IJILNFKOX68Z6MNG9V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/launch-F0AKX353WNEB5GQRKMM6Q5BP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/libkern-2RQ9VMY5RO4BO9QM2J3G8NCRD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CUPS-B1TFCYOHKQKBOVZTXR2UYUS7K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/MachO-2EYI52QL5VB9OCVBKWCNRBUZA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Spatial-1H6XLT5AB75A43PVCR1GPGCPW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ObjectiveC-DVLIBR0EYTI9PCXOKGDCAOYA1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/os_object-CA39Y7UH0BPHOROCWQWY5CFS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/os_workgroup-7MRHKKRRBMTPAWSS43TH1S0F7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Dispatch-446D9QVM429HZY2PH7LO3P1XH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/XPC-1Y0FBIWAOUINS2G7GUAXPWWKV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreFoundation-DHABLPYIARBNON90LS76TR1QV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/dnssd-2L7R4LXV03IGS7UNHDJ2PXG95.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/os-9DLFRUPJVDF1085CDCH0MRU64.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/IOKit-AXGUTD72EKE4N0QZTB338CECA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ColorSync-2OFNM02NNJZO3LVZ8HO9RQK5Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-6IXES5LPKHJEI579UG5XATMZM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CFNetwork-2D02T4XQEJZZFZFGSXW4X7CI5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Security-BP6B5MDRVCW9Z8RX5XLD0KICZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/DiskArbitration-ARU6XL6NKHLR88F0K4L0DRO35.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreGraphics-6EUOXHXW3NVP15Y5WFQU5KAI7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreServices-4K6066YS9XW8EMA4UXR19UUD3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ImageIO-2FKEIZDYGLGI0TVIMDG9DR5QF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreText-BFIF2OE5DYCWPG015Q2OXQ8W.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Foundation-BS9K51QV0W4CHQ7AIN1I9J8GU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-8AB2I46R0P48SCRINHVOEXNP0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Accessibility-79FU6Y35SW08BTI1ZDNTLNM9R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreData-ATE8DLT2MEGDSMBIHMCU64SU0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/IOSurface-3L9GRE579I663S6M7FCQM10IK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ApplicationServices-AQC5PCV7OR88YEFC57R9CMENX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Network-AQZGFYX3FWEPV5PDPMYLGJ8LG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreTransferable-7BRQ9FWVBUOE4TNH9XGE1ZS8K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/ModelIO-3YKBTJH1JXH74VEQFDAENOC33.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Symbols-BW92P9NOFDW95TWGFMRWYRF7Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/OSLog-103YQO2JUUG6OV1E5FRBNJS9P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/JavaScriptCore-3P8UQDYW07ZBF8P93WDG28ZHU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/DataDetection-49GXJB9H3J6QTLLE04W18H2E6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreAudio-57QA7XF64TOICE4QQM7AR9VQG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/Metal-DGACISKLDQN7N1JKMIELTL8R0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/OpenGL-961YLWM9KH8Q98LS3T8QVEIK5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreVideo-4GVUCNO8OELNXHGKWPPW18B2V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/QuartzCore-9RAEMVUD4KUY7TJPRFZKYU0BF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreImage-6Y5DI3T1A707GVMMQW6O2K3JN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/CoreMedia-84PB8SD32Y7RC9MA4ZKGOE3RY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/SwiftUICore-98SE97LZK1OPQDFWTO2SQ3S0R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/AppKit-DO9ER2412MA4SN909A4JQ7WOP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/WebKit-DDZCQHFTMJ0YR0DBDWZVOJ2EC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/SwiftUI-76DCLI7AEAU92GPF4U8FIENGZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules/MetalKit-EZ7Y1GXT71JFAG20Z8NUVFBKG.pcm
+
+SwiftGeneratePch normal arm64 Compiling\ bridging\ header (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ Web_Studio_VT (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+
+SwiftCompile normal arm64 Compiling\ WorkspaceRegistry.swift,\ WorkspaceRepository.swift,\ WorkspaceSaveController.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceRegistry.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceRepository.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSaveController.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceRegistry.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceRegistry.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceRepository.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceRepository.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSaveController.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceSaveController.swift
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WorkspaceRepository.swift:173:33: warning: result of call to 'replaceItemAt(_:withItemAt:backupItemName:options:)' is unused [#NoUsage]
+171 |       }
+172 |       if FileManager.default.fileExists(atPath: fileURL(id).path) {
+173 |         try FileManager.default.replaceItemAt(fileURL(id), withItemAt: tempURL)
+    |                                 `- warning: result of call to 'replaceItemAt(_:withItemAt:backupItemName:options:)' is unused [#NoUsage]
+174 |       } else {
+175 |         try FileManager.default.moveItem(at: tempURL, to: fileURL(id))
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+SwiftCompile normal arm64 Compiling\ TerminalVTBackend.swift,\ TerminalVTCore.swift,\ TerminalVTSession.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTBackend.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTCore.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTBackend.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalVTBackend.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTCore.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalVTCore.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalVTSession.swift
+
+SwiftCompile normal arm64 Compiling\ TerminalPTYTransport.swift,\ TerminalSession.swift,\ TerminalVisuals.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalPTYTransport.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalSession.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVisuals.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalPTYTransport.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalPTYTransport.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalSession.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVisuals.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalVisuals.swift
+
+SwiftCompile normal arm64 Compiling\ WorkspaceSession.swift,\ WorkspaceSplitView.swift,\ GeneratedAssetSymbols.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSession.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSplitView.swift /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceSession.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceSplitView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceSplitView.swift
+
+SwiftCompile normal arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile GeneratedAssetSymbols.swift
+
+SwiftCompile normal arm64 Compiling\ TerminalVTView.swift,\ Web_StudioApp.swift,\ WebRuntime.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTView.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Web_StudioApp.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:119:25: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+117 | 
+118 |   nonisolated static func makeConfiguration() -> WKWebViewConfiguration {
+119 |     let configuration = WKWebViewConfiguration()
+    |                         `- warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+120 |     // Shared default store: cookies and local storage persist across tabs and launches.
+121 |     configuration.websiteDataStore = .default()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/objc/NSObject.h:66:1: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 64 | 
+ 65 | + (void)initialize;
+ 66 | - (instancetype)init
+    | `- note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 67 | #if NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER
+ 68 |     NS_DESIGNATED_INITIALIZER
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:121:19: warning: main actor-isolated property 'websiteDataStore' can not be mutated from a nonisolated context
+119 |     let configuration = WKWebViewConfiguration()
+120 |     // Shared default store: cookies and local storage persist across tabs and launches.
+121 |     configuration.websiteDataStore = .default()
+    |                   `- warning: main actor-isolated property 'websiteDataStore' can not be mutated from a nonisolated context
+122 |     configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:126:51: note: mutation of this property is only permitted within the actor
+124 | /*! @abstract The website data store to be used by the web view.
+125 |  */
+126 | @property (nonatomic, strong) WKWebsiteDataStore *websiteDataStore API_AVAILABLE(macos(10.11), ios(9.0));
+    |                                                   `- note: mutation of this property is only permitted within the actor
+127 | 
+128 | /*! @abstract A Boolean value indicating whether the web view suppresses
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:121:39: warning: call to main actor-isolated class method 'default()' in a synchronous nonisolated context [#ActorIsolatedCall]
+119 |     let configuration = WKWebViewConfiguration()
+120 |     // Shared default store: cookies and local storage persist across tabs and launches.
+121 |     configuration.websiteDataStore = .default()
+    |                                       `- warning: call to main actor-isolated class method 'default()' in a synchronous nonisolated context [#ActorIsolatedCall]
+122 |     configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebsiteDataStore.h:47:1: note: calls to class method 'default()' from outside of its actor context are implicitly asynchronous
+ 45 | 
+ 46 | /* @abstract Returns the default data store. */
+ 47 | + (WKWebsiteDataStore *)defaultDataStore;
+    | `- note: calls to class method 'default()' from outside of its actor context are implicitly asynchronous
+ 48 | 
+ 49 | /** @abstract Returns a new non-persistent data store.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:122:45: warning: main actor-isolated property 'allowsContentJavaScript' can not be mutated from a nonisolated context
+120 |     // Shared default store: cookies and local storage persist across tabs and launches.
+121 |     configuration.websiteDataStore = .default()
+122 |     configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+    |                                             `- warning: main actor-isolated property 'allowsContentJavaScript' can not be mutated from a nonisolated context
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+124 |     // No autoplay: a workspace shell should not make noise on tab open.
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebpagePreferences.h:102:28: note: mutation of this property is only permitted within the actor
+100 |  The default value is YES.
+101 | */
+102 | @property (nonatomic) BOOL allowsContentJavaScript API_AVAILABLE(macos(11.0), ios(14.0));
+    |                            `- note: mutation of this property is only permitted within the actor
+103 | 
+104 | /*! @abstract A boolean indicating whether lockdown mode is enabled.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:122:19: warning: main actor-isolated property 'defaultWebpagePreferences' can not be referenced from a nonisolated context
+120 |     // Shared default store: cookies and local storage persist across tabs and launches.
+121 |     configuration.websiteDataStore = .default()
+122 |     configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+    |                   `- warning: main actor-isolated property 'defaultWebpagePreferences' can not be referenced from a nonisolated context
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+124 |     // No autoplay: a workspace shell should not make noise on tab open.
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:159:68: note: property declared here
+157 |  in -webView:decidePolicyForNavigationAction:preferences:decisionHandler:.
+158 |  */
+159 | @property (null_resettable, nonatomic, copy) WKWebpagePreferences *defaultWebpagePreferences API_AVAILABLE(macos(10.15), ios(13.0));
+    |                                                                    `- note: property declared here
+160 | 
+161 | @property (nonatomic) BOOL limitsNavigationsToAppBoundDomains API_AVAILABLE(macos(11.0), ios(14.0));
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:123:19: warning: main actor-isolated property 'upgradeKnownHostsToHTTPS' can not be mutated from a nonisolated context
+121 |     configuration.websiteDataStore = .default()
+122 |     configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+    |                   `- warning: main actor-isolated property 'upgradeKnownHostsToHTTPS' can not be mutated from a nonisolated context
+124 |     // No autoplay: a workspace shell should not make noise on tab open.
+125 |     configuration.mediaTypesRequiringUserActionForPlayback = .all
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:151:28: note: mutation of this property is only permitted within the actor
+149 |  @discussion The default value is YES.
+150 |  */
+151 | @property (nonatomic) BOOL upgradeKnownHostsToHTTPS API_AVAILABLE(macos(11.3), ios(14.5));
+    |                            `- note: mutation of this property is only permitted within the actor
+152 | 
+153 | @property (nonatomic) WKAudiovisualMediaTypes mediaTypesRequiringUserActionForPlayback API_AVAILABLE(macos(10.12), ios(10.0));
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:125:19: warning: main actor-isolated property 'mediaTypesRequiringUserActionForPlayback' can not be mutated from a nonisolated context
+123 |     configuration.upgradeKnownHostsToHTTPS = true
+124 |     // No autoplay: a workspace shell should not make noise on tab open.
+125 |     configuration.mediaTypesRequiringUserActionForPlayback = .all
+    |                   `- warning: main actor-isolated property 'mediaTypesRequiringUserActionForPlayback' can not be mutated from a nonisolated context
+126 |     // The engine genuinely is Safari's WebKit; the Safari token keeps site gating honest.
+127 |     configuration.applicationNameForUserAgent = "Version/26.0 Safari/605.1.15 WebStudio/1.0"
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:153:47: note: mutation of this property is only permitted within the actor
+151 | @property (nonatomic) BOOL upgradeKnownHostsToHTTPS API_AVAILABLE(macos(11.3), ios(14.5));
+152 | 
+153 | @property (nonatomic) WKAudiovisualMediaTypes mediaTypesRequiringUserActionForPlayback API_AVAILABLE(macos(10.12), ios(10.0));
+    |                                               `- note: mutation of this property is only permitted within the actor
+154 | 
+155 | /*! @abstract The set of default webpage preferences to use when loading and rendering content.
+
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalVTView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalVTView.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Web_StudioApp.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile Web_StudioApp.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WebRuntime.swift
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:127:19: warning: main actor-isolated property 'applicationNameForUserAgent' can not be mutated from a nonisolated context
+125 |     configuration.mediaTypesRequiringUserActionForPlayback = .all
+126 |     // The engine genuinely is Safari's WebKit; the Safari token keeps site gating honest.
+127 |     configuration.applicationNameForUserAgent = "Version/26.0 Safari/605.1.15 WebStudio/1.0"
+    |                   `- warning: main actor-isolated property 'applicationNameForUserAgent' can not be mutated from a nonisolated context
+128 |     return configuration
+129 |   }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKWebViewConfiguration.h:136:49: note: mutation of this property is only permitted within the actor
+134 | /*! @abstract The name of the application as used in the user agent string.
+135 | */
+136 | @property (nullable, nonatomic, copy) NSString *applicationNameForUserAgent API_AVAILABLE(macos(10.11), ios(9.0));
+    |                                                 `- note: mutation of this property is only permitted within the actor
+137 | 
+138 | /*! @abstract A Boolean value indicating whether AirPlay is allowed.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:525:17: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+523 |   /// The requesting origin is named so a dialog cannot impersonate the app itself.
+524 |   private nonisolated static func makeAlert(message: String, origin: WKFrameInfo) -> NSAlert {
+525 |     let alert = NSAlert()
+    |                 `- warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context [#ActorIsolatedCall]
+526 |     alert.alertStyle = .informational
+527 |     alert.messageText = origin.request.url?.host ?? "此网页"
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/objc/NSObject.h:66:1: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 64 | 
+ 65 | + (void)initialize;
+ 66 | - (instancetype)init
+    | `- note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+ 67 | #if NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER
+ 68 |     NS_DESIGNATED_INITIALIZER
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:526:11: warning: main actor-isolated property 'alertStyle' can not be mutated from a nonisolated context
+524 |   private nonisolated static func makeAlert(message: String, origin: WKFrameInfo) -> NSAlert {
+525 |     let alert = NSAlert()
+526 |     alert.alertStyle = .informational
+    |           `- warning: main actor-isolated property 'alertStyle' can not be mutated from a nonisolated context
+527 |     alert.messageText = origin.request.url?.host ?? "此网页"
+528 |     alert.informativeText = message
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:121:24: note: mutation of this property is only permitted within the actor
+119 | 
+120 | /// Indicates the alert’s severity level. See the `NSAlertStyle` enumeration for the list of alert style constants.
+121 | @property NSAlertStyle alertStyle;
+    |                        `- note: mutation of this property is only permitted within the actor
+122 | 
+123 | /// Specifies whether the alert has a help button.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:527:11: warning: main actor-isolated property 'messageText' can not be mutated from a nonisolated context
+525 |     let alert = NSAlert()
+526 |     alert.alertStyle = .informational
+527 |     alert.messageText = origin.request.url?.host ?? "此网页"
+    |           `- warning: main actor-isolated property 'messageText' can not be mutated from a nonisolated context
+528 |     alert.informativeText = message
+529 |     return alert
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:71:28: note: mutation of this property is only permitted within the actor
+ 69 | /// The text that is displayed prominently in the alert.
+ 70 | /// - Note: Use this string to get the user’s attention and communicate the reason for displaying the alert.
+ 71 | @property (copy) NSString *messageText;
+    |                            `- note: mutation of this property is only permitted within the actor
+ 72 | 
+ 73 | /// The descriptive text that provides more details about the reason for the alert.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:527:32: warning: main actor-isolated property 'request' can not be referenced from a nonisolated context
+525 |     let alert = NSAlert()
+526 |     alert.alertStyle = .informational
+527 |     alert.messageText = origin.request.url?.host ?? "此网页"
+    |                                `- warning: main actor-isolated property 'request' can not be referenced from a nonisolated context
+528 |     alert.informativeText = message
+529 |     return alert
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/WebKit.framework/Headers/WKFrameInfo.h:50:53: note: property declared here
+48 | /*! @abstract The frame's current request.
+49 |  */
+50 | @property (nonatomic, readonly, copy) NSURLRequest *request;
+   |                                                     `- note: property declared here
+51 | 
+52 | /*! @abstract The frame's current security origin.
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WebRuntime.swift:528:11: warning: main actor-isolated property 'informativeText' can not be mutated from a nonisolated context
+526 |     alert.alertStyle = .informational
+527 |     alert.messageText = origin.request.url?.host ?? "此网页"
+528 |     alert.informativeText = message
+    |           `- warning: main actor-isolated property 'informativeText' can not be mutated from a nonisolated context
+529 |     return alert
+530 |   }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSAlert.h:75:28: note: mutation of this property is only permitted within the actor
+ 73 | /// The descriptive text that provides more details about the reason for the alert.
+ 74 | /// - Note: The informative text string is displayed below the message text and is less prominent. Use this string to provide additional context about the reason for the alert or about the actions that the user might take.
+ 75 | @property (copy) NSString *informativeText;
+    |                            `- note: mutation of this property is only permitted within the actor
+ 76 | 
+ 77 | // MARK: - Accessing a Custom Alert Icon
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+SwiftCompile normal arm64 Compiling\ ResourceModel.swift,\ StartPageView.swift,\ StudioDesign.swift,\ StudioLog.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ResourceModel.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StartPageView.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioDesign.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioLog.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ResourceModel.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile ResourceModel.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StartPageView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile StartPageView.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioDesign.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile StudioDesign.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioLog.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile StudioLog.swift
+
+SwiftCompile normal arm64 Compiling\ StudioModel.swift,\ StudioModels.swift,\ TerminalMetalRenderer.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioModel.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioModels.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioModel.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile StudioModel.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioModels.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile StudioModels.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile TerminalMetalRenderer.swift
+
+SwiftCompile normal arm64 Compiling\ ContentView.swift,\ GhosttyTerminalSession.swift,\ NativeResourceHost.swift,\ ProviderSettings.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ContentView.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/GhosttyTerminalSession.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/NativeResourceHost.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ContentView.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile ContentView.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/GhosttyTerminalSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile GhosttyTerminalSession.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/NativeResourceHost.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile NativeResourceHost.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile ProviderSettings.swift
+
+SwiftCompile normal arm64 Compiling\ WindowCoordinator.swift,\ WindowLifecycle.swift,\ WorkspaceConfiguration.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WindowCoordinator.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WindowLifecycle.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceConfiguration.swift (in target 'Web Studio VT' from project 'Web Studio')
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/WindowCoordinator.swift:205:13: warning: expression of type 'Bool' is unused [#NoUsage]
+203 |     }
+204 |     closingTask = t
+205 |     await t.value
+    |             `- warning: expression of type 'Bool' is unused [#NoUsage]
+206 |     closingTask = nil
+207 |     return isClosed
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WindowCoordinator.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WindowCoordinator.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WindowLifecycle.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WindowLifecycle.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/WorkspaceConfiguration.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile WorkspaceConfiguration.swift
+
+SwiftCompile normal arm64 Compiling\ AgentController.swift,\ AgentService.swift,\ AgentViews.swift,\ CodexProcessRunner.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentController.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentService.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentViews.swift /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/AgentService.swift:278:39: warning: main actor-isolated static property 'fixed' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+276 |     try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+277 |     defer { try? FileManager.default.removeItem(at: directory) }
+278 |     var arguments = CodexCLIArguments.fixed + ["--cd", directory.path]
+    |                                       `- warning: main actor-isolated static property 'fixed' cannot be accessed from outside of the actor; this is an error in the Swift 6 language mode
+279 |     if !request.configuration.model.isEmpty { arguments += ["-m", request.configuration.model] }
+280 |     let payload = try Self.payload(for: request)
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/CodexProcessRunner.swift:122:44: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+ 93 | 
+ 94 |   func start(continuation: CheckedContinuation<CodexProcessResult, Error>) {
+ 95 |     queue.async {
+    |                 |- note: 'self' implicitly strongly captured here
+    |                 `- note: add 'self' as a capture list item to silence
+ 96 |       self.continuation = continuation
+ 97 |       if self.terminalError != nil {
+    :
+120 |       self.installReader(pipe: stdoutPipe, isStdout: true)
+121 |       self.installReader(pipe: stderrPipe, isStdout: false)
+122 |       process.terminationHandler = { [weak self] process in
+    |                                            |- warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+    |                                            `- note: explicitly assign the capture list item to silence
+123 |         guard let state = self else { return }
+124 |         state.queue.async { state.didExit(process.terminationStatus) }
+
+/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web Studio/CodexProcessRunner.swift:140:44: warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+ 93 | 
+ 94 |   func start(continuation: CheckedContinuation<CodexProcessResult, Error>) {
+ 95 |     queue.async {
+    |                 |- note: 'self' implicitly strongly captured here
+    |                 `- note: add 'self' as a capture list item to silence
+ 96 |       self.continuation = continuation
+ 97 |       if self.terminalError != nil {
+    :
+138 | 
+139 |       let interval = max(0, self.timeout.secondsAsDouble)
+140 |       let timer = DispatchWorkItem { [weak self] in self?.timeoutReached() }
+    |                                            |- warning: 'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope [#ImplicitStrongCapture]
+    |                                            `- note: explicitly assign the capture list item to silence
+141 |       self.timer = timer
+142 |       self.queue.asyncAfter(deadline: .now() + interval, execute: timer)
+
+[#ImplicitStrongCapture]: <https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture>
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentController.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile AgentController.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentService.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile AgentService.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/AgentViews.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile AgentViews.swift
+
+SwiftCompile normal arm64 /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-SwiftPerFileCompile CodexProcessRunner.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for Web_Studio_VT (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriver\ Compilation\ Requirements Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -I /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/scripts -F /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/include -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web -Xcc -IStudio -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalPTYTransport.swift, TerminalSession.swift, TerminalVisuals.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalVTBackend.swift, TerminalVTCore.swift, TerminalVTSession.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling WorkspaceRegistry.swift, WorkspaceRepository.swift, WorkspaceSaveController.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftMergeGeneratedHeaders /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Web_Studio_VT-Swift.h /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-swiftHeaderTool -arch arm64 /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/Web_Studio_VT-Swift.h
+
+Copy /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftmodule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftdoc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftdoc (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftdoc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.abi.json /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.abi.json (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.abi.json /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftsourceinfo (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftsourceinfo /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web_Studio_VT.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+ScanDependencies /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioVTCore.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Using response file: /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+    
+    builtin-ScanDependencies -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o.scan -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -target arm64-apple-macos26.5 -fmessage-length\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\=0 -fno-color-diagnostics -fmodules-prune-interval\=86400 -fmodules-prune-after\=345600 -fbuild-session-file\=/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -fmodules-validate-once-per-build-session -Wnon-modular-include-in-framework-module -Werror\=non-modular-include-in-framework-module -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Werror\=return-type -Wdocumentation -Wunreachable-code -Wquoted-include-in-framework-header -Werror\=deprecated-objc-isa-usage -Werror\=objc-root-class -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Winfinite-recursion -Wcomma -Wblock-capture-autoreleasing -Wstrict-prototypes -Wno-semicolon-before-method-body -Wunguarded-availability -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.d --serialize-diagnostics /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.dia -c /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioVTCore.c -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o -index-unit-output-path /Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o
+
+ScanDependencies /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioPTY.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Using response file: /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+    
+    builtin-ScanDependencies -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o.scan -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -target arm64-apple-macos26.5 -fmessage-length\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\=0 -fno-color-diagnostics -fmodules-prune-interval\=86400 -fmodules-prune-after\=345600 -fbuild-session-file\=/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -fmodules-validate-once-per-build-session -Wnon-modular-include-in-framework-module -Werror\=non-modular-include-in-framework-module -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Werror\=return-type -Wdocumentation -Wunreachable-code -Wquoted-include-in-framework-header -Werror\=deprecated-objc-isa-usage -Werror\=objc-root-class -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Winfinite-recursion -Wcomma -Wblock-capture-autoreleasing -Wstrict-prototypes -Wno-semicolon-before-method-body -Wunguarded-availability -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.d --serialize-diagnostics /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.dia -c /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioPTY.c -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o -index-unit-output-path /Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o
+
+SwiftDriverJobDiscovery normal arm64 Compiling StudioModel.swift, StudioModels.swift, TerminalMetalRenderer.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/ptrcheck-DS7OZCR44KWWO8C6A43GSN3I5.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/ptrcheck-DS7OZCR44KWWO8C6A43GSN3I5.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdarg-1MXU9G0JQJHD9OQ2XKYF5IE9V.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdarg-1MXU9G0JQJHD9OQ2XKYF5IE9V.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_float-2OASOLSYQAQAAV71F79RGJWHA.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_float-2OASOLSYQAQAAV71F79RGJWHA.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stddef-BLX2A916BOM9XERKE9T9WLDHP.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stddef-BLX2A916BOM9XERKE9T9WLDHP.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_AvailabilityInternal-4F38DHF6LTL9E6BQLNUV9989T.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_AvailabilityInternal-4F38DHF6LTL9E6BQLNUV9989T.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdbool-5J6IDJRUOMODC4NDZPEAFD19W.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdbool-5J6IDJRUOMODC4NDZPEAFD19W.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation1-B50EVDQHGTVXIK4OB9H9DM37C.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation1-B50EVDQHGTVXIK4OB9H9DM37C.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_limits-EGSX3CXA9O8MLGX50HKBT99QB.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_limits-EGSX3CXA9O8MLGX50HKBT99QB.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation2-596OFN7EAFMWWYSAUPBZOLYYQ.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation2-596OFN7EAFMWWYSAUPBZOLYYQ.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdint-4609BA348NH49CY1KNHNNB3SD.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_stdint-4609BA348NH49CY1KNHNNB3SD.scan
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation3-BEVUVGL1W9KLEGDKTJQ2BKCQB.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_DarwinFoundation3-BEVUVGL1W9KLEGDKTJQ2BKCQB.scan
+
+SwiftDriverJobDiscovery normal arm64 Compiling WindowCoordinator.swift, WindowLifecycle.swift, WorkspaceConfiguration.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling WorkspaceSession.swift, WorkspaceSplitView.swift, GeneratedAssetSymbols.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_inttypes-5L9XMO4X4M13KIRGCOPAJ45PF.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/_Builtin_inttypes-5L9XMO4X4M13KIRGCOPAJ45PF.scan
+
+CompileC /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioVTCore.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Using response file: /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+    
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -target arm64-apple-macos26.5 -fmessage-length\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\=0 -fno-color-diagnostics -fmodules-prune-interval\=86400 -fmodules-prune-after\=345600 -fbuild-session-file\=/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -fmodules-validate-once-per-build-session -Wnon-modular-include-in-framework-module -Werror\=non-modular-include-in-framework-module -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Werror\=return-type -Wdocumentation -Wunreachable-code -Wquoted-include-in-framework-header -Werror\=deprecated-objc-isa-usage -Werror\=objc-root-class -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Winfinite-recursion -Wcomma -Wblock-capture-autoreleasing -Wstrict-prototypes -Wno-semicolon-before-method-body -Wunguarded-availability -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.d --serialize-diagnostics /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.dia -c /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioVTCore.c -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o -index-unit-output-path /Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioVTCore.o
+
+PrecompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/Darwin-CLCF9U1DGG54A7B1EQC3XUDXA.scan
+    cd /
+    builtin-precompileModule /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules/Darwin-CLCF9U1DGG54A7B1EQC3XUDXA.scan
+
+SwiftDriverJobDiscovery normal arm64 Compiling ResourceModel.swift, StartPageView.swift, StudioDesign.swift, StudioLog.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TerminalVTView.swift, Web_StudioApp.swift, WebRuntime.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+CompileC /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioPTY.c normal arm64 c com.apple.compilers.llvm.clang.1_0.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Using response file: /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web Studio.build/Debug/Web Studio VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp
+    
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x c -ivfsstatcache /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -target arm64-apple-macos26.5 -fmessage-length\=0 -fdiagnostics-show-note-include-stack -fmacro-backtrace-limit\=0 -fno-color-diagnostics -fmodules-prune-interval\=86400 -fmodules-prune-after\=345600 -fbuild-session-file\=/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -fmodules-validate-once-per-build-session -Wnon-modular-include-in-framework-module -Werror\=non-modular-include-in-framework-module -Wno-trigraphs -Wno-missing-field-initializers -Wno-missing-prototypes -Werror\=return-type -Wdocumentation -Wunreachable-code -Wquoted-include-in-framework-header -Werror\=deprecated-objc-isa-usage -Werror\=objc-root-class -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-implicit-fallthrough -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -fstrict-aliasing -Wdeprecated-declarations -Wno-sign-conversion -Winfinite-recursion -Wcomma -Wblock-capture-autoreleasing -Wstrict-prototypes -Wno-semicolon-before-method-body -Wunguarded-availability -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/7187679823f38a2a940e0043cdf9d637-common-args.resp -MMD -MT dependencies -MF /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.d --serialize-diagnostics /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.dia -c /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/StudioPTY.c -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o -index-unit-output-path /Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/StudioPTY.o
+
+SwiftDriverJobDiscovery normal arm64 Compiling AgentController.swift, AgentService.swift, AgentViews.swift, CodexProcessRunner.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ContentView.swift, GhosttyTerminalSession.swift, NativeResourceHost.swift, ProviderSettings.swift (in target 'Web Studio VT' from project 'Web Studio')
+
+SwiftDriver\ Compilation Web\ Studio\ VT normal arm64 com.apple.xcode.tools.swift.compiler (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Web_Studio_VT -Onone @/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList -DWEB_STUDIO_VT -DDEBUG -DDEBUG -Xcc -DWEB_STUDIO_VT -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -default-isolation\=MainActor -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos26.5 -g -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -I /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/scripts -F /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKStatCaches.noindex/macosx27.0-26A425-e829b21a6f8c9b70876ba0858053c0447231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_const_extract_protocols.json -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-generated-files.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-own-target-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-all-target-headers.hmap -Xcc -iquote -Xcc /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-project-headers.hmap -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/include -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web -Xcc -IStudio -Xcc -I/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/include -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources-normal/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources/arm64 -Xcc -I/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/DerivedSources -Xcc -DWEB_STUDIO_VT\=1 -Xcc -DDEBUG\=1 -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT-Swift.h -import-objc-header /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Web\ Studio/Web\ Studio-Bridging-Header.h -working-directory /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout -experimental-emit-module-separately -disable-cmo
+
+Ld /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib normal (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -L/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/lib -F/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -filelist /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.LinkFileList -install_name @rpath/Web\ Studio\ VT.debug.dylib -Xlinker -object_path_lto -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web_Studio_VT.swiftmodule -framework AppKit -framework Metal -framework QuartzCore -framework CoreText -framework Security -framework Foundation -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -lghostty-vt -Xlinker -no_adhoc_codesign -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib
+
+ConstructStubExecutorLinkFileList /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    construct-stub-executor-link-file-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'Web Studio VT' from project 'Web Studio')
+
+Ld /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT normal (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos26.5 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -L/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/Vendor/GhosttyVT/lib -F/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug -Xlinker -rpath -Xlinker @executable_path -rdynamic -Xlinker -no_deduplicate -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT-ExecutorLinkFileList-normal-arm64.txt /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib -Xlinker -no_adhoc_codesign -o /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT
+
+CopySwiftLibs /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib --scan-folder /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Frameworks --scan-folder /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/PlugIns --scan-folder /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Library/SystemExtensions --scan-folder /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Extensions --platform macosx --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.qIKuy9/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.qIKuy9/Metal.xctoolchain --module-name Web_Studio_VT --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A266a --platform-family macOS --deployment-target 26.5 --bundle-identifier com.huaodong.Web-Studio-VT --output /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/Resources --target-triple arm64-apple-macos26.5 --binary-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT --dependency-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT_dependency_info.dat --stringsdata-file /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftFileList --metadata-file-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyMetadataFileList --static-metadata-file-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.DependencyStaticMetadataFileList --swift-const-vals-list /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Objects-normal/arm64/Web\ Studio\ VT.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-03 17:37:26.946 appintentsmetadataprocessor[40567:27439741] Starting appintentsmetadataprocessor export
+2026-10-03 17:37:26.951 appintentsmetadataprocessor[40567:27439741] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+CodeSign /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/Web\ Studio\ VT.debug.dylib
+
+CodeSign /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app/Contents/MacOS/__preview.dylib
+
+CodeSign /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/Web\ Studio.build/Debug/Web\ Studio\ VT.build/Web\ Studio\ VT.app.xcent --timestamp\=none --generate-entitlement-der /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app
+
+RegisterExecutionPolicyException /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-RegisterExecutionPolicyException /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app
+
+Validate /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-validationUtility /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+Touch /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    /usr/bin/touch -c /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app
+
+RegisterWithLaunchServices /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app (in target 'Web Studio VT' from project 'Web Studio')
+    cd /Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout
+    builtin-lsregisterurl --record-path /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/XCBuildData/registered-launchservices.txt -- /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Products/Debug/Web\ Studio\ VT.app
+
+PruneExplicitPrecompiledModules /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData/SDKExplicitPrecompiledModules
+
+
+Result bundle written to path:
+	/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/evidence/vt-debug-build.xcresult
+
+** BUILD SUCCEEDED **
+

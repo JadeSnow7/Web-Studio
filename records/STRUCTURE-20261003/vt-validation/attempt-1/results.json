@@ -1,0 +1,85 @@
+[
+  {
+    "command": [
+      "xcodebuild",
+      "-project",
+      "Web Studio.xcodeproj",
+      "-scheme",
+      "Web Studio VT",
+      "-configuration",
+      "Debug",
+      "-destination",
+      "platform=macOS,arch=arm64",
+      "-derivedDataPath",
+      "/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/DerivedData",
+      "-clonedSourcePackagesDirPath",
+      "/Volumes/Developer/BuildArtifacts/structure-20261003-vt-validation/SourcePackages",
+      "-disableAutomaticPackageResolution",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "-skipPackageUpdates",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGN_STYLE=Manual",
+      "DEVELOPMENT_TEAM=",
+      "-resultBundlePath",
+      "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../evidence/vt-debug-build.xcresult",
+      "build"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 22.424637416
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-metal.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 24.398783166000005
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-core.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 4.830502582999998
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-core-asan.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 0.8371684999999971
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-backend.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 25.818176458000003
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-host.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 0,
+    "duration_seconds": 11.717424125000008
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-visuals.sh"
+    ],
+    "cwd": "/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/vt-validation-20261003/checkout/../checkout",
+    "exit": 1,
+    "duration_seconds": 44.85751779100001
+  }
+]

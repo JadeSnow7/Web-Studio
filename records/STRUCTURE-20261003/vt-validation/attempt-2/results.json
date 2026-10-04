@@ -1,0 +1,158 @@
+[
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-vt-visuals.sh"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 25.598904792,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-pty-transport.sh"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 0.6900107909999988,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-pty-transport-swift.sh"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 8.862283959000003,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-font-frame-equivalence.sh",
+      "--source-root",
+      "/private/tmp/web-studio-structure-20261003-vt-recheck",
+      "--output",
+      "/private/tmp/structure-20261003-vt-font-equiv"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 15.582948584,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  },
+  {
+    "command": [
+      "python3",
+      "/private/tmp/ws-vt-perf/tools/check_pixel_golden.py",
+      "--golden",
+      "/private/tmp/ws-vt-perf/baseline/pixel-golden.json",
+      "--font-equiv",
+      "/private/tmp/structure-20261003-vt-font-equiv"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 0.0867052500000014,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  },
+  {
+    "command": [
+      "sh",
+      "scripts/test-terminal-unicode-diagnostic.sh",
+      "--source-root",
+      "/private/tmp/web-studio-structure-20261003-vt-recheck",
+      "--output",
+      "/private/tmp/structure-20261003-vt-unicode"
+    ],
+    "cwd": "/private/tmp/web-studio-structure-20261003-vt-recheck",
+    "exit": 0,
+    "duration_seconds": 19.903980833,
+    "source_before": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_after": {
+      "path": "/private/tmp/web-studio-structure-20261003-vt-recheck/Web Studio/TerminalMetalRenderer.swift",
+      "mtime_ns": 1791034604491878916,
+      "mtime_iso_utc": "2026-10-03T13:36:44.491879+00:00",
+      "size": 47907,
+      "sha256": "a917dc7cc234b8238ff8441f6e90c28cb11398c5297b563761fd963f4cf67e64"
+    },
+    "source_content_unchanged": true
+  }
+]

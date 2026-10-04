@@ -1,0 +1,25 @@
+◇ Test closedControllerRejectsDirectDraftEdits(waitForShutdown:) started.
+◇ Test case passing 1 argument waitForShutdown → true to closedControllerRejectsDirectDraftEdits(waitForShutdown:) started.
+✘ Test closedControllerRejectsDirectDraftEdits(waitForShutdown:) recorded an issue with 1 argument waitForShutdown → true at WorkspaceQuestionTests.swift:39:5: Expectation failed: controller.question == "draft before shutdown"
+↳ controller.question == "draft before shutdown" → false
+↳   controller.question → "edit after shutdown"
+​◇ Test case passing 1 argument waitForShutdown → false to closedControllerRejectsDirectDraftEdits(waitForShutdown:) started.
+✘ Test closedControllerRejectsDirectDraftEdits(waitForShutdown:) recorded an issue with 1 argument waitForShutdown → false at WorkspaceQuestionTests.swift:39:5: Expectation failed: controller.question == "draft before shutdown"
+↳ controller.question == "draft before shutdown" → false
+↳   controller.question → "edit after shutdown"
+​✘ Test closedControllerRejectsDirectDraftEdits(waitForShutdown:) with 2 test cases failed after 0.022 seconds with 2 issues.
+✘ Suite WorkspaceQuestionTests failed after 0.023 seconds with 2 issues.
+✘ Test run with 1 test in 1 suite failed after 0.023 seconds with 2 issues.
+2026-10-03 16:36:55.964 xcodebuild[82699:27219919] [MT] IDETestOperationsObserverDebug: 21.019 elapsed -- Testing started completed.
+2026-10-03 16:36:55.965 xcodebuild[82699:27219919] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-03 16:36:55.965 xcodebuild[82699:27219919] [MT] IDETestOperationsObserverDebug: 21.019 sec, +21.019 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/huaodong/Documents/Codex/2026-10-03/files-pasted-by-the-user-rein/work/web-structure/b3-pretests/shutdown-edit-red.xcresult
+
+Failing tests:
+	-[WorkspaceQuestionTests closedControllerRejectsDirectDraftEdits(waitForShutdown:)]
+
+** TEST FAILED **
+
+Testing started

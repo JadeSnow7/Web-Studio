@@ -20,7 +20,8 @@ func makeWorkspaceSaveFailureResolver(action: String) -> WorkspaceCloseResolver 
 
 @MainActor
 func confirmTemporaryWorkspaceClose(_ session: WorkspaceSession, registry: WorkspaceRegistry) -> Bool {
-  let hasContent = !session.isEmpty || session.agentController.questions.count > 1
+  let hasContent =
+    !session.isEmpty || session.agentController.questions.count > 1
     || session.agentController.questions.values.contains {
       !$0.draft.isEmpty || !$0.messages.isEmpty || !$0.snapshots.isEmpty
         || !$0.selectedResourceIDs.isEmpty

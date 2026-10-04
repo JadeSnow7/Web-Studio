@@ -144,7 +144,9 @@
       init(size: Int) { self.size = size }
       mutating func place(width: Int, height: Int) -> (x: Int, y: Int)? {
         guard width + 2 <= size, height + 2 <= size else { return nil }
-        var px = x, py = y, row = rowHeight
+        var px = x
+        var py = y
+        var row = rowHeight
         if px + width + 1 > size {
           px = 1
           py += row + 1
@@ -213,9 +215,12 @@
         var start = 0
         while start < placeable.count {
           let rest = placeable[start...]
-          var area = 0, widest = 0, tallest = 0
+          var area = 0
+          var widest = 0
+          var tallest = 0
           for i in rest {
-            let w = items[i].image.width, h = items[i].image.height
+            let w = items[i].image.width
+            let h = items[i].image.height
             area += (w + 1) * (h + 1)
             widest = max(widest, w + 2)
             tallest = max(tallest, h + 2)
@@ -639,13 +644,16 @@
           into: &cursorUnderlayVertices)
       }
       let cursorColumn = frame.cursor.wideTail ? max(0, frame.cursor.x - 1) : frame.cursor.x
-      let cursorCell = cursorPhaseVisible && frame.cursor.viewportHasValue && frame.cursor.visible && frame.cursor.visualStyle == 1
+      let cursorCell =
+        cursorPhaseVisible && frame.cursor.viewportHasValue && frame.cursor.visible && frame.cursor.visualStyle == 1
         ? frame.cursor.y * frame.columns + cursorColumn : -1
       if cursorCell >= 0, cursorCell < frame.cells.count {
         let cx = ix + Float(cursorColumn) * cw
         let cy = iy + Float(frame.cursor.y) * ch
         let width = cw * (frame.cursor.wideTail ? 2 : 1)
-        quad(cx, cy, width, ch, col(frame.cursorColor ?? theme.cursor), SIMD4(0, 0, 0, 0), 0, into: &cursorUnderlayVertices)
+        quad(
+          cx, cy, width, ch, col(frame.cursorColor ?? theme.cursor), SIMD4(0, 0, 0, 0), 0, into: &cursorUnderlayVertices
+        )
       }
       let clearColor = frame.background
       var wideBackgroundDrawn = false
@@ -700,32 +708,43 @@
           switch cell.underlineStyle {
           case 2:
             quad(x, lineY, occupiedWidth, thickness, lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
-            quad(x, lineY + thickness * 2, occupiedWidth, thickness, lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+            quad(
+              x, lineY + thickness * 2, occupiedWidth, thickness, lineColor, SIMD4(0, 0, 0, 0), 0,
+              into: &decorationVertices)
           case 3:
             let wavelength = max(4, occupiedWidth / 3)
             for segment in stride(from: 0 as Float, to: occupiedWidth, by: thickness) {
               let phase = Double(segment / wavelength) * Double.pi * 2
               let waveY = lineY + Float(sin(phase)) * thickness
-              quad(x + segment, waveY, min(thickness, occupiedWidth - segment), thickness,
+              quad(
+                x + segment, waveY, min(thickness, occupiedWidth - segment), thickness,
                 lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
             }
           case 4:
             for segment in stride(from: 0 as Float, to: occupiedWidth, by: max(2, thickness * 3)) {
-              quad(x + segment, lineY, min(thickness, occupiedWidth - segment), thickness, lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+              quad(
+                x + segment, lineY, min(thickness, occupiedWidth - segment), thickness, lineColor, SIMD4(0, 0, 0, 0), 0,
+                into: &decorationVertices)
             }
           case 5:
             for segment in stride(from: 0 as Float, to: occupiedWidth, by: max(4, thickness * 6)) {
-              quad(x + segment, lineY, min(max(2, thickness * 4), occupiedWidth - segment), thickness, lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+              quad(
+                x + segment, lineY, min(max(2, thickness * 4), occupiedWidth - segment), thickness, lineColor,
+                SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
             }
           default:
             quad(x, lineY, occupiedWidth, thickness, lineColor, SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
           }
         }
         if cell.strikethrough {
-          quad(x, baseline - ch * 0.42, occupiedWidth, max(1, Float(scale)), col(fg), SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+          quad(
+            x, baseline - ch * 0.42, occupiedWidth, max(1, Float(scale)), col(fg), SIMD4(0, 0, 0, 0), 0,
+            into: &decorationVertices)
         }
         if cell.overline {
-          quad(x, iy + Float(ry) * ch + max(1, Float(scale)), occupiedWidth, max(1, Float(scale)), col(fg), SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
+          quad(
+            x, iy + Float(ry) * ch + max(1, Float(scale)), occupiedWidth, max(1, Float(scale)), col(fg),
+            SIMD4(0, 0, 0, 0), 0, into: &decorationVertices)
         }
       }
       if runPage >= 0 {

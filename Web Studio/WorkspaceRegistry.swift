@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import Foundation
+import os
 
 enum WorkspaceSaveFailureChoice: Sendable {
   case retry
@@ -36,8 +37,10 @@ struct WorkspaceDirectoryEntry: Identifiable, Equatable, Sendable {
   let isTemporary: Bool
   let archived: Bool
   let lastActivatedAt: Date?
-  init(id: UUID, name: String, isTemporary: Bool, archived: Bool = false,
-       lastActivatedAt: Date? = nil) {
+  init(
+    id: UUID, name: String, isTemporary: Bool, archived: Bool = false,
+    lastActivatedAt: Date? = nil
+  ) {
     self.id = id
     self.name = name
     self.isTemporary = isTemporary
@@ -83,14 +86,14 @@ enum WorkspaceOpenResult: Equatable {
   }
 }
 
-private extension WorkspaceLoadResult {
-  var configuration: WorkspaceConfiguration? {
+extension WorkspaceLoadResult {
+  fileprivate var configuration: WorkspaceConfiguration? {
     switch self {
     case .loaded(let envelope), .recoveredFromBackup(let envelope):
       return envelope.configuration
     }
   }
-  var diagnostics: [WorkspaceConfigurationDiagnostic] {
+  fileprivate var diagnostics: [WorkspaceConfigurationDiagnostic] {
     switch self {
     case .loaded(let envelope), .recoveredFromBackup(let envelope):
       return envelope.diagnostics
@@ -99,7 +102,8 @@ private extension WorkspaceLoadResult {
 }
 
 private func configurationProjection(_ configuration: WorkspaceConfiguration)
-  -> WorkspaceConfiguration {
+  -> WorkspaceConfiguration
+{
   var value = configuration
   value.revision = 0
   return value
@@ -165,8 +169,9 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   }
   var diagnosticEntries: [WorkspaceDiagnostic] {
     let directory = directoryDiagnostics.map { id, error in
-      WorkspaceDiagnostic(workspaceID: id, error: error,
-                          fileURL: repository?.configurationURL(for: id))
+      WorkspaceDiagnostic(
+        workspaceID: id, error: error,
+        fileURL: repository?.configurationURL(for: id))
     }
     let global = globalDiagnostics.map {
       WorkspaceDiagnostic(workspaceID: nil, error: $0, fileURL: nil)
@@ -184,10 +189,12 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   var sessions: [UUID: WorkspaceSession] {
     Dictionary(uniqueKeysWithValues: liveSessions.map { ($0.id, $0) })
   }
-  init(providerSettings: ProviderSettings? = nil, repository: WorkspaceRepository? = nil,
-       configurationLoader: (@Sendable (UUID) async throws -> WorkspaceLoadResult)? = nil,
-       directoryLoader: (@Sendable () async throws -> [WorkspaceRepositoryEntry])? = nil,
-       saveWriter: WorkspaceSaveController.Writer? = nil) {
+  init(
+    providerSettings: ProviderSettings? = nil, repository: WorkspaceRepository? = nil,
+    configurationLoader: (@Sendable (UUID) async throws -> WorkspaceLoadResult)? = nil,
+    directoryLoader: (@Sendable () async throws -> [WorkspaceRepositoryEntry])? = nil,
+    saveWriter: WorkspaceSaveController.Writer? = nil
+  ) {
     self.providerSettings = providerSettings ?? ProviderSettings()
     self.repository = repository
     self.saveWriter = saveWriter
@@ -245,7 +252,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   }
   func rename(_ id: UUID, name: String) -> Bool {
     guard let old = directory[id], !closing.contains(id),
-          sessionsByID[id]?.value != nil else { return false }
+      sessionsByID[id]?.value != nil
+    else { return false }
     objectWillChange.send()
     directory[id] = WorkspaceDirectoryEntry(
       id: id, name: name, isTemporary: old.isTemporary, archived: old.archived,
@@ -272,7 +280,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   func saveController(for id: UUID) -> WorkspaceSaveController? { saveControllers[id] }
   func recordActivation(_ id: UUID) {
     guard let entry = directory[id], let session = sessionsByID[id]?.value,
-          !session.isClosed else { return }
+      !session.isClosed
+    else { return }
     let date = Date()
     session.lastActivatedAt = date
     directory[id] = WorkspaceDirectoryEntry(
@@ -337,7 +346,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   }
 
   func startRestoration() async {
-    if let task = restorationTask { await task.value; return }
+    if let task = restorationTask {
+      await task.value
+      return
+    }
     guard !didScanDirectory else { return }
     guard directoryLoader != nil else { return }
     let task = Task<Void, Never> { @MainActor [weak self] in
@@ -348,11 +360,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         guard let directoryLoader = self.directoryLoader else { return }
         records = try await directoryLoader()
       } catch let error as WorkspaceRepositoryError {
+        StudioLog.workspace.error("event=workspace_directory_load_failed")
         self.globalDiagnostics.append(error)
         self.objectWillChange.send()
         self.didScanDirectory = true
         return
       } catch {
+        StudioLog.workspace.error("event=workspace_directory_load_failed")
         self.restorationErrorDescription = String(describing: error)
         self.objectWillChange.send()
         self.didScanDirectory = true
@@ -366,11 +380,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
             id: entry.workspaceID, name: entry.name, isTemporary: false,
             archived: entry.archived, lastActivatedAt: entry.lastActivatedAt)
         case .diagnostic(let id, let error):
+          StudioLog.workspace.error("event=workspace_configuration_invalid")
           if let id { self.directoryDiagnostics[id] = error }
         }
       }
       self.objectWillChange.send()
       self.didScanDirectory = true
+      StudioLog.workspace.info("event=workspace_directory_loaded")
     }
     restorationTask = task
     await task.value
@@ -388,8 +404,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     await startRestoration()
   }
 
-  func openSaved(_ id: UUID, in coordinator: WindowCoordinator,
-                 launchTerminalProcesses: Bool = true) async -> WorkspaceOpenResult {
+  func openSaved(
+    _ id: UUID, in coordinator: WindowCoordinator,
+    launchTerminalProcesses: Bool = true
+  ) async -> WorkspaceOpenResult {
     let loadToken = coordinator.issueWorkspaceLoadToken()
     let initialActiveID = coordinator.activeWorkspaceID
     let initialActiveProjection = coordinator.activeSession.map {
@@ -403,9 +421,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     }
     guard coordinator.acceptsWorkspaceLoadToken(loadToken) else { return .unavailable }
     guard coordinator.activeWorkspaceID == initialActiveID,
-          coordinator.activeSession.map({ configurationProjection($0.exportConfiguration(revision: 0)) })
-            == initialActiveProjection,
-          coordinator.activeSession?.agentController.questions == initialQuestions else {
+      coordinator.activeSession.map({ configurationProjection($0.exportConfiguration(revision: 0)) })
+        == initialActiveProjection,
+      coordinator.activeSession?.agentController.questions == initialQuestions
+    else {
       return .unavailable
     }
     guard let entry = directory[id], !entry.archived, !entry.isTemporary else {
@@ -426,10 +445,12 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         do {
           return try await loader(id)
         } catch let error as WorkspaceRepositoryError {
+          StudioLog.workspace.error("event=workspace_load_failed workspace=\(id.uuidString, privacy: .public)")
           self.loadErrors[id] = error
           self.objectWillChange.send()
           return nil
         } catch {
+          StudioLog.workspace.error("event=workspace_load_failed workspace=\(id.uuidString, privacy: .public)")
           self.loadErrorMessagesByID[id] = String(describing: error)
           self.objectWillChange.send()
           return nil
@@ -445,12 +466,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       configurationProjection($0.exportConfiguration(revision: 0))
     }
     guard coordinator.canAcceptWorkspace,
-          coordinator.acceptsWorkspaceLoadToken(loadToken),
-          coordinator.activeWorkspaceID == initialActiveID,
-          currentActiveProjection == initialActiveProjection,
-          coordinator.activeSession?.agentController.questions == initialQuestions,
-          let loadResult,
-          let configuration = loadResult.configuration else { return .unavailable }
+      coordinator.acceptsWorkspaceLoadToken(loadToken),
+      coordinator.activeWorkspaceID == initialActiveID,
+      currentActiveProjection == initialActiveProjection,
+      coordinator.activeSession?.agentController.questions == initialQuestions,
+      let loadResult,
+      let configuration = loadResult.configuration
+    else { return .unavailable }
     loadErrors.removeValue(forKey: id)
     loadErrorMessagesByID.removeValue(forKey: id)
     configurationDiagnostics[id] = loadResult.diagnostics
@@ -466,9 +488,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       _ = owner.select(id)
       return .locatedExistingWindow(workspaceID: id)
     }
-    let loadedSession = WorkspaceSession(configuration: configuration,
-                                   launchTerminalProcesses: launchTerminalProcesses,
-                                   providerSettings: providerSettings)
+    let loadedSession = WorkspaceSession(
+      configuration: configuration,
+      launchTerminalProcesses: launchTerminalProcesses,
+      providerSettings: providerSettings)
     guard registerLoaded(loadedSession, initialConfiguration: configuration) else {
       if let existing = self.session(for: id) {
         _ = existing
@@ -480,14 +503,18 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       releaseSession(id, preservingDirectory: true)
       return .unavailable
     }
+    StudioLog.workspace.info("event=workspace_loaded workspace=\(id.uuidString, privacy: .public)")
     return .opened(loadedSession)
   }
 
-  private func registerLoaded(_ session: WorkspaceSession,
-                              initialConfiguration: WorkspaceConfiguration) -> Bool {
+  private func registerLoaded(
+    _ session: WorkspaceSession,
+    initialConfiguration: WorkspaceConfiguration
+  ) -> Bool {
     guard !isClosingAll, !closing.contains(session.id), !session.isClosed,
-          sessionsByID[session.id]?.value == nil,
-          locations[session.id] == nil else { return false }
+      sessionsByID[session.id]?.value == nil,
+      locations[session.id] == nil
+    else { return false }
     if directory[session.id] == nil {
       directory[session.id] = WorkspaceDirectoryEntry(
         id: session.id, name: initialConfiguration.name, isTemporary: false,
@@ -512,8 +539,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     }
   }
 
-  func restoreLastActive(in coordinator: WindowCoordinator,
-                         launchTerminalProcesses: Bool = true) async -> WorkspaceOpenResult {
+  func restoreLastActive(
+    in coordinator: WindowCoordinator,
+    launchTerminalProcesses: Bool = true
+  ) async -> WorkspaceOpenResult {
     guard !didRestoreLastActive else { return .unavailable }
     didRestoreLastActive = true
     let initialActiveID = coordinator.activeWorkspaceID
@@ -524,8 +553,9 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     let pristine: Bool = {
       guard let initialSession = coordinator.activeSession else { return true }
       guard initialSession.isTemporary,
-            initialSession.resourceStore.records.isEmpty,
-            initialSession.agentController.questions.count <= 1 else { return false }
+        initialSession.resourceStore.records.isEmpty,
+        initialSession.agentController.questions.count <= 1
+      else { return false }
       let hasDraft = initialSession.agentController.questions.values.contains {
         !$0.draft.isEmpty || !$0.messages.isEmpty || !$0.snapshots.isEmpty
       }
@@ -535,25 +565,30 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     guard pristine else { return .unavailable }
     guard let id = lastActiveWorkspaceID else { return .unavailable }
     guard coordinator.activeWorkspaceID == initialActiveID,
-          coordinator.activeSession.map({
-            configurationProjection($0.exportConfiguration(revision: 0))
-          }) == initialActiveProjection,
-          coordinator.activeSession?.agentController.questions == initialQuestions else {
+      coordinator.activeSession.map({
+        configurationProjection($0.exportConfiguration(revision: 0))
+      }) == initialActiveProjection,
+      coordinator.activeSession?.agentController.questions == initialQuestions
+    else {
       return .unavailable
     }
-    return await openSaved(id, in: coordinator,
-                           launchTerminalProcesses: launchTerminalProcesses)
+    return await openSaved(
+      id, in: coordinator,
+      launchTerminalProcesses: launchTerminalProcesses)
   }
 
-  func copyResource(sourceWorkspaceID: UUID, resourceID: UUID,
-                    toWorkspaceID: UUID) async throws -> UUID {
+  func copyResource(
+    sourceWorkspaceID: UUID, resourceID: UUID,
+    toWorkspaceID: UUID
+  ) async throws -> UUID {
     guard sourceWorkspaceID != toWorkspaceID else { throw WorkspaceCopyError.targetUnavailable }
     guard !closing.contains(sourceWorkspaceID), !closing.contains(toWorkspaceID),
-          !isClosingAll,
-          locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
-          locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
-          loadingTasks[toWorkspaceID] == nil,
-          copyingWorkspaceIDs.insert(toWorkspaceID).inserted else {
+      !isClosingAll,
+      locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
+      locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
+      loadingTasks[toWorkspaceID] == nil,
+      copyingWorkspaceIDs.insert(toWorkspaceID).inserted
+    else {
       throw WorkspaceCopyError.targetUnavailable
     }
     defer {
@@ -564,22 +599,23 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     let source: WorkspaceResourceConfiguration
     if let session = session(for: sourceWorkspaceID) {
       guard !session.archived,
-            let item = session.exportConfiguration().resources.first(where: { $0.id == resourceID })
+        let item = session.exportConfiguration().resources.first(where: { $0.id == resourceID })
       else { throw WorkspaceCopyError.resourceUnavailable }
       source = item
     } else {
       let loaded = try await loadConfigurationThrowing(sourceWorkspaceID)
       guard let configuration = loaded.configuration,
-            !configuration.archived,
-            let item = configuration.resources.first(where: { $0.id == resourceID })
+        !configuration.archived,
+        let item = configuration.resources.first(where: { $0.id == resourceID })
       else { throw WorkspaceCopyError.sourceUnavailable }
       source = item
     }
     let newID = UUID()
     guard !isClosingAll, !closing.contains(sourceWorkspaceID),
-          locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
-          ((sourceSessionIdentity == nil && session(for: sourceWorkspaceID) == nil)
-           || (sourceSessionIdentity != nil && sourceSessionIdentity === session(for: sourceWorkspaceID))) else {
+      locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
+      (sourceSessionIdentity == nil && session(for: sourceWorkspaceID) == nil)
+        || (sourceSessionIdentity != nil && sourceSessionIdentity === session(for: sourceWorkspaceID))
+    else {
       throw WorkspaceCopyError.sourceUnavailable
     }
     let copied = WorkspaceResourceConfiguration(
@@ -591,27 +627,32 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     guard let repository else { throw WorkspaceCopyError.targetUnavailable }
     let targetResult = try await loadConfigurationThrowing(toWorkspaceID)
     guard !closing.contains(sourceWorkspaceID),
-          locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true else {
+      locations[sourceWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true
+    else {
       throw WorkspaceCopyError.sourceUnavailable
     }
     if let sourceSessionIdentity {
       guard let current = session(for: sourceWorkspaceID), current === sourceSessionIdentity,
-            !current.isClosed, !current.archived,
-            current.resourceStore.records[resourceID] != nil else {
+        !current.isClosed, !current.archived,
+        current.resourceStore.records[resourceID] != nil
+      else {
         throw WorkspaceCopyError.sourceUnavailable
       }
     } else {
       guard let sourceEntry = directory[sourceWorkspaceID], !sourceEntry.archived,
-            !sourceEntry.isTemporary else { throw WorkspaceCopyError.sourceUnavailable }
+        !sourceEntry.isTemporary
+      else { throw WorkspaceCopyError.sourceUnavailable }
     }
     guard let target = targetResult.configuration,
-          !target.archived, session(for: toWorkspaceID) == nil,
-          !closing.contains(toWorkspaceID), !isClosingAll,
-          locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true else {
+      !target.archived, session(for: toWorkspaceID) == nil,
+      !closing.contains(toWorkspaceID), !isClosingAll,
+      locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true
+    else {
       if let loadedTarget = session(for: toWorkspaceID), !loadedTarget.archived,
-         !isClosingAll, !closing.contains(toWorkspaceID),
-         locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
-         loadingTasks[toWorkspaceID] == nil {
+        !isClosingAll, !closing.contains(toWorkspaceID),
+        locations[toWorkspaceID]?.coordinator?.canAcceptWorkspace ?? true,
+        loadingTasks[toWorkspaceID] == nil
+      {
         return try appendCopiedDescriptor(loadedTarget, copied: copied, newID: newID)
       }
       throw WorkspaceCopyError.targetUnavailable
@@ -624,10 +665,13 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         order: (updated.resources.map(\.order).max() ?? -1) + 1))
     do {
       _ = try await repository.save(updated, expectedRevision: target.revision)
+      StudioLog.persistence.info("event=save_succeeded workspace=\(toWorkspaceID.uuidString, privacy: .public)")
     } catch let error as WorkspaceRepositoryError {
+      StudioLog.persistence.error("event=save_failed workspace=\(toWorkspaceID.uuidString, privacy: .public)")
       if case .revisionConflict = error { throw WorkspaceCopyError.conflict }
       throw WorkspaceCopyError.saveFailed(error.localizedDescription)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(toWorkspaceID.uuidString, privacy: .public)")
       throw WorkspaceCopyError.saveFailed(error.localizedDescription)
     }
     return newID
@@ -643,32 +687,37 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
   ) throws -> UUID {
     guard !target.archived else { throw WorkspaceCopyError.archivedWorkspace }
     guard !target.isClosed, !isClosingAll,
-          !closing.contains(target.id), loadingTasks[target.id] == nil,
-          locations[target.id]?.coordinator?.canAcceptWorkspace ?? true,
-          target.resourceStore.records[newID] == nil else {
+      !closing.contains(target.id), loadingTasks[target.id] == nil,
+      locations[target.id]?.coordinator?.canAcceptWorkspace ?? true,
+      target.resourceStore.records[newID] == nil
+    else {
       throw WorkspaceCopyError.targetUnavailable
     }
     let record: ResourceRecord
     switch copied.destination {
     case .blank:
-      record = ResourceRecord(id: newID, kind: .web, groupID: target.id,
-                              title: "空白网页", location: .web(nil),
-                              readCapabilities: [.address, .title, .text],
-                              customTitle: copied.customTitle)
+      record = ResourceRecord(
+        id: newID, kind: .web, groupID: target.id,
+        title: "空白网页", location: .web(nil),
+        readCapabilities: [.address, .title, .text],
+        customTitle: copied.customTitle)
     case .web(let url):
-      record = ResourceRecord(id: newID, kind: .web, groupID: target.id,
-                              title: URL(string: url)?.host ?? "空白网页",
-                              location: .web(URL(string: url)),
-                              readCapabilities: [.address, .title, .text], customTitle: copied.customTitle)
+      record = ResourceRecord(
+        id: newID, kind: .web, groupID: target.id,
+        title: URL(string: url)?.host ?? "空白网页",
+        location: .web(URL(string: url)),
+        readCapabilities: [.address, .title, .text], customTitle: copied.customTitle)
     case .terminal(let directory):
-      record = ResourceRecord(id: newID, kind: .localTerminal, groupID: target.id,
-                              title: "终端", location: .localTerminal(directory: directory),
-                              readCapabilities: [.output], customTitle: copied.customTitle)
+      record = ResourceRecord(
+        id: newID, kind: .localTerminal, groupID: target.id,
+        title: "终端", location: .localTerminal(directory: directory),
+        readCapabilities: [.output], customTitle: copied.customTitle)
     case .ssh(let host, let user, let port):
-      record = ResourceRecord(id: newID, kind: .sshTerminal, groupID: target.id,
-                              title: user.isEmpty ? host : user + "@" + host,
-                              location: .ssh(host: host, user: user, port: port),
-                              readCapabilities: [.output], customTitle: copied.customTitle)
+      record = ResourceRecord(
+        id: newID, kind: .sshTerminal, groupID: target.id,
+        title: user.isEmpty ? host : user + "@" + host,
+        location: .ssh(host: host, user: user, port: port),
+        readCapabilities: [.output], customTitle: copied.customTitle)
     }
     _ = target.resourceStore.restoreDescriptor(record)
     saveControllers[target.id]?.markConfigurationChanged()
@@ -681,7 +730,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         revision: saveControllers[id]?.savedConfiguration?.revision ?? 0)
     }
     guard let repository, let result = try? await repository.load(id: id),
-          let configuration = result.configuration else { return nil }
+      let configuration = result.configuration
+    else { return nil }
     return configuration
   }
 
@@ -700,9 +750,11 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     if let task = closingTasks[id] { return await task.value }
     guard !isClosingAll, !closing.contains(id) else { return false }
     if let liveSession = session(for: id),
-       let controller = saveControllers[id] {
+      let controller = saveControllers[id]
+    {
       guard !liveSession.isTemporary,
-            locations[id]?.coordinator?.canAcceptWorkspace ?? true else { return false }
+        locations[id]?.coordinator?.canAcceptWorkspace ?? true
+      else { return false }
       let oldArchived = liveSession.archived
       let owner = locations[id]?.coordinator
       owner?.beginClosePreparation()
@@ -710,8 +762,9 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
         guard let self else { return false }
         liveSession.archived = true
         guard let decisions = await self.prepareSessionsClose([liveSession]),
-              decisions.isEmpty,
-              let saved = controller.savedConfiguration else {
+          decisions.isEmpty,
+          let saved = controller.savedConfiguration
+        else {
           liveSession.archived = oldArchived
           owner?.cancelClosePreparation()
           return false
@@ -734,7 +787,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       return result
     }
     guard let repository,
-          let configuration = await configurationSnapshot(for: id) else { return false }
+      let configuration = await configurationSnapshot(for: id)
+    else { return false }
     guard session(for: id) == nil, !closing.contains(id) else { return false }
     var updated = configuration
     updated.archived = true
@@ -742,16 +796,19 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     do {
       result = try await repository.save(updated, expectedRevision: configuration.revision)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(id.uuidString, privacy: .public)")
       loadErrorMessagesByID[id] = String(describing: error)
       objectWillChange.send()
       return false
     }
-    guard case let .saved(envelope) = result else {
+    guard case .saved(let envelope) = result else {
       return false
     }
-    directory[id] = WorkspaceDirectoryEntry(id: id, name: envelope.configuration.name,
-                                             isTemporary: false, archived: true,
-                                             lastActivatedAt: envelope.configuration.lastActivatedAt)
+    StudioLog.persistence.info("event=save_succeeded workspace=\(id.uuidString, privacy: .public)")
+    directory[id] = WorkspaceDirectoryEntry(
+      id: id, name: envelope.configuration.name,
+      isTemporary: false, archived: true,
+      lastActivatedAt: envelope.configuration.lastActivatedAt)
     objectWillChange.send()
     return true
   }
@@ -760,7 +817,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     guard !copyingWorkspaceIDs.contains(id) else { return false }
     guard !isClosingAll, !closing.contains(id), session(for: id) == nil else { return false }
     guard let repository,
-          let configuration = await configurationSnapshot(for: id) else { return false }
+      let configuration = await configurationSnapshot(for: id)
+    else { return false }
     guard session(for: id) == nil, !closing.contains(id) else { return false }
     var updated = configuration
     updated.archived = false
@@ -768,14 +826,17 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     do {
       result = try await repository.save(updated, expectedRevision: configuration.revision)
     } catch {
+      StudioLog.persistence.error("event=save_failed workspace=\(id.uuidString, privacy: .public)")
       loadErrorMessagesByID[id] = String(describing: error)
       objectWillChange.send()
       return false
     }
-    guard case let .saved(envelope) = result else { return false }
-    directory[id] = WorkspaceDirectoryEntry(id: id, name: envelope.configuration.name,
-                                             isTemporary: false, archived: false,
-                                             lastActivatedAt: envelope.configuration.lastActivatedAt)
+    guard case .saved(let envelope) = result else { return false }
+    StudioLog.persistence.info("event=save_succeeded workspace=\(id.uuidString, privacy: .public)")
+    directory[id] = WorkspaceDirectoryEntry(
+      id: id, name: envelope.configuration.name,
+      isTemporary: false, archived: false,
+      lastActivatedAt: envelope.configuration.lastActivatedAt)
     objectWillChange.send()
     return true
   }
@@ -783,8 +844,10 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     for s in liveSessions { s.agentController.updateConfiguration(c) }
   }
   @discardableResult
-  func prepareSessionClose(_ session: WorkspaceSession,
-                           resolver: WorkspaceCloseResolver? = nil) async
+  func prepareSessionClose(
+    _ session: WorkspaceSession,
+    resolver: WorkspaceCloseResolver? = nil
+  ) async
     -> (accepted: Bool, discard: Bool)
   {
     guard let controller = saveControllers[session.id] else {
@@ -792,7 +855,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     }
     while true {
       if await controller.saveNow() { return (true, false) }
-      let choice = await resolver?(session, controller.lastErrorMessage)
+      let choice =
+        await resolver?(session, controller.lastErrorMessage)
         ?? .cancel
       switch choice {
       case .retry:
@@ -842,7 +906,8 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
     }
     let task = Task<Bool, Never> { @MainActor [weak self] in
       guard let self, !self.isClosingAll,
-            let session = self.sessionsByID[id]?.value else { return false }
+        let session = self.sessionsByID[id]?.value
+      else { return false }
       let preparation = await self.prepareSessionClose(session, resolver: resolver)
       guard preparation.accepted, self.beginClosing(id) else { return false }
       if preparation.discard { _ = await self.saveControllers[id]?.discardPendingChanges() }
@@ -863,9 +928,11 @@ private func configurationProjection(_ configuration: WorkspaceConfiguration)
       return await task.value
     }
     guard !isClosingAll else { return false }
-    guard locations.values.compactMap(\.coordinator).allSatisfy({
-      !$0.isClosing && $0.closingTask == nil
-    }), closingTasks.isEmpty else { return false }
+    guard
+      locations.values.compactMap(\.coordinator).allSatisfy({
+        !$0.isClosing && $0.closingTask == nil
+      }), closingTasks.isEmpty
+    else { return false }
     isClosingAll = true
     let task = Task<Bool, Never> { @MainActor [weak self] in
       guard let self else { return false }
