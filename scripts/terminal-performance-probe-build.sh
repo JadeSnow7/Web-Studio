@@ -2,7 +2,7 @@
 set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 . "$ROOT/scripts/build-artifacts.sh"
-if [ "$#" -gt 0 ]; then OUT=$1; else OUT=$(build_artifacts_path "$ROOT" performance-probe /private/tmp/web-studio-terminal-performance-probe); fi
+if [ -n "${1:-}" ]; then OUT=$1; else OUT=$(build_artifacts_path "$ROOT" performance-probe /private/tmp/web-studio-terminal-performance-probe); fi
 mkdir -p "$OUT/module-cache"
 set -x
 swiftc \

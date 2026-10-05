@@ -2,7 +2,7 @@
 set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 . "$ROOT/scripts/build-artifacts.sh"
-if [ "$#" -gt 0 ]; then OUT=$1; else OUT=$(build_artifacts_path "$ROOT" performance-probe-test /private/tmp/web-studio-terminal-performance-probe-test); fi
+if [ -n "${1:-}" ]; then OUT=$1; else OUT=$(build_artifacts_path "$ROOT" performance-probe-test /private/tmp/web-studio-terminal-performance-probe-test); fi
 "$ROOT/scripts/terminal-performance-probe-build.sh" "$OUT" >/dev/null
 BIN="$OUT/terminal-performance-probe"
 "$BIN" --self-test
