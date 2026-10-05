@@ -9,6 +9,7 @@
 | 判断实现、验证与交付状态 | [当前状态](STATUS.md) |
 | 使用、配置及构建 | [README](README.md) |
 | 源码结构、所有权与调用链 | [源码架构指南](docs/source-guide/README.md) |
+| 比赛版任务安排与手动排期 | [OS2026 任务计划](docs/plans/2026-10-os2026-task-plan.md)（可编辑草案，实施任务待执行） |
 | 原生视觉与组件所有权 | [DESIGN](DESIGN.md) |
 | 操作、生命周期与资料发送契约 | [UX-CONTRACT](UX-CONTRACT.md) |
 | B1 数据与模块结构 | [架构](records/WORKSPACE-B1-20260917/ARCHITECTURE.md) |
