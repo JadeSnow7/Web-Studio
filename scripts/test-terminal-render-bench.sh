@@ -28,7 +28,8 @@ case "$REPS" in ''|*[!0-9]*) echo "--repetitions must be a positive integer" >&2
 [ "$REPS" -ge 1 ] || { echo "--repetitions must be >= 1" >&2; exit 64; }
 [ ! -e "$OUTPUT" ] || { echo "output exists; refusing overwrite" >&2; exit 64; }
 . "$SCRIPT_ROOT/build-artifacts.sh"
-BUILD=$(build_artifacts_path "$SOURCE_ROOT" "render-bench/$(basename "$OUTPUT")-build" "${OUTPUT}-build")
+OUTPUT_ID=$(printf '%s' "$OUTPUT" | shasum -a 256 | awk '{print $1}')
+BUILD=$(build_artifacts_path "$SOURCE_ROOT" "render-bench/$(basename "$OUTPUT")-$OUTPUT_ID-build" "${OUTPUT}-build")
 [ ! -e "$BUILD" ] || { echo "build output exists; refusing overwrite" >&2; exit 64; }
 if [ -n "$NOISE_FLOOR" ]; then [ -f "$NOISE_FLOOR" ] || { echo "noise floor file not found" >&2; exit 64; }; fi
 check_root() {
